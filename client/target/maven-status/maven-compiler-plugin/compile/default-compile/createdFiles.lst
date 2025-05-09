@@ -1,0 +1,5 @@
+com/uninaswap/client/controller/LoginController.class
+com/uninaswap/client/util/WebSocketManager.class
+com/uninaswap/client/controller/RegisterController.class
+com/uninaswap/client/websocket/WebSocketClient.class
+com/uninaswap/client/UninaSwapApp.class

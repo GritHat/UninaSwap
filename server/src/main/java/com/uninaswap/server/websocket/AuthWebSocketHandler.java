@@ -1,5 +1,6 @@
 package com.uninaswap.server.websocket;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -22,7 +23,7 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
     }
     
     @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    public void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) throws Exception {
         System.out.println("SERVER RECEIVED: " + message.getPayload());
         
         try {
@@ -83,12 +84,12 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
+    public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         System.out.println("WebSocket connection established: " + session.getId());
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
         System.out.println("WebSocket connection closed: " + session.getId() + ", status: " + status);
     }
 }

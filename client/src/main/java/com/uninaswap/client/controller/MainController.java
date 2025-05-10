@@ -1,5 +1,6 @@
 package com.uninaswap.client.controller;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -8,6 +9,7 @@ import javafx.scene.layout.StackPane;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.AuthenticationService;
 import com.uninaswap.client.service.MessageService;
+import com.uninaswap.client.service.UserSessionService;
 
 public class MainController {
 
@@ -19,22 +21,36 @@ public class MainController {
     private final NavigationService navigationService;
     private final AuthenticationService authService;
     private final MessageService messageService;
+    private final UserSessionService sessionService;
     
     public MainController() {
         this.navigationService = NavigationService.getInstance();
         this.authService = AuthenticationService.getInstance();
         this.messageService = MessageService.getInstance();
+        this.sessionService = UserSessionService.getInstance();
     }
     
     @FXML
     public void initialize() {
+        checkAuthentication();
         statusLabel.setText(messageService.getMessage("dashboard.status.loaded"));
         connectionStatusLabel.setText(messageService.getMessage("dashboard.status.connected"));
+        
+        // Display username from session
+        if (sessionService.isLoggedIn()) {
+            String username = sessionService.getUsername();
+            usernameLabel.setText(messageService.getMessage("dashboard.welcome.user", username));
+        } else {
+            usernameLabel.setText(messageService.getMessage("dashboard.welcome"));
+        }
     }
     
     @FXML
     public void handleLogout(ActionEvent event) {
         try {
+            // End the user session
+            sessionService.endSession();
+            
             navigationService.navigateToLogin(usernameLabel);
         } catch (Exception e) {
             statusLabel.setText(messageService.getMessage("dashboard.error.logout", e.getMessage()));
@@ -72,6 +88,22 @@ public class MainController {
         // TODO: Load settings content
     }
     
+    /**
+     * Verify that a user is logged in, redirect to login if not
+     * Call this from initialize() in protected controllers
+     */
+    private void checkAuthentication() {
+        if (!UserSessionService.getInstance().isLoggedIn()) {
+            Platform.runLater(() -> {
+                try {
+                    navigationService.navigateToLogin(usernameLabel);
+                } catch (Exception e) {
+                    // Log error
+                }
+            });
+        }
+    }
+
     /**
      * Updates the displayed username
      */

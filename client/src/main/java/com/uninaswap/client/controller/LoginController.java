@@ -13,6 +13,7 @@ import com.uninaswap.client.service.ValidationService;
 import com.uninaswap.client.service.MessageService;
 import com.uninaswap.client.service.ValidationService.ValidationResult;
 import com.uninaswap.common.message.AuthMessage;
+import com.uninaswap.client.service.UserSessionService;
 
 public class LoginController {
     
@@ -72,6 +73,10 @@ public class LoginController {
             if (response.getType() == AuthMessage.Type.LOGIN_RESPONSE) {
                 if (response.isSuccess()) {
                     showMessage("login.success", "message-success");
+                    
+                    // Start user session
+                    UserSessionService sessionService = UserSessionService.getInstance();
+                    sessionService.startSession(response.getUsername());
                     
                     // Navigate to main dashboard on successful login
                     try {

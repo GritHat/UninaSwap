@@ -42,6 +42,7 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
                     System.out.println("Authentication result for " + authMessage.getUsername() + ": " + authenticated);
                     
                     response.setType(AuthMessage.Type.LOGIN_RESPONSE);
+                    response.setUsername(authMessage.getUsername());
                     response.setSuccess(authenticated);
                     response.setMessage(authenticated ? "Login successful" : "Invalid credentials");
                     break;

@@ -251,7 +251,6 @@ public class ProfileController {
         if (tempSelectedImageFile != null) {
             ImageService imageService = ImageService.getInstance();
             
-            // Use HTTP upload instead of WebSocket
             imageService.uploadImageViaHttp(sessionService.getUsername(), tempSelectedImageFile)
                 .thenAccept(imageId -> {
                     // Update the image path to the server-side path

@@ -43,51 +43,12 @@ public class ImageService {
         this.webSocketClient.registerMessageHandler(ImageMessage.class, this::handleImageResponse);
     }
     
-    public CompletableFuture<String> uploadImage(String username, File imageFile) {
-        CompletableFuture<String> future = new CompletableFuture<>();
-        
-        try {
-            // Read file bytes
-            byte[] fileBytes = Files.readAllBytes(imageFile.toPath());
-            
-            // Get file extension
-            String fileName = imageFile.getName();
-            String format = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
-            
-            // Convert to Base64
-            String base64Image = Base64.getEncoder().encodeToString(fileBytes);
-            
-            // Create and send message
-            ImageMessage uploadMessage = new ImageMessage();
-            uploadMessage.setType(ImageMessage.Type.UPLOAD_REQUEST);
-            uploadMessage.setUsername(username);
-            uploadMessage.setImageData(base64Image);
-            uploadMessage.setFormat(format);
-            
-            // Set up completion handler
-            setImageUploadHandler(response -> {
-                if (response.isSuccess() && response.getType() == ImageMessage.Type.UPLOAD_RESPONSE) {
-                    // Return the image ID
-                    future.complete(response.getImageId() + "." + format);
-                } else {
-                    future.completeExceptionally(new IOException(response.getMessage()));
-                }
-            });
-            
-            // Send the message
-            webSocketClient.sendMessage(uploadMessage)
-                .exceptionally(ex -> {
-                    future.completeExceptionally(ex);
-                    return null;
-                });
-            
-        } catch (Exception e) {
-            future.completeExceptionally(e);
-        }
-        
-        return future;
-    }
-    
+    /**
+     * Upload an image via HTTP for profile pictures
+     * @param username The username of the user uploading the image
+     * @param imageFile The image file to upload
+     * @return A CompletableFuture with the image path on success
+     */
     public CompletableFuture<String> uploadImageViaHttp(String username, File imageFile) {
         CompletableFuture<String> future = new CompletableFuture<>();
         
@@ -127,6 +88,11 @@ public class ImageService {
         return future;
     }
     
+    /**
+     * Fetch an image from the server
+     * @param imageId The ID of the image to fetch
+     * @return A CompletableFuture with the Image on success
+     */
     public CompletableFuture<Image> fetchImage(String imageId) {
         CompletableFuture<Image> future = new CompletableFuture<>();
         
@@ -176,33 +142,15 @@ public class ImageService {
         return future;
     }
     
-    private Consumer<ImageMessage> uploadHandler;
     private Consumer<ImageMessage> fetchHandler;
-    
-    private void setImageUploadHandler(Consumer<ImageMessage> handler) {
-        this.uploadHandler = handler;
-    }
     
     private void setImageFetchHandler(Consumer<ImageMessage> handler) {
         this.fetchHandler = handler;
     }
     
     private void handleImageResponse(ImageMessage message) {
-        switch (message.getType()) {
-            case UPLOAD_RESPONSE:
-                if (uploadHandler != null) {
-                    uploadHandler.accept(message);
-                }
-                break;
-                
-            case FETCH_RESPONSE:
-                if (fetchHandler != null) {
-                    fetchHandler.accept(message);
-                }
-                break;
-                
-            default:
-                System.out.println("Received unknown image message type: " + message.getType());
+        if (message.getType() == ImageMessage.Type.FETCH_RESPONSE && fetchHandler != null) {
+            fetchHandler.accept(message);
         }
     }
     

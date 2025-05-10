@@ -2,7 +2,6 @@ com/uninaswap/server/websocket/ImageWebSocketHandler.class
 com/uninaswap/server/config/WebSocketConfig.class
 com/uninaswap/server/service/ImageService.class
 com/uninaswap/server/service/AuthService.class
-com/uninaswap/server/websocket/ImageWebSocketHandler$1.class
 com/uninaswap/server/websocket/AuthWebSocketHandler.class
 com/uninaswap/server/controller/ImageController.class
 com/uninaswap/server/entity/UserEntity.class

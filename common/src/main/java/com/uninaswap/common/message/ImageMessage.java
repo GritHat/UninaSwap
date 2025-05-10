@@ -3,8 +3,6 @@ package com.uninaswap.common.message;
 public class ImageMessage extends Message {
     
     public enum Type {
-        UPLOAD_REQUEST,
-        UPLOAD_RESPONSE,
         FETCH_REQUEST,
         FETCH_RESPONSE
     }

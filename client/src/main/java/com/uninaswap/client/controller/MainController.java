@@ -28,48 +28,47 @@ public class MainController {
     
     @FXML
     public void initialize() {
-        // TODO: Set username
-        statusLabel.setText("Dashboard loaded");
+        statusLabel.setText(messageService.getMessage("dashboard.status.loaded"));
+        connectionStatusLabel.setText(messageService.getMessage("dashboard.status.connected"));
     }
     
     @FXML
     public void handleLogout(ActionEvent event) {
-        // TODO: Implement logout functionality
         try {
             navigationService.navigateToLogin(usernameLabel);
         } catch (Exception e) {
-            statusLabel.setText("Error logging out: " + e.getMessage());
+            statusLabel.setText(messageService.getMessage("dashboard.error.logout", e.getMessage()));
         }
     }
     
     // Navigation methods - these would load different content into the contentArea
     @FXML
     public void showDashboard(ActionEvent event) {
-        statusLabel.setText("Dashboard view selected");
+        statusLabel.setText(messageService.getMessage("dashboard.view.dashboard"));
         // TODO: Load dashboard content
     }
     
     @FXML
     public void showMarkets(ActionEvent event) {
-        statusLabel.setText("Markets view selected");
+        statusLabel.setText(messageService.getMessage("dashboard.view.markets"));
         // TODO: Load markets content
     }
     
     @FXML
     public void showPortfolio(ActionEvent event) {
-        statusLabel.setText("Portfolio view selected");
+        statusLabel.setText(messageService.getMessage("dashboard.view.portfolio"));
         // TODO: Load portfolio content
     }
     
     @FXML
     public void showTrade(ActionEvent event) {
-        statusLabel.setText("Trade view selected");
+        statusLabel.setText(messageService.getMessage("dashboard.view.trade"));
         // TODO: Load trade content
     }
     
     @FXML
     public void showSettings(ActionEvent event) {
-        statusLabel.setText("Settings view selected");
+        statusLabel.setText(messageService.getMessage("dashboard.view.settings"));
         // TODO: Load settings content
     }
     

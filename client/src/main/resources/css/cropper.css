@@ -1,0 +1,97 @@
+.cropper-dialog {
+    background-color: #f5f5f5;
+    -fx-background-color: #f5f5f5;
+}
+
+.cropper-container {
+    background-color: #2a2a2a;
+    min-height: 350px;
+    -fx-background-color: #2a2a2a;
+    -fx-min-height: 300px;
+    -fx-pref-height: 350px;
+    -fx-alignment: center;
+}
+
+.crop-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    /* Fixed SVG path with a circular cutout at exact size */
+    -fx-shape: "M 0 0 H 1000 V 1000 H 0 Z M 500 500 m -100 0 a 100 100 0 1 0 200 0 a 100 100 0 1 0 -200 0 Z";
+    -fx-alignment: center;
+    
+    /* Prevent automatic resizing */
+    -fx-scale-shape: false;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    
+    /* Ensure the shape stays positioned correctly */
+    -fx-alignment: center;
+    -fx-content-display: center;
+}
+
+.crop-circle {
+    background-color: transparent;
+    border-color: white;
+    border-width: 2px;
+    border-radius: 50%;
+    min-width: 200px;
+    min-height: 200px;
+    max-width: 200px;
+    max-height: 200px;
+
+    /* Remove duplicate properties and ensure exact match with SVG cutout */
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+    -fx-border-width: 2px;
+    -fx-border-radius: 50%;
+    
+    /* Match exactly to the SVG's 400px diameter circle (200px radius) */
+    -fx-min-width: 200px;
+    -fx-min-height: 200px;
+    -fx-max-width: 200px;
+    -fx-max-height: 200px;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 200px;
+}
+
+.header-label {
+    font-size: 18px;
+    font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.instruction-label {
+    font-size: 14px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #555;
+}
+
+.button-container {
+    background-color: #f0f0f0;
+    border-color: #ddd;
+    border-width: 1px 0 0 0;
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px 0 0 0;
+}
+
+.zoom-label {
+    font-size: 18px;
+    font-weight: bold;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* Improve ScrollPane appearance */
+.scroll-pane {
+    background-color: transparent;
+    border-color: transparent;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    background-color: transparent;
+    -fx-background-color: transparent;
+}

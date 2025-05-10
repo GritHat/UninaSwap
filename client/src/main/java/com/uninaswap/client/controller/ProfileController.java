@@ -3,6 +3,9 @@ package com.uninaswap.client.controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -10,9 +13,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.scene.image.PixelReader;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.MessageService;
@@ -133,16 +140,102 @@ public class ProfileController {
         File selectedFile = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
         if (selectedFile != null) {
             try {
-                // Show image preview from local file
-                Image localImage = new Image(selectedFile.toURI().toString());
-                profileImageView.setImage(localImage);
+                // Load the source image
+                Image sourceImage = new Image(selectedFile.toURI().toString());
                 
-                // Save the file path for uploading when the profile is saved
-                tempSelectedImageFile = selectedFile;
+                // Show the image cropper dialog
+                showImageCropper(sourceImage, croppedImage -> {
+                    // Update UI with the cropped image
+                    profileImageView.setImage(croppedImage);
+                    
+                    // Convert the cropped image to a file for later upload
+                    tempSelectedImageFile = convertImageToTempFile(croppedImage);
+                });
             } catch (Exception e) {
                 showStatus("profile.image.error.load", true);
+                System.err.println("Error loading image: " + e.getMessage());
             }
         }
+    }
+    
+    /**
+     * Shows the image cropper dialog
+     */
+    private void showImageCropper(Image sourceImage, Consumer<Image> cropCallback) {
+        try {
+            // Load the cropper FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ImageCropperView.fxml"));
+            Parent cropperView = loader.load();
+            
+            // Create dialog
+            Stage cropperStage = new Stage();
+            cropperStage.setTitle("Crop Profile Image");
+            cropperStage.initModality(Modality.APPLICATION_MODAL);
+            cropperStage.initOwner(profileImageView.getScene().getWindow());
+            
+            // Add CSS
+            Scene scene = new Scene(cropperView);
+            scene.getStylesheets().add(getClass().getResource("/css/cropper.css").toExternalForm());
+            cropperStage.setScene(scene);
+            
+            // Set up the controller
+            ImageCropperController controller = loader.getController();
+            controller.setImage(sourceImage);
+            controller.setCropCallback(cropCallback);
+            
+            // Show the cropper dialog
+            cropperStage.showAndWait();
+        } catch (IOException e) {
+            showStatus("profile.error.image.cropper", true);
+            System.err.println("Error showing image cropper: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Converts a JavaFX Image to a temporary file for upload
+     */
+    private File convertImageToTempFile(Image image) {
+        try {
+            // Create a BufferedImage from the JavaFX Image
+            int width = (int) image.getWidth();
+            int height = (int) image.getHeight();
+            
+            java.awt.image.BufferedImage bufferedImage = new java.awt.image.BufferedImage(
+                width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+            
+            // Copy pixels
+            PixelReader pixelReader = image.getPixelReader();
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    javafx.scene.paint.Color color = pixelReader.getColor(x, y);
+                    int argb = convertColorToARGB(color);
+                    bufferedImage.setRGB(x, y, argb);
+                }
+            }
+            
+            // Create temp file
+            File tempFile = File.createTempFile("profile_", ".png");
+            tempFile.deleteOnExit();
+            
+            // Write to file
+            javax.imageio.ImageIO.write(bufferedImage, "png", tempFile);
+            
+            return tempFile;
+        } catch (IOException e) {
+            System.err.println("Error converting image to file: " + e.getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Convert JavaFX Color to ARGB int value for BufferedImage
+     */
+    private int convertColorToARGB(javafx.scene.paint.Color color) {
+        int a = (int) (color.getOpacity() * 255);
+        int r = (int) (color.getRed() * 255);
+        int g = (int) (color.getGreen() * 255);
+        int b = (int) (color.getBlue() * 255);
+        return (a << 24) | (r << 16) | (g << 8) | b;
     }
     
     @FXML

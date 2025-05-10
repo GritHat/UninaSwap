@@ -5,9 +5,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.shape.Circle?>
 
 <VBox spacing="15" alignment="TOP_CENTER" styleClass="profile-container"
-      xmlns="http://javafx.com/javafx/17" 
+      xmlns="http://javafx.com/javafx/24" 
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.uninaswap.client.controller.ProfileController">
       
@@ -19,8 +20,11 @@
     
     <!-- Profile Image -->
     <StackPane styleClass="profile-image-container">
-        <ImageView fx:id="profileImageView" fitHeight="150" fitWidth="150" preserveRatio="true">
-            <Image url="@../images/default_profile.png"/>
+        <Circle fx:id="imageClip" radius="75"/>
+        <ImageView fx:id="profileImageView" fitHeight="150" fitWidth="150">
+            <clip>
+                <Circle radius="75" centerX="75" centerY="75"/>
+            </clip>
         </ImageView>
         <Button text="Change" fx:id="changeImageButton" onAction="#handleChangeImage" 
                 StackPane.alignment="BOTTOM_RIGHT" styleClass="image-change-button"/>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/24" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.uninaswap.client.controller.ImageCropperController"
+            prefWidth="600" prefHeight="500" 
+            maxWidth="800" maxHeight="700" 
+            styleClass="cropper-dialog">
+
+    <top>
+        <VBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="Crop Your Profile Picture" styleClass="header-label"/>
+            <Label text="Drag the image to position your face in the circle" styleClass="instruction-label"/>
+        </VBox>
+    </top>
+    
+    <center>
+        <!-- Wrap in ScrollPane to handle large images -->
+        <ScrollPane fitToWidth="true" fitToHeight="true" pannable="true" 
+                   hbarPolicy="NEVER" vbarPolicy="NEVER">
+            <StackPane fx:id="cropperContainer" alignment="CENTER" 
+                       styleClass="cropper-container" 
+                       minHeight="300" prefHeight="350">
+                <!-- The image to be cropped will go here -->
+                <ImageView fx:id="sourceImageView" preserveRatio="true" 
+                          mouseTransparent="false"/>
+                
+                <!-- Circular crop overlay -->
+                <StackPane fx:id="cropOverlay" mouseTransparent="true" 
+                          styleClass="crop-overlay" StackPane.alignment="CENTER">
+                    <!-- Make sure the cropCircle is properly aligned and sized -->
+                    <Region fx:id="cropCircle" styleClass="crop-circle" 
+                           StackPane.alignment="CENTER"/>
+                </StackPane>
+            </StackPane>
+        </ScrollPane>
+    </center>
+    
+    <bottom>
+        <VBox spacing="5">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            
+            <!-- Zoom controls -->
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Zoom:" />
+                <Label text="−" styleClass="zoom-label" />
+                <Slider fx:id="zoomSlider" min="0.1" max="3.0" value="1.0" 
+                        prefWidth="250" showTickLabels="true" showTickMarks="true" 
+                        majorTickUnit="0.5" />
+                <Label text="+" styleClass="zoom-label" />
+            </HBox>
+            
+            <!-- Buttons -->
+            <HBox spacing="15" alignment="CENTER_RIGHT" styleClass="button-container">
+                <padding>
+                    <Insets top="10" right="0" bottom="0" left="0"/>
+                </padding>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Cancel" onAction="#handleCancel" styleClass="cancel-button"/>
+                <Button text="Apply" onAction="#handleApply" styleClass="apply-button"/>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

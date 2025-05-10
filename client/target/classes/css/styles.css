@@ -42,10 +42,10 @@
 
 /* Buttons */
 .button-container {
-    padding: 10 0 10 0;
+    padding: 5 0 5 0;
     -fx-spacing: 10;
     -fx-alignment: center;
-    -fx-padding: 10 0 10 0;
+    -fx-padding: 5 0 5 0;
 }
 
 /* Dashboard Header */
@@ -115,4 +115,18 @@
     -fx-background-color: #ecf0f1;
     -fx-border-width: 1 0 0 0;
     -fx-border-color: #bdc3c7;
+}
+
+.profile-image-container .image-view {
+    border-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 1);
+}
+
+#profileImageView {
+    border-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-clip: "circle(50% at 50% 50%)";
 }

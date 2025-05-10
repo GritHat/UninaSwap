@@ -1,6 +1,7 @@
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/client/src/main/java/com/uninaswap/client/service/NavigationService.java
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/client/src/main/java/com/uninaswap/client/service/ProfileService.java
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/client/src/main/java/com/uninaswap/client/service/ValidationService.java
+/home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/client/src/main/java/com/uninaswap/client/controller/ImageCropperController.java
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/client/src/main/java/com/uninaswap/client/controller/MainController.java
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/client/src/main/java/com/uninaswap/client/service/ImageService.java
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/client/src/main/java/com/uninaswap/client/service/UserSessionService.java

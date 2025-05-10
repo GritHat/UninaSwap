@@ -74,7 +74,7 @@ public class NavigationService {
         
         Stage stage = (Stage) sourceNode.getScene().getWindow();
         stage.setTitle("UninaSwap - Dashboard");
-        stage.setScene(new Scene(mainView, 800, 600));
+        stage.setScene(new Scene(mainView, 800, 640));
     }
     
     /**

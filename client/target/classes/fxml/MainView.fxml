@@ -5,10 +5,11 @@
 <?import javafx.geometry.Insets?>
 
 <BorderPane prefWidth="800" prefHeight="600" 
-      xmlns="http://javafx.com/javafx/17" 
+      xmlns="http://javafx.com/javafx/24" 
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.uninaswap.client.controller.MainController"
-      stylesheets="@../css/styles.css">
+      stylesheets="@../css/styles.css"
+      minWidth="800" minHeight="640">
       
    <!-- Top Navigation Bar -->
    <top>

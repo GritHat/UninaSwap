@@ -21,12 +21,14 @@ public class WebSocketMessageRouter extends TextWebSocketHandler {
     public WebSocketMessageRouter(
             ObjectMapper objectMapper,
             AuthWebSocketHandler authHandler,
-            ProfileWebSocketHandler profileHandler) {
+            ProfileWebSocketHandler profileHandler,
+            ImageWebSocketHandler imageHandler) {
         this.objectMapper = objectMapper;
         
         // Register handlers for different message types
         handlerMap.put("auth", authHandler);
         handlerMap.put("profile", profileHandler);
+        handlerMap.put("image", imageHandler);
     }
     
     @Override

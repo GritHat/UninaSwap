@@ -3,6 +3,8 @@
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/server/src/main/java/com/uninaswap/server/entity/UserEntity.java
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/server/src/main/java/com/uninaswap/server/repository/UserRepository.java
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/server/src/main/java/com/uninaswap/server/service/AuthService.java
+/home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/server/src/main/java/com/uninaswap/server/service/ImageService.java
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/server/src/main/java/com/uninaswap/server/websocket/AuthWebSocketHandler.java
+/home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/server/src/main/java/com/uninaswap/server/websocket/ImageWebSocketHandler.java
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/server/src/main/java/com/uninaswap/server/websocket/ProfileWebSocketHandler.java
 /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/server/src/main/java/com/uninaswap/server/websocket/WebSocketMessageRouter.java

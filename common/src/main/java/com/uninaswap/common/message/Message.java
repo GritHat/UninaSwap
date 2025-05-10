@@ -10,7 +10,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 )
 @JsonSubTypes({
     @JsonSubTypes.Type(value = AuthMessage.class, name = "auth"),
-    @JsonSubTypes.Type(value = ProfileUpdateMessage.class, name = "profile")
+    @JsonSubTypes.Type(value = ProfileUpdateMessage.class, name = "profile"),
+    @JsonSubTypes.Type(value = ImageMessage.class, name = "image")
 })
 public abstract class Message {
     private String messageId;

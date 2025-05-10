@@ -1,6 +1,8 @@
+com/uninaswap/common/message/ProfileUpdateMessage.class
+com/uninaswap/common/message/Message.class
+com/uninaswap/common/message/ImageMessage.class
 com/uninaswap/common/message/AuthMessage$Type.class
 com/uninaswap/common/message/ProfileUpdateMessage$Type.class
-com/uninaswap/common/message/ProfileUpdateMessage.class
 com/uninaswap/common/model/User.class
 com/uninaswap/common/message/AuthMessage.class
-com/uninaswap/common/message/Message.class
+com/uninaswap/common/message/ImageMessage$Type.class

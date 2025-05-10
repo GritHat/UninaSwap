@@ -18,6 +18,7 @@ import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.MessageService;
 import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.service.ProfileService;
+import com.uninaswap.client.service.ImageService;
 import com.uninaswap.common.model.User;
 import com.uninaswap.common.message.ProfileUpdateMessage;
 
@@ -37,6 +38,7 @@ public class ProfileController {
     private final ProfileService profileService;
     
     private String tempProfileImagePath;
+    private File tempSelectedImageFile;
     
     public ProfileController() {
         this.navigationService = NavigationService.getInstance();
@@ -101,14 +103,22 @@ public class ProfileController {
         // Set profile image
         String imagePath = sessionService.get("profileImagePath");
         if (imagePath != null && !imagePath.isEmpty()) {
-            try {
-                Image image = new Image(imagePath);
-                profileImageView.setImage(image);
-                tempProfileImagePath = imagePath;
-            } catch (Exception e) {
-                // If image loading fails, use default
-                profileImageView.setImage(new Image(getClass().getResourceAsStream("/images/default_profile.png")));
-            }
+            ImageService.getInstance().fetchImage(imagePath)
+                .thenAccept(image -> {
+                    Platform.runLater(() -> {
+                        profileImageView.setImage(image);
+                        tempProfileImagePath = imagePath;
+                    });
+                })
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        // If image loading fails, use default
+                        profileImageView.setImage(new Image(getClass().getResourceAsStream("/images/default_profile.png")));
+                        showStatus("profile.image.error.load", true);
+                        System.err.println("Error loading image: " + ex.getMessage());
+                    });
+                    return null;
+                });
         }
     }
     
@@ -123,9 +133,12 @@ public class ProfileController {
         File selectedFile = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
         if (selectedFile != null) {
             try {
-                Image image = new Image(selectedFile.toURI().toString());
-                profileImageView.setImage(image);
-                tempProfileImagePath = selectedFile.toURI().toString();
+                // Show image preview from local file
+                Image localImage = new Image(selectedFile.toURI().toString());
+                profileImageView.setImage(localImage);
+                
+                // Save the file path for uploading when the profile is saved
+                tempSelectedImageFile = selectedFile;
             } catch (Exception e) {
                 showStatus("profile.image.error.load", true);
             }
@@ -134,6 +147,39 @@ public class ProfileController {
     
     @FXML
     public void handleSave(ActionEvent event) {
+        // Disable save button to prevent multiple submissions
+        Button saveButton = (Button) event.getSource();
+        saveButton.setDisable(true);
+        
+        // Show "saving" status
+        showStatus("profile.save.inprogress", false);
+        
+        // If a new image was selected, upload it first
+        if (tempSelectedImageFile != null) {
+            ImageService imageService = ImageService.getInstance();
+            imageService.uploadImage(sessionService.getUsername(), tempSelectedImageFile)
+                .thenAccept(imageId -> {
+                    // Update the image path to the server-side path
+                    tempProfileImagePath = imageId;
+                    
+                    // Now save the profile with the new image ID
+                    saveProfileWithImage();
+                })
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        showStatus("profile.error.image.upload", true);
+                        saveButton.setDisable(false);
+                        System.err.println("Error uploading image: " + ex.getMessage());
+                    });
+                    return null;
+                });
+        } else {
+            // No new image, just save the profile
+            saveProfileWithImage();
+        }
+    }
+    
+    private void saveProfileWithImage() {
         // Update session with form values
         sessionService.put("firstName", firstNameField.getText());
         sessionService.put("lastName", lastNameField.getText());
@@ -149,21 +195,12 @@ public class ProfileController {
         updatedUser.setBio(bioField.getText());
         updatedUser.setProfileImagePath(tempProfileImagePath);
         
-        // Disable save button to prevent multiple submissions
-        Button saveButton = (Button) event.getSource();
-        saveButton.setDisable(true);
-        
-        // Show "saving" status
-        showStatus("profile.save.inprogress", false);
-        
         // Send profile update request
         profileService.updateProfile(updatedUser)
             .exceptionally(ex -> {
-                // Handle errors in sending the message
                 Platform.runLater(() -> {
                     showStatus("profile.error.connection", true);
                     System.err.println("Error sending profile update: " + ex.getMessage());
-                    saveButton.setDisable(false);
                 });
                 return null;
             });

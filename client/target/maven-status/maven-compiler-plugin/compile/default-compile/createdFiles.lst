@@ -1,3 +1,4 @@
+com/uninaswap/client/service/ImageService$1.class
 com/uninaswap/client/service/UserSessionService.class
 com/uninaswap/client/service/ValidationService.class
 com/uninaswap/client/controller/LoginController.class
@@ -11,4 +12,5 @@ com/uninaswap/client/controller/MainController.class
 com/uninaswap/client/util/WebSocketManager.class
 com/uninaswap/client/controller/RegisterController.class
 com/uninaswap/client/websocket/WebSocketClient.class
+com/uninaswap/client/service/ImageService.class
 com/uninaswap/client/service/AuthenticationService.class

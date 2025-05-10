@@ -112,5 +112,12 @@ public class MessageService {
         fallbackMessages.put("dashboard.view.portfolio", "Portfolio view selected");
         fallbackMessages.put("dashboard.view.trade", "Trade view selected");
         fallbackMessages.put("dashboard.view.settings", "Settings view selected");
+
+        // Profile messages
+        fallbackMessages.put("profile.save.success", "Profile changes saved successfully");
+        fallbackMessages.put("profile.save.error", "Failed to save profile changes");
+        fallbackMessages.put("profile.save.inprogress", "Saving profile changes...");
+        fallbackMessages.put("profile.error.connection", "Failed to connect to server");
+
     }
 }

@@ -6,33 +6,94 @@ UninaSwap is an educational project developed for a computer science degree. It 
 
 ```
 UninaSwap
-├── pom.xml
-├── common
-│   ├── pom.xml
-│   └── src
-│       ├── main
-│       │   └── java
-│       └── test
-│           └── java
-├── server
-│   ├── pom.xml
-│   └── src
-│       ├── main
-│       │   ├── java
-│       │   └── resources
-│       └── test
-│           └── java
 ├── client
 │   ├── pom.xml
 │   └── src
-│       ├── main
-│       │   ├── java
-│       │   └── resources
-│       └── test
+│       └── main
+│           ├── java
+│           │   └── com
+│           │       └── uninaswap
+│           │           └── client
+│           │               ├── controller
+│           │               │   ├── ImageCropperController.java
+│           │               │   ├── LoginController.java
+│           │               │   ├── MainController.java
+│           │               │   ├── ProfileController.java
+│           │               │   └── RegisterController.java
+│           │               ├── service
+│           │               │   ├── AuthenticationService.java
+│           │               │   ├── ImageService.java
+│           │               │   ├── MessageService.java
+│           │               │   ├── NavigationService.java
+│           │               │   ├── ProfileService.java
+│           │               │   ├── UserSessionService.java
+│           │               │   └── ValidationService.java
+│           │               ├── UninaSwapApp.java
+│           │               ├── util
+│           │               │   └── WebSocketManager.java
+│           │               └── websocket
+│           │                   └── WebSocketClient.java
+│           └── resources
+│               ├── css
+│               │   ├── cropper.css
+│               │   └── styles.css
+│               ├── fxml
+│               │   ├── ImageCropperView.fxml
+│               │   ├── LoginView.fxml
+│               │   ├── MainView.fxml
+│               │   ├── ProfileView.fxml
+│               │   └── RegisterView.fxml
+│               └── i18n
+│                   └── messages.properties
+├── common
+│   ├── pom.xml
+│   └── src
+│       └── main
 │           └── java
-└── README.md
+│               └── com
+│                   └── uninaswap
+│                       └── common
+│                           ├── message
+│                           │   ├── AuthMessage.java
+│                           │   ├── ImageMessage.java
+│                           │   ├── Message.java
+│                           │   └── ProfileUpdateMessage.java
+│                           └── model
+│                               └── User.java
+├── pom.xml
+├── README.md
+└── server
+    ├── pom.xml
+    └── src
+        └── main
+            ├── java
+            │   └── com
+            │       └── uninaswap
+            │           └── server
+            │               ├── config
+            │               │   └── WebSocketConfig.java
+            │               ├── controller
+            │               │   └── ImageController.java
+            │               ├── entity
+            │               │   └── UserEntity.java
+            │               ├── repository
+            │               │   └── UserRepository.java
+            │               ├── service
+            │               │   ├── AuthService.java
+            │               │   └── ImageService.java
+            │               ├── UninaSwapServerApplication.java
+            │               └── websocket
+            │                   ├── AuthWebSocketHandler.java
+            │                   ├── ImageWebSocketHandler.java
+            │                   ├── ProfileWebSocketHandler.java
+            │                   └── WebSocketMessageRouter.java
+            └── resources
+                └── application.properties
 ```
-
+To update project structure run:
+```
+tree -I "test|target|uploads" .
+```
 ## Modules
 
 ### Common Module

@@ -87,4 +87,8 @@ public class WebSocketClient {
     public void setMessageHandler(Consumer<AuthMessage> messageHandler) {
         this.messageHandler = messageHandler;
     }
+    
+    public boolean isConnected() {
+        return session != null && session.isOpen();
+    }
 }

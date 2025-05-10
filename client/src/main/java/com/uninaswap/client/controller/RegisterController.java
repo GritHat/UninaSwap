@@ -8,7 +8,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 
 import com.uninaswap.client.service.NavigationService;
-import com.uninaswap.client.websocket.WebSocketClient;
+import com.uninaswap.client.service.AuthenticationService;
+import com.uninaswap.client.service.ValidationService;
+import com.uninaswap.client.service.MessageService;
+import com.uninaswap.client.service.ValidationService.ValidationResult;
 import com.uninaswap.common.message.AuthMessage;
 
 public class RegisterController {
@@ -19,11 +22,22 @@ public class RegisterController {
     @FXML private PasswordField confirmPasswordField;
     @FXML private Label messageLabel;
     
-    private WebSocketClient webSocketClient;
-    private NavigationService navigationService;
+    private final NavigationService navigationService;
+    private final AuthenticationService authService;
+    private final ValidationService validationService;
+    private final MessageService messageService;
     
     public RegisterController() {
         this.navigationService = NavigationService.getInstance();
+        this.authService = AuthenticationService.getInstance();
+        this.validationService = ValidationService.getInstance();
+        this.messageService = MessageService.getInstance();
+    }
+    
+    @FXML
+    public void initialize() {
+        // Set message handler
+        authService.setAuthResponseHandler(this::handleAuthResponse);
     }
     
     @FXML
@@ -33,67 +47,64 @@ public class RegisterController {
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
         
-        if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            messageLabel.setText("Please fill all fields");
-            messageLabel.getStyleClass().clear();
-            messageLabel.getStyleClass().add("message-error");
+        // Validate input
+        ValidationResult validationResult = validationService.validateRegistration(
+            username, email, password, confirmPassword);
+        
+        if (!validationResult.isValid()) {
+            showMessage(validationResult.getMessageKey(), "message-error");
             return;
         }
-        
-        if (!password.equals(confirmPassword)) {
-            messageLabel.setText("Passwords do not match");
-            messageLabel.getStyleClass().clear();
-            messageLabel.getStyleClass().add("message-error");
-            return;
-        }
-        
-        AuthMessage registerRequest = new AuthMessage();
-        registerRequest.setType(AuthMessage.Type.REGISTER_REQUEST);
-        registerRequest.setUsername(username);
-        registerRequest.setEmail(email);
-        registerRequest.setPassword(password);
         
         try {
-            webSocketClient.sendMessage(registerRequest);
-            messageLabel.setText("Registering...");
-            messageLabel.getStyleClass().clear();
-            messageLabel.getStyleClass().add("message-info");
-            
-            webSocketClient.setMessageHandler(this::handleAuthResponse);
+            authService.register(username, email, password);
+            showMessage("register.info.registering", "message-info");
         } catch (Exception e) {
-            messageLabel.setText("Failed to send register request");
-            messageLabel.getStyleClass().clear();
-            messageLabel.getStyleClass().add("message-error");
+            showMessage("register.error.connection", "message-error");
         }
     }
     
     @FXML
     public void showLogin(ActionEvent event) {
         try {
-            navigationService.navigateToLogin(usernameField, webSocketClient);
+            navigationService.navigateToLogin(usernameField);
         } catch (Exception e) {
-            messageLabel.setText("Failed to load login view");
-            messageLabel.getStyleClass().clear();
-            messageLabel.getStyleClass().add("message-error");
+            showMessage("navigation.error.load.login", "message-error");
         }
     }
     
     private void handleAuthResponse(AuthMessage response) {
         Platform.runLater(() -> {
             if (response.getType() == AuthMessage.Type.REGISTER_RESPONSE) {
-                messageLabel.getStyleClass().clear();
                 if (response.isSuccess()) {
-                    messageLabel.setText("Registration successful. You can now login.");
-                    messageLabel.getStyleClass().add("message-success");
+                    showMessage("register.success", "message-success");
                 } else {
-                    messageLabel.setText(response.getMessage());
+                    // Use server's message or fallback
+                    String errorMessage = (response.getMessage() != null && !response.getMessage().isEmpty()) 
+                        ? response.getMessage() 
+                        : messageService.getMessage("register.error.failed");
+                    messageLabel.setText(errorMessage);
+                    messageLabel.getStyleClass().clear();
                     messageLabel.getStyleClass().add("message-error");
                 }
             }
         });
     }
     
-    public void setWebSocketClient(WebSocketClient webSocketClient) {
-        this.webSocketClient = webSocketClient;
+    /**
+     * Helper method to display messages
+     */
+    private void showMessage(String messageKey, String styleClass) {
+        messageLabel.setText(messageService.getMessage(messageKey));
+        messageLabel.getStyleClass().clear();
+        messageLabel.getStyleClass().add(styleClass);
+    }
+    
+    /**
+     * Registers this controller's message handler with the AuthenticationService.
+     * Called by NavigationService when this view is loaded.
+     */
+    public void registerMessageHandler() {
+        authService.setAuthResponseHandler(this::handleAuthResponse);
     }
 }

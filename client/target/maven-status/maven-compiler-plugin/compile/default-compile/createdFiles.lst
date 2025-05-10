@@ -1,6 +1,11 @@
+com/uninaswap/client/service/ValidationService.class
 com/uninaswap/client/controller/LoginController.class
+com/uninaswap/client/service/MessageService.class
+com/uninaswap/client/service/NavigationService.class
+com/uninaswap/client/service/ValidationService$ValidationResult.class
+com/uninaswap/client/UninaSwapApp.class
+com/uninaswap/client/controller/MainController.class
 com/uninaswap/client/util/WebSocketManager.class
 com/uninaswap/client/controller/RegisterController.class
 com/uninaswap/client/websocket/WebSocketClient.class
-com/uninaswap/client/service/NavigationService.class
-com/uninaswap/client/UninaSwapApp.class
+com/uninaswap/client/service/AuthenticationService.class

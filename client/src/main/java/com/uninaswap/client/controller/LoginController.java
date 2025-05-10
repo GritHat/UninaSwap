@@ -8,7 +8,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 
 import com.uninaswap.client.service.NavigationService;
-import com.uninaswap.client.websocket.WebSocketClient;
+import com.uninaswap.client.service.AuthenticationService;
+import com.uninaswap.client.service.ValidationService;
+import com.uninaswap.client.service.MessageService;
+import com.uninaswap.client.service.ValidationService.ValidationResult;
 import com.uninaswap.common.message.AuthMessage;
 
 public class LoginController {
@@ -17,28 +20,22 @@ public class LoginController {
     @FXML private PasswordField passwordField;
     @FXML private Label messageLabel;
     
-    private WebSocketClient webSocketClient;
-    private NavigationService navigationService;
+    private final NavigationService navigationService;
+    private final AuthenticationService authService;
+    private final ValidationService validationService;
+    private final MessageService messageService;
     
     public LoginController() {
         this.navigationService = NavigationService.getInstance();
+        this.authService = AuthenticationService.getInstance();
+        this.validationService = ValidationService.getInstance();
+        this.messageService = MessageService.getInstance();
     }
     
     @FXML
     public void initialize() {
-        // Only create a new WebSocketClient if we don't already have one
-        if (webSocketClient == null) {
-            webSocketClient = new WebSocketClient();
-            try {
-                webSocketClient.connect("ws://localhost:8080/auth");
-            } catch (Exception e) {
-                messageLabel.setText("Failed to connect to server");
-                messageLabel.getStyleClass().add("message-error");
-            }
-        }
-        
-        // Always update the message handler
-        webSocketClient.setMessageHandler(this::handleAuthResponse);
+        // Set message handler
+        authService.setAuthResponseHandler(this::handleAuthResponse);
     }
     
     @FXML
@@ -46,72 +43,69 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
         
-        if (username.isEmpty() || password.isEmpty()) {
-            messageLabel.setText("Please enter username and password");
-            messageLabel.getStyleClass().clear();
-            messageLabel.getStyleClass().add("message-error");
+        // Validate input
+        ValidationResult validationResult = validationService.validateLogin(username, password);
+        if (!validationResult.isValid()) {
+            showMessage(validationResult.getMessageKey(), "message-error");
             return;
         }
         
-        AuthMessage loginRequest = new AuthMessage();
-        loginRequest.setType(AuthMessage.Type.LOGIN_REQUEST);
-        loginRequest.setUsername(username);
-        loginRequest.setPassword(password);
-        
         try {
-            webSocketClient.sendMessage(loginRequest);
-            messageLabel.setText("Logging in...");
-            messageLabel.getStyleClass().clear();
-            messageLabel.getStyleClass().add("message-info");
+            authService.login(username, password);
+            showMessage("login.info.logging", "message-info");
         } catch (Exception e) {
-            messageLabel.setText("Failed to send login request");
-            messageLabel.getStyleClass().clear();
-            messageLabel.getStyleClass().add("message-error");
+            showMessage("login.error.connection", "message-error");
         }
     }
     
     @FXML
     public void showRegister(ActionEvent event) {
         try {
-            navigationService.navigateToRegister(usernameField, webSocketClient);
+            navigationService.navigateToRegister(usernameField);
         } catch (Exception e) {
-            messageLabel.setText("Failed to load register view");
-            messageLabel.getStyleClass().clear();
-            messageLabel.getStyleClass().add("message-error");
+            showMessage("navigation.error.load.register", "message-error");
         }
     }
     
     private void handleAuthResponse(AuthMessage response) {
         Platform.runLater(() -> {
-            messageLabel.getStyleClass().clear();
-            
             if (response.getType() == AuthMessage.Type.LOGIN_RESPONSE) {
                 if (response.isSuccess()) {
-                    messageLabel.setText("Login successful");
-                    messageLabel.getStyleClass().add("message-success");
+                    showMessage("login.success", "message-success");
                     
                     // Navigate to main dashboard on successful login
                     try {
-                        navigationService.navigateToMainDashboard(usernameField, webSocketClient);
+                        navigationService.navigateToMainDashboard(usernameField);
                     } catch (Exception e) {
-                        messageLabel.setText("Failed to load dashboard");
-                        messageLabel.getStyleClass().add("message-error");
+                        showMessage("navigation.error.load.dashboard", "message-error");
                     }
                 } else {
-                    messageLabel.setText(response.getMessage());
+                    // Use server's message or fallback
+                    String errorMessage = (response.getMessage() != null && !response.getMessage().isEmpty()) 
+                        ? response.getMessage() 
+                        : messageService.getMessage("login.error.failed");
+                    messageLabel.setText(errorMessage);
+                    messageLabel.getStyleClass().clear();
                     messageLabel.getStyleClass().add("message-error");
                 }
             }
         });
     }
     
-    public void setWebSocketClient(WebSocketClient webSocketClient) {
-        this.webSocketClient = webSocketClient;
-        
-        // When we get a WebSocketClient from elsewhere, always set our handler
-        if (webSocketClient != null) {
-            webSocketClient.setMessageHandler(this::handleAuthResponse);
-            System.out.println("Login controller: Set handler on existing WebSocketClient");
-        }
+    /**
+     * Helper method to display messages
+     */
+    private void showMessage(String messageKey, String styleClass) {
+        messageLabel.setText(messageService.getMessage(messageKey));
+        messageLabel.getStyleClass().clear();
+        messageLabel.getStyleClass().add(styleClass);
+    }
+
+    /**
+     * Registers this controller's message handler with the AuthenticationService.
+     * Called by NavigationService when this view is loaded.
+     */
+    public void registerMessageHandler() {
+        authService.setAuthResponseHandler(this::handleAuthResponse);
     }
 }

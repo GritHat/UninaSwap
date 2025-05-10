@@ -47,3 +47,72 @@
     -fx-alignment: center;
     -fx-padding: 10 0 10 0;
 }
+
+/* Dashboard Header */
+.header-bar {
+    background-color: #2c3e50;
+    -fx-background-color: #2c3e50;
+    -fx-text-fill: white;
+}
+
+.header-bar .label {
+    -fx-text-fill: white;
+}
+
+.header-bar .button {
+    background-color: #e74c3c;
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: #ecf0f1;
+    -fx-background-color: #ecf0f1;
+}
+
+.sidebar-header {
+    font-size: 16px;
+    font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-button {
+    background-color: transparent;
+    padding: 8 5 8 5;
+    min-width: 180;
+    -fx-background-color: transparent;
+    -fx-alignment: center-left;
+    -fx-padding: 8 5 8 5;
+    -fx-min-width: 180;
+}
+
+.sidebar-button:hover {
+    background-color: #d6dbdf;
+    -fx-background-color: #d6dbdf;
+}
+
+.sidebar-footer {
+    font-size: 12px;
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 12px;
+}
+
+/* Welcome Screen */
+.welcome-header {
+    font-size: 24px;
+    font-weight: bold;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+/* Status Bar */
+.status-bar {
+    background-color: #ecf0f1;
+    border-width: 1 0 0 0;
+    border-color: #bdc3c7;
+    -fx-background-color: #ecf0f1;
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color: #bdc3c7;
+}

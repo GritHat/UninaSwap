@@ -10,7 +10,6 @@ import javafx.event.ActionEvent;
 
 import com.uninaswap.client.controller.LoginController;
 import com.uninaswap.client.controller.RegisterController;
-import com.uninaswap.client.websocket.WebSocketClient;
 
 /**
  * Service class to handle navigation between screens.
@@ -35,7 +34,7 @@ public class NavigationService {
     /**
      * Navigate to the login screen
      */
-    public void navigateToLogin(Node sourceNode, WebSocketClient webSocketClient) throws IOException {
+    public void navigateToLogin(Node sourceNode) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         Parent loginView = loader.load();
         
@@ -44,15 +43,15 @@ public class NavigationService {
         stage.setTitle("UninaSwap - Login");
         stage.setScene(new Scene(loginView, 400, 300));
         
-        // Pass the WebSocketClient to the controller
+        // Register the controller's message handler
         LoginController controller = loader.getController();
-        controller.setWebSocketClient(webSocketClient);
+        controller.registerMessageHandler();
     }
     
     /**
      * Navigate to the register screen
      */
-    public void navigateToRegister(Node sourceNode, WebSocketClient webSocketClient) throws IOException {
+    public void navigateToRegister(Node sourceNode) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegisterView.fxml"));
         Parent registerView = loader.load();
         
@@ -60,25 +59,21 @@ public class NavigationService {
         stage.setTitle("UninaSwap - Register");
         stage.setScene(new Scene(registerView, 400, 350));
         
-        // Pass the WebSocketClient to the controller
+        // Register the controller's message handler
         RegisterController controller = loader.getController();
-        controller.setWebSocketClient(webSocketClient);
+        controller.registerMessageHandler();
     }
     
     /**
      * Navigate to the main dashboard screen
      */
-    public void navigateToMainDashboard(Node sourceNode, WebSocketClient webSocketClient) throws IOException {
+    public void navigateToMainDashboard(Node sourceNode) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
         Parent mainView = loader.load();
         
         Stage stage = (Stage) sourceNode.getScene().getWindow();
         stage.setTitle("UninaSwap - Dashboard");
         stage.setScene(new Scene(mainView, 800, 600));
-        
-        // If you have a dashboard controller, you can set the WebSocketClient here
-        // DashboardController controller = loader.getController();
-        // controller.setWebSocketClient(webSocketClient);
     }
     
     /**

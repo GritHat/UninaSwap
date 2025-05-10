@@ -47,7 +47,6 @@ public class MessageService {
         messageBundle = ResourceBundle.getBundle("i18n/messages", locale);
     }
     
-    
     /**
      * Get a message by key
      */
@@ -103,6 +102,7 @@ public class MessageService {
         
         // Dashboard messages
         fallbackMessages.put("dashboard.welcome", "Welcome to UninaSwap Dashboard");
+        fallbackMessages.put("dashboard.welcome.user", "Welcome, {0}");
         fallbackMessages.put("dashboard.status.ready", "Ready");
         fallbackMessages.put("dashboard.status.connected", "Connected");
         fallbackMessages.put("dashboard.status.loaded", "Dashboard loaded");

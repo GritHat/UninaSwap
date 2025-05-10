@@ -1,3 +1,4 @@
+com/uninaswap/client/service/UserSessionService.class
 com/uninaswap/client/service/ValidationService.class
 com/uninaswap/client/controller/LoginController.class
 com/uninaswap/client/service/MessageService.class

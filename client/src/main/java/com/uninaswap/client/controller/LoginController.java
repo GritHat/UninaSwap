@@ -3,14 +3,11 @@ package com.uninaswap.client.controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
-import javafx.stage.Stage;
 
+import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.websocket.WebSocketClient;
 import com.uninaswap.common.message.AuthMessage;
 
@@ -21,6 +18,11 @@ public class LoginController {
     @FXML private Label messageLabel;
     
     private WebSocketClient webSocketClient;
+    private NavigationService navigationService;
+    
+    public LoginController() {
+        this.navigationService = NavigationService.getInstance();
+    }
     
     @FXML
     public void initialize() {
@@ -31,7 +33,7 @@ public class LoginController {
                 webSocketClient.connect("ws://localhost:8080/auth");
             } catch (Exception e) {
                 messageLabel.setText("Failed to connect to server");
-                messageLabel.setStyle("-fx-text-fill: red;");
+                messageLabel.getStyleClass().add("message-error");
             }
         }
         
@@ -46,7 +48,8 @@ public class LoginController {
         
         if (username.isEmpty() || password.isEmpty()) {
             messageLabel.setText("Please enter username and password");
-            messageLabel.setStyle("-fx-text-fill: red;");
+            messageLabel.getStyleClass().clear();
+            messageLabel.getStyleClass().add("message-error");
             return;
         }
         
@@ -58,42 +61,45 @@ public class LoginController {
         try {
             webSocketClient.sendMessage(loginRequest);
             messageLabel.setText("Logging in...");
-            messageLabel.setStyle("-fx-text-fill: blue;");
+            messageLabel.getStyleClass().clear();
+            messageLabel.getStyleClass().add("message-info");
         } catch (Exception e) {
             messageLabel.setText("Failed to send login request");
-            messageLabel.setStyle("-fx-text-fill: red;");
+            messageLabel.getStyleClass().clear();
+            messageLabel.getStyleClass().add("message-error");
         }
     }
     
     @FXML
     public void showRegister(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegisterView.fxml"));
-            Parent registerView = loader.load();
-            
-            Scene currentScene = usernameField.getScene();
-            Stage stage = (Stage) currentScene.getWindow();
-            stage.setTitle("UninaSwap - Register");
-            stage.setScene(new Scene(registerView, 400, 350));
-            
-            RegisterController controller = loader.getController();
-            controller.setWebSocketClient(webSocketClient);
+            navigationService.navigateToRegister(usernameField, webSocketClient);
         } catch (Exception e) {
             messageLabel.setText("Failed to load register view");
-            messageLabel.setStyle("-fx-text-fill: red;");
+            messageLabel.getStyleClass().clear();
+            messageLabel.getStyleClass().add("message-error");
         }
     }
     
     private void handleAuthResponse(AuthMessage response) {
         Platform.runLater(() -> {
+            messageLabel.getStyleClass().clear();
+            
             if (response.getType() == AuthMessage.Type.LOGIN_RESPONSE) {
                 if (response.isSuccess()) {
                     messageLabel.setText("Login successful");
-                    messageLabel.setStyle("-fx-text-fill: green;");
-                    // TODO: Navigate to main application view
+                    messageLabel.getStyleClass().add("message-success");
+                    
+                    // Navigate to main dashboard on successful login
+                    try {
+                        navigationService.navigateToMainDashboard(usernameField, webSocketClient);
+                    } catch (Exception e) {
+                        messageLabel.setText("Failed to load dashboard");
+                        messageLabel.getStyleClass().add("message-error");
+                    }
                 } else {
                     messageLabel.setText(response.getMessage());
-                    messageLabel.setStyle("-fx-text-fill: red;");
+                    messageLabel.getStyleClass().add("message-error");
                 }
             }
         });

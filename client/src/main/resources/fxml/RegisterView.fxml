@@ -6,15 +6,16 @@
 
 <VBox spacing="10" alignment="CENTER" prefWidth="300" prefHeight="300"
       xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.uninaswap.client.controller.RegisterController">
+      fx:controller="com.uninaswap.client.controller.RegisterController"
+      stylesheets="@../css/styles.css">
       
    <padding>
       <Insets top="20" right="20" bottom="20" left="20" />
    </padding>
    
-   <Label text="UninaSwap Register" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+   <Label text="UninaSwap Register" styleClass="header-label" />
    
-   <GridPane vgap="10" hgap="10">
+   <GridPane styleClass="form-grid">
       <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
       <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
       
@@ -28,7 +29,7 @@
       <PasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
    </GridPane>
    
-   <HBox spacing="10" alignment="CENTER">
+   <HBox styleClass="button-container">
       <Button text="Register" onAction="#handleRegister" />
       <Button text="Back to Login" onAction="#showLogin" />
    </HBox>

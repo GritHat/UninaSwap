@@ -1,0 +1,49 @@
+/* Base Styles */
+.root {
+    font-family: "System";
+    font-size: 14px;
+    -fx-font-family: "System";
+    -fx-font-size: 14px;
+}
+
+/* Headers */
+.header-label {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10 0 15 0;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0 15 0;
+}
+
+/* Message Labels */
+.message-success {
+    -fx-text-fill: green;
+}
+
+.message-error {
+    -fx-text-fill: red;
+}
+
+.message-info {
+    -fx-text-fill: blue;
+}
+
+/* Form Controls */
+.form-container {
+    -fx-spacing: 10;
+    -fx-alignment: center;
+}
+
+.form-grid {
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+}
+
+/* Buttons */
+.button-container {
+    padding: 10 0 10 0;
+    -fx-spacing: 10;
+    -fx-alignment: center;
+    -fx-padding: 10 0 10 0;
+}

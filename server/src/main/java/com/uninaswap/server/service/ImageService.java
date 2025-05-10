@@ -50,6 +50,19 @@ public class ImageService {
     }
     
     /**
+     * Saves an image file to disk
+     * @param imageId The unique ID of the image
+     * @param extension The file extension (e.g., jpg, png)
+     * @param data The image data as a byte array
+     * @throws IOException If an I/O error occurs
+     */
+    public void saveImageFile(String imageId, String extension, byte[] data) throws IOException {
+        String filename = imageId + "." + extension;
+        Path path = Paths.get(uploadDir, filename);
+        Files.write(path, data);
+    }
+    
+    /**
      * Retrieves an image from disk as Base64
      * @param imageId The ID of the image to retrieve
      * @param format Image format

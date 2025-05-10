@@ -7,14 +7,22 @@ import com.uninaswap.common.message.ImageMessage;
 import javafx.scene.image.Image;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class ImageService {
     
@@ -76,6 +84,45 @@ public class ImageService {
         } catch (Exception e) {
             future.completeExceptionally(e);
         }
+        
+        return future;
+    }
+    
+    public CompletableFuture<String> uploadImageViaHttp(String username, File imageFile) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+        
+        // Create a thread for the upload to avoid blocking the UI
+        new Thread(() -> {
+            try {
+                // Prepare the HTTP client
+                HttpClient client = HttpClient.newHttpClient();
+                
+                // Create a simplified multipart form implementation
+                MultipartFormData formData = new MultipartFormData();
+                formData.addFormField("username", username);
+                formData.addFilePart("file", imageFile);
+                
+                // Create the request
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080/api/images/upload"))
+                    .header("Content-Type", "multipart/form-data; boundary=" + formData.getBoundary())
+                    .POST(formData.getBodyPublisher())
+                    .build();
+                
+                // Send the request
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                
+                // Process the response
+                if (response.statusCode() == 200) {
+                    future.complete(response.body());
+                } else {
+                    future.completeExceptionally(
+                        new IOException("Failed to upload image: " + response.body()));
+                }
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
+        }).start();
         
         return future;
     }
@@ -162,5 +209,61 @@ public class ImageService {
     // Clear the cache when needed
     public void clearCache() {
         imageCache.clear();
+    }
+    
+    // Helper class for multipart uploads
+    private static class MultipartFormData {
+        private final String boundary;
+        private final ByteArrayOutputStream baos;
+        
+        public MultipartFormData() {
+            // Create a unique boundary
+            this.boundary = UUID.randomUUID().toString();
+            this.baos = new ByteArrayOutputStream();
+        }
+        
+        public String getBoundary() {
+            return boundary;
+        }
+        
+        public void addFormField(String name, String value) throws IOException {
+            baos.write(("--" + boundary + "\r\n").getBytes(StandardCharsets.UTF_8));
+            baos.write(("Content-Disposition: form-data; name=\"" + name + "\"\r\n\r\n").getBytes(StandardCharsets.UTF_8));
+            baos.write((value + "\r\n").getBytes(StandardCharsets.UTF_8));
+        }
+        
+        public void addFilePart(String name, File file) throws IOException {
+            baos.write(("--" + boundary + "\r\n").getBytes(StandardCharsets.UTF_8));
+            
+            // Add file headers
+            baos.write(("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" 
+                        + file.getName() + "\"\r\n").getBytes(StandardCharsets.UTF_8));
+            
+            // Determine content type
+            String contentType = getContentType(file.getName());
+            baos.write(("Content-Type: " + contentType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8));
+            
+            // Copy file contents directly to output stream
+            Files.copy(file.toPath(), baos);
+            baos.write("\r\n".getBytes(StandardCharsets.UTF_8));
+        }
+        
+        private String getContentType(String filename) {
+            if (filename.toLowerCase().endsWith(".jpg") || filename.toLowerCase().endsWith(".jpeg")) {
+                return "image/jpeg";
+            } else if (filename.toLowerCase().endsWith(".png")) {
+                return "image/png";
+            } else {
+                return "application/octet-stream";
+            }
+        }
+        
+        public HttpRequest.BodyPublisher getBodyPublisher() throws IOException {
+            // Add the final boundary
+            baos.write(("--" + boundary + "--").getBytes(StandardCharsets.UTF_8));
+            
+            // Create body publisher from byte array
+            return HttpRequest.BodyPublishers.ofByteArray(baos.toByteArray());
+        }
     }
 }

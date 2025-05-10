@@ -247,10 +247,12 @@ public class ProfileController {
         // Show "saving" status
         showStatus("profile.save.inprogress", false);
         
-        // If a new image was selected, upload it first
+        // If a new image was selected, upload it first using HTTP
         if (tempSelectedImageFile != null) {
             ImageService imageService = ImageService.getInstance();
-            imageService.uploadImage(sessionService.getUsername(), tempSelectedImageFile)
+            
+            // Use HTTP upload instead of WebSocket
+            imageService.uploadImageViaHttp(sessionService.getUsername(), tempSelectedImageFile)
                 .thenAccept(imageId -> {
                     // Update the image path to the server-side path
                     tempProfileImagePath = imageId;

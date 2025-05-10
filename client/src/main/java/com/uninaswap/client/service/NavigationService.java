@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 
 import com.uninaswap.client.controller.LoginController;
 import com.uninaswap.client.controller.RegisterController;
+import com.uninaswap.client.controller.ProfileController;
 
 /**
  * Service class to handle navigation between screens.
@@ -74,6 +75,20 @@ public class NavigationService {
         Stage stage = (Stage) sourceNode.getScene().getWindow();
         stage.setTitle("UninaSwap - Dashboard");
         stage.setScene(new Scene(mainView, 800, 600));
+    }
+    
+    /**
+     * Navigate to the profile view within the content area of the main dashboard
+     */
+    public Parent loadProfileView() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProfileView.fxml"));
+        Parent profileView = loader.load();
+        
+        // Register the controller's message handler
+        ProfileController controller = loader.getController();
+        controller.registerMessageHandler();
+        
+        return profileView;
     }
     
     /**

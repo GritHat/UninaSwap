@@ -28,10 +28,11 @@ public class AuthenticationService {
         this.webSocketClient = WebSocketManager.getClient();
         try {
             if (!webSocketClient.isConnected()) {
-                webSocketClient.connect("ws://localhost:8080/auth");
+                // Connect to the unified endpoint instead of /auth
+                webSocketClient.connect("ws://localhost:8080/ws");
             }
         } catch (Exception e) {
-            System.err.println("Error connecting to authentication server: " + e.getMessage());
+            System.err.println("Error connecting to server: " + e.getMessage());
         }
     }
     
@@ -64,7 +65,7 @@ public class AuthenticationService {
      * Set message handler for auth responses
      */
     public void setAuthResponseHandler(Consumer<AuthMessage> handler) {
-        webSocketClient.setMessageHandler(handler);
+        webSocketClient.registerMessageHandler(AuthMessage.class, handler);
     }
     
     /**

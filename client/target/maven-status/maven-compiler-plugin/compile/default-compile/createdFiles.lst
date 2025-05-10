@@ -5,6 +5,8 @@ com/uninaswap/client/service/MessageService.class
 com/uninaswap/client/service/NavigationService.class
 com/uninaswap/client/service/ValidationService$ValidationResult.class
 com/uninaswap/client/UninaSwapApp.class
+com/uninaswap/client/service/ProfileService.class
+com/uninaswap/client/controller/ProfileController.class
 com/uninaswap/client/controller/MainController.class
 com/uninaswap/client/util/WebSocketManager.class
 com/uninaswap/client/controller/RegisterController.class

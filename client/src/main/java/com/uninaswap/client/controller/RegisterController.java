@@ -37,7 +37,7 @@ public class RegisterController {
     @FXML
     public void initialize() {
         // Set message handler
-        authService.setAuthResponseHandler(this::handleAuthResponse);
+        registerMessageHandler();
     }
     
     @FXML

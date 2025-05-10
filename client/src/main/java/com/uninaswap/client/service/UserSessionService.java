@@ -3,6 +3,8 @@ package com.uninaswap.client.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.uninaswap.common.message.AuthMessage;
+
 /**
  * Service for managing the current user's session throughout the application.
  */
@@ -11,6 +13,7 @@ public class UserSessionService {
     
     // Session data
     private String username;
+    private String email;
     private boolean loggedIn = false;
     private final Map<String, Object> sessionData = new HashMap<>();
     
@@ -29,11 +32,16 @@ public class UserSessionService {
     /**
      * Start a new user session after successful login
      */
-    public void startSession(String username) {
-        this.username = username;
+    public void startSession(AuthMessage response) {
+        this.username = response.getUsername();
+        this.email = response.getEmail();
+        this.sessionData.put("firstName", response.getFirstName());
+        this.sessionData.put("lastName", response.getLastName());
+        this.sessionData.put("bio", response.getBio());
+        this.sessionData.put("profileImagePath", response.getProfileImagePath());
         this.loggedIn = true;
         // Additional initialization can happen here
-        System.out.println("Session started for user: " + username);
+        System.out.println("Session started for user: " + username + " with email: " + email);
     }
     
     /**
@@ -41,6 +49,7 @@ public class UserSessionService {
      */
     public void endSession() {
         this.username = null;
+        this.email = null;
         this.loggedIn = false;
         this.sessionData.clear();
         System.out.println("Session ended");
@@ -60,6 +69,13 @@ public class UserSessionService {
         return username;
     }
     
+    /**
+     * Get the current email
+     */
+    public String getEmail() {
+        return email;
+    }
+
     /**
      * Store additional data in the session
      */

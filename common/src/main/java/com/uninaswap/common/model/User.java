@@ -7,6 +7,10 @@ public class User implements Serializable {
     private String username;
     private String email;
     private String password; // Store hashed password only
+    private String firstName;
+    private String lastName;
+    private String bio;
+    private String profileImagePath;
     
     public User() {}
     
@@ -47,5 +51,37 @@ public class User implements Serializable {
     
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public String getFirstName() {
+        return firstName;
+    }
+    
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    
+    public String getLastName() {
+        return lastName;
+    }
+    
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    
+    public String getBio() {
+        return bio;
+    }
+    
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+    
+    public String getProfileImagePath() {
+        return profileImagePath;
+    }
+    
+    public void setProfileImagePath(String profileImagePath) {
+        this.profileImagePath = profileImagePath;
     }
 }

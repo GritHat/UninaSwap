@@ -19,7 +19,19 @@ public class UserEntity {
     @Column(nullable = false)
     private String password;
     
-    // Getters and Setters
+    @Column(name = "first_name")
+    private String firstName;
+    
+    @Column(name = "last_name")
+    private String lastName;
+    
+    @Column(length = 500)
+    private String bio;
+    
+    @Column(name = "profile_image_path")
+    private String profileImagePath;
+    
+    // Original getters and setters
     public Long getId() {
         return id;
     }
@@ -50,5 +62,38 @@ public class UserEntity {
     
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    // New getters and setters
+    public String getFirstName() {
+        return firstName;
+    }
+    
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+    
+    public String getLastName() {
+        return lastName;
+    }
+    
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+    
+    public String getBio() {
+        return bio;
+    }
+    
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+    
+    public String getProfileImagePath() {
+        return profileImagePath;
+    }
+    
+    public void setProfileImagePath(String profileImagePath) {
+        this.profileImagePath = profileImagePath;
     }
 }

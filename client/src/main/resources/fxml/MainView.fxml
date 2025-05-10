@@ -36,6 +36,7 @@
          <Button text="Portfolio" styleClass="sidebar-button" onAction="#showPortfolio" />
          <Button text="Trade" styleClass="sidebar-button" onAction="#showTrade" />
          <Button text="Settings" styleClass="sidebar-button" onAction="#showSettings" />
+         <Button text="Profile" styleClass="sidebar-button" onAction="#showProfile" />
          <Region VBox.vgrow="ALWAYS" />
          <Separator />
          <Label text="UninaSwap v1.0" styleClass="sidebar-footer" />

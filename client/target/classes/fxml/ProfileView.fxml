@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<VBox spacing="15" alignment="TOP_CENTER" styleClass="profile-container"
+      xmlns="http://javafx.com/javafx/17" 
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.uninaswap.client.controller.ProfileController">
+      
+    <padding>
+        <Insets top="20" right="30" bottom="20" left="30" />
+    </padding>
+    
+    <Label text="User Profile" styleClass="header-label"/>
+    
+    <!-- Profile Image -->
+    <StackPane styleClass="profile-image-container">
+        <ImageView fx:id="profileImageView" fitHeight="150" fitWidth="150" preserveRatio="true">
+            <Image url="@../images/default_profile.png"/>
+        </ImageView>
+        <Button text="Change" fx:id="changeImageButton" onAction="#handleChangeImage" 
+                StackPane.alignment="BOTTOM_RIGHT" styleClass="image-change-button"/>
+    </StackPane>
+    
+    <!-- Form Fields -->
+    <GridPane hgap="10" vgap="15">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="100" prefWidth="120" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200" prefWidth="300" />
+        </columnConstraints>
+        
+        <!-- Username (non-editable) -->
+        <Label text="Username:" styleClass="field-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <TextField fx:id="usernameField" editable="false" styleClass="read-only-field" 
+                  GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                  
+        <!-- Email (non-editable) -->
+        <Label text="Email:" styleClass="field-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <TextField fx:id="emailField" editable="false" styleClass="read-only-field" 
+                  GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                  
+        <!-- First Name -->
+        <Label text="First Name:" styleClass="field-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <TextField fx:id="firstNameField" promptText="Enter first name" 
+                  GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                  
+        <!-- Last Name -->
+        <Label text="Last Name:" styleClass="field-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+        <TextField fx:id="lastNameField" promptText="Enter last name" 
+                  GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                  
+        <!-- Bio -->
+        <Label text="Bio:" styleClass="field-label" GridPane.rowIndex="4" GridPane.columnIndex="0" 
+               GridPane.valignment="TOP" />
+        <TextArea fx:id="bioField" promptText="Tell us about yourself..." wrapText="true"
+                 prefHeight="100" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+    </GridPane>
+    
+    <!-- Status message -->
+    <Label fx:id="statusLabel" styleClass="status-message" />
+    
+    <!-- Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Cancel" onAction="#handleCancel" styleClass="cancel-button" />
+        <Button text="Save Changes" onAction="#handleSave" styleClass="save-button" />
+    </HBox>
+</VBox>

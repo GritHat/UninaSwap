@@ -1,20 +1,24 @@
 package com.uninaswap.client.websocket;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import jakarta.websocket.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.uninaswap.common.message.AuthMessage;
+import com.uninaswap.common.message.Message;
 
 @ClientEndpoint
 public class WebSocketClient {
     
     private Session session;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private Consumer<AuthMessage> messageHandler;
+    
+    // Map of message handlers for different message types
+    private final Map<Class<? extends Message>, Consumer<Message>> messageHandlers = new HashMap<>();
     
     public void connect(String uri) throws Exception {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
@@ -42,13 +46,18 @@ public class WebSocketClient {
     @OnMessage
     public void onMessage(String message) {
         try {
-            System.out.println("CLIENT RECEIVED: " + message); // Add debug logging
-            AuthMessage authMessage = objectMapper.readValue(message, AuthMessage.class);
-            System.out.println("PARSED MESSAGE TYPE: " + authMessage.getType()); 
-            if (messageHandler != null) {
-                messageHandler.accept(authMessage);
+            System.out.println("CLIENT RECEIVED: " + message);
+            
+            // Deserialize to the base Message type
+            Message baseMessage = objectMapper.readValue(message, Message.class);
+            
+            // Find the appropriate handler based on the actual message type
+            Consumer<Message> handler = messageHandlers.get(baseMessage.getClass());
+            
+            if (handler != null) {
+                handler.accept(baseMessage);
             } else {
-                System.out.println("WARNING: No message handler registered");
+                System.out.println("WARNING: No handler registered for message type: " + baseMessage.getClass().getName());
             }
         } catch (Exception e) {
             System.out.println("ERROR parsing message: " + message);
@@ -56,13 +65,14 @@ public class WebSocketClient {
         }
     }
     
-    public CompletableFuture<Void> sendMessage(AuthMessage message) {
+    public <T extends Message> CompletableFuture<Void> sendMessage(T message) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         
         try {
             if (session != null && session.isOpen()) {
                 String jsonMessage = objectMapper.writeValueAsString(message);
-                System.out.println("SENDING: " + jsonMessage); // Add debug logging
+                System.out.println("SENDING: " + jsonMessage);
+                
                 session.getAsyncRemote().sendText(jsonMessage, result -> {
                     if (result.isOK()) {
                         System.out.println("Message sent successfully");
@@ -84,8 +94,14 @@ public class WebSocketClient {
         return future;
     }
     
-    public void setMessageHandler(Consumer<AuthMessage> messageHandler) {
-        this.messageHandler = messageHandler;
+    /**
+     * Register a handler for a specific message type
+     * @param messageType The class of the message type to handle
+     * @param handler The handler function for messages of this type
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends Message> void registerMessageHandler(Class<T> messageType, Consumer<T> handler) {
+        messageHandlers.put(messageType, message -> handler.accept((T) message));
     }
     
     public boolean isConnected() {

@@ -6,21 +6,20 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import com.uninaswap.server.websocket.AuthWebSocketHandler;
+import com.uninaswap.server.websocket.WebSocketMessageRouter;
 
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
+    private final WebSocketMessageRouter webSocketMessageRouter;
     
-    private final AuthWebSocketHandler authWebSocketHandler;
-    
-    public WebSocketConfig(AuthWebSocketHandler authWebSocketHandler) {
-        this.authWebSocketHandler = authWebSocketHandler;
+    public WebSocketConfig(WebSocketMessageRouter webSocketMessageRouter) {
+        this.webSocketMessageRouter = webSocketMessageRouter;
     }
     
     @Override
     public void registerWebSocketHandlers(@NonNull WebSocketHandlerRegistry registry) {
-        registry.addHandler(authWebSocketHandler, "/auth")
-                .setAllowedOrigins("*"); // In production, limit this to specific origins
+        // Use the router as the main entry point for all WebSocket messages
+        registry.addHandler(webSocketMessageRouter, "/ws").setAllowedOrigins("*");
     }
 }

@@ -1,17 +1,19 @@
 package com.uninaswap.common.message;
 
-public class AuthMessage extends Message {
+public class ProfileUpdateMessage extends Message {
+    
+    public ProfileUpdateMessage() {
+        super();
+        setMessageType("profile");
+    }
+    
     public enum Type {
-        LOGIN_REQUEST,
-        LOGIN_RESPONSE,
-        REGISTER_REQUEST,
-        REGISTER_RESPONSE
+        UPDATE_REQUEST,
+        UPDATE_RESPONSE
     }
     
     private Type type;
     private String username;
-    private String password;
-    private String email;
     private String firstName;
     private String lastName;
     private String bio;
@@ -19,12 +21,7 @@ public class AuthMessage extends Message {
     private boolean success;
     private String message;
     
-    public AuthMessage() {
-        super();
-        setMessageType("auth");
-    }
-    
-    // Getters and Setters
+    // Getters and setters
     public Type getType() {
         return type;
     }
@@ -41,26 +38,10 @@ public class AuthMessage extends Message {
         this.username = username;
     }
     
-    public String getPassword() {
-        return password;
-    }
-    
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getFirstName() {
         return firstName;
     }
-
+    
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -68,26 +49,27 @@ public class AuthMessage extends Message {
     public String getLastName() {
         return lastName;
     }
+    
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-
+    
     public String getBio() {
         return bio;
     }
-
+    
     public void setBio(String bio) {
         this.bio = bio;
     }
-
+    
     public String getProfileImagePath() {
         return profileImagePath;
     }
-
+    
     public void setProfileImagePath(String profileImagePath) {
         this.profileImagePath = profileImagePath;
     }
-
+    
     public boolean isSuccess() {
         return success;
     }

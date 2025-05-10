@@ -36,7 +36,7 @@ public class LoginController {
     @FXML
     public void initialize() {
         // Set message handler
-        authService.setAuthResponseHandler(this::handleAuthResponse);
+        registerMessageHandler();
     }
     
     @FXML
@@ -76,7 +76,7 @@ public class LoginController {
                     
                     // Start user session
                     UserSessionService sessionService = UserSessionService.getInstance();
-                    sessionService.startSession(response.getUsername());
+                    sessionService.startSession(response);
                     
                     // Navigate to main dashboard on successful login
                     try {

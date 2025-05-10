@@ -3,13 +3,15 @@ package com.uninaswap.client.controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
 import com.uninaswap.client.service.NavigationService;
-import com.uninaswap.client.service.AuthenticationService;
 import com.uninaswap.client.service.MessageService;
 import com.uninaswap.client.service.UserSessionService;
+
+import java.io.IOException;
 
 public class MainController {
 
@@ -19,13 +21,11 @@ public class MainController {
     @FXML private StackPane contentArea;
     
     private final NavigationService navigationService;
-    private final AuthenticationService authService;
     private final MessageService messageService;
     private final UserSessionService sessionService;
     
     public MainController() {
         this.navigationService = NavigationService.getInstance();
-        this.authService = AuthenticationService.getInstance();
         this.messageService = MessageService.getInstance();
         this.sessionService = UserSessionService.getInstance();
     }
@@ -86,6 +86,20 @@ public class MainController {
     public void showSettings(ActionEvent event) {
         statusLabel.setText(messageService.getMessage("dashboard.view.settings"));
         // TODO: Load settings content
+    }
+    
+    @FXML
+    public void showProfile(ActionEvent event) {
+        statusLabel.setText(messageService.getMessage("dashboard.view.profile"));
+        try {
+            Parent profileView = navigationService.loadProfileView();
+            
+            // Replace content area with profile view
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(profileView);
+        } catch (IOException e) {
+            statusLabel.setText(messageService.getMessage("dashboard.error.load.profile"));
+        }
     }
     
     /**

@@ -11,6 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uninaswap.common.message.AuthMessage;
 import com.uninaswap.common.model.User;
 import com.uninaswap.server.service.AuthService;
+import com.uninaswap.server.entity.UserEntity;
+
+import java.util.Optional;
 
 @Component
 public class AuthWebSocketHandler extends TextWebSocketHandler {
@@ -34,17 +37,26 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
             
             switch (authMessage.getType()) {
                 case LOGIN_REQUEST:
-                    boolean authenticated = authService.authenticate(
+                    Optional<UserEntity> authenticatedUser = authService.authenticateAndGetUser(
                         authMessage.getUsername(), 
                         authMessage.getPassword()
                     );
                     
+                    boolean authenticated = authenticatedUser.isPresent();
                     System.out.println("Authentication result for " + authMessage.getUsername() + ": " + authenticated);
                     
                     response.setType(AuthMessage.Type.LOGIN_RESPONSE);
-                    response.setUsername(authMessage.getUsername());
                     response.setSuccess(authenticated);
-                    response.setMessage(authenticated ? "Login successful" : "Invalid credentials");
+                    
+                    if (authenticated) {
+                        // Get user info from the authenticated user
+                        UserEntity user = authenticatedUser.get();
+                        response.setEmail(user.getEmail());
+                        response.setUsername(user.getUsername());
+                        response.setMessage("Login successful");
+                    } else {
+                        response.setMessage("Invalid credentials");
+                    }
                     break;
                     
                 case REGISTER_REQUEST:

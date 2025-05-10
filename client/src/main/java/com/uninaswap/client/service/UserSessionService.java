@@ -68,7 +68,16 @@ public class UserSessionService {
     }
     
     /**
-     * Retrieve data from the session
+     * Retrieve data from the session.
+     * <p>
+     * IMPORTANT: This method performs an unchecked cast. The caller is responsible for
+     * ensuring that the requested type matches the actual stored type. If types don't match,
+     * a ClassCastException will be thrown at runtime.
+     * 
+     * @param <T> The expected type of the value
+     * @param key The key to look up
+     * @return The value cast to the expected type, or null if not found
+     * @throws ClassCastException if the value cannot be cast to the expected type
      */
     @SuppressWarnings("unchecked")
     public <T> T get(String key) {

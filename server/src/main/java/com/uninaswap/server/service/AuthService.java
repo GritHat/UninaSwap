@@ -7,6 +7,8 @@ import com.uninaswap.common.model.User;
 import com.uninaswap.server.entity.UserEntity;
 import com.uninaswap.server.repository.UserRepository;
 
+import java.util.Optional;
+
 @Service
 public class AuthService {
     
@@ -34,9 +36,22 @@ public class AuthService {
         return true;
     }
     
-    public boolean authenticate(String username, String password) {
-        return userRepository.findByUsername(username)
-                .map(user -> passwordEncoder.matches(password, user.getPassword()))
-                .orElse(false);
+    /**
+     * Authenticate a user and return the user entity if successful
+     * @param username The username to authenticate
+     * @param password The password to verify
+     * @return Optional containing the user if authentication is successful, empty otherwise
+     */
+    public Optional<UserEntity> authenticateAndGetUser(String username, String password) {
+        Optional<UserEntity> userOpt = userRepository.findByUsername(username);
+        
+        if (userOpt.isPresent()) {
+            UserEntity user = userOpt.get();
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return Optional.of(user);
+            }
+        }
+        
+        return Optional.empty();
     }
 }

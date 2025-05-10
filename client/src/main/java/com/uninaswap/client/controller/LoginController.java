@@ -52,8 +52,12 @@ public class LoginController {
         }
         
         try {
-            authService.login(username, password);
             showMessage("login.info.logging", "message-info");
+            authService.login(username, password).whenComplete((_, exception) -> {
+                if (exception != null) {
+                    Platform.runLater(() -> showMessage("login.error.connection", "message-error"));
+                }
+            });
         } catch (Exception e) {
             showMessage("login.error.connection", "message-error");
         }

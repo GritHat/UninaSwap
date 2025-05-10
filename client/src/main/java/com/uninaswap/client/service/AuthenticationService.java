@@ -26,13 +26,18 @@ public class AuthenticationService {
     
     private AuthenticationService() {
         this.webSocketClient = WebSocketManager.getClient();
+    }
+
+    private boolean connectToAuthEndpoint() {
         try {
             if (!webSocketClient.isConnected()) {
                 // Connect to the unified endpoint instead of /auth
                 webSocketClient.connect("ws://localhost:8080/ws");
             }
+            return true;
         } catch (Exception e) {
             System.err.println("Error connecting to server: " + e.getMessage());
+            return false;
         }
     }
     
@@ -40,6 +45,8 @@ public class AuthenticationService {
      * Send login request to server
      */
     public CompletableFuture<Void> login(String username, String password) {
+        if (!connectToAuthEndpoint())
+            return CompletableFuture.failedFuture(new Exception("Failed to connect to authentication endpoint"));    
         AuthMessage loginRequest = new AuthMessage();
         loginRequest.setType(AuthMessage.Type.LOGIN_REQUEST);
         loginRequest.setUsername(username);
@@ -52,6 +59,8 @@ public class AuthenticationService {
      * Send registration request to server
      */
     public CompletableFuture<Void> register(String username, String email, String password) {
+        if (!connectToAuthEndpoint())
+            return CompletableFuture.failedFuture(new Exception("Failed to connect to authentication endpoint"));
         AuthMessage registerRequest = new AuthMessage();
         registerRequest.setType(AuthMessage.Type.REGISTER_REQUEST);
         registerRequest.setUsername(username);
@@ -73,12 +82,5 @@ public class AuthenticationService {
      */
     public WebSocketClient getWebSocketClient() {
         return webSocketClient;
-    }
-    
-    /**
-     * Check if WebSocket is connected
-     */
-    public boolean isConnected() {
-        return webSocketClient != null && webSocketClient.isConnected();
     }
 }

@@ -5,9 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
 
 import com.uninaswap.client.service.NavigationService;
+import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.MessageService;
 import com.uninaswap.client.service.UserSessionService;
 
@@ -19,15 +23,19 @@ public class MainController {
     @FXML private Label statusLabel;
     @FXML private Label connectionStatusLabel;
     @FXML private StackPane contentArea;
+    @FXML private ImageView headerProfileImageView;
+
     
     private final NavigationService navigationService;
     private final MessageService messageService;
     private final UserSessionService sessionService;
+    private final ImageService imageService;
     
     public MainController() {
         this.navigationService = NavigationService.getInstance();
         this.messageService = MessageService.getInstance();
         this.sessionService = UserSessionService.getInstance();
+        this.imageService = ImageService.getInstance();
     }
     
     @FXML
@@ -42,6 +50,13 @@ public class MainController {
             usernameLabel.setText(messageService.getMessage("dashboard.welcome.user", username));
         } else {
             usernameLabel.setText(messageService.getMessage("dashboard.welcome"));
+        }
+        String profileImagePath = sessionService.get("profileImagePath");
+        if (profileImagePath != null && !profileImagePath.isEmpty()) {
+            loadProfileImageInHeader(profileImagePath);
+        } else {
+            // Set default profile image
+            setDefaultProfileImage();
         }
     }
     
@@ -119,9 +134,46 @@ public class MainController {
     }
 
     /**
-     * Updates the displayed username
+     * Loads user profile image in the header
      */
-    public void setUsername(String username) {
-        usernameLabel.setText("Welcome, " + username);
+    private void loadProfileImageInHeader(String imagePath) {
+        imageService.fetchImage(imagePath)
+            .thenAccept(image -> {
+                Platform.runLater(() -> {
+                    headerProfileImageView.setImage(image);
+                    
+                    // Apply circular clip to the image
+                    Circle clip = new Circle(16, 16, 16); // 32/2=16
+                    headerProfileImageView.setClip(clip);
+                });
+            })
+            .exceptionally(ex -> {
+                // If loading fails, set default image
+                System.err.println("Failed to load profile image: " + ex.getMessage());
+                Platform.runLater(this::setDefaultProfileImage);
+                return null;
+            });
+    }
+
+    /**
+     * Sets a default profile image when no custom image is available
+     */
+    private void setDefaultProfileImage() {
+        // Load default image from resources
+        Image defaultImage = new Image(getClass().getResourceAsStream("/images/default_profile.png"));
+        headerProfileImageView.setImage(defaultImage);
+        
+        // Apply circular clip
+        Circle clip = new Circle(16, 16, 16);
+        headerProfileImageView.setClip(clip);
+    }
+
+    /**
+     * Update profile image when profile is changed elsewhere
+     */
+    public void updateProfileImage(String imagePath) {
+        if (imagePath != null && !imagePath.isEmpty()) {
+            loadProfileImageInHeader(imagePath);
+        }
     }
 }

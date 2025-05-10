@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -258,6 +259,9 @@ public class ProfileController {
                     
                     // Now save the profile with the new image ID
                     saveProfileWithImage();
+                    
+                    // Notify other parts of the application about the image change
+                    notifyProfileImageChange(tempProfileImagePath);
                 })
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
@@ -298,6 +302,33 @@ public class ProfileController {
                 });
                 return null;
             });
+    }
+    
+    private void notifyProfileImageChange(String newImagePath) {
+        // Find the main controller and update its header image
+        Parent root = profileImageView.getScene().getRoot();
+        MainController mainController = findMainController(root);
+        if (mainController != null) {
+            mainController.updateProfileImage(newImagePath);
+        }
+    }
+
+    private MainController findMainController(Parent root) {
+        if (root.getId() != null && root.getId().equals("mainView")) {
+            return (MainController) root.getProperties().get("controller");
+        }
+        
+        // Look through the scene graph to find the main controller
+        for (Node node : root.getChildrenUnmodifiable()) {
+            if (node instanceof Parent) {
+                MainController controller = findMainController((Parent) node);
+                if (controller != null) {
+                    return controller;
+                }
+            }
+        }
+        
+        return null;
     }
     
     @FXML

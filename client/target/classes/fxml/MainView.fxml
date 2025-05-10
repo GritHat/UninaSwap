@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.*?>
 
 <BorderPane prefWidth="800" prefHeight="600" 
       xmlns="http://javafx.com/javafx/24" 
@@ -20,6 +21,12 @@
          <Label text="UninaSwap Dashboard" styleClass="header-label" />
          <Region HBox.hgrow="ALWAYS" />
          <Label fx:id="usernameLabel" text="Welcome, User" />
+         <StackPane styleClass="profile-image-container" maxHeight="32" maxWidth="32" minHeight="32" minWidth="32">
+            <ImageView fx:id="headerProfileImageView" fitHeight="32" fitWidth="32" preserveRatio="true" />
+            <StackPane.margin>
+               <Insets left="5" right="5" />
+            </StackPane.margin>
+         </StackPane>
          <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout" />
       </HBox>
    </top>

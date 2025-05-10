@@ -31,7 +31,6 @@ public class ImageCropperController {
     private Consumer<Image> cropCallback;
     private double circleDiameter;
     
-    @SuppressWarnings("unused")
     @FXML
     public void initialize() {
         // Setup drag functionality - apply to the StackPane instead of the image
@@ -47,19 +46,19 @@ public class ImageCropperController {
         cropCircle.setMouseTransparent(true);
         
         // Setup zoom functionality
-        zoomSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+        zoomSlider.valueProperty().addListener((_, _, newVal) -> {
             double scale = newVal.doubleValue();
             sourceImageView.setScaleX(scale);
             sourceImageView.setScaleY(scale);
         });
         
         // Ensure the crop circle size is tracked and stays centered
-        cropperContainer.widthProperty().addListener((obs, oldVal, newVal) -> {
+        cropperContainer.widthProperty().addListener((_, _, _) -> {
             updateCropCircleSize();
             centerCropOverlay();
         });
         
-        cropperContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
+        cropperContainer.heightProperty().addListener((_, _, _) -> {
             updateCropCircleSize();
             centerCropOverlay();
         });
@@ -72,7 +71,7 @@ public class ImageCropperController {
         StackPane.setAlignment(cropOverlay, javafx.geometry.Pos.CENTER);
         
         // Ensure the window size is reasonable
-        cropperContainer.sceneProperty().addListener((obs, oldScene, newScene) -> {
+        cropperContainer.sceneProperty().addListener((_, _, newScene) -> {
             if (newScene != null && newScene.getWindow() != null) {
                 Stage stage = (Stage) newScene.getWindow();
                 // Set reasonable size limits

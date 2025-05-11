@@ -45,11 +45,10 @@ public class ImageService {
     
     /**
      * Upload an image via HTTP for profile pictures
-     * @param username The username of the user uploading the image
      * @param imageFile The image file to upload
      * @return A CompletableFuture with the image path on success
      */
-    public CompletableFuture<String> uploadImageViaHttp(String username, File imageFile) {
+    public CompletableFuture<String> uploadImageViaHttp(File imageFile) {
         CompletableFuture<String> future = new CompletableFuture<>();
         
         // Create a thread for the upload to avoid blocking the UI
@@ -60,7 +59,6 @@ public class ImageService {
                 
                 // Create a simplified multipart form implementation
                 MultipartFormData formData = new MultipartFormData();
-                formData.addFormField("username", username);
                 formData.addFilePart("file", imageFile);
                 
                 // Create the request
@@ -174,6 +172,7 @@ public class ImageService {
             return boundary;
         }
         
+        @SuppressWarnings("unused")
         public void addFormField(String name, String value) throws IOException {
             baos.write(("--" + boundary + "\r\n").getBytes(StandardCharsets.UTF_8));
             baos.write(("Content-Disposition: form-data; name=\"" + name + "\"\r\n\r\n").getBytes(StandardCharsets.UTF_8));

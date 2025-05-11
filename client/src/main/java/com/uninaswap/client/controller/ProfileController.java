@@ -253,7 +253,7 @@ public class ProfileController {
         if (tempSelectedImageFile != null) {
             ImageService imageService = ImageService.getInstance();
             
-            imageService.uploadImageViaHttp(sessionService.getUser().getUsername(), tempSelectedImageFile)
+            imageService.uploadImageViaHttp(tempSelectedImageFile)
                 .thenAccept(imageId -> {
                     // Update the image path to the server-side path
                     tempProfileImagePath = imageId;

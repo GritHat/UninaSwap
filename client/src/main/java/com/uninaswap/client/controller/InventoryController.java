@@ -3,7 +3,6 @@ package com.uninaswap.client.controller;
 import com.uninaswap.client.service.ItemService;
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.LocaleService;
-import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.common.dto.ItemDTO;
 import com.uninaswap.common.enums.ItemCondition;
@@ -57,7 +56,6 @@ public class InventoryController {
     private final ItemService itemService = ItemService.getInstance();
     private final ImageService imageService = ImageService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
-    private final UserSessionService userSessionService = UserSessionService.getInstance();
     
     @FXML
     public void initialize() {
@@ -219,8 +217,7 @@ public class InventoryController {
                 
                 // If we have a new image, upload it first using HTTP
                 if (selectedImageFile != null) {
-                    String username = userSessionService.getUser().getUsername();
-                    imageService.uploadImageViaHttp(username, selectedImageFile)
+                    imageService.uploadImageViaHttp(selectedImageFile)
                         .thenAccept(imagePath -> {
                             updatedItem.setImagePath(imagePath);
                             saveItem(updatedItem);

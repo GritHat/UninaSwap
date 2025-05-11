@@ -34,7 +34,7 @@ public abstract class ListingDTO implements Serializable {
     public ListingDTO() {}
     
     // Define abstract methods to be implemented by subclasses
-    public abstract String getListingType();
+    public abstract String getListingTypeValue();
     public abstract String getPriceInfo();
     
     // Getters and setters

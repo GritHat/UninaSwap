@@ -33,12 +33,15 @@ public class UserSessionService {
      * Start a new user session after successful login
      */
     public void startSession(AuthMessage response) {
-        // use this to store additional user data not in UserDTO
-        //this.sessionData.put("firstName", response.getFirstName());
         this.user = response.getUser();
         this.loggedIn = true;
-        // Additional initialization can happen here
-        System.out.println("Session started for user: " + user.getUsername() + " with email: " + user.getEmail());
+        
+        // Store the authentication token
+        if (response.getToken() != null) {
+            this.sessionData.put("token", response.getToken());
+        }
+        
+        System.out.println("Session started for user: " + user.getUsername());
     }
     
     /**
@@ -101,5 +104,12 @@ public class UserSessionService {
      */
     public void remove(String key) {
         sessionData.remove(key);
+    }
+    
+    /**
+     * Get the authentication token
+     */
+    public String getToken() {
+        return (String) sessionData.get("token");
     }
 }

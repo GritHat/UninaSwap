@@ -80,7 +80,7 @@ public class ListingService {
         ListingMessage message = new ListingMessage();
         message.setType(ListingMessage.Type.CREATE_LISTING_REQUEST);
         message.setListing(listing);
-        message.setListingType(listing.getListingType());
+        message.setListingTypeValue(listing.getListingTypeValue());
         
         this.futureToComplete = future;
         
@@ -101,7 +101,7 @@ public class ListingService {
         ListingMessage message = new ListingMessage();
         message.setType(ListingMessage.Type.UPDATE_LISTING_REQUEST);
         message.setListing(listing);
-        message.setListingType(listing.getListingType());
+        message.setListingTypeValue(listing.getListingTypeValue());
         
         this.futureToComplete = future;
         

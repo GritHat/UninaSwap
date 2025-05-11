@@ -136,7 +136,7 @@
                             <columns>
                                 <TableColumn fx:id="nameColumn" text="%item.name.column" prefWidth="150" />
                                 <TableColumn fx:id="conditionColumn" text="%item.condition.column" prefWidth="100" />
-                                <TableColumn fx:id="stockColumn" text="%item.stock.column" prefWidth="80" />
+                                <TableColumn fx:id="availableQuantityColumn" text="%item.available.column" prefWidth="80" />
                             </columns>
                         </TableView>
                         <HBox spacing="10" alignment="CENTER_LEFT">

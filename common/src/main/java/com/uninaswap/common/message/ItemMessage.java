@@ -22,10 +22,6 @@ public class ItemMessage extends Message {
     private String errorMessage;
     private boolean success;
     
-    // For image upload
-    private String imageBase64;
-    private String imageName;
-    
     // Default constructor
     public ItemMessage() {
         setMessageType("ITEM");
@@ -70,21 +66,5 @@ public class ItemMessage extends Message {
     
     public void setSuccess(boolean success) {
         this.success = success;
-    }
-    
-    public String getImageBase64() {
-        return imageBase64;
-    }
-    
-    public void setImageBase64(String imageBase64) {
-        this.imageBase64 = imageBase64;
-    }
-    
-    public String getImageName() {
-        return imageName;
-    }
-    
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
     }
 }

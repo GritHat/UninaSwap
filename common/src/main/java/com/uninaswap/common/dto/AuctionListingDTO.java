@@ -10,13 +10,17 @@ import com.uninaswap.common.enums.Currency;
  */
 public class AuctionListingDTO extends ListingDTO {
     
+    private static final long serialVersionUID = 1L;
+    
     private BigDecimal startingPrice;
     private BigDecimal reservePrice;
     private Currency currency;
+    private LocalDateTime startTime; // Added missing startTime field
     private LocalDateTime endTime;
     private BigDecimal minimumBidIncrement;
     private BigDecimal currentHighestBid;
     private UserDTO highestBidder;
+    private int durationInDays; // Added missing durationInDays field
     
     // Default constructor
     public AuctionListingDTO() {
@@ -24,7 +28,7 @@ public class AuctionListingDTO extends ListingDTO {
     }
     
     @Override
-    public String getListingType() {
+    public String getListingTypeValue() {
         return "AUCTION";
     }
     
@@ -88,6 +92,14 @@ public class AuctionListingDTO extends ListingDTO {
         this.currency = currency;
     }
     
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+    
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+    
     public LocalDateTime getEndTime() {
         return endTime;
     }
@@ -118,5 +130,13 @@ public class AuctionListingDTO extends ListingDTO {
     
     public void setHighestBidder(UserDTO highestBidder) {
         this.highestBidder = highestBidder;
+    }
+    
+    public int getDurationInDays() {
+        return durationInDays;
+    }
+    
+    public void setDurationInDays(int durationInDays) {
+        this.durationInDays = durationInDays;
     }
 }

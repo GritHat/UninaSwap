@@ -1,5 +1,6 @@
 package com.uninaswap.server.websocket;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -11,7 +12,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.AuthMessage;
 import com.uninaswap.server.service.AuthService;
+import com.uninaswap.server.service.SessionService;
 import com.uninaswap.server.entity.UserEntity;
+import com.uninaswap.server.mapper.UserMapper;
 
 import java.util.Optional;
 
@@ -19,10 +22,15 @@ import java.util.Optional;
 public class AuthWebSocketHandler extends TextWebSocketHandler {
     
     private final AuthService authService;
+    private final SessionService sessionService;
+    private final UserMapper userMapper;
     private final ObjectMapper objectMapper = new ObjectMapper();
     
-    public AuthWebSocketHandler(AuthService authService) {
+    @Autowired
+    public AuthWebSocketHandler(AuthService authService, SessionService sessionService, UserMapper userMapper) {
         this.authService = authService;
+        this.sessionService = sessionService;
+        this.userMapper = userMapper;
     }
     
     @Override
@@ -36,7 +44,7 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
             AuthMessage response = new AuthMessage();
             
             switch (authMessage.getType()) {
-                case LOGIN_REQUEST: processUserAuthentication(authMessage, response); break;
+                case LOGIN_REQUEST: processUserAuthentication(authMessage, response, session); break;
                 case REGISTER_REQUEST: processUserRegistration(authMessage, response); break;
                 default:
                     response.setSuccess(false);
@@ -74,24 +82,27 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
         response.setMessage(registered ? "Registration successful" : "Username or email already exists");
     }
 
-    private void processUserAuthentication(AuthMessage authMessage, AuthMessage response) {
-        Optional<UserEntity> authenticatedUser = authService.authenticateAndGetUser(
+    private void processUserAuthentication(AuthMessage authMessage, AuthMessage response, WebSocketSession session) {
+        Optional<UserEntity> userOpt = authService.authenticateAndGetUser(
             authMessage.getUsername(), 
             authMessage.getPassword()
         );
         
-        boolean authenticated = authenticatedUser.isPresent();
-        System.out.println("Authentication result for " + authMessage.getUsername() + ": " + authenticated);
-        
-        response.setType(AuthMessage.Type.LOGIN_RESPONSE);
-        response.setSuccess(authenticated);
-        
-        if (authenticated) {
-            // Get user info from the authenticated user
-            UserEntity user = authenticatedUser.get();
+        if (userOpt.isPresent()) {
+            UserEntity user = userOpt.get();
+            
+            // Create authenticated session and get token
+            String token = sessionService.createAuthenticatedSession(session, user);
+            
+            response.setType(AuthMessage.Type.LOGIN_RESPONSE);
+            response.setSuccess(true);
+            response.setMessage("Authentication successful");
             setUserDetails(response, user);
+            response.setToken(token);
         } else {
-            response.setMessage("Invalid credentials");
+            response.setType(AuthMessage.Type.LOGIN_RESPONSE);
+            response.setSuccess(false);
+            response.setMessage("Invalid username or password");
         }
     }
 
@@ -102,7 +113,7 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
         response.setLastName(user.getLastName());
         response.setBio(user.getBio());
         response.setProfileImagePath(user.getProfileImagePath());
-        response.setUser(user.toDTO());
+        response.setUser(userMapper.toDto(user));
         response.setMessage("Login successful");
     }
 
@@ -113,6 +124,7 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
+        sessionService.removeSession(session);
         System.out.println("WebSocket connection closed: " + session.getId() + ", status: " + status);
     }
 }

@@ -31,7 +31,7 @@ public class TradeListingDTO extends ListingDTO {
     }
     
     @Override
-    public String getListingType() {
+    public String getListingTypeValue() {
         return "TRADE";
     }
     

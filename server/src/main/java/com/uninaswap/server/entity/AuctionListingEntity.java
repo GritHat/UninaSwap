@@ -25,6 +25,9 @@ public class AuctionListingEntity extends ListingEntity {
     private Currency currency;
     
     @Column(nullable = false)
+    private LocalDateTime startTime; // Added missing startTime field
+    
+    @Column(nullable = false)
     private LocalDateTime endTime;
     
     @Column(nullable = false, precision = 10, scale = 2)
@@ -37,9 +40,13 @@ public class AuctionListingEntity extends ListingEntity {
     @JoinColumn(name = "highest_bidder_id")
     private UserEntity highestBidder;
     
+    @Column(nullable = false)
+    private boolean hasBids = false;
+    
     // Default constructor
     public AuctionListingEntity() {
         super();
+        this.startTime = LocalDateTime.now(); // Initialize start time to now by default
     }
     
     // Constructor with required fields
@@ -54,9 +61,69 @@ public class AuctionListingEntity extends ListingEntity {
         this.startingPrice = startingPrice;
         this.reservePrice = reservePrice;
         this.currency = currency;
+        this.startTime = LocalDateTime.now(); // Set start time to now
         this.endTime = endTime;
         this.minimumBidIncrement = minimumBidIncrement;
-        this.currentHighestBid = startingPrice;
+        // Do not set current highest bid yet - it will be null until first bid
+    }
+    
+    /**
+     * Add an item to this listing with quantity
+     * @param item The item to add
+     * @param quantity Number of this item to include
+     */
+    public void addItem(ItemEntity item, int quantity) {
+        ListingItemEntity listingItem = new ListingItemEntity(this, item, quantity);
+        this.getListingItems().add(listingItem);
+    }
+    
+    /**
+     * Place a bid on this auction
+     * @param bidder The user placing the bid
+     * @param bidAmount The bid amount
+     * @return true if bid was successful, false otherwise
+     */
+    public boolean placeBid(UserEntity bidder, BigDecimal bidAmount) {
+        // Validate bid amount
+        if (bidAmount == null || bidAmount.compareTo(getMinimumNextBid()) < 0) {
+            return false;
+        }
+        
+        // Check if auction has ended
+        if (isEnded()) {
+            return false;
+        }
+        
+        // Update bid info
+        this.currentHighestBid = bidAmount;
+        this.highestBidder = bidder;
+        this.hasBids = true;
+        return true;
+    }
+    
+    /**
+     * Get the minimum amount required for the next bid
+     * @return The minimum valid next bid amount
+     */
+    @Transient
+    public BigDecimal getMinimumNextBid() {
+        if (currentHighestBid != null) {
+            return currentHighestBid.add(minimumBidIncrement);
+        } else {
+            return startingPrice;
+        }
+    }
+    
+    /**
+     * Check if the reserve price has been met by bids
+     * @return true if reserve is met or no reserve set
+     */
+    @Transient
+    public boolean isReserveMet() {
+        if (reservePrice == null) {
+            return true;
+        }
+        return currentHighestBid != null && currentHighestBid.compareTo(reservePrice) >= 0;
     }
     
     @Override
@@ -106,6 +173,14 @@ public class AuctionListingEntity extends ListingEntity {
         this.currency = currency;
     }
     
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+    
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+    
     public LocalDateTime getEndTime() {
         return endTime;
     }
@@ -136,5 +211,13 @@ public class AuctionListingEntity extends ListingEntity {
     
     public void setHighestBidder(UserEntity highestBidder) {
         this.highestBidder = highestBidder;
+    }
+    
+    public boolean getHasBids() {
+        return hasBids;
+    }
+    
+    public void setHasBids(boolean hasBids) {
+        this.hasBids = hasBids;
     }
 }

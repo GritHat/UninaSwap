@@ -21,7 +21,7 @@ public class ListingMessage extends Message {
     }
     
     private Type type;
-    private String listingType;  // "SELL", "TRADE", "GIFT", "AUCTION"
+    private String listingTypeValue;  // "SELL", "TRADE", "GIFT", "AUCTION"
     private ListingDTO listing;
     private List<ListingDTO> listings;
     private String errorMessage;
@@ -48,12 +48,12 @@ public class ListingMessage extends Message {
         this.type = type;
     }
     
-    public String getListingType() {
-        return listingType;
+    public String getListingTypeValue() {
+        return listingTypeValue;
     }
     
-    public void setListingType(String listingType) {
-        this.listingType = listingType;
+    public void setListingTypeValue(String listingTypeValue) {
+        this.listingTypeValue = listingTypeValue;
     }
     
     public ListingDTO getListing() {

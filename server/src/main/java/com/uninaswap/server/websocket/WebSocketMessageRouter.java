@@ -1,6 +1,9 @@
 package com.uninaswap.server.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uninaswap.server.entity.UserEntity;
+import com.uninaswap.server.service.SessionService;
+
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -17,18 +20,25 @@ public class WebSocketMessageRouter extends TextWebSocketHandler {
     
     private final ObjectMapper objectMapper;
     private final Map<String, TextWebSocketHandler> handlerMap = new HashMap<>();
+    private final SessionService sessionService;
     
     public WebSocketMessageRouter(
             ObjectMapper objectMapper,
             AuthWebSocketHandler authHandler,
             ProfileWebSocketHandler profileHandler,
-            ImageWebSocketHandler imageHandler) {
+            ImageWebSocketHandler imageHandler,
+            ItemWebSocketHandler itemHandler,
+            ListingWebSocketHandler listingHandler,
+            SessionService sessionService) {
         this.objectMapper = objectMapper;
+        this.sessionService = sessionService;
         
         // Register handlers for different message types
         handlerMap.put("auth", authHandler);
         handlerMap.put("profile", profileHandler);
         handlerMap.put("image", imageHandler);
+        handlerMap.put("ITEM", itemHandler);
+        handlerMap.put("LISTING", listingHandler);
     }
     
     @Override
@@ -40,6 +50,18 @@ public class WebSocketMessageRouter extends TextWebSocketHandler {
             // First parse as JsonNode to extract the message type
             JsonNode jsonNode = objectMapper.readTree(payload);
             JsonNode typeNode = jsonNode.get("messageType");
+            
+            // Check for token-based authentication
+            JsonNode tokenNode = jsonNode.get("token");
+            if (tokenNode != null && tokenNode.isTextual()) {
+                String token = tokenNode.asText();
+                UserEntity user = sessionService.validateToken(token);
+                
+                if (user != null) {
+                    // Update session authentication if token is valid
+                    sessionService.createAuthenticatedSession(session, user);
+                }
+            }
             
             if (typeNode == null || !typeNode.isTextual()) {
                 System.err.println("Invalid message format: missing or invalid 'messageType'");

@@ -33,4 +33,10 @@ public interface ListingRepository extends JpaRepository<ListingEntity, String> 
     // Find listings by specific class type (by discriminator value)
     @Query("SELECT l FROM ListingEntity l WHERE TYPE(l) = :type AND l.status = :status")
     List<ListingEntity> findByTypeAndStatus(Class<?> type, ListingStatus status);
+
+    // Find all listings by creator ID
+    List<ListingEntity> findByCreatorId(Long creatorId);
+
+    // Find all active listings with pagination
+    Page<ListingEntity> findByStatus(ListingStatus status, Pageable pageable);
 }

@@ -26,10 +26,12 @@
             <VBox>
                 <TableView fx:id="itemsTable" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="nameColumn" text="%item.name.column" prefWidth="200" />
-                        <TableColumn fx:id="conditionColumn" text="%item.condition.column" prefWidth="120" />
-                        <TableColumn fx:id="stockColumn" text="%item.stock.column" prefWidth="80" />
-                        <TableColumn fx:id="categoryColumn" text="%item.category.column" prefWidth="120" />
+                        <TableColumn fx:id="nameColumn" text="%item.name.column" prefWidth="170" />
+                        <TableColumn fx:id="conditionColumn" text="%item.condition.column" prefWidth="100" />
+                        <TableColumn fx:id="categoryColumn" text="%item.category.column" prefWidth="100" />
+                        <TableColumn fx:id="stockColumn" text="%item.stock.column" prefWidth="70" />
+                        <TableColumn fx:id="reservedColumn" text="%item.reserved.column" prefWidth="70" />
+                        <TableColumn fx:id="availableColumn" text="%item.available.column" prefWidth="70" />
                     </columns>
                 </TableView>
                 <HBox spacing="10" alignment="CENTER_RIGHT" styleClass="button-bar">

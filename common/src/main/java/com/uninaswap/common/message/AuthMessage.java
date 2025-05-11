@@ -21,6 +21,7 @@ public class AuthMessage extends Message {
     private boolean success;
     private String message;
     private UserDTO user;
+    private String token;
     
     public AuthMessage() {
         super();
@@ -113,5 +114,13 @@ public class AuthMessage extends Message {
     
     public void setUser(UserDTO user) {
         this.user = user;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

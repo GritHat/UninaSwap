@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<DialogPane xmlns="http://javafx.com/javafx/24" 
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.uninaswap.client.controller.ItemDialogController">
+    <content>
+        <GridPane hgap="10" vgap="10">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="100" prefWidth="120" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="200" prefWidth="300" />
+            </columnConstraints>
+            
+            <!-- Name field -->
+            <Label text="%item.name.label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+            <TextField fx:id="nameField" promptText="%item.name.prompt" 
+                     GridPane.rowIndex="0" GridPane.columnIndex="1" />
+            
+            <!-- Description field -->
+            <Label text="%item.description.label" GridPane.rowIndex="1" GridPane.columnIndex="0" 
+                   GridPane.valignment="TOP" />
+            <TextArea fx:id="descriptionField" promptText="%item.description.prompt" 
+                    prefRowCount="3" wrapText="true"
+                    GridPane.rowIndex="1" GridPane.columnIndex="1" />
+            
+            <!-- Condition field -->
+            <Label text="%item.condition.label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+            <ComboBox fx:id="conditionComboBox" prefWidth="200" 
+                    GridPane.rowIndex="2" GridPane.columnIndex="1" />
+            
+            <!-- Category field -->
+            <Label text="%item.category.label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+            <TextField fx:id="categoryField" promptText="%item.category.prompt" 
+                     GridPane.rowIndex="3" GridPane.columnIndex="1" />
+            
+            <!-- Brand field -->
+            <Label text="%item.brand.label" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+            <TextField fx:id="brandField" promptText="%item.brand.prompt" 
+                     GridPane.rowIndex="4" GridPane.columnIndex="1" />
+            
+            <!-- Model field -->
+            <Label text="%item.model.label" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+            <TextField fx:id="modelField" promptText="%item.model.prompt" 
+                     GridPane.rowIndex="5" GridPane.columnIndex="1" />
+            
+            <!-- Year field -->
+            <Label text="%item.year.label" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+            <Spinner fx:id="yearSpinner" editable="true"
+                   GridPane.rowIndex="6" GridPane.columnIndex="1" />
+            
+            <!-- Stock field -->
+            <Label text="%item.stock.label" GridPane.rowIndex="7" GridPane.columnIndex="0" />
+            <Spinner fx:id="stockSpinner" editable="true"
+                   GridPane.rowIndex="7" GridPane.columnIndex="1" />
+            
+            <!-- Available quantity -->
+            <Label text="%item.available.label" GridPane.rowIndex="8" GridPane.columnIndex="0" />
+            <Label fx:id="availableValueLabel" styleClass="quantity-value" 
+                 GridPane.rowIndex="8" GridPane.columnIndex="1" />
+            
+            <!-- Reserved quantity -->
+            <Label text="%item.reserved.label" GridPane.rowIndex="9" GridPane.columnIndex="0" />
+            <Label fx:id="reservedValueLabel" styleClass="quantity-value" 
+                 GridPane.rowIndex="9" GridPane.columnIndex="1" />
+            
+            <!-- Image selection -->
+            <Label text="%item.image.label" GridPane.rowIndex="10" GridPane.columnIndex="0" />
+            <HBox spacing="10" GridPane.rowIndex="10" GridPane.columnIndex="1">
+                <Button fx:id="imageButton" text="%item.image.select" onAction="#handleSelectImage" />
+                <ImageView fx:id="imagePreview" fitHeight="100" fitWidth="100" preserveRatio="true" />
+            </HBox>
+        </GridPane>
+    </content>
+</DialogPane>

@@ -8,14 +8,17 @@ import java.util.function.Consumer;
 
 import jakarta.websocket.*;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.uninaswap.common.message.Message;
+import com.uninaswap.client.service.UserSessionService;
 
 @ClientEndpoint
 public class WebSocketClient {
     
     private Session session;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule()).configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     
     // Map of message handlers for different message types
     private final Map<Class<? extends Message>, Consumer<Message>> messageHandlers = new HashMap<>();
@@ -69,6 +72,12 @@ public class WebSocketClient {
         CompletableFuture<Void> future = new CompletableFuture<>();
         
         try {
+            // Add authentication token to message if available
+            UserSessionService sessionService = UserSessionService.getInstance();
+            if (sessionService.isLoggedIn() && sessionService.getToken() != null) {
+                message.setToken(sessionService.getToken());
+            }
+            
             if (session != null && session.isOpen()) {
                 String jsonMessage = objectMapper.writeValueAsString(message);
                 System.out.println("SENDING: " + jsonMessage);

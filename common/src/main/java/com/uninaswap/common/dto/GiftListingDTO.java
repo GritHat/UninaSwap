@@ -16,7 +16,7 @@ public class GiftListingDTO extends ListingDTO {
     }
     
     @Override
-    public String getListingType() {
+    public String getListingTypeValue() {
         return "GIFT";
     }
     

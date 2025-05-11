@@ -16,6 +16,7 @@ public class ItemDTO implements Serializable {
     private Integer yearOfProduction;
     private Integer stockQuantity;
     private Integer availableQuantity;
+    private Long ownerId;
     
     // Default constructor
     public ItemDTO() {}
@@ -107,5 +108,13 @@ public class ItemDTO implements Serializable {
     
     public void setAvailableQuantity(Integer availableQuantity) {
         this.availableQuantity = availableQuantity;
+    }
+    
+    public Long getOwnerId() {
+        return ownerId;
+    }
+    
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 }

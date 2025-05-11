@@ -12,7 +12,7 @@ public class SellListingDTO extends ListingDTO {
     public SellListingDTO() {}
     
     @Override
-    public String getListingType() {
+    public String getListingTypeValue() {
         return "SELL";
     }
     

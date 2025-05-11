@@ -18,9 +18,10 @@ import javafx.stage.Stage;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListingCreationController {
 
@@ -43,7 +44,7 @@ public class ListingCreationController {
     private TableColumn<ItemDTO, String> conditionColumn;
     
     @FXML
-    private TableColumn<ItemDTO, Integer> stockColumn;
+    private TableColumn<ItemDTO, Integer> availableQuantityColumn;
     
     @FXML
     private Spinner<Integer> quantitySpinner;
@@ -128,6 +129,7 @@ public class ListingCreationController {
     private final UserSessionService sessionService = UserSessionService.getInstance();
     
     private final List<ListingItemDTO> selectedItems = new ArrayList<>();
+    private final Map<String, Integer> tempReservedQuantities = new HashMap<>();
     
     @FXML
     public void initialize() {
@@ -154,7 +156,12 @@ public class ListingCreationController {
         // Configure bindings for trade listing controls
         referencePriceField.disableProperty().bind(acceptMoneyOffersCheckBox.selectedProperty().not());
         tradeCurrencyComboBox.disableProperty().bind(acceptMoneyOffersCheckBox.selectedProperty().not());
-        
+        acceptMixedOffersCheckBox.disableProperty().bind(acceptMoneyOffersCheckBox.selectedProperty().not());
+        acceptMoneyOffersCheckBox.selectedProperty().addListener((_, _, newValue) -> {
+            if (!newValue) {
+                acceptMixedOffersCheckBox.setSelected(false);
+            }
+        });
         // Load user's items
         itemsTable.setItems(itemService.getUserItemsList());
     }
@@ -166,8 +173,14 @@ public class ListingCreationController {
         conditionColumn.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getCondition().getDisplayName()));
         
-        stockColumn.setCellValueFactory(cellData -> 
-            Bindings.createObjectBinding(() -> cellData.getValue().getAvailableQuantity()));
+        availableQuantityColumn.setCellValueFactory(cellData -> {
+            ItemDTO item = cellData.getValue();
+            int actualAvailable = item.getAvailableQuantity();
+            int tempReserved = tempReservedQuantities.getOrDefault(item.getId(), 0);
+            int effectiveAvailable = Math.max(0, actualAvailable - tempReserved);
+            
+            return Bindings.createObjectBinding(() -> effectiveAvailable);
+        });
         
         // Configure selection listener
         itemsTable.getSelectionModel().selectedItemProperty().addListener((_, _, newSelection) -> {
@@ -206,8 +219,21 @@ public class ListingCreationController {
             {
                 removeButton.setOnAction(_ -> {
                     ListingItemDTO item = getTableView().getItems().get(getIndex());
+                    
+                    // Return the quantity to available
+                    String itemId = item.getItemId();
+                    int currentReserved = tempReservedQuantities.getOrDefault(itemId, 0);
+                    int newReserved = Math.max(0, currentReserved - item.getQuantity());
+                    
+                    if (newReserved > 0) {
+                        tempReservedQuantities.put(itemId, newReserved);
+                    } else {
+                        tempReservedQuantities.remove(itemId);
+                    }
+                    
                     selectedItems.remove(item);
                     updateSelectedItemsTable();
+                    refreshItemsTable(); // Refresh to show updated available quantities
                 });
             }
             
@@ -230,21 +256,63 @@ public class ListingCreationController {
         selectedItemsTable.setItems(FXCollections.observableArrayList(selectedItems));
     }
     
+    private void refreshItemsTable() {
+        // Get the current selection to restore it after refresh
+        ItemDTO selectedItem = itemsTable.getSelectionModel().getSelectedItem();
+        
+        // Store current items
+        List<ItemDTO> currentItems = new ArrayList<>(itemsTable.getItems());
+        
+        // Refresh the table by re-setting the same items
+        // This forces the cell factories to recalculate their values
+        itemsTable.setItems(null);
+        itemsTable.setItems(FXCollections.observableArrayList(currentItems));
+        
+        // Force refresh of table cells
+        itemsTable.refresh();
+        
+        // Restore selection if possible
+        if (selectedItem != null) {
+            for (ItemDTO item : itemsTable.getItems()) {
+                if (item.getId().equals(selectedItem.getId())) {
+                    itemsTable.getSelectionModel().select(item);
+                    break;
+                }
+            }
+        }
+    }
+    
     @FXML
     private void handleAddItem() {
         ItemDTO selectedItem = itemsTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             int quantity = quantitySpinner.getValue();
+            String itemId = selectedItem.getId();
+            int effectivelyAvailable = selectedItem.getAvailableQuantity();
+            
+            if (quantity > effectivelyAvailable) {
+                AlertHelper.showWarningAlert(
+                    localeService.getMessage("listing.create.error.title"),
+                    localeService.getMessage("listing.create.error.header"),
+                    localeService.getMessage("listing.create.error.quantity.exceeded")
+                );
+                return;
+            }
             
             // Check if already in the list
             boolean exists = false;
             for (ListingItemDTO listingItem : selectedItems) {
-                if (listingItem.getItemId().equals(selectedItem.getId())) {
+                if (listingItem.getItemId().equals(itemId)) {
                     // Update quantity instead
                     int newQuantity = listingItem.getQuantity() + quantity;
-                    if (newQuantity <= selectedItem.getAvailableQuantity()) {
+                    if (newQuantity <= effectivelyAvailable) {
                         listingItem.setQuantity(newQuantity);
                         exists = true;
+                        updateSelectedItemsTable();
+                        selectedItemsTable.refresh();
+                        // Update temporary reservation
+                        int currentReserved = tempReservedQuantities.getOrDefault(itemId, 0);
+                        tempReservedQuantities.put(itemId, currentReserved + quantity);
                     } else {
                         AlertHelper.showWarningAlert(
                             localeService.getMessage("listing.create.error.title"),
@@ -260,14 +328,19 @@ public class ListingCreationController {
             if (!exists) {
                 // Create new listing item
                 ListingItemDTO listingItem = new ListingItemDTO();
-                listingItem.setItemId(selectedItem.getId());
+                listingItem.setItemId(itemId);
                 listingItem.setItemName(selectedItem.getName());
                 listingItem.setItemImagePath(selectedItem.getImagePath());
                 listingItem.setQuantity(quantity);
                 selectedItems.add(listingItem);
+                
+                // Track temporary reservation
+                int currentReserved = tempReservedQuantities.getOrDefault(itemId, 0);
+                tempReservedQuantities.put(itemId, currentReserved + quantity);
             }
             
             updateSelectedItemsTable();
+            refreshItemsTable(); // Refresh to show updated available quantities
         }
     }
     
@@ -308,7 +381,7 @@ public class ListingCreationController {
                 );
                 
                 // Close the window
-                ((Stage) createButton.getScene().getWindow()).close();
+                //((Stage) createButton.getScene().getWindow()).close();
             })
             .exceptionally(ex -> {
                 AlertHelper.showErrorAlert(
@@ -497,15 +570,13 @@ public class ListingCreationController {
                 default: days = 7;
             }
             
-            LocalDateTime endTime = LocalDateTime.now().plus(days, ChronoUnit.DAYS);
-            
             AuctionListingDTO listing = new AuctionListingDTO();
             setupCommonFields(listing);
             
             listing.setStartingPrice(startingPrice);
             listing.setReservePrice(reservePrice);
             listing.setCurrency(auctionCurrencyComboBox.getValue());
-            listing.setEndTime(endTime);
+            listing.setDurationInDays(days); // Set the duration in days
             listing.setMinimumBidIncrement(bidIncrement);
             
             return listing;
@@ -534,6 +605,8 @@ public class ListingCreationController {
     
     @FXML
     private void handleCancel() {
+        // Clear temporary reservations before closing
+        tempReservedQuantities.clear();
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
     }

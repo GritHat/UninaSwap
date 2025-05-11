@@ -78,7 +78,7 @@ public class NavigationService {
         
         Stage stage = (Stage) sourceNode.getScene().getWindow();
         stage.setTitle("UninaSwap - Dashboard");
-        stage.setScene(new Scene(mainView, 800, 640));
+        stage.setScene(new Scene(mainView, 1600, 900));
     }
     
     /**
@@ -104,7 +104,7 @@ public class NavigationService {
         loader.setResources(localeService.getResourceBundle());
         return loader.load();
     }
-    
+
     /**
      * Load the listing creation view
      */

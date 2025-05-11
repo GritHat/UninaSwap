@@ -23,5 +23,11 @@
 hs_err_pid*
 replay_pid*
 
+# Maven build files
+client/target/*
+common/target/*
+server/target/*
+
 # Server Upload
 server/uploads/*
+

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/24" 
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.uninaswap.client.controller.ListingCreationController"
+            styleClass="listing-creation-view">
+            
+    <top>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="%listing.create.title" styleClass="section-title"/>
+            
+            <GridPane hgap="10" vgap="10">
+                <Label text="%listing.title.label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                <TextField fx:id="titleField" promptText="%listing.title.prompt" 
+                           GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                
+                <Label text="%listing.description.label" GridPane.rowIndex="1" GridPane.columnIndex="0" 
+                       GridPane.valignment="TOP" />
+                <TextArea fx:id="descriptionArea" promptText="%listing.description.prompt" 
+                          GridPane.rowIndex="1" GridPane.columnIndex="1" prefRowCount="3" />
+            </GridPane>
+        </VBox>
+    </top>
+    
+    <center>
+        <TabPane fx:id="listingTypeTabs" tabClosingPolicy="UNAVAILABLE">
+            <Tab fx:id="sellTab" text="%listing.type.sell">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="%listing.sell.price.label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                        <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                            <TextField fx:id="sellPriceField" prefWidth="100" promptText="%listing.sell.price.prompt" />
+                            <ComboBox fx:id="sellCurrencyComboBox" prefWidth="80" />
+                        </HBox>
+                    </GridPane>
+                </VBox>
+            </Tab>
+            
+            <Tab fx:id="tradeTab" text="%listing.type.trade">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    
+                    <TitledPane text="%listing.trade.offers.title" expanded="true">
+                        <VBox spacing="10">
+                            <CheckBox fx:id="acceptMoneyOffersCheckBox" text="%listing.trade.money.offers" />
+                            <HBox spacing="10">
+                                <Label text="%listing.trade.reference.price.label" />
+                                <TextField fx:id="referencePriceField" prefWidth="100" 
+                                           promptText="%listing.trade.reference.price.prompt" />
+                                <ComboBox fx:id="tradeCurrencyComboBox" prefWidth="80" />
+                            </HBox>
+                            
+                            <CheckBox fx:id="acceptMixedOffersCheckBox" text="%listing.trade.mixed.offers" />
+                            <CheckBox fx:id="acceptOtherOffersCheckBox" text="%listing.trade.other.offers" />
+                        </VBox>
+                    </TitledPane>
+                    
+                    <TitledPane text="%listing.trade.desired.categories.title" expanded="true">
+                        <VBox spacing="10">
+                            <Label text="%listing.trade.categories.label" />
+                            <TextField fx:id="categoriesField" promptText="%listing.trade.categories.prompt" />
+                        </VBox>
+                    </TitledPane>
+                </VBox>
+            </Tab>
+            
+            <Tab fx:id="giftTab" text="%listing.type.gift">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    
+                    <CheckBox fx:id="pickupOnlyCheckBox" text="%listing.gift.pickup.only" />
+                    <CheckBox fx:id="allowThankYouOffersCheckBox" text="%listing.gift.thank.you.offers" selected="true" />
+                    
+                    <Label text="%listing.gift.restrictions.label" />
+                    <TextArea fx:id="restrictionsArea" promptText="%listing.gift.restrictions.prompt" prefRowCount="3" />
+                </VBox>
+            </Tab>
+            
+            <Tab fx:id="auctionTab" text="%listing.type.auction">
+                <VBox spacing="10">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                    
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="%listing.auction.starting.price.label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                        <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                            <TextField fx:id="startingPriceField" prefWidth="100" 
+                                       promptText="%listing.auction.starting.price.prompt" />
+                            <ComboBox fx:id="auctionCurrencyComboBox" prefWidth="80" />
+                        </HBox>
+                        
+                        <Label text="%listing.auction.reserve.price.label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                        <TextField fx:id="reservePriceField" promptText="%listing.auction.reserve.price.prompt" 
+                                   GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                        
+                        <Label text="%listing.auction.duration.label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                        <ComboBox fx:id="durationComboBox" prefWidth="150" 
+                                  GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                        
+                        <Label text="%listing.auction.bid.increment.label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                        <TextField fx:id="bidIncrementField" promptText="%listing.auction.bid.increment.prompt" 
+                                   GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                    </GridPane>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </center>
+    
+    <bottom>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            
+            <TitledPane text="%listing.items.title" expanded="true">
+                <SplitPane dividerPositions="0.5">
+                    <VBox spacing="5">
+                        <Label text="%listing.items.available.title" styleClass="subsection-title" />
+                        <TableView fx:id="itemsTable" prefHeight="200">
+                            <columns>
+                                <TableColumn fx:id="nameColumn" text="%item.name.column" prefWidth="150" />
+                                <TableColumn fx:id="conditionColumn" text="%item.condition.column" prefWidth="100" />
+                                <TableColumn fx:id="stockColumn" text="%item.stock.column" prefWidth="80" />
+                            </columns>
+                        </TableView>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="%listing.items.quantity.label" />
+                            <Spinner fx:id="quantitySpinner" prefWidth="80" />
+                            <Button fx:id="addItemButton" text="%button.add" onAction="#handleAddItem" disable="true" />
+                        </HBox>
+                    </VBox>
+                    
+                    <VBox spacing="5">
+                        <Label text="%listing.items.selected.title" styleClass="subsection-title" />
+                        <TableView fx:id="selectedItemsTable" prefHeight="200">
+                            <columns>
+                                <TableColumn fx:id="selectedNameColumn" text="%item.name.column" prefWidth="150" />
+                                <TableColumn fx:id="selectedQuantityColumn" text="%item.quantity.column" prefWidth="80" />
+                                <TableColumn fx:id="selectedActionColumn" text="%item.action.column" prefWidth="80" />
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </SplitPane>
+            </TitledPane>
+            
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button fx:id="createButton" text="%button.create" onAction="#handleCreateListing" styleClass="primary-button" />
+                <Button fx:id="cancelButton" text="%button.cancel" onAction="#handleCancel" />
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

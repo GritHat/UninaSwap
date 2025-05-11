@@ -10,7 +10,7 @@ import javafx.scene.control.PasswordField;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.AuthenticationService;
 import com.uninaswap.client.service.ValidationService;
-import com.uninaswap.client.service.MessageService;
+import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.ValidationService.ValidationResult;
 import com.uninaswap.common.message.AuthMessage;
 import com.uninaswap.client.service.UserSessionService;
@@ -24,13 +24,13 @@ public class LoginController {
     private final NavigationService navigationService;
     private final AuthenticationService authService;
     private final ValidationService validationService;
-    private final MessageService messageService;
+    private final LocaleService localeService;
     
     public LoginController() {
         this.navigationService = NavigationService.getInstance();
         this.authService = AuthenticationService.getInstance();
         this.validationService = ValidationService.getInstance();
-        this.messageService = MessageService.getInstance();
+        this.localeService = LocaleService.getInstance();
     }
     
     @FXML
@@ -92,7 +92,7 @@ public class LoginController {
                     // Use server's message or fallback
                     String errorMessage = (response.getMessage() != null && !response.getMessage().isEmpty()) 
                         ? response.getMessage() 
-                        : messageService.getMessage("login.error.failed");
+                        : localeService.getMessage("login.error.failed");
                     messageLabel.setText(errorMessage);
                     messageLabel.getStyleClass().clear();
                     messageLabel.getStyleClass().add("message-error");
@@ -105,7 +105,7 @@ public class LoginController {
      * Helper method to display messages
      */
     private void showMessage(String messageKey, String styleClass) {
-        messageLabel.setText(messageService.getMessage(messageKey));
+        messageLabel.setText(localeService.getMessage(messageKey));
         messageLabel.getStyleClass().clear();
         messageLabel.getStyleClass().add(styleClass);
     }

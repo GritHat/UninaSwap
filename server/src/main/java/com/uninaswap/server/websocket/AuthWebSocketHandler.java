@@ -102,6 +102,7 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
         response.setLastName(user.getLastName());
         response.setBio(user.getBio());
         response.setProfileImagePath(user.getProfileImagePath());
+        response.setUser(user.toDTO());
         response.setMessage("Login successful");
     }
 

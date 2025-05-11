@@ -36,12 +36,13 @@ public class ItemService {
         ItemMessage message = new ItemMessage();
         message.setType(ItemMessage.Type.GET_ITEMS_REQUEST);
         
+        // Set the future to complete when response arrives
+        this.futureToComplete = future;
+        
         webSocketClient.sendMessage(message)
-            .thenRun(() -> {
-                // Message sent, wait for response in handleItemMessage
-            })
             .exceptionally(ex -> {
                 future.completeExceptionally(ex);
+                this.futureToComplete = null; // Reset on exception
                 return null;
             });
         
@@ -56,12 +57,13 @@ public class ItemService {
         message.setType(ItemMessage.Type.ADD_ITEM_REQUEST);
         message.setItem(item);
         
+        // Set the future to complete when response arrives
+        this.futureToComplete = future;
+        
         webSocketClient.sendMessage(message)
-            .thenRun(() -> {
-                // Message sent, wait for response in handleItemMessage
-            })
             .exceptionally(ex -> {
                 future.completeExceptionally(ex);
+                this.futureToComplete = null; // Reset on exception
                 return null;
             });
         
@@ -76,12 +78,13 @@ public class ItemService {
         message.setType(ItemMessage.Type.UPDATE_ITEM_REQUEST);
         message.setItem(item);
         
+        // Set the future to complete when response arrives
+        this.futureToComplete = future;
+        
         webSocketClient.sendMessage(message)
-            .thenRun(() -> {
-                // Message sent, wait for response in handleItemMessage
-            })
             .exceptionally(ex -> {
                 future.completeExceptionally(ex);
+                this.futureToComplete = null; // Reset on exception
                 return null;
             });
         
@@ -99,33 +102,13 @@ public class ItemService {
         item.setId(itemId);
         message.setItem(item);
         
-        webSocketClient.sendMessage(message)
-            .thenRun(() -> {
-                // Message sent, wait for response in handleItemMessage
-            })
-            .exceptionally(ex -> {
-                future.completeExceptionally(ex);
-                return null;
-            });
-        
-        return future;
-    }
-    
-    // Upload item image
-    public CompletableFuture<String> uploadItemImage(String base64Image, String fileName) {
-        CompletableFuture<String> future = new CompletableFuture<>();
-        
-        ItemMessage message = new ItemMessage();
-        message.setType(ItemMessage.Type.UPLOAD_IMAGE_REQUEST);
-        message.setImageBase64(base64Image);
-        message.setImageName(fileName);
+        // Set the future to complete when response arrives
+        this.futureToComplete = future;
         
         webSocketClient.sendMessage(message)
-            .thenRun(() -> {
-                // Message sent, wait for response in handleItemMessage
-            })
             .exceptionally(ex -> {
                 future.completeExceptionally(ex);
+                this.futureToComplete = null; // Reset on exception
                 return null;
             });
         
@@ -159,6 +142,7 @@ public class ItemService {
     private CompletableFuture<?> futureToComplete;
     private Consumer<ItemMessage> messageCallback;
     
+    @SuppressWarnings("unchecked")
     private void handleItemMessage(ItemMessage message) {
         switch (message.getType()) {
             case GET_ITEMS_RESPONSE:
@@ -197,9 +181,55 @@ public class ItemService {
                     }
                 });
                 break;
+                
+            case UPDATE_ITEM_RESPONSE:
+                Platform.runLater(() -> {
+                    if (message.isSuccess()) {
+                        // Update the item in the list
+                        for (int i = 0; i < userItems.size(); i++) {
+                            if (userItems.get(i).getId().equals(message.getItem().getId())) {
+                                userItems.set(i, message.getItem());
+                                break;
+                            }
+                        }
+                        
+                        if (futureToComplete != null) {
+                            ((CompletableFuture<ItemDTO>) futureToComplete).complete(message.getItem());
+                            futureToComplete = null;
+                        }
+                    } else {
+                        if (futureToComplete != null) {
+                            futureToComplete.completeExceptionally(
+                                new Exception("Failed to update item: " + message.getErrorMessage()));
+                            futureToComplete = null;
+                        }
+                    }
+                });
+                break;
+                
+            case DELETE_ITEM_RESPONSE:
+                Platform.runLater(() -> {
+                    if (message.isSuccess()) {
+                        // Remove the item from the list
+                        userItems.removeIf(item -> item.getId().equals(message.getItem().getId()));
+                        
+                        if (futureToComplete != null) {
+                            ((CompletableFuture<Boolean>) futureToComplete).complete(true);
+                            futureToComplete = null;
+                        }
+                    } else {
+                        if (futureToComplete != null) {
+                            futureToComplete.completeExceptionally(
+                                new Exception("Failed to delete item: " + message.getErrorMessage()));
+                            futureToComplete = null;
+                        }
+                    }
+                });
+                break;
+                
             default:
                 System.out.println("Unknown item message type: " + message.getType());
-            // Handle other message types similarly...
+                break;
         }
         
         // Call any registered callback

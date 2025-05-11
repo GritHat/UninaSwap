@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,9 +22,10 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import com.uninaswap.client.service.NavigationService;
-import com.uninaswap.client.service.MessageService;
+import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.service.ProfileService;
+import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.ProfileUpdateMessage;
@@ -41,7 +41,7 @@ public class ProfileController {
     @FXML private Label statusLabel;
     
     private final NavigationService navigationService;
-    private final MessageService messageService;
+    private final LocaleService localeService;
     private final UserSessionService sessionService;
     private final ProfileService profileService;
     
@@ -50,7 +50,7 @@ public class ProfileController {
     
     public ProfileController() {
         this.navigationService = NavigationService.getInstance();
-        this.messageService = MessageService.getInstance();
+        this.localeService = LocaleService.getInstance();
         this.sessionService = UserSessionService.getInstance();
         this.profileService = new ProfileService();
     }
@@ -100,16 +100,16 @@ public class ProfileController {
     
     private void loadUserProfile() {
         // Set non-editable fields
-        usernameField.setText(sessionService.getUsername());
-        emailField.setText(sessionService.getEmail());
+        usernameField.setText(sessionService.getUser().getUsername());
+        emailField.setText(sessionService.getUser().getEmail());
         
         // Set editable fields
-        firstNameField.setText(sessionService.get("firstName"));
-        lastNameField.setText(sessionService.get("lastName"));
-        bioField.setText(sessionService.get("bio"));
+        firstNameField.setText(sessionService.getUser().getFirstName());
+        lastNameField.setText(sessionService.getUser().getLastName());
+        bioField.setText(sessionService.getUser().getBio());
         
         // Set profile image
-        String imagePath = sessionService.get("profileImagePath");
+        String imagePath = sessionService.getUser().getProfileImagePath();
         if (imagePath != null && !imagePath.isEmpty()) {
             ImageService.getInstance().fetchImage(imagePath)
                 .thenAccept(image -> {
@@ -166,11 +166,12 @@ public class ProfileController {
         try {
             // Load the cropper FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ImageCropperView.fxml"));
+            loader.setResources(localeService.getResourceBundle());
             Parent cropperView = loader.load();
             
             // Create dialog
             Stage cropperStage = new Stage();
-            cropperStage.setTitle("Crop Profile Image");
+            //cropperStage.setTitle("Crop Profile Image");
             cropperStage.initModality(Modality.APPLICATION_MODAL);
             cropperStage.initOwner(profileImageView.getScene().getWindow());
             
@@ -252,11 +253,10 @@ public class ProfileController {
         if (tempSelectedImageFile != null) {
             ImageService imageService = ImageService.getInstance();
             
-            imageService.uploadImageViaHttp(sessionService.getUsername(), tempSelectedImageFile)
+            imageService.uploadImageViaHttp(sessionService.getUser().getUsername(), tempSelectedImageFile)
                 .thenAccept(imageId -> {
                     // Update the image path to the server-side path
                     tempProfileImagePath = imageId;
-                    
                     // Now save the profile with the new image ID
                     saveProfileWithImage();
                     
@@ -279,11 +279,11 @@ public class ProfileController {
     
     private void saveProfileWithImage() {
         // Update session with form values
-        sessionService.put("firstName", firstNameField.getText());
-        sessionService.put("lastName", lastNameField.getText());
-        sessionService.put("bio", bioField.getText());
-        sessionService.put("profileImagePath", tempProfileImagePath);
-        
+        sessionService.getUser().setFirstName(firstNameField.getText());
+        sessionService.getUser().setLastName(lastNameField.getText());
+        sessionService.getUser().setBio(bioField.getText());
+        sessionService.getUser().setProfileImagePath(tempProfileImagePath);
+
         // Create user object for update
         UserDTO updatedUser = new UserDTO();
         updatedUser.setUsername(usernameField.getText());
@@ -305,30 +305,8 @@ public class ProfileController {
     }
     
     private void notifyProfileImageChange(String newImagePath) {
-        // Find the main controller and update its header image
-        Parent root = profileImageView.getScene().getRoot();
-        MainController mainController = findMainController(root);
-        if (mainController != null) {
-            mainController.updateProfileImage(newImagePath);
-        }
-    }
-
-    private MainController findMainController(Parent root) {
-        if (root.getId() != null && root.getId().equals("mainView")) {
-            return (MainController) root.getProperties().get("controller");
-        }
-        
-        // Look through the scene graph to find the main controller
-        for (Node node : root.getChildrenUnmodifiable()) {
-            if (node instanceof Parent) {
-                MainController controller = findMainController((Parent) node);
-                if (controller != null) {
-                    return controller;
-                }
-            }
-        }
-        
-        return null;
+        System.out.println("Publishing profile image change event: " + newImagePath);
+        EventBusService.getInstance().publishEvent("PROFILE_IMAGE_CHANGED", newImagePath);
     }
     
     @FXML
@@ -341,7 +319,7 @@ public class ProfileController {
     }
     
     private void showStatus(String messageKey, boolean isError) {
-        statusLabel.setText(messageService.getMessage(messageKey));
+        statusLabel.setText(localeService.getMessage(messageKey));
         statusLabel.getStyleClass().clear();
         statusLabel.getStyleClass().add(isError ? "error-message" : "success-message");
     }

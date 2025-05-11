@@ -20,7 +20,7 @@ public interface ItemRepository extends JpaRepository<ItemEntity, String> {
     List<ItemEntity> findByCategory(String category);
     
     // Search items by name or description
-    @Query("SELECT i FROM Item i WHERE " +
+    @Query("SELECT i FROM ItemEntity i WHERE " +
           "LOWER(i.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
           "LOWER(i.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<ItemEntity> searchByKeyword(String keyword, Pageable pageable);

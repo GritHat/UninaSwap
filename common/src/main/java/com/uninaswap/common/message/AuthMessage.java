@@ -1,5 +1,7 @@
 package com.uninaswap.common.message;
 
+import com.uninaswap.common.dto.UserDTO;
+
 public class AuthMessage extends Message {
     public enum Type {
         LOGIN_REQUEST,
@@ -18,6 +20,7 @@ public class AuthMessage extends Message {
     private String profileImagePath;
     private boolean success;
     private String message;
+    private UserDTO user;
     
     public AuthMessage() {
         super();
@@ -102,5 +105,13 @@ public class AuthMessage extends Message {
     
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+    
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 }

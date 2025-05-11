@@ -3,6 +3,7 @@ package com.uninaswap.client.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.AuthMessage;
 
 /**
@@ -12,8 +13,7 @@ public class UserSessionService {
     private static UserSessionService instance;
     
     // Session data
-    private String username;
-    private String email;
+    private UserDTO user;
     private boolean loggedIn = false;
     private final Map<String, Object> sessionData = new HashMap<>();
     
@@ -33,47 +33,36 @@ public class UserSessionService {
      * Start a new user session after successful login
      */
     public void startSession(AuthMessage response) {
-        this.username = response.getUsername();
-        this.email = response.getEmail();
-        this.sessionData.put("firstName", response.getFirstName());
-        this.sessionData.put("lastName", response.getLastName());
-        this.sessionData.put("bio", response.getBio());
-        this.sessionData.put("profileImagePath", response.getProfileImagePath());
+        // use this to store additional user data not in UserDTO
+        //this.sessionData.put("firstName", response.getFirstName());
+        this.user = response.getUser();
         this.loggedIn = true;
         // Additional initialization can happen here
-        System.out.println("Session started for user: " + username + " with email: " + email);
+        System.out.println("Session started for user: " + user.getUsername() + " with email: " + user.getEmail());
     }
     
     /**
      * End the user session (logout)
      */
     public void endSession() {
-        this.username = null;
-        this.email = null;
+        this.user = null;
         this.loggedIn = false;
         this.sessionData.clear();
         System.out.println("Session ended");
     }
     
     /**
+     * Get the current user
+     */
+    public UserDTO getUser() {
+        return user;
+    }
+
+    /**
      * Check if a user is logged in
      */
     public boolean isLoggedIn() {
         return loggedIn;
-    }
-    
-    /**
-     * Get the current username
-     */
-    public String getUsername() {
-        return username;
-    }
-    
-    /**
-     * Get the current email
-     */
-    public String getEmail() {
-        return email;
     }
 
     /**

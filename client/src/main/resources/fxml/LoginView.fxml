@@ -13,19 +13,19 @@
       <Insets top="20" right="20" bottom="20" left="20" />
    </padding>
    
-   <Label text="UninaSwap Login" styleClass="header-label" />
+   <Label text="%login.title" styleClass="header-label" />
    
    <GridPane styleClass="form-grid">
-      <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+      <Label text="%label.username" GridPane.columnIndex="0" GridPane.rowIndex="0" />
       <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
       
-      <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+      <Label text="%label.password" GridPane.columnIndex="0" GridPane.rowIndex="1" />
       <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
    </GridPane>
    
    <HBox styleClass="button-container">
-      <Button text="Login" onAction="#handleLogin" />
-      <Button text="Register" onAction="#showRegister" />
+      <Button text="%button.login" onAction="#handleLogin" />
+      <Button text="%button.register" onAction="#showRegister" />
    </HBox>
    
    <Label fx:id="messageLabel" textAlignment="CENTER" />

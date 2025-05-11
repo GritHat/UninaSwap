@@ -13,25 +13,25 @@
       <Insets top="20" right="20" bottom="20" left="20" />
    </padding>
    
-   <Label text="UninaSwap Register" styleClass="header-label" />
+   <Label text="%register.title" styleClass="header-label" />
    
    <GridPane styleClass="form-grid">
-      <Label text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+      <Label text="%label.username" GridPane.columnIndex="0" GridPane.rowIndex="0" />
       <TextField fx:id="usernameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
       
-      <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+      <Label text="%label.email" GridPane.columnIndex="0" GridPane.rowIndex="1" />
       <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       
-      <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+      <Label text="%label.password" GridPane.columnIndex="0" GridPane.rowIndex="2" />
       <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       
-      <Label text="Confirm Password:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+      <Label text="%label.password.confirm" GridPane.columnIndex="0" GridPane.rowIndex="3" />
       <PasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
    </GridPane>
    
    <HBox styleClass="button-container">
-      <Button text="Register" onAction="#handleRegister" />
-      <Button text="Back to Login" onAction="#showLogin" />
+      <Button text="%button.register" onAction="#handleRegister" />
+      <Button text="%button.login" onAction="#showLogin" />
    </HBox>
    
    <Label fx:id="messageLabel" textAlignment="CENTER" />

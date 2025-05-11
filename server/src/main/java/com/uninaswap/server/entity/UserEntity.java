@@ -1,5 +1,7 @@
 package com.uninaswap.server.entity;
 
+import com.uninaswap.common.dto.UserDTO;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -95,5 +97,17 @@ public class UserEntity {
     
     public void setProfileImagePath(String profileImagePath) {
         this.profileImagePath = profileImagePath;
+    }
+
+    public UserDTO toDTO() {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(this.id);
+        userDTO.setUsername(this.username);
+        userDTO.setEmail(this.email);
+        userDTO.setFirstName(this.firstName);
+        userDTO.setLastName(this.lastName);
+        userDTO.setBio(this.bio);
+        userDTO.setProfileImagePath(this.profileImagePath);
+        return userDTO;
     }
 }

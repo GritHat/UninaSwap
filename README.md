@@ -23,7 +23,7 @@ UninaSwap
 │           │               ├── service
 │           │               │   ├── AuthenticationService.java
 │           │               │   ├── ImageService.java
-│           │               │   ├── MessageService.java
+│           │               │   ├── LocaleService.java
 │           │               │   ├── NavigationService.java
 │           │               │   ├── ProfileService.java
 │           │               │   ├── UserSessionService.java

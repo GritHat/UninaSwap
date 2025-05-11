@@ -25,12 +25,12 @@ public interface ListingRepository extends JpaRepository<ListingEntity, String> 
     List<ListingEntity> findByFeaturedTrue();
     
     // Search listings by title or description containing keyword
-    @Query("SELECT l FROM Listing l WHERE " +
+    @Query("SELECT l FROM ListingEntity l WHERE " +
           "LOWER(l.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
           "LOWER(l.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<ListingEntity> searchByKeyword(String keyword, Pageable pageable);
     
     // Find listings by specific class type (by discriminator value)
-    @Query("SELECT l FROM Listing l WHERE TYPE(l) = :type AND l.status = :status")
+    @Query("SELECT l FROM ListingEntity l WHERE TYPE(l) = :type AND l.status = :status")
     List<ListingEntity> findByTypeAndStatus(Class<?> type, ListingStatus status);
 }

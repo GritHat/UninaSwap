@@ -17,8 +17,8 @@
             <padding>
                 <Insets top="15" right="15" bottom="15" left="15"/>
             </padding>
-            <Label text="Crop Your Profile Picture" styleClass="header-label"/>
-            <Label text="Drag the image to position your face in the circle" styleClass="instruction-label"/>
+            <Label text="%imagecropper.header" styleClass="header-label"/>
+            <Label text="%imagecropper.instruction" styleClass="instruction-label"/>
         </VBox>
     </top>
     
@@ -52,7 +52,7 @@
             
             <!-- Zoom controls -->
             <HBox spacing="10" alignment="CENTER">
-                <Label text="Zoom:" />
+                <Label text="%imagecropper.zoom" />
                 <Label text="−" styleClass="zoom-label" />
                 <Slider fx:id="zoomSlider" min="0.1" max="3.0" value="1.0" 
                         prefWidth="250" showTickLabels="true" showTickMarks="true" 
@@ -66,8 +66,8 @@
                     <Insets top="10" right="0" bottom="0" left="0"/>
                 </padding>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button text="Cancel" onAction="#handleCancel" styleClass="cancel-button"/>
-                <Button text="Apply" onAction="#handleApply" styleClass="apply-button"/>
+                <Button text="%button.cancel" onAction="#handleCancel" styleClass="cancel-button"/>
+                <Button text="%button.apply" onAction="#handleApply" styleClass="apply-button"/>
             </HBox>
         </VBox>
     </bottom>

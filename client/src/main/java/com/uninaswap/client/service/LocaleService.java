@@ -7,12 +7,15 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+
 /**
  * Service for managing application messages and internationalization.
  * This separates message handling from controllers.
  */
-public class MessageService {
-    private static MessageService instance;
+public class LocaleService {
+    private static LocaleService instance;
     
     // Resource bundle for messages
     private ResourceBundle messageBundle;
@@ -20,21 +23,34 @@ public class MessageService {
     // Fallback messages for when the resource bundle doesn't have a key
     private final Map<String, String> fallbackMessages = new HashMap<>();
     
+    // Observable property for the current locale
+    private final ObjectProperty<Locale> currentLocale = 
+        new SimpleObjectProperty<>(Locale.getDefault());
+    
     // Singleton pattern
-    public static MessageService getInstance() {
+    public static LocaleService getInstance() {
         if (instance == null) {
-            instance = new MessageService();
+            instance = new LocaleService();
         }
         return instance;
     }
     
-    private MessageService() {
+    private LocaleService() {
         // Load the resource bundle for the default locale
+        loadResourceBundle(Locale.getDefault());
+    }
+    
+    /**
+     * Load the resource bundle for the given locale
+     */
+    private void loadResourceBundle(Locale locale) {
         try {
-            messageBundle = ResourceBundle.getBundle("i18n/messages", Locale.getDefault());
-            System.out.println("Loaded message bundle: " + messageBundle.getBaseBundleName());
+            messageBundle = ResourceBundle.getBundle("i18n/messages", locale);
+            System.out.println("Loaded message bundle: " + messageBundle.getBaseBundleName() + 
+                               " for locale: " + locale.getDisplayName());
         } catch (MissingResourceException e) {
-            System.err.println("Warning: Could not load message bundle. Using fallback messages.");
+            System.err.println("Warning: Could not load message bundle for locale " + 
+                              locale.getDisplayName() + ". Using fallback messages.");
             // Initialize fallback messages as a backup
             initializeFallbackMessages();
         }
@@ -44,7 +60,36 @@ public class MessageService {
      * Set the locale for messages
      */
     public void setLocale(Locale locale) {
-        messageBundle = ResourceBundle.getBundle("i18n/messages", locale);
+        loadResourceBundle(locale);
+        currentLocale.set(locale);
+    }
+    
+    /**
+     * Set the language using language code (e.g., "it" for Italian)
+     */
+    public void setLanguage(String language) {
+        setLocale(Locale.of(language));
+    }
+    
+    /**
+     * Get the current locale
+     */
+    public Locale getCurrentLocale() {
+        return currentLocale.get();
+    }
+    
+    /**
+     * Get the locale property for binding in JavaFX UI
+     */
+    public ObjectProperty<Locale> currentLocaleProperty() {
+        return currentLocale;
+    }
+    
+    /**
+     * Get the current resource bundle
+     */
+    public ResourceBundle getResourceBundle() {
+        return messageBundle;
     }
     
     /**
@@ -118,6 +163,5 @@ public class MessageService {
         fallbackMessages.put("profile.save.error", "Failed to save profile changes");
         fallbackMessages.put("profile.save.inprogress", "Saving profile changes...");
         fallbackMessages.put("profile.error.connection", "Failed to connect to server");
-
     }
 }

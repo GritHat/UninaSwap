@@ -19,6 +19,7 @@ import com.uninaswap.client.controller.ProfileController;
 public class NavigationService {
     
     private static NavigationService instance;
+    private final LocaleService localeService = LocaleService.getInstance();
     
     // Singleton pattern
     public static NavigationService getInstance() {
@@ -37,6 +38,7 @@ public class NavigationService {
      */
     public void navigateToLogin(Node sourceNode) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
+        loader.setResources(localeService.getResourceBundle());
         Parent loginView = loader.load();
         
         // Get the stage from the source node
@@ -54,6 +56,7 @@ public class NavigationService {
      */
     public void navigateToRegister(Node sourceNode) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegisterView.fxml"));
+        loader.setResources(localeService.getResourceBundle());
         Parent registerView = loader.load();
         
         Stage stage = (Stage) sourceNode.getScene().getWindow();
@@ -70,6 +73,7 @@ public class NavigationService {
      */
     public void navigateToMainDashboard(Node sourceNode) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
+        loader.setResources(localeService.getResourceBundle());
         Parent mainView = loader.load();
         
         Stage stage = (Stage) sourceNode.getScene().getWindow();
@@ -82,6 +86,7 @@ public class NavigationService {
      */
     public Parent loadProfileView() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProfileView.fxml"));
+        loader.setResources(localeService.getResourceBundle());
         Parent profileView = loader.load();
         
         // Register the controller's message handler
@@ -91,6 +96,24 @@ public class NavigationService {
         return profileView;
     }
     
+    /**
+     * Load the inventory view
+     */
+    public Parent loadInventoryView() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/InventoryView.fxml"));
+        loader.setResources(localeService.getResourceBundle());
+        return loader.load();
+    }
+    
+    /**
+     * Load the listing creation view
+     */
+    public Parent loadListingCreationView() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListingCreationView.fxml"));
+        loader.setResources(localeService.getResourceBundle());
+        return loader.load();
+    }
+
     /**
      * Convenience method to get Stage from an ActionEvent
      */

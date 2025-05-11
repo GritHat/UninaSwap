@@ -11,8 +11,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 
 import com.uninaswap.client.service.NavigationService;
+import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
-import com.uninaswap.client.service.MessageService;
+import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
 
 import java.io.IOException;
@@ -27,13 +28,13 @@ public class MainController {
 
     
     private final NavigationService navigationService;
-    private final MessageService messageService;
+    private final LocaleService localeService;
     private final UserSessionService sessionService;
     private final ImageService imageService;
     
     public MainController() {
         this.navigationService = NavigationService.getInstance();
-        this.messageService = MessageService.getInstance();
+        this.localeService = LocaleService.getInstance();
         this.sessionService = UserSessionService.getInstance();
         this.imageService = ImageService.getInstance();
     }
@@ -41,23 +42,29 @@ public class MainController {
     @FXML
     public void initialize() {
         checkAuthentication();
-        statusLabel.setText(messageService.getMessage("dashboard.status.loaded"));
-        connectionStatusLabel.setText(messageService.getMessage("dashboard.status.connected"));
+        statusLabel.setText(localeService.getMessage("dashboard.status.loaded"));
+        connectionStatusLabel.setText(localeService.getMessage("dashboard.status.connected"));
         
         // Display username from session
         if (sessionService.isLoggedIn()) {
-            String username = sessionService.getUsername();
-            usernameLabel.setText(messageService.getMessage("dashboard.welcome.user", username));
+            String username = sessionService.getUser().getUsername();
+            usernameLabel.setText(localeService.getMessage("dashboard.welcome.user", username));
         } else {
-            usernameLabel.setText(messageService.getMessage("dashboard.welcome"));
+            usernameLabel.setText(localeService.getMessage("dashboard.welcome"));
         }
-        String profileImagePath = sessionService.get("profileImagePath");
+        String profileImagePath = sessionService.getUser().getProfileImagePath();
         if (profileImagePath != null && !profileImagePath.isEmpty()) {
             loadProfileImageInHeader(profileImagePath);
         } else {
             // Set default profile image
             setDefaultProfileImage();
         }
+        // Subscribe to profile image change events
+        EventBusService.getInstance().subscribe("PROFILE_IMAGE_CHANGED", data -> {
+            if (data instanceof String) {
+                updateProfileImage((String) data);
+            }
+        });
     }
     
     @FXML
@@ -68,44 +75,45 @@ public class MainController {
             
             navigationService.navigateToLogin(usernameLabel);
         } catch (Exception e) {
-            statusLabel.setText(messageService.getMessage("dashboard.error.logout", e.getMessage()));
+            statusLabel.setText(localeService.getMessage("dashboard.error.logout", e.getMessage()));
         }
     }
     
     // Navigation methods - these would load different content into the contentArea
     @FXML
     public void showDashboard(ActionEvent event) {
-        statusLabel.setText(messageService.getMessage("dashboard.view.dashboard"));
+        statusLabel.setText(localeService.getMessage("dashboard.view.dashboard"));
         // TODO: Load dashboard content
     }
     
     @FXML
     public void showMarkets(ActionEvent event) {
-        statusLabel.setText(messageService.getMessage("dashboard.view.markets"));
+        statusLabel.setText(localeService.getMessage("dashboard.view.markets"));
         // TODO: Load markets content
     }
     
     @FXML
     public void showPortfolio(ActionEvent event) {
-        statusLabel.setText(messageService.getMessage("dashboard.view.portfolio"));
+        statusLabel.setText(localeService.getMessage("dashboard.view.portfolio"));
         // TODO: Load portfolio content
     }
     
     @FXML
     public void showTrade(ActionEvent event) {
-        statusLabel.setText(messageService.getMessage("dashboard.view.trade"));
+        statusLabel.setText(localeService.getMessage("dashboard.view.trade"));
         // TODO: Load trade content
     }
     
     @FXML
     public void showSettings(ActionEvent event) {
-        statusLabel.setText(messageService.getMessage("dashboard.view.settings"));
+        statusLabel.setText(localeService.getMessage("dashboard.view.settings"));
         // TODO: Load settings content
+        
     }
     
     @FXML
     public void showProfile(ActionEvent event) {
-        statusLabel.setText(messageService.getMessage("dashboard.view.profile"));
+        statusLabel.setText(localeService.getMessage("dashboard.view.profile"));
         try {
             Parent profileView = navigationService.loadProfileView();
             
@@ -113,10 +121,40 @@ public class MainController {
             contentArea.getChildren().clear();
             contentArea.getChildren().add(profileView);
         } catch (IOException e) {
-            statusLabel.setText(messageService.getMessage("dashboard.error.load.profile"));
+            statusLabel.setText(localeService.getMessage("dashboard.error.load.profile"));
         }
     }
     
+    @FXML
+    public void showInventory(ActionEvent event) {
+        statusLabel.setText(localeService.getMessage("dashboard.view.inventory"));
+        try {
+            Parent inventoryView = navigationService.loadInventoryView();
+            
+            // Replace content area with inventory view
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(inventoryView);
+        } catch (IOException e) {
+            statusLabel.setText(localeService.getMessage("dashboard.error.load.inventory"));
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void showCreateListing(ActionEvent event) {
+        statusLabel.setText("Creating New Listing");
+        try {
+            Parent listingCreationView = navigationService.loadListingCreationView();
+            
+            // Replace content area with listing creation view
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(listingCreationView);
+        } catch (IOException e) {
+            statusLabel.setText("Failed to load listing creation view");
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Verify that a user is logged in, redirect to login if not
      * Call this from initialize() in protected controllers

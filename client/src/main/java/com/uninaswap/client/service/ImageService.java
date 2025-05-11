@@ -72,7 +72,7 @@ public class ImageService {
                 
                 // Send the request
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                
+
                 // Process the response
                 if (response.statusCode() == 200) {
                     future.complete(response.body());

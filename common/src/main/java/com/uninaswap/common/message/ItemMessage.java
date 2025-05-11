@@ -13,9 +13,7 @@ public class ItemMessage extends Message {
         UPDATE_ITEM_REQUEST,
         UPDATE_ITEM_RESPONSE,
         DELETE_ITEM_REQUEST,
-        DELETE_ITEM_RESPONSE,
-        UPLOAD_IMAGE_REQUEST,
-        UPLOAD_IMAGE_RESPONSE
+        DELETE_ITEM_RESPONSE
     }
     
     private Type type;

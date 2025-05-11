@@ -4,6 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.*?>
+<?import javafx.*?>
 
 <BorderPane prefWidth="800" prefHeight="600" 
       xmlns="http://javafx.com/javafx/24" 
@@ -18,16 +19,16 @@
          <padding>
             <Insets top="10" right="15" bottom="10" left="15" />
          </padding>
-         <Label text="UninaSwap Dashboard" styleClass="header-label" />
+         <Label text="%dashboard.title" styleClass="header-label" />
          <Region HBox.hgrow="ALWAYS" />
-         <Label fx:id="usernameLabel" text="Welcome, User" />
+         <Label fx:id="usernameLabel" />
          <StackPane styleClass="profile-image-container" maxHeight="32" maxWidth="32" minHeight="32" minWidth="32">
             <ImageView fx:id="headerProfileImageView" fitHeight="32" fitWidth="32" preserveRatio="true" />
             <StackPane.margin>
                <Insets left="5" right="5" />
             </StackPane.margin>
          </StackPane>
-         <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout" />
+         <Button fx:id="logoutButton" text="%button.logout" onAction="#handleLogout" />
       </HBox>
    </top>
    
@@ -37,17 +38,24 @@
          <padding>
             <Insets top="10" right="10" bottom="10" left="10" />
          </padding>
-         <Label text="Navigation" styleClass="sidebar-header" />
+         <Label text="%dashboard.navigation" styleClass="sidebar-header" />
          <Separator />
-         <Button text="Dashboard" styleClass="sidebar-button" onAction="#showDashboard" />
-         <Button text="Markets" styleClass="sidebar-button" onAction="#showMarkets" />
-         <Button text="Portfolio" styleClass="sidebar-button" onAction="#showPortfolio" />
-         <Button text="Trade" styleClass="sidebar-button" onAction="#showTrade" />
-         <Button text="Settings" styleClass="sidebar-button" onAction="#showSettings" />
-         <Button text="Profile" styleClass="sidebar-button" onAction="#showProfile" />
+         <Button text="%dashboard.dashboard" styleClass="sidebar-button" onAction="#showDashboard" />
+         <Button text="%dashboard.markets" styleClass="sidebar-button" onAction="#showMarkets" />
+         <Button text="%dashboard.portfolio" styleClass="sidebar-button" onAction="#showPortfolio" />
+         <Button text="%dashboard.trade" styleClass="sidebar-button" onAction="#showTrade" />
+         <Button text="%dashboard.settings" styleClass="sidebar-button" onAction="#showSettings" />
+         <Button text="%dashboard.profile" styleClass="sidebar-button" onAction="#showProfile" />
+         
+         <!-- Inventory Button -->
+         <Button text="%dashboard.inventory" styleClass="sidebar-button" onAction="#showInventory"/>
+
+         <!-- Create Listing Button -->
+         <Button text="%dashboard.create.listing" styleClass="sidebar-button" onAction="#showCreateListing"/>
+
          <Region VBox.vgrow="ALWAYS" />
          <Separator />
-         <Label text="UninaSwap v1.0" styleClass="sidebar-footer" />
+         <Label text="%app.version" styleClass="sidebar-footer" />
       </VBox>
    </left>
    
@@ -59,11 +67,11 @@
          </padding>
          <!-- Default welcome screen -->
          <VBox alignment="CENTER" spacing="20">
-            <Label text="Welcome to UninaSwap" styleClass="welcome-header" />
-            <Label text="Select an option from the sidebar to begin" />
+            <Label text="%dashboard.contentaread.title" styleClass="welcome-header" />
+            <Label text="%dashboard.contentaread.subtitle" />
             <HBox alignment="CENTER" spacing="20">
-               <Button text="Quick Trade" onAction="#showTrade" />
-               <Button text="View Markets" onAction="#showMarkets" />
+               <Button text="%button.quicktrade" onAction="#showTrade" />
+               <Button text="%button.view.markets" onAction="#showMarkets" />
             </HBox>
          </VBox>
       </StackPane>
@@ -75,9 +83,9 @@
          <padding>
             <Insets top="5" right="15" bottom="5" left="15" />
          </padding>
-         <Label fx:id="statusLabel" text="Ready" />
+         <Label fx:id="statusLabel" text="%label.ready" />
          <Region HBox.hgrow="ALWAYS" />
-         <Label fx:id="connectionStatusLabel" text="Connected" />
+         <Label fx:id="connectionStatusLabel" text="%label.connected" />
       </HBox>
    </bottom>
    

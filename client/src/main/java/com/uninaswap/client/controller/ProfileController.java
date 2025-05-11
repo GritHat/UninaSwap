@@ -27,7 +27,7 @@ import com.uninaswap.client.service.MessageService;
 import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.service.ProfileService;
 import com.uninaswap.client.service.ImageService;
-import com.uninaswap.common.model.User;
+import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.ProfileUpdateMessage;
 
 public class ProfileController {
@@ -285,7 +285,7 @@ public class ProfileController {
         sessionService.put("profileImagePath", tempProfileImagePath);
         
         // Create user object for update
-        User updatedUser = new User();
+        UserDTO updatedUser = new UserDTO();
         updatedUser.setUsername(usernameField.getText());
         updatedUser.setEmail(emailField.getText());
         updatedUser.setFirstName(firstNameField.getText());

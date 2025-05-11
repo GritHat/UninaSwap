@@ -1,8 +1,7 @@
 package com.uninaswap.client.service;
 
+import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.ProfileUpdateMessage;
-import com.uninaswap.common.model.User;
-
 import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.client.websocket.WebSocketClient;
 
@@ -30,7 +29,7 @@ public class ProfileService {
      * @param user The user object containing updated profile information
      * @return CompletableFuture that completes when the update is sent
      */
-    public CompletableFuture<Void> updateProfile(User user) {
+    public CompletableFuture<Void> updateProfile(UserDTO user) {
         ProfileUpdateMessage message = new ProfileUpdateMessage();
         message.setType(ProfileUpdateMessage.Type.UPDATE_REQUEST);
         message.setUsername(user.getUsername());

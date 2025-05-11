@@ -1,8 +1,8 @@
-package com.uninaswap.common.model;
+package com.uninaswap.common.dto;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class UserDTO implements Serializable {
     private Long id;
     private String username;
     private String email;
@@ -12,9 +12,9 @@ public class User implements Serializable {
     private String bio;
     private String profileImagePath;
     
-    public User() {}
+    public UserDTO() {}
     
-    public User(String username, String email, String password) {
+    public UserDTO(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;

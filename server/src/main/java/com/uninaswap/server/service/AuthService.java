@@ -3,7 +3,7 @@ package com.uninaswap.server.service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.uninaswap.common.model.User;
+import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.server.entity.UserEntity;
 import com.uninaswap.server.repository.UserRepository;
 
@@ -19,7 +19,7 @@ public class AuthService {
         this.userRepository = userRepository;
     }
     
-    public boolean register(User user) {
+    public boolean register(UserDTO user) {
         // Check if username or email already exists
         if (userRepository.existsByUsername(user.getUsername()) ||
             userRepository.existsByEmail(user.getEmail())) {

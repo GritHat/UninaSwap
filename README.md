@@ -141,3 +141,45 @@ The client module provides the user interface for the application using JavaFX. 
 ## Contributing
 
 Contributions are welcome! Please submit a pull request or open an issue for any enhancements or bug fixes.
+
+
+
+## Entity Diagrams
+
+```
+    +----------------+
+    |    Listing     |
+    |----------------|
+    | id             |
+    | title          |
+    | description    |
+    | createdAt      |
+    | updatedAt      |
+    | creator        |
+    | status         |
+    | imagePath      |
+    | featured       |
+    +-------+--------+
+            ^
+            |
+  +---------+---------+-------------+
+  |                   |             |
++-+---------+  +------+-----+  +----+-------+
+|SellListing|  |TradeListing|  |GiftListing |
+|-----------|  |------------|  |------------|
+|price      |  |desiredItems|  |pickupOnly  |
+|currency   |  |acceptOther |  |restrictions|
++-----------+  +------------+  +------------+
+                                     |
+                              +------+-------+
+                              |AuctionListing|
+                              |--------------|
+                              |startingPrice |
+                              |reservePrice  |
+                              |currency      |
+                              |endTime       |
+                              |minIncrement  |
+                              |currentBid    |
+                              |highestBidder |
+                              +--------------+
+```

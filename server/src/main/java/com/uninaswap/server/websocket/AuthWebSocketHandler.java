@@ -8,8 +8,8 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.AuthMessage;
-import com.uninaswap.common.model.User;
 import com.uninaswap.server.service.AuthService;
 import com.uninaswap.server.entity.UserEntity;
 
@@ -62,7 +62,7 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void processUserRegistration(AuthMessage authMessage, AuthMessage response) {
-        User newUser = new User();
+        UserDTO newUser = new UserDTO();
         newUser.setUsername(authMessage.getUsername());
         newUser.setEmail(authMessage.getEmail());
         newUser.setPassword(authMessage.getPassword());

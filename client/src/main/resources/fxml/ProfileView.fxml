@@ -16,7 +16,7 @@
         <Insets top="20" right="30" bottom="20" left="30" />
     </padding>
     
-    <Label text="%profile.title" styleClass="header-label"/>
+    <Label fx:id="profileTitleLabel" text="%profile.title" styleClass="header-label"/>
     
     <!-- Profile Image -->
     <StackPane styleClass="profile-image-container">
@@ -38,27 +38,27 @@
         </columnConstraints>
         
         <!-- Username (non-editable) -->
-        <Label text="%label.username" styleClass="field-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <Label fx:id="usernameLabel" text="%label.username" styleClass="field-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
         <TextField fx:id="usernameField" editable="false" styleClass="read-only-field" 
                   GridPane.rowIndex="0" GridPane.columnIndex="1" />
                   
         <!-- Email (non-editable) -->
-        <Label text="%label.email" styleClass="field-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <Label fx:id="emailLabel" text="%label.email" styleClass="field-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
         <TextField fx:id="emailField" editable="false" styleClass="read-only-field" 
                   GridPane.rowIndex="1" GridPane.columnIndex="1" />
                   
         <!-- First Name -->
-        <Label text="%label.firstname" styleClass="field-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <Label fx:id="firstNameLabel" text="%label.firstname" styleClass="field-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
         <TextField fx:id="firstNameField" promptText="Enter first name" 
                   GridPane.rowIndex="2" GridPane.columnIndex="1" />
                   
         <!-- Last Name -->
-        <Label text="%label.lastname" styleClass="field-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+        <Label fx:id="lastNameLabel" text="%label.lastname" styleClass="field-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
         <TextField fx:id="lastNameField" promptText="Enter last name" 
                   GridPane.rowIndex="3" GridPane.columnIndex="1" />
                   
         <!-- Bio -->
-        <Label text="%label.bio" styleClass="field-label" GridPane.rowIndex="4" GridPane.columnIndex="0" 
+        <Label fx:id="bioLabel" text="%label.bio" styleClass="field-label" GridPane.rowIndex="4" GridPane.columnIndex="0" 
                GridPane.valignment="TOP" />
         <TextArea fx:id="bioField" promptText="Tell us about yourself..." wrapText="true"
                  prefHeight="100" GridPane.rowIndex="4" GridPane.columnIndex="1" />
@@ -69,7 +69,7 @@
     
     <!-- Buttons -->
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="%button.cancel" onAction="#handleCancel" styleClass="cancel-button" />
-        <Button text="%button.save" onAction="#handleSave" styleClass="save-button" />
+        <Button fx:id="saveButton" text="%button.cancel" onAction="#handleCancel" styleClass="cancel-button" />
+        <Button fx:id="cancelButton" text="%button.save" onAction="#handleSave" styleClass="save-button" />
     </HBox>
 </VBox>

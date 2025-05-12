@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox xmlns="http://javafx.com/javafx/24" 
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.uninaswap.client.controller.LanguageController"
+      spacing="10" alignment="CENTER">
+    <Label text="%label.language" />
+    <ComboBox fx:id="languageComboBox" />
+</HBox>

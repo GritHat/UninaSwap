@@ -6,6 +6,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
+
+import com.uninaswap.client.constants.EventTypes;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -27,6 +30,9 @@ public class LocaleService {
     private final ObjectProperty<Locale> currentLocale = 
         new SimpleObjectProperty<>(Locale.getDefault());
     
+    // EventBusService instance for publishing events
+    private final EventBusService eventBus = EventBusService.getInstance();
+    
     // Singleton pattern
     public static LocaleService getInstance() {
         if (instance == null) {
@@ -36,8 +42,8 @@ public class LocaleService {
     }
     
     private LocaleService() {
-        // Load the resource bundle for the default locale
-        loadResourceBundle(Locale.getDefault());
+        // Load saved locale preference on service initialization
+        loadSavedLocale();
     }
     
     /**
@@ -60,8 +66,28 @@ public class LocaleService {
      * Set the locale for messages
      */
     public void setLocale(Locale locale) {
+        if (locale == null) return;
+        
+        // Store previous locale for event data
+        Locale oldLocale = currentLocale.get();
+        
+        // Load the new resource bundle
         loadResourceBundle(locale);
+        
+        // Update the current locale
         currentLocale.set(locale);
+        
+        // Store the selected locale in preferences
+        Preferences prefs = Preferences.userNodeForPackage(LocaleService.class);
+        prefs.put("locale.language", locale.getLanguage());
+        prefs.put("locale.country", locale.getCountry());
+        
+        // Publish locale changed event with old and new locales
+        Map<String, Locale> eventData = Map.of(
+            "oldLocale", oldLocale,
+            "newLocale", locale
+        );
+        eventBus.publishEvent(EventTypes.LOCALE_CHANGED, eventData);
     }
     
     /**
@@ -163,5 +189,15 @@ public class LocaleService {
         fallbackMessages.put("profile.save.error", "Failed to save profile changes");
         fallbackMessages.put("profile.save.inprogress", "Saving profile changes...");
         fallbackMessages.put("profile.error.connection", "Failed to connect to server");
+    }
+
+    /**
+     * Load saved locale preference on service initialization
+     */
+    private void loadSavedLocale() {
+        Preferences prefs = Preferences.userNodeForPackage(LocaleService.class);
+        String language = prefs.get("locale.language", Locale.ENGLISH.getLanguage());
+        String country = prefs.get("locale.country", Locale.ENGLISH.getCountry());
+        setLocale(Locale.of(language, country));
     }
 }

@@ -3,6 +3,7 @@ package com.uninaswap.client.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.AuthMessage;
 
@@ -16,6 +17,7 @@ public class UserSessionService {
     private UserDTO user;
     private boolean loggedIn = false;
     private final Map<String, Object> sessionData = new HashMap<>();
+    private final EventBusService eventBus = EventBusService.getInstance();
     
     // Singleton pattern
     public static UserSessionService getInstance() {
@@ -48,10 +50,15 @@ public class UserSessionService {
      * End the user session (logout)
      */
     public void endSession() {
+        // Publish logout event before clearing data
+        eventBus.publishEvent(EventTypes.USER_LOGGED_OUT, null);
+        
+        // Clear user data
         this.user = null;
         this.loggedIn = false;
         this.sessionData.clear();
-        System.out.println("Session ended");
+        
+        System.out.println("Session ended and logout event published");
     }
     
     /**

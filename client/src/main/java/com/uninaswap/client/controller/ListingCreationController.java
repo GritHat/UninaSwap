@@ -19,11 +19,12 @@ import javafx.stage.Stage;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ListingCreationController {
+public class ListingCreationController implements Refreshable {
 
     @FXML
     private TabPane listingTypeTabs;
@@ -111,7 +112,7 @@ public class ListingCreationController {
     private ComboBox<Currency> auctionCurrencyComboBox;
     
     @FXML
-    private ComboBox<String> durationComboBox;
+    private ComboBox<DurationOption> durationComboBox;
     
     @FXML
     private TextField bidIncrementField;
@@ -130,7 +131,29 @@ public class ListingCreationController {
     
     private final List<ListingItemDTO> selectedItems = new ArrayList<>();
     private final Map<String, Integer> tempReservedQuantities = new HashMap<>();
+    private List<DurationOption> durationOptions;
     
+    public class DurationOption {
+        private final int days;
+        private final String messageKey;
+        private final LocaleService localeService;
+        
+        public DurationOption(int days, String messageKey, LocaleService localeService) {
+            this.days = days;
+            this.messageKey = messageKey;
+            this.localeService = localeService;
+        }
+        
+        public int getDays() {
+            return days;
+        }
+        
+        @Override
+        public String toString() {
+            return localeService.getMessage(messageKey);
+        }
+    }
+
     @FXML
     public void initialize() {
         // Initialize tables
@@ -148,11 +171,21 @@ public class ListingCreationController {
         auctionCurrencyComboBox.setValue(Currency.EUR);
         
         // Configure auction duration options
-        durationComboBox.setItems(FXCollections.observableArrayList(
-            "1 day", "3 days", "5 days", "7 days", "14 days", "30 days"
-        ));
-        durationComboBox.setValue("7 days");
-        
+        durationOptions = Arrays.asList(
+            new DurationOption(1, "listing.auction.time.1day", localeService),
+            new DurationOption(3, "listing.auction.time.3days", localeService),
+            new DurationOption(5, "listing.auction.time.5days", localeService),
+            new DurationOption(7, "listing.auction.time.7days", localeService),
+            new DurationOption(14, "listing.auction.time.14days", localeService),
+            new DurationOption(30, "listing.auction.time.30days", localeService)
+        );
+
+        durationComboBox.setItems(FXCollections.observableArrayList(durationOptions));
+        durationComboBox.setValue(durationOptions.stream()
+            .filter(option -> option.getDays() == 7)
+            .findFirst()
+            .orElse(durationOptions.get(3)));
+
         // Configure bindings for trade listing controls
         referencePriceField.disableProperty().bind(acceptMoneyOffersCheckBox.selectedProperty().not());
         tradeCurrencyComboBox.disableProperty().bind(acceptMoneyOffersCheckBox.selectedProperty().not());
@@ -559,16 +592,7 @@ public class ListingCreationController {
             }
             
             // Calculate end time based on selected duration
-            int days;
-            switch (durationComboBox.getValue()) {
-                case "1 day": days = 1; break;
-                case "3 days": days = 3; break;
-                case "5 days": days = 5; break;
-                case "7 days": days = 7; break;
-                case "14 days": days = 14; break;
-                case "30 days": days = 30; break;
-                default: days = 7;
-            }
+            int days = durationComboBox.getValue().getDays();
             
             AuctionListingDTO listing = new AuctionListingDTO();
             setupCommonFields(listing);
@@ -609,5 +633,9 @@ public class ListingCreationController {
         tempReservedQuantities.clear();
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
+    }
+
+    public void refreshUI() {
+        durationComboBox.setItems(FXCollections.observableArrayList(durationOptions));
     }
 }

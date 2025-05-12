@@ -33,21 +33,58 @@ public class NavigationService {
         // Private constructor to enforce singleton pattern
     }
     
+    private class LoaderBundle {
+        private FXMLLoader loader;
+        private Parent view;
+        public LoaderBundle(FXMLLoader loader, Parent view) {
+            this.loader = loader;
+            this.view = view;
+        }
+        public FXMLLoader getLoader() {
+            return loader;
+        }
+        public Parent getView() {
+            return view;
+        }
+    }
+
+    /**
+     * Navigate to the specified view
+     * @param sourceNode The node that triggered the navigation
+     * @param fxmlPath The path to the FXML file
+     * @param title The title of the new window
+     * @param width The width of the new window
+     * @param height The height of the new window
+     */
+    private LoaderBundle loadView(String fxmlPath) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        loader.setResources(localeService.getResourceBundle());
+        Parent root = loader.load();
+        
+        // Store the controller in the view's properties
+        Object controller = loader.getController();
+        root.getProperties().put("controller", controller);
+        
+        // Also store the ID for easy identification
+        String viewName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
+        root.setId(viewName);
+        
+        return new LoaderBundle(loader, root);
+    }
+
     /**
      * Navigate to the login screen
      */
     public void navigateToLogin(Node sourceNode) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
-        loader.setResources(localeService.getResourceBundle());
-        Parent loginView = loader.load();
-        
+        LoaderBundle loaderBundle = loadView("/fxml/LoginView.fxml");
+        Parent loginView = loaderBundle.getView();
         // Get the stage from the source node
         Stage stage = (Stage) sourceNode.getScene().getWindow();
         stage.setTitle("UninaSwap - Login");
         stage.setScene(new Scene(loginView, 400, 300));
         
         // Register the controller's message handler
-        LoginController controller = loader.getController();
+        LoginController controller = loaderBundle.getLoader().getController();
         controller.registerMessageHandler();
     }
     
@@ -55,16 +92,15 @@ public class NavigationService {
      * Navigate to the register screen
      */
     public void navigateToRegister(Node sourceNode) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/RegisterView.fxml"));
-        loader.setResources(localeService.getResourceBundle());
-        Parent registerView = loader.load();
+        LoaderBundle loaderBundle = loadView("/fxml/RegisterView.fxml");
+        Parent registerView = loaderBundle.getView();
         
         Stage stage = (Stage) sourceNode.getScene().getWindow();
         stage.setTitle("UninaSwap - Register");
         stage.setScene(new Scene(registerView, 400, 350));
         
         // Register the controller's message handler
-        RegisterController controller = loader.getController();
+        RegisterController controller = loaderBundle.getLoader().getController();
         controller.registerMessageHandler();
     }
     
@@ -72,9 +108,8 @@ public class NavigationService {
      * Navigate to the main dashboard screen
      */
     public void navigateToMainDashboard(Node sourceNode) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainView.fxml"));
-        loader.setResources(localeService.getResourceBundle());
-        Parent mainView = loader.load();
+        LoaderBundle loaderBundle = loadView("/fxml/MainView.fxml");
+        Parent mainView = loaderBundle.getView();
         
         Stage stage = (Stage) sourceNode.getScene().getWindow();
         stage.setTitle("UninaSwap - Dashboard");
@@ -85,12 +120,11 @@ public class NavigationService {
      * Navigate to the profile view within the content area of the main dashboard
      */
     public Parent loadProfileView() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProfileView.fxml"));
-        loader.setResources(localeService.getResourceBundle());
-        Parent profileView = loader.load();
+        LoaderBundle loaderBundle = loadView("/fxml/ProfileView.fxml");
+        Parent profileView = loaderBundle.getView();
         
         // Register the controller's message handler
-        ProfileController controller = loader.getController();
+        ProfileController controller = loaderBundle.getLoader().getController();
         controller.registerMessageHandler();
         
         return profileView;
@@ -100,18 +134,14 @@ public class NavigationService {
      * Load the inventory view
      */
     public Parent loadInventoryView() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/InventoryView.fxml"));
-        loader.setResources(localeService.getResourceBundle());
-        return loader.load();
+        return loadView("/fxml/InventoryView.fxml").getView();
     }
 
     /**
      * Load the listing creation view
      */
     public Parent loadListingCreationView() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListingCreationView.fxml"));
-        loader.setResources(localeService.getResourceBundle());
-        return loader.load();
+        return loadView("/fxml/ListingCreationView.fxml").getView();
     }
 
     /**

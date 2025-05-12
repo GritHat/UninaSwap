@@ -25,13 +25,15 @@ import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.service.ProfileService;
+import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.ProfileUpdateMessage;
 
-public class ProfileController {
+public class ProfileController implements Refreshable{
     
+    @FXML private Label profileTitleLabel;
     @FXML private TextField usernameField;
     @FXML private TextField emailField;
     @FXML private TextField firstNameField;
@@ -39,7 +41,15 @@ public class ProfileController {
     @FXML private TextArea bioField;
     @FXML private ImageView profileImageView;
     @FXML private Label statusLabel;
-    
+    @FXML private Label usernameLabel;
+    @FXML private Label emailLabel;
+    @FXML private Label firstNameLabel;
+    @FXML private Label lastNameLabel;
+    @FXML private Label bioLabel;
+    @FXML private Button changeImageButton;
+    @FXML private Button saveButton;
+    @FXML private Button cancelButton;
+
     private final NavigationService navigationService;
     private final LocaleService localeService;
     private final UserSessionService sessionService;
@@ -306,7 +316,7 @@ public class ProfileController {
     
     private void notifyProfileImageChange(String newImagePath) {
         System.out.println("Publishing profile image change event: " + newImagePath);
-        EventBusService.getInstance().publishEvent("PROFILE_IMAGE_CHANGED", newImagePath);
+        EventBusService.getInstance().publishEvent(EventTypes.PROFILE_IMAGE_CHANGED, newImagePath);
     }
     
     @FXML
@@ -322,5 +332,17 @@ public class ProfileController {
         statusLabel.setText(localeService.getMessage(messageKey));
         statusLabel.getStyleClass().clear();
         statusLabel.getStyleClass().add(isError ? "error-message" : "success-message");
+    }
+
+    public void refreshUI() {
+        profileTitleLabel.setText(localeService.getMessage("profile.title"));
+        usernameLabel.setText(localeService.getMessage("label.username"));
+        emailLabel.setText(localeService.getMessage("label.email"));
+        firstNameLabel.setText(localeService.getMessage("label.firstname"));
+        lastNameLabel.setText(localeService.getMessage("label.lastname"));
+        bioLabel.setText(localeService.getMessage("label.bio"));
+        changeImageButton.setText(localeService.getMessage("button.change"));
+        saveButton.setText(localeService.getMessage("button.save"));
+        cancelButton.setText(localeService.getMessage("button.cancel"));
     }
 }

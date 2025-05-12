@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple event bus to decouple components in the application.
@@ -83,5 +85,28 @@ public class EventBusService {
      */
     public void clearAllSubscriptions() {
         subscribers.clear();
+    }
+    
+    /**
+     * Clears all subscribers for a specific controller class
+     * Used when controllers are destroyed (e.g., during logout)
+     * 
+     * @param controllerClass The class of the controller being destroyed
+     */
+    public void clearSubscriptionsForController(Class<?> controllerClass) {
+        // Iterate through all event types and subscribers
+        for (String eventType : new ArrayList<>(subscribers.keySet())) {
+            List<Consumer<Object>> handlers = subscribers.get(eventType);
+            if (handlers != null) {
+                // Create a copy to avoid concurrent modification
+                List<Consumer<Object>> copy = new ArrayList<>(handlers);
+                for (Consumer<Object> handler : copy) {
+                    // Check if this handler came from the controller class
+                    if (handler.toString().contains(controllerClass.getName())) {
+                        unsubscribe(eventType, handler);
+                    }
+                }
+            }
+        }
     }
 }

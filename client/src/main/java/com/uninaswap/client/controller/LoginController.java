@@ -86,6 +86,8 @@ public class LoginController {
                     try {
                         navigationService.navigateToMainDashboard(usernameField);
                     } catch (Exception e) {
+                        System.err.println("Error navigating to main dashboard: " + e.getMessage());
+                        e.printStackTrace();
                         showMessage("navigation.error.load.dashboard", "message-error");
                     }
                 } else {

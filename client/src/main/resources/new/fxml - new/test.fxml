@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" prefWidth="1200" prefHeight="800" style="-fx-background-color: linear-gradient(to bottom, #1e1e2f, #3c3c54);">
+    <!-- Sidebar -->
+    <VBox layoutX="10" layoutY="10" spacing="15" prefWidth="200">
+        <Label text="Vision UI Pro" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;" />
+        <Button text="Dashboards" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+        <Button text="Pages" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+        <Button text="Widgets" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+        <Button text="Charts" style="-fx-background-color: transparent; -fx-text-fill: white;" />
+    </VBox>
+
+    <!-- Main Content -->
+    <VBox layoutX="220" layoutY="10" spacing="20" prefWidth="960">
+        <Label text="General Statistics" style="-fx-text-fill: white; -fx-font-size: 24;" />
+        
+        <!-- Statistics Cards -->
+        <HBox spacing="15">
+            <VBox style="-fx-background-color: #27293d; -fx-padding: 10; -fx-background-radius: 10;">
+                <Label text="Today's Money" style="-fx-text-fill: white;" />
+                <Label text="$53,000 +5%" style="-fx-text-fill: lightgreen;" />
+            </VBox>
+            <VBox style="-fx-background-color: #27293d; -fx-padding: 10; -fx-background-radius: 10;">
+                <Label text="Today's Users" style="-fx-text-fill: white;" />
+                <Label text="2,300 -3%" style="-fx-text-fill: red;" />
+            </VBox>
+        </HBox>
+        
+        <!-- Sales Table -->
+        <TableView style="-fx-background-color: #27293d; -fx-background-radius: 10;">
+            <columns>
+                <TableColumn text="Country" />
+                <TableColumn text="Sales" />
+                <TableColumn text="Value" />
+                <TableColumn text="Bounce" />
+            </columns>
+        </TableView>
+
+        <!-- Graphs -->
+        <HBox spacing="15">
+            <BarChart fx:id="salesChart" title="Sales Overview" style="-fx-background-color: #27293d;" />
+            <LineChart fx:id="salesLineChart" title="Sales Line Overview" style="-fx-background-color: #27293d;" />
+        </HBox>
+    </VBox>
+</AnchorPane>

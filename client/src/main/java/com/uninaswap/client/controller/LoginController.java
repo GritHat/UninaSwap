@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 
@@ -97,6 +98,31 @@ public class LoginController {
             stage.show();
         } catch (IOException e) {
             System.err.println("Errore durante il caricamento della schermata di registrazione: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    
+    @FXML
+    public void goToHomePage(MouseEvent event) { //solo per testare velocemente la navigazione
+        System.out.println("Navigazione diretta alla home page tramite click sull'immagine");
+        
+        try {
+            // Carica la schermata principale
+            String fxmlPath = "/new/fxml_new/home_Principale.fxml";
+            System.out.println("Tentativo di caricare: " + fxmlPath);
+            System.out.println("URL risorsa: " + getClass().getResource(fxmlPath));
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root, 1000, 700); // Dimensioni più appropriate
+            stage.setScene(scene);
+            stage.setTitle("UninaSwap - Home");
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Errore durante il caricamento della home page: " + e.getMessage());
             e.printStackTrace();
         }
     }

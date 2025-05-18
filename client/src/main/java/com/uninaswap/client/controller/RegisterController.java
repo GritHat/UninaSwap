@@ -77,6 +77,7 @@ public class RegisterController {
             "Ingegneria",
             "Economia",
             "Giurisprudenza",
+            "Informatica",
             "Medicina",
             "Lettere",
             "Scienze",

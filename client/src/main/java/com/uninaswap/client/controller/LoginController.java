@@ -85,21 +85,7 @@ public class LoginController {
     
     @FXML
     public void handleRegisterLink(ActionEvent event) {
-        System.out.println("Redirect alla pagina di registrazione");
-        
-        try {
-            // Carica la schermata di registrazione
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/new/fxml_new/RegisterView.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("UninaSwap - Registrazione");
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Errore durante il caricamento della schermata di registrazione: " + e.getMessage());
-            e.printStackTrace();
-        }
+        ExceptionController.cambiaScena(event, "/new/fxml_new/RegisterView.fxml", "UninaSwap - Registrazione");
     }
     
     

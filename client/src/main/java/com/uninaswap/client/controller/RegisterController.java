@@ -140,21 +140,7 @@ public class RegisterController {
     
     @FXML
     public void handleLoginLink(ActionEvent event) {
-        System.out.println("Redirect alla pagina di login");
-        
-        try {
-            // Torna alla schermata di login
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/new/fxml_new/LoginView.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle("UninaSwap - Login");
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Errore durante il caricamento della schermata di login: " + e.getMessage());
-            e.printStackTrace();
-        }
+        ExceptionController.cambiaScena(event, "/new/fxml_new/LoginView.fxml", "UninaSwap - Login");
     }
     
     private void handleAuthResponse(AuthMessage response) {

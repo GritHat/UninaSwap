@@ -1,4 +1,4 @@
-package com.uninaswap.client.controller;
+package com.uninaswap.client.controller.oldController;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -14,6 +14,7 @@ import javafx.scene.shape.Circle;
 
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.constants.EventTypes;
+import com.uninaswap.client.controller.ExceptionController;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.LocaleService;
@@ -89,7 +90,7 @@ public class MainController implements Refreshable {
             sessionService.endSession();
 
             navigationService.navigateToLogin(usernameLabel);
-        } catch (Exception e) {
+        } catch (ExceptionController e) {
             statusLabel.setText(localeService.getMessage("dashboard.error.logout", e.getMessage()));
         }
     }
@@ -179,7 +180,7 @@ public class MainController implements Refreshable {
             Platform.runLater(() -> {
                 try {
                     navigationService.navigateToLogin(usernameLabel);
-                } catch (Exception e) {
+                } catch (ExceptionController e) {
                     System.err.println("User is not logged in, redirecting to login screen");
                     // Log error
                 }

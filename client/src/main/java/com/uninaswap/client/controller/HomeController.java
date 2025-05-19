@@ -1,10 +1,18 @@
 package com.uninaswap.client.controller;
 
+import java.io.IOException;
+
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 
 public class HomeController {
@@ -52,7 +60,42 @@ public class HomeController {
     }
 
     @FXML
-    public void apri_profilo() {
+    public void apriIlProfilo() {
         // Implementa la logica di apertura profilo
+    }
+
+    @FXML
+    public void apriPreferiti() {
+        // Implementa la logica di apertura profilo
+    }
+
+    @FXML
+    public void apriInventario() {
+        // Implementa la logica di apertura profilo
+    }
+
+    @FXML
+    public void aggiungiAnnuncio() {
+        // Implementa la logica di apertura profilo
+    }
+
+    @FXML
+    public void apriILeNotifiche() {
+        // Implementa la logica di apertura profilo
+    }
+
+    @FXML
+    public void apriLeAste() {
+        // Implementa la logica di apertura profilo
+    }
+
+    @FXML
+    public void eseguiIlLogout(MouseEvent event) {
+        ExceptionController.cambiaScena(event, "/new/fxml_new/LoginView.fxml", "UninaSwap - Login");
+    }
+
+    @FXML
+    public void apriImpostazioni(MouseEvent event) {
+        ExceptionController.cambiaScena(event, "/new/fxml_new/ImpostazioniView.fxml", "UninaSwap - Impostazioni");
     }
 }

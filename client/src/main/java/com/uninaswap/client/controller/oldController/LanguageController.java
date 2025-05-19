@@ -1,4 +1,4 @@
-package com.uninaswap.client.controller;
+package com.uninaswap.client.controller.oldController;
 
 import com.uninaswap.client.service.LocaleService;
 import javafx.collections.FXCollections;

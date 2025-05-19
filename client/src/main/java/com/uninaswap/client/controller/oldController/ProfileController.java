@@ -1,4 +1,4 @@
-package com.uninaswap.client.controller;
+package com.uninaswap.client.controller.oldController;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -26,6 +26,7 @@ import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.service.ProfileService;
 import com.uninaswap.client.constants.EventTypes;
+import com.uninaswap.client.controller.ExceptionController;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.common.dto.UserDTO;
@@ -162,7 +163,7 @@ public class ProfileController implements Refreshable{
                     // Convert the cropped image to a file for later upload
                     tempSelectedImageFile = convertImageToTempFile(croppedImage);
                 });
-            } catch (Exception e) {
+            } catch (ExceptionController e) {
                 showStatus("profile.image.error.load", true);
                 System.err.println("Error loading image: " + e.getMessage());
             }

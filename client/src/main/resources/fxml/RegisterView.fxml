@@ -24,7 +24,7 @@
                <children>
                   <ImageView fitHeight="150.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../UI_img/austronauta.png" />
+                        <Image url="@../images/austronauta.png" />
                      </image>
                   </ImageView>
                   <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="UninaSwap">

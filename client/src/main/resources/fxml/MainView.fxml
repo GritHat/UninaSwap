@@ -27,7 +27,7 @@
                <children>
                   <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#apriIlProfilo" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../UI_img/immagine_profilo.png" />
+                        <Image url="@../images/immagine_profilo.png" />
                      </image>
                      <viewport>
                         <Rectangle2D />
@@ -35,7 +35,7 @@
                   </ImageView>
                   <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#apriPreferiti" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../UI_img/preferiti.png" />
+                        <Image url="@../images/preferiti.png" />
                      </image>
                      <viewport>
                         <Rectangle2D />
@@ -43,7 +43,7 @@
                   </ImageView>
                   <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#apriInventario" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../UI_img/Inventario.png" />
+                        <Image url="@../images/Inventario.png" />
                      </image>
                      <viewport>
                         <Rectangle2D />
@@ -51,7 +51,7 @@
                   </ImageView>
                   <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#aggiungiAnnuncio" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../UI_img/add_item.png" />
+                        <Image url="@../images/add_item.png" />
                      </image>
                      <viewport>
                         <Rectangle2D />
@@ -59,7 +59,7 @@
                   </ImageView>
                   <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#apriLeNotifiche" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../UI_img/notification.png" />
+                        <Image url="@../images/notification.png" />
                      </image>
                      <viewport>
                         <Rectangle2D />
@@ -67,7 +67,7 @@
                   </ImageView>
                   <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#apriLeAste" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../UI_img/aste.png" />
+                        <Image url="@../images/aste.png" />
                      </image>
                      <viewport>
                         <Rectangle2D />
@@ -75,7 +75,7 @@
                   </ImageView>
                   <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#apriImpostazioni" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../UI_img/impostazioni.png" />
+                        <Image url="@../images/impostazioni.png" />
                      </image>
                      <viewport>
                         <Rectangle2D />
@@ -83,7 +83,7 @@
                   </ImageView>
                   <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#eseguiIlLogout" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../UI_img/logout.png" />
+                        <Image url="@../images/logout.png" />
                      </image>
                      <viewport>
                         <Rectangle2D />
@@ -100,7 +100,7 @@
                        <Text fill="#4A2B6B" styleClass="status-bar-label" text="Status:" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                           <image>
-                             <Image url="@../UI_img/online.png" />
+                             <Image url="@../images/online.png" />
                           </image>
                        </ImageView>
                        <Text fill="#4ce04c" styleClass="status-text-success" text="Online" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
@@ -132,7 +132,7 @@
                                        <children>
                                           <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../UI_img/elenco_preferiti.png" />
+                                                <Image url="@../images/elenco_preferiti.png" />
                                              </image>
                                              <HBox.margin>
                                                 <Insets left="15.0" />
@@ -233,7 +233,7 @@
                                        <children>
                                           <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../UI_img/utenti%20preferiti.png" />
+                                                <Image url="@../images/utenti preferiti.png" />
                                              </image>
                                              <HBox.margin>
                                                 <Insets left="15.0" />
@@ -333,7 +333,7 @@
                                  <children>
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../UI_img/elenco_aste.png" />
+                                          <Image url="@../images/elenco_aste.png" />
                                        </image>
                                        <HBox.margin>
                                           <Insets left="15.0" />

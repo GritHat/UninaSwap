@@ -164,7 +164,7 @@
             </Pane>
          </bottom>
          <right>
-            <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER" />
+            <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6D;" BorderPane.alignment="CENTER" />
          </right>
       </BorderPane>
    </children>

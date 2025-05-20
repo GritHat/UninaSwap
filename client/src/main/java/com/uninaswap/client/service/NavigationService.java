@@ -9,8 +9,8 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 
 import com.uninaswap.client.controller.LoginController;
+import com.uninaswap.client.controller.ProfileController;
 import com.uninaswap.client.controller.RegisterController;
-import com.uninaswap.client.controller.oldController.ProfileController;
 
 /**
  * Service class to handle navigation between screens.

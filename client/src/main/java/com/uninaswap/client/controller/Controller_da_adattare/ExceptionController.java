@@ -1,4 +1,4 @@
-package com.uninaswap.client.controller;
+package com.uninaswap.client.controller.Controller_da_adattare;
 
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
@@ -44,4 +44,14 @@ public class ExceptionController {
             e.printStackTrace();
         }
     }
+
+
+
+    public static void handleException(Exception e, String messageKey) {
+        // You can log the exception and/or show an error dialog here
+        System.err.println("Exception: " + e.getMessage() + " | Message Key: " + messageKey);
+        e.printStackTrace();
+        // Optionally, integrate with your UI to show the error to the user
+    }
+
 }

@@ -25,26 +25,15 @@ public class UninaSwapApp extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Change path to avoid spaces in directory names - use underscore instead of space
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/new/fxml_new/LoginView.fxml"));
-        
-        // Add debugging to see if we can load the file
-        System.out.println("Trying to load: " + getClass().getResource("/new/fxml_new/LoginView.fxml"));
-        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/LoginView.fxml"));
         loader.setResources(LocaleService.getInstance().getResourceBundle());
+        Parent root = loader.load();
         
-        try {
-            Parent root = loader.load();
-            
-            Scene scene = new Scene(root, 800, 500);
-            
-            primaryStage.setTitle("UninaSwap - Login");
-            primaryStage.setScene(scene);
-            primaryStage.show();
-        } catch (Exception e) {
-            System.err.println("Error loading FXML: " + e.getMessage());
-            e.printStackTrace();
-        }
+        Scene scene = new Scene(root, 400, 300);
+        
+        primaryStage.setTitle("UninaSwap - Login");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
     
     public static void main(String[] args) {

@@ -49,7 +49,7 @@ public class ItemCardController {
     private void setFavorite(boolean favorite) {
         isFavorite = favorite;
         String iconPath = favorite
-            ? "/images/streamline-ultimate-colors---free--24x24-PNG/Heart-Full--Streamline-Ultimate.png"
+            ? "/images/elenco_preferiti.png"
             : "/images/streamline-ultimate-colors---free--24x24-PNG/Heart-1--Streamline-Ultimate.png";
         favoriteIcon.setImage(new Image(getClass().getResourceAsStream(iconPath)));
     }

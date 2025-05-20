@@ -20,7 +20,7 @@
             <!-- Sezione sinistra con immagine -->
             <VBox alignment="CENTER" prefHeight="500.0" prefWidth="400.0" style="-fx-background-color: linear-gradient(to bottom, -fx-primary, -fx-primary-dark);">
                <children>
-                  <ImageView fitHeight="150.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" onMouseClicked="#goToHomePage">
+                  <ImageView fitHeight="150.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/austronauta.png" />
                      </image>

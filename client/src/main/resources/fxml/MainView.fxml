@@ -157,7 +157,7 @@
                                                    <children>
                                                       <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
-                                                            <Image url="@spermatozoi.png" />
+                                                            <Image url="@../images/spermatozoi.png" />
                                                          </image>
                                                          <VBox.margin>
                                                             <Insets top="10.0" />
@@ -184,7 +184,7 @@
                                                    <children>
                                                       <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
-                                                            <Image url="@spermatozoi.png" />
+                                                            <Image url="@../images/spermatozoi.png" />
                                                          </image>
                                                          <VBox.margin>
                                                             <Insets top="10.0" />
@@ -260,7 +260,7 @@
                                                          <children>
                                                             <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
-                                                                  <Image url="@spermatozoi.png" />
+                                                                  <Image url="@../images/spermatozoi.png" />
                                                                </image>
                                                             </ImageView>
                                                          </children>
@@ -286,7 +286,7 @@
                                                          <children>
                                                             <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
-                                                                  <Image url="@spermatozoi.png" />
+                                                                  <Image url="@../images/spermatozoi.png" />
                                                                </image>
                                                             </ImageView>
                                                          </children>

@@ -69,12 +69,12 @@
                                         <FlowPane hgap="15.0" prefWidth="467.0" vgap="15.0">
                                            <children>
                                               <!-- Item cards will be added dynamically, but here's a sample -->
-                                              <fx:include source="item_card.fxml" />
-                                              <fx:include source="item_card.fxml" />
-                                              <fx:include source="item_card.fxml" />
-                                              <fx:include source="item_card.fxml" />
-                                              <fx:include source="item_card.fxml" />
-                                              <fx:include source="item_card.fxml" />
+                                              <fx:include source="ItemCard.fxml" />
+                                              <fx:include source="ItemCard.fxml" />
+                                              <fx:include source="ItemCard.fxml" />
+                                              <fx:include source="ItemCard.fxml" />
+                                              <fx:include source="ItemCard.fxml" />
+                                              <fx:include source="ItemCard.fxml" />
                                            </children>
                                            <padding>
                                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

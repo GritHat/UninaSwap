@@ -40,7 +40,7 @@
                               <Insets left="15.0" />
                            </HBox.margin>
                         </ImageView>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Notifiche">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%notifiche.titolo">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>
@@ -50,7 +50,7 @@
                         </Text>
                         <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Button mnemonicParsing="false" styleClass="small-button" text="Segna tutte come lette" />
+                              <Button mnemonicParsing="false" styleClass="small-button" text="%notifiche.segna.tutte.lette" />
                            </children>
                         </HBox>
                      </children>
@@ -65,7 +65,7 @@
                   <!-- Notification Center -->
                   <TabPane prefHeight="400.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                     <tabs>
-                      <Tab text="Tutte">
+                      <Tab text="%notifiche.tab.tutte">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -81,13 +81,13 @@
                                               </ImageView>
                                               <VBox prefHeight="70.0" prefWidth="365.0">
                                                  <children>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nuovo acquisto" wrappingWidth="363.0">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.nuovo.acquisto" wrappingWidth="363.0">
                                                        <font>
                                                           <Font name="System Bold" size="12.0" />
                                                        </font>
                                                     </Text>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="L'articolo 'Libro Programmazione' è stato acquistato da Laura Bianchi." wrappingWidth="365.0" />
-                                                    <Text fill="#888888" strokeType="OUTSIDE" strokeWidth="0.0" text="10 minuti fa">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.nuovo.acquisto.dettaglio" wrappingWidth="365.0" />
+                                                    <Text fill="#888888" strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.tempo.10min">
                                                        <font>
                                                           <Font size="10.0" />
                                                        </font>
@@ -113,13 +113,13 @@
                                               </ImageView>
                                               <VBox prefHeight="70.0" prefWidth="365.0">
                                                  <children>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Offerta superata" wrappingWidth="363.0">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.offerta.superata" wrappingWidth="363.0">
                                                        <font>
                                                           <Font name="System Bold" size="12.0" />
                                                        </font>
                                                     </Text>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="La tua offerta di €65 per 'Libri Ingegneria' è stata superata. Fai una nuova offerta!" wrappingWidth="365.0" />
-                                                    <Text fill="#888888" strokeType="OUTSIDE" strokeWidth="0.0" text="2 ore fa">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.offerta.superata.dettaglio" wrappingWidth="365.0" />
+                                                    <Text fill="#888888" strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.tempo.2h">
                                                        <font>
                                                           <Font size="10.0" />
                                                        </font>
@@ -145,13 +145,13 @@
                                               </ImageView>
                                               <VBox prefHeight="70.0" prefWidth="365.0">
                                                  <children>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nuovo follower" wrappingWidth="363.0">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.nuovo.follower" wrappingWidth="363.0">
                                                        <font>
                                                           <Font name="System Bold" size="12.0" />
                                                        </font>
                                                     </Text>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mario Rossi ha iniziato a seguirti" wrappingWidth="365.0" />
-                                                    <Text fill="#888888" strokeType="OUTSIDE" strokeWidth="0.0" text="1 giorno fa">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.nuovo.follower.dettaglio" wrappingWidth="365.0" />
+                                                    <Text fill="#888888" strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.tempo.1g">
                                                        <font>
                                                           <Font size="10.0" />
                                                        </font>
@@ -172,17 +172,17 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="Acquisti e Vendite">
+                      <Tab text="%notifiche.tab.acquisti.vendite">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                         </content>
                       </Tab>
-                      <Tab text="Aste">
+                      <Tab text="%notifiche.tab.aste">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                         </content>
                       </Tab>
-                      <Tab text="Sociali">
+                      <Tab text="%notifiche.tab.sociali">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                         </content>

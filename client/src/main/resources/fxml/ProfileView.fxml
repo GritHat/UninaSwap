@@ -47,22 +47,22 @@
                               </Pane>
                               <VBox alignment="CENTER_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Mario Rossi">
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%profilo.nome.utente">
                                        <font>
                                           <Font size="24.0" />
                                        </font>
                                     </Text>
                                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                                        <children>
-                                          <Label text="Studente di Ingegneria" />
+                                          <Label text="%profilo.studente.label" />
                                           <Label text="•" />
-                                          <Label text="Iscritto dal 2023" />
+                                          <Label text="%profilo.iscritto.dal" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" spacing="15.0">
                                        <children>
-                                          <Button mnemonicParsing="false" text="Modifica Profilo" />
-                                          <Button mnemonicParsing="false" text="Impostazioni" />
+                                          <Button mnemonicParsing="false" text="%button.modifica.profilo" />
+                                          <Button mnemonicParsing="false" text="%button.impostazioni" />
                                        </children>
                                        <VBox.margin>
                                           <Insets top="5.0" />
@@ -91,7 +91,7 @@
                                                 <Insets left="15.0" />
                                              </HBox.margin>
                                           </ImageView>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Informazioni Personali">
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%profilo.info.personali">
                                              <HBox.margin>
                                                 <Insets left="5.0" />
                                              </HBox.margin>
@@ -102,26 +102,26 @@
                                        <children>
                                           <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="10.0">
                                              <children>
-                                                <Label minWidth="100.0" text="Nome:" />
-                                                <TextField HBox.hgrow="ALWAYS" text="Mario" />
+                                                <Label minWidth="100.0" text="%profilo.nome.label" />
+                                                <TextField HBox.hgrow="ALWAYS" text="%profilo.nome.valore" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="10.0">
                                              <children>
-                                                <Label minWidth="100.0" text="Cognome:" />
-                                                <TextField HBox.hgrow="ALWAYS" text="Rossi" />
+                                                <Label minWidth="100.0" text="%profilo.cognome.label" />
+                                                <TextField HBox.hgrow="ALWAYS" text="%profilo.cognome.valore" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="10.0">
                                              <children>
-                                                <Label minWidth="100.0" text="Email:" />
-                                                <TextField HBox.hgrow="ALWAYS" text="mario.rossi@example.com" />
+                                                <Label minWidth="100.0" text="%profilo.email.label" />
+                                                <TextField HBox.hgrow="ALWAYS" text="%profilo.email.valore" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="10.0">
                                              <children>
-                                                <Label minWidth="100.0" text="Corso di Studi:" />
-                                                <TextField HBox.hgrow="ALWAYS" text="Ingegneria Informatica" />
+                                                <Label minWidth="100.0" text="%profilo.corso.studi.label" />
+                                                <TextField HBox.hgrow="ALWAYS" text="%profilo.corso.studi.valore" />
                                              </children>
                                           </HBox>
                                        </children>
@@ -143,7 +143,7 @@
                                                 <Insets left="15.0" />
                                              </HBox.margin>
                                           </ImageView>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Biografia">
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%profilo.biografia">
                                              <HBox.margin>
                                                 <Insets left="5.0" />
                                              </HBox.margin>
@@ -152,7 +152,7 @@
                                     </HBox>
                                     <VBox spacing="10.0" styleClass="card" VBox.vgrow="ALWAYS">
                                        <children>
-                                          <TextArea prefHeight="157.0" prefWidth="220.0" text="Studente al terzo anno di Ingegneria Informatica presso l'Università Federico II. Appassionato di programmazione e nuove tecnologie.&#10;&#10;Condivido appunti e libri di informatica e matematica.&#10;&#10;Contattami per collaborazioni o scambi di materiale didattico." VBox.vgrow="ALWAYS" wrapText="true" />
+                                          <TextArea prefHeight="157.0" prefWidth="220.0" text="%profilo.biografia.testo" VBox.vgrow="ALWAYS" wrapText="true" />
                                        </children>
                                        <padding>
                                           <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
@@ -171,20 +171,20 @@
                            <children>
                               <VBox alignment="CENTER" styleClass="card" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Text strokeType="OUTSIDE" styleClass="price-text" text="15" />
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Articoli Venduti" />
+                                    <Text strokeType="OUTSIDE" styleClass="price-text" text="%profilo.stat.venduti" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%profilo.stat.articoli.venduti" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" styleClass="card" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Text strokeType="OUTSIDE" styleClass="price-text" text="23" />
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Articoli Acquistati" />
+                                    <Text strokeType="OUTSIDE" styleClass="price-text" text="%profilo.stat.acquistati" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%profilo.stat.articoli.acquistati" />
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER" styleClass="card" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Text strokeType="OUTSIDE" styleClass="price-text" text="4.7/5" />
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Valutazione Media" />
+                                    <Text strokeType="OUTSIDE" styleClass="price-text" text="%profilo.stat.valutazione" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%profilo.stat.valutazione.media" />
                                  </children>
                               </VBox>
                            </children>

@@ -34,12 +34,12 @@
                   <!-- Barra di ricerca -->
                   <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" spacing="5.0" style="-fx-background-color: -fx-primary-ultralight; -fx-background-radius: 8px;">
                      <children>
-                        <TextField prefHeight="36.0" prefWidth="387.0" promptText="Cerca tra i preferiti...">
+                        <TextField prefHeight="36.0" prefWidth="387.0" promptText="%preferiti.ricerca.prompt">
                            <HBox.margin>
                               <Insets left="15.0" />
                            </HBox.margin>
                         </TextField>
-                        <Button mnemonicParsing="false" text="Cerca">
+                        <Button mnemonicParsing="false" text="%button.cerca">
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -60,7 +60,7 @@
                   <!-- Tab pane for different favorite categories -->
                   <TabPane prefHeight="400.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                     <tabs>
-                      <Tab text="Articoli">
+                      <Tab text="%preferiti.tab.articoli">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -86,7 +86,7 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="Utenti">
+                      <Tab text="%preferiti.tab.utenti">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -114,7 +114,7 @@
                                                           <Insets top="5.0" />
                                                        </VBox.margin>
                                                     </Text>
-                                                    <Button mnemonicParsing="false" styleClass="small-button" text="Visita">
+                                                    <Button mnemonicParsing="false" styleClass="small-button" text="%button.visita">
                                                        <VBox.margin>
                                                           <Insets top="5.0" />
                                                        </VBox.margin>
@@ -132,7 +132,7 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="Aste">
+                      <Tab text="%preferiti.tab.aste">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -145,12 +145,12 @@
                                                  <children>
                                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="467.0" styleClass="card-header">
                                                        <children>
-                                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Laptop HP" wrappingWidth="122.13671875">
+                                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%preferiti.asta.titolo" wrappingWidth="122.13671875">
                                                              <HBox.margin>
                                                                 <Insets left="10.0" />
                                                              </HBox.margin>
                                                           </Text>
-                                                          <Text fill="#4a2b6b" strokeType="OUTSIDE" strokeWidth="0.0" text="Scade: 3 giorni">
+                                                          <Text fill="#4a2b6b" strokeType="OUTSIDE" strokeWidth="0.0" text="%preferiti.asta.scadenza">
                                                              <HBox.margin>
                                                                 <Insets right="2.0" />
                                                              </HBox.margin>
@@ -177,8 +177,8 @@
                                                           </ImageView>
                                                           <VBox alignment="CENTER_LEFT" prefHeight="89.0" prefWidth="109.0">
                                                              <children>
-                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Offerta attuale:" />
-                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="€180" />
+                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%preferiti.asta.offerta.attuale" />
+                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%preferiti.asta.prezzo" />
                                                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
                                                                    <children>
                                                                       <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
@@ -186,15 +186,15 @@
                                                                             <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Check-Circle--Streamline-Ultimate.png" />
                                                                          </image>
                                                                       </ImageView>
-                                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="La tua offerta" />
+                                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="%preferiti.asta.tua.offerta" />
                                                                    </children>
                                                                 </HBox>
                                                              </children>
                                                           </VBox>
                                                           <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="271.0" spacing="10.0">
                                                              <children>
-                                                                <Button mnemonicParsing="false" text="Rilancia" />
-                                                                <Button mnemonicParsing="false" text="Visualizza">
+                                                                <Button mnemonicParsing="false" text="%button.rilancia" />
+                                                                <Button mnemonicParsing="false" text="%button.visualizza">
                                                                    <graphic>
                                                                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                                                          <image>

@@ -35,13 +35,13 @@
                   <!-- Header with search -->
                   <HBox alignment="CENTER_LEFT" prefHeight="50.0" spacing="10.0" style="-fx-background-color: -fx-primary-ultralight; -fx-background-radius: 8px;">
                      <children>
-                        <TextField prefHeight="36.0" prefWidth="250.0" promptText="Cerca nei tuoi articoli...">
+                        <TextField prefHeight="36.0" prefWidth="250.0" promptText="%inventory.ricerca.prompt">
                            <HBox.margin>
                               <Insets left="15.0" />
                            </HBox.margin>
                         </TextField>
-                        <ComboBox prefHeight="36.0" prefWidth="120.0" promptText="Categoria" />
-                        <Button mnemonicParsing="false" text="Cerca">
+                        <ComboBox prefHeight="36.0" prefWidth="120.0" promptText="%inventory.categoria.prompt" />
+                        <Button mnemonicParsing="false" text="%button.cerca">
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -62,7 +62,7 @@
                   <!-- Add new item button -->
                   <HBox alignment="CENTER_RIGHT">
                      <children>
-                        <Button mnemonicParsing="false" text="Nuovo Articolo">
+                        <Button mnemonicParsing="false" text="%inventory.nuovo.articolo">
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -80,7 +80,7 @@
                   <!-- Tab pane for different item states -->
                   <TabPane prefHeight="380.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                     <tabs>
-                      <Tab text="In Vendita">
+                      <Tab text="%inventory.tab.invendita">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -99,20 +99,20 @@
                                                           <Insets top="10.0" />
                                                        </VBox.margin>
                                                     </ImageView>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Libro Programmazione" textAlignment="CENTER" wrappingWidth="100.0">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%inventory.articolo.nome" textAlignment="CENTER" wrappingWidth="100.0">
                                                        <VBox.margin>
                                                           <Insets top="10.0" />
                                                        </VBox.margin>
                                                     </Text>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="25€">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%inventory.articolo.prezzo">
                                                        <VBox.margin>
                                                           <Insets top="5.0" />
                                                        </VBox.margin>
                                                     </Text>
                                                     <HBox alignment="CENTER" spacing="5.0">
                                                        <children>
-                                                          <Button mnemonicParsing="false" styleClass="small-button" text="Modifica" />
-                                                          <Button mnemonicParsing="false" styleClass="small-button" text="Rimuovi" />
+                                                          <Button mnemonicParsing="false" styleClass="small-button" text="%button.modifica" />
+                                                          <Button mnemonicParsing="false" styleClass="small-button" text="%button.rimuovi" />
                                                        </children>
                                                        <VBox.margin>
                                                           <Insets bottom="5.0" top="10.0" />
@@ -131,7 +131,7 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="Venduti">
+                      <Tab text="%inventory.tab.venduti">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -148,7 +148,7 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="Aste Attive">
+                      <Tab text="%inventory.tab.asteattive">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -165,7 +165,7 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="Bozze">
+                      <Tab text="%inventory.tab.bozze">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>

@@ -42,7 +42,7 @@
                               <Insets left="15.0" />
                            </HBox.margin>
                         </ImageView>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Crea Nuovo Annuncio">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%sell.nuovo.annuncio">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>
@@ -71,7 +71,7 @@
                                           <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Picture-Square-Upload--Streamline-Ultimate.png" />
                                        </image>
                                     </ImageView>
-                                    <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="Carica Immagine">
+                                    <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="%sell.carica.immagine">
                                        <graphic>
                                           <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -86,26 +86,26 @@
                                  <children>
                                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                                        <children>
-                                          <Label prefWidth="100.0" text="Titolo:" />
-                                          <TextField prefWidth="200.0" promptText="Titolo dell'annuncio" />
+                                          <Label prefWidth="100.0" text="%sell.titolo.label" />
+                                          <TextField prefWidth="200.0" promptText="%sell.titolo.prompt" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                                        <children>
-                                          <Label prefWidth="100.0" text="Categoria:" />
-                                          <ComboBox prefWidth="200.0" promptText="Seleziona categoria" />
+                                          <Label prefWidth="100.0" text="%sell.categoria.label" />
+                                          <ComboBox prefWidth="200.0" promptText="%sell.categoria.prompt" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                                        <children>
-                                          <Label prefWidth="100.0" text="Prezzo (€):" />
-                                          <TextField prefWidth="200.0" promptText="0.00" />
+                                          <Label prefWidth="100.0" text="%sell.prezzo.label" />
+                                          <TextField prefWidth="200.0" promptText="%sell.prezzo.prompt" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                                        <children>
-                                          <Label prefWidth="100.0" text="Condizione:" />
-                                          <ComboBox prefWidth="200.0" promptText="Seleziona condizione" />
+                                          <Label prefWidth="100.0" text="%sell.condizione.label" />
+                                          <ComboBox prefWidth="200.0" promptText="%sell.condizione.prompt" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -114,28 +114,28 @@
                         </HBox>
                         <VBox spacing="10.0">
                            <children>
-                              <Label text="Descrizione:" />
-                              <TextArea prefHeight="100.0" promptText="Descrivi il tuo articolo (materiali, caratteristiche, ecc...)" wrapText="true" />
+                              <Label text="%sell.descrizione.label" />
+                              <TextArea prefHeight="100.0" promptText="%sell.descrizione.prompt" wrapText="true" />
                            </children>
                         </VBox>
                         <HBox alignment="CENTER_LEFT" spacing="20.0">
                            <children>
-                              <CheckBox mnemonicParsing="false" text="Disponibile per il ritiro in sede" />
-                              <CheckBox mnemonicParsing="false" text="Disponibile per la spedizione" />
+                              <CheckBox mnemonicParsing="false" text="%sell.ritiro.sede" />
+                              <CheckBox mnemonicParsing="false" text="%sell.spedizione" />
                            </children>
                         </HBox>
                         <Separator prefWidth="200.0" />
                         <HBox alignment="CENTER" spacing="15.0">
                            <children>
-                              <CheckBox mnemonicParsing="false" text="Abilita modalità asta" />
-                              <Label text="Data fine asta:" />
-                              <TextField promptText="gg/mm/aaaa" />
+                              <CheckBox mnemonicParsing="false" text="%sell.abilita.asta" />
+                              <Label text="%sell.data.fine.asta" />
+                              <TextField promptText="%sell.data.fine.asta.prompt" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" spacing="15.0">
                            <children>
-                              <Button mnemonicParsing="false" style="-fx-background-color: #CCCCCC;" text="Anteprima" textFill="WHITE" />
-                              <Button mnemonicParsing="false" text="Pubblica">
+                              <Button mnemonicParsing="false" style="-fx-background-color: #CCCCCC;" text="%button.anteprima" textFill="WHITE" />
+                              <Button mnemonicParsing="false" text="%button.pubblica">
                                  <graphic>
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                        <image>

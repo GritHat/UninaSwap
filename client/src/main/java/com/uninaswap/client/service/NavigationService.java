@@ -150,4 +150,15 @@ public class NavigationService {
     public Stage getStageFromEvent(ActionEvent event) {
         return (Stage)((Node)event.getSource()).getScene().getWindow();
     }
+
+    public void navigateToItemDetails(String itemId) {
+        // TODO: Implement navigation logic to item details view using itemId
+        System.out.println("Navigating to item details for item: " + itemId);
+    }
+    
+    public void navigateToUserProfile(Long userId) {
+        // Implementa la logica per mostrare la vista profilo utente
+        // Ad esempio: carica la scena del profilo e passa l'userId
+    }
+
 }

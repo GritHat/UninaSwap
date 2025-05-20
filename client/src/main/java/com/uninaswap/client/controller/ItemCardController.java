@@ -33,7 +33,7 @@ public class ItemCardController {
         // Tooltip per il preferito
         Tooltip.install(favoriteIcon, new Tooltip("Aggiungi/rimuovi dai preferiti"));
     }
-
+/*da aggiungere
     public void setItem(ItemDTO item) {
         this.item = item;
         itemName.setText(item.getName());
@@ -45,7 +45,7 @@ public class ItemCardController {
         }
         setFavorite(favoritesService.isFavorite(item.getId()));
     }
-
+*/
     private void setFavorite(boolean favorite) {
         isFavorite = favorite;
         String iconPath = favorite

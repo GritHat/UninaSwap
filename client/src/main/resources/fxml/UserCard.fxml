@@ -9,7 +9,7 @@
 
 <StackPane style="-fx-border-radius: 222;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox fx:id="itemCard" alignment="TOP_CENTER" onMouseClicked="#openItemDetails" prefHeight="101.0" prefWidth="120.0" styleClass="card">
+      <VBox fx:id="itemCard" alignment="TOP_CENTER" onMouseClicked="#openUserDetails" prefHeight="101.0" prefWidth="120.0" styleClass="card">
          <children>
             <ImageView fx:id="itemImage" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>

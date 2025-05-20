@@ -78,7 +78,7 @@
                         <HBox alignment="CENTER" spacing="5.0">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%login.no.account" />
-                              <Hyperlink fx:id="registerLink" onAction="#handleRegisterLink" text="%button.registrati" />
+                              <Hyperlink fx:id="registerLink" onAction="#showRegister" text="%button.registrati" />
                            </children>
                            <VBox.margin>
                               <Insets top="10.0" />

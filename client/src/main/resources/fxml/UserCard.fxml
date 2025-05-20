@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<StackPane style="-fx-border-radius: 222;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane style="-fx-border-radius: 222;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.UserCardController">
    <children>
       <VBox fx:id="itemCard" alignment="TOP_CENTER" onMouseClicked="#openUserDetails" prefHeight="101.0" prefWidth="120.0" styleClass="card">
          <children>

@@ -170,6 +170,23 @@ public class MainController implements Refreshable {
         }
     }
 
+    @FXML
+    public void openNotifications(ActionEvent event) {
+
+    }
+
+    @FXML
+    public void openAste(ActionEvent event) {
+
+    }
+    //Cards menager
+
+
+
+
+
+
+
     /**
      * Verify that a user is logged in, redirect to login if not
      * Call this from initialize() in protected controllers

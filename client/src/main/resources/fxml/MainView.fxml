@@ -373,7 +373,7 @@
                                                             </Text>
                                                             <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
-                                                                  <Image url="@spermatozoi.png" />
+                                                                  <Image url="@../images/spermatozoi.png" />
                                                                </image>
                                                                <HBox.margin>
                                                                   <Insets right="10.0" />
@@ -385,7 +385,7 @@
                                                          <children>
                                                             <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
-                                                                  <Image url="@spermatozoi.png" />
+                                                                  <Image url="@../images/spermatozoi.png" />
                                                                </image>
                                                                <HBox.margin>
                                                                   <Insets right="10.0" />
@@ -399,7 +399,7 @@
                                                                      <children>
                                                                         <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                                                            <image>
-                                                                              <Image url="@spermatozoi.png" />
+                                                                              <Image url="@../images/spermatozoi.png" />
                                                                            </image>
                                                                         </ImageView>
                                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="La tua offerta" />
@@ -429,7 +429,7 @@
                                                             </Text>
                                                             <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
-                                                                  <Image url="@spermatozoi.png" />
+                                                                  <Image url="@../images/spermatozoi.png" />
                                                                </image>
                                                                <HBox.margin>
                                                                   <Insets right="10.0" />
@@ -441,7 +441,7 @@
                                                          <children>
                                                             <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
-                                                                  <Image url="@spermatozoi.png" />
+                                                                  <Image url="@../images/spermatozoi.png" />
                                                                </image>
                                                                <HBox.margin>
                                                                   <Insets right="10.0" />
@@ -455,7 +455,7 @@
                                                                      <children>
                                                                         <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                                                            <image>
-                                                                              <Image url="@spermatozoi.png" />
+                                                                              <Image url="@../images/spermatozoi.png" />
                                                                            </image>
                                                                         </ImageView>
                                                                         <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-warning" text="Offerta superata" />
@@ -493,7 +493,7 @@
                                                             </Text>
                                                             <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
-                                                                  <Image url="@spermatozoi.png" />
+                                                                  <Image url="@../images/spermatozoi.png" />
                                                                </image>
                                                                <HBox.margin>
                                                                   <Insets right="10.0" />
@@ -505,7 +505,7 @@
                                                          <children>
                                                             <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
-                                                                  <Image url="@spermatozoi.png" />
+                                                                  <Image url="@../images/spermatozoi.png" />
                                                                </image>
                                                                <HBox.margin>
                                                                   <Insets right="10.0" />
@@ -519,7 +519,7 @@
                                                                      <children>
                                                                         <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                                                            <image>
-                                                                              <Image url="@spermatozoi.png" />
+                                                                              <Image url="@../images/spermatozoi.png" />
                                                                            </image>
                                                                         </ImageView>
                                                                         <Text fill="#4a2b6b" strokeType="OUTSIDE" strokeWidth="0.0" text="10 offerte" />

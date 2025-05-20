@@ -1,4 +1,4 @@
-package com.uninaswap.client.controller.oldController;
+package com.uninaswap.client.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;

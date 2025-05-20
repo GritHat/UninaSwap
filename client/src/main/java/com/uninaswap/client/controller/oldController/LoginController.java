@@ -1,24 +1,11 @@
 package com.uninaswap.client.controller;
 
-import com.uninaswap.client.service.EventBusService;
-import com.uninaswap.client.constants.EventTypes;
-
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import javafx.scene.input.MouseEvent;
-
-import java.io.IOException;
+import javafx.scene.control.PasswordField;
 
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.AuthenticationService;
@@ -34,17 +21,10 @@ public class LoginController {
     @FXML private PasswordField passwordField;
     @FXML private Label messageLabel;
     
-    @FXML
-    private Button loginButton;
-    
-    @FXML
-    private Hyperlink registerLink;
-    
     private final NavigationService navigationService;
     private final AuthenticationService authService;
     private final ValidationService validationService;
     private final LocaleService localeService;
-    private final EventBusService eventBus = EventBusService.getInstance();
     
     public LoginController() {
         this.navigationService = NavigationService.getInstance();
@@ -84,32 +64,11 @@ public class LoginController {
     }
     
     @FXML
-    public void handleRegisterLink(ActionEvent event) {
-        ExceptionController.cambiaScena(event, "/new/fxml_new/RegisterView.fxml", "UninaSwap - Registrazione");
-    }
-    
-    
-    @FXML
-    public void goToHomePage(MouseEvent event) { //solo per testare velocemente la navigazione
-        System.out.println("Navigazione diretta alla home page tramite click sull'immagine");
-        
+    public void showRegister(ActionEvent event) {
         try {
-            // Carica la schermata principale
-            String fxmlPath = "/new/fxml_new/home_Principale.fxml";
-            System.out.println("Tentativo di caricare: " + fxmlPath);
-            System.out.println("URL risorsa: " + getClass().getResource(fxmlPath));
-            
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root, 1000, 700); // Dimensioni più appropriate
-            stage.setScene(scene);
-            stage.setTitle("UninaSwap - Home");
-            stage.show();
-        } catch (IOException e) {
-            System.err.println("Errore durante il caricamento della home page: " + e.getMessage());
-            e.printStackTrace();
+            navigationService.navigateToRegister(usernameField);
+        } catch (Exception e) {
+            showMessage("navigation.error.load.register", "message-error");
         }
     }
     

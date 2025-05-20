@@ -1,4 +1,4 @@
-package com.uninaswap.client.controller.oldController;
+package com.uninaswap.client.controller;
 
 /**
  * Interface for controllers that can refresh their UI

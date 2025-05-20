@@ -1,6 +1,5 @@
-package com.uninaswap.client.controller.oldController;
+package com.uninaswap.client.controller;
 
-import com.uninaswap.client.controller.ExceptionController;
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.util.AlertHelper;
@@ -162,7 +161,7 @@ public class ItemDialogController {
                 // Show preview
                 Image image = new Image(file.toURI().toString());
                 imagePreview.setImage(image);
-            } catch (ExceptionController ex) {
+            } catch (Exception ex) {
                 AlertHelper.showErrorAlert(
                     localeService.getMessage("item.image.error.title"),
                     localeService.getMessage("item.image.error.header"),

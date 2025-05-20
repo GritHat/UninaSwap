@@ -3,7 +3,6 @@ package com.uninaswap.client;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.constants.EventTypes;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

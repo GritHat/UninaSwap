@@ -161,4 +161,24 @@ public class NavigationService {
         // Ad esempio: carica la scena del profilo e passa l'userId
     }
 
+    public void navigateToProfile() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'navigateToProfile'");
+    }
+
+    public void navigateToSettings() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'navigateToSettings'");
+    }
+
+    public void navigateToSupport() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'navigateToSupport'");
+    }
+
+    public void logout() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'logout'");
+    }
+
 }

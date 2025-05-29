@@ -15,7 +15,7 @@
     -fx-card-bg: #FFFFFF;
     -fx-light-grey: #E0E0E0;
     -fx-mid-grey: #CCCCCC;
-    -fx-dark-grey: ##474040;
+    -fx-dark-grey: #474040;
     
     /* Colori di stato */
     -fx-success: #27AE60;
@@ -204,7 +204,7 @@
 
 .status-bar-text {
     -fx-fill: #E0E0E0;
-    -fx-font-size: 7.5px;
+    -fx-font-size: 10px;
 }
 
 /* Badge indicators */
@@ -303,4 +303,39 @@
     -fx-fill: -fx-primary-light;
     -fx-font-weight: bold;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 1, 0, 0, 0);
+}
+
+/* Footer styling */
+.status-bar {
+    -fx-background-color: linear-gradient(to right, -fx-dark-grey, #404040);
+    -fx-border-width: 0.5px 0 0 0;
+    -fx-border-color: #505050;
+}
+
+.status-bar-text {
+    -fx-fill: #E0E0E0;
+    -fx-font-size: 10px;
+}
+
+.footer-combo {
+    -fx-background-color: #505050;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
+    -fx-padding: 0px 5px;
+}
+
+.footer-combo .arrow-button .arrow {
+    -fx-background-color: white;
+}
+
+.footer-combo .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: #505050;
+}
+
+.footer-combo .list-view {
+    -fx-background-color: #505050;
+    -fx-border-color: #666666;
 }

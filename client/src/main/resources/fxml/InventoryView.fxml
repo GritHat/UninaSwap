@@ -31,31 +31,11 @@
             <VBox prefHeight="484.0" prefWidth="501.0" style="-fx-background-color: #F8F8F8;" BorderPane.alignment="CENTER">
                <children>
                   <!-- Header with search -->
-                  <HBox alignment="CENTER_LEFT" prefHeight="50.0" spacing="10.0" style="-fx-background-color: -fx-primary-ultralight; -fx-background-radius: 8px;">
-                     <children>
-                        <TextField prefHeight="36.0" prefWidth="250.0" promptText="%inventory.ricerca.prompt">
-                           <HBox.margin>
-                              <Insets left="15.0" />
-                           </HBox.margin>
-                        </TextField>
-                        <ComboBox prefHeight="36.0" prefWidth="120.0" promptText="%inventory.categoria.prompt" />
-                        <Button mnemonicParsing="false" text="%button.cerca">
-                           <graphic>
-                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Search--Streamline-Ultimate.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
-                     </children>
+                  <fx:include source="SearchBarView.fxml">
                      <VBox.margin>
                         <Insets bottom="10.0" left="15.0" right="15.0" top="15.0" />
                      </VBox.margin>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                  </HBox>
+                  </fx:include>
                   
                   <!-- Add new item button -->
                   <HBox alignment="CENTER_RIGHT">

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+
+<HBox fx:id="searchBar" alignment="CENTER" spacing="5.0" style="-fx-background-color: -fx-primary-ultralight; -fx-background-radius: 8px;" styleClass="search-container" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.SearchBarController">
+   <children>
+      <TextField fx:id="searchField" prefHeight="36.0" prefWidth="610.0" promptText="Cerca..." styleClass="search-field">
+         <HBox.margin>
+            <Insets left="15.0" />
+         </HBox.margin>
+      </TextField>
+      <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearch" styleClass="search-button" text="Cerca">
+         <graphic>
+            <ImageView fitHeight="28.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/search.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</HBox>

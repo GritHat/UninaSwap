@@ -28,18 +28,7 @@
             <VBox prefHeight="484.0" prefWidth="501.0" style="-fx-background-color: #F8F8F8;" BorderPane.alignment="CENTER">
                <children>
                   <!-- Barra di ricerca -->
-                  <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" spacing="5.0" style="-fx-background-color: -fx-primary-ultralight; -fx-background-radius: 8px;">
-                     <TextField fx:id="searchField" prefHeight="40.0" prefWidth="200.0" promptText="Cerca..." styleClass="search-field">
-                        <font>
-                           <Font size="14.0" />
-                        </font>
-                     </TextField>
-                     <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearch" prefHeight="40.0" prefWidth="80.0" styleClass="search-button">
-                        <text>
-                           <Text text="Cerca" />
-                        </text>
-                     </Button>
-                  </HBox>
+                  <fx:include source="SearchBarView.fxml" />
                   
                   <!-- Sezione Articoli Preferiti -->
                   <VBox prefWidth="501.0" spacing="5.0">

@@ -34,7 +34,7 @@
                   <Insets top="10.0" />
                </VBox.margin>
                <image>
-                  <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Picture-Sun--Streamline-Ultimate.png" />
+                  <Image url="@../images/immagine_generica.png" />
                </image>
             </ImageView>
             

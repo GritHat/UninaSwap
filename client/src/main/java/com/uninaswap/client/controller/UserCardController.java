@@ -30,7 +30,12 @@ public class UserCardController {
     @FXML
     private void openUserDetails(MouseEvent event) {
         if (user != null) {
-            navigationService.navigateToUserProfile(user.getId());
+            try {
+                navigationService.loadProfileView();
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+                // Optionally, show an error dialog to the user
+            }
         }
     }
 }

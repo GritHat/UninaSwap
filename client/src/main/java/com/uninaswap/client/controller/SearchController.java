@@ -29,7 +29,7 @@ public class SearchController {
     @FXML
     public void showProfile(MouseEvent event) {
         try {
-            navigationService.navigateToProfile();
+            navigationService.loadProfileView();
         } catch (Exception e) {
             System.err.println("Errore nella navigazione al profilo: " + e.getMessage());
         }

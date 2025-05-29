@@ -14,7 +14,7 @@
    <children>
       <ImageView fx:id="profileIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showProfile" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/immagine_profilo.png" />
+            <Image url="@../images/icons/user_profile.png" />
          </image>
          <viewport>
             <Rectangle2D />
@@ -23,7 +23,7 @@
       <Separator prefWidth="35.0" styleClass="sidebar-separator" />
       <ImageView fx:id="homeIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showHome" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/home.png" />
+            <Image url="@../images/icons/home.png" />
          </image>
          <viewport>
             <Rectangle2D />
@@ -32,7 +32,7 @@
       <Separator prefWidth="35.0" styleClass="sidebar-separator" />
       <ImageView fx:id="inventoryIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showInventory" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/Inventario.png" />
+            <Image url="@../images/icons/inventory.png" />
          </image>
          <viewport>
             <Rectangle2D />
@@ -41,7 +41,7 @@
       <Separator prefWidth="35.0" styleClass="sidebar-separator" />
       <ImageView fx:id="notificationsIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showNotifications" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/notification.png" />
+            <Image url="@../images/icons/notification.png" />
          </image>
          <viewport>
             <Rectangle2D />
@@ -50,7 +50,7 @@
       <Separator prefWidth="35.0" styleClass="sidebar-separator" />
       <ImageView fx:id="settingsIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showSettings" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/impostazioni.png" />
+            <Image url="@../images/icons/settings.png" />
          </image>
          <viewport>
             <Rectangle2D />
@@ -59,7 +59,7 @@
       <Separator prefWidth="35.0" styleClass="sidebar-separator" />
       <ImageView fx:id="supportIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showSupport" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/supporto.png" />
+            <Image url="@../images/icons/support.png" />
          </image>
          <viewport>
             <Rectangle2D />
@@ -68,7 +68,7 @@
       <Separator prefWidth="35.0" styleClass="sidebar-separator" />
       <ImageView fx:id="logoutIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#logout" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/logout.png" />
+            <Image url="@../images/icons/logout.png" />
          </image>
          <viewport>
             <Rectangle2D />

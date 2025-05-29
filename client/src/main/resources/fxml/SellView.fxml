@@ -66,14 +66,14 @@
                                  <children>
                                     <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Picture-Square-Upload--Streamline-Ultimate.png" />
+                                          <Image url="@../images/icons/upload_image.png" />
                                        </image>
                                     </ImageView>
                                     <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="150.0" text="%sell.carica.immagine">
                                        <graphic>
                                           <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Camera-Photo--Streamline-Ultimate.png" />
+                                                <Image url="@../images/icons/camera.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>

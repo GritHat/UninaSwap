@@ -44,7 +44,7 @@
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Add-Square--Streamline-Ultimate.png" />
+                                    <Image url="@../images/icons/add_item.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -170,7 +170,7 @@
             <fx:include source="FooterView.fxml" />
          </bottom>
          <right>
-            <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER" />
+            <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6L;" BorderPane.alignment="CENTER" />
          </right>
       </BorderPane>
    </children>

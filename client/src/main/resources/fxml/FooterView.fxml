@@ -22,7 +22,7 @@
          <children>
             <ImageView fx:id="statusIcon" fitHeight="24.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../images/online.png" />
+                  <Image url="@../images/icons/status_online.png" />
                </image>
             </ImageView>
             <Text fx:id="statusText" fill="#4ce04c" styleClass="status-text-success" text="Online">

@@ -339,3 +339,22 @@
     -fx-background-color: #505050;
     -fx-border-color: #666666;
 }
+
+/* Message label styles */
+.message-error {
+    -fx-text-fill: -fx-warning;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.message-success {
+    -fx-text-fill: -fx-success;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.message-info {
+    -fx-text-fill: -fx-info;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}

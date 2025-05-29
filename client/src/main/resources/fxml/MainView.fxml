@@ -1,47 +1,132 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.MainController">
    <children>
-      <BorderPane prefHeight="700.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" prefWidth="1000.0" prefHeight="700.0">
          <left>
-            <fx:include source="SidebarView.fxml" />
+            <VBox alignment="TOP_CENTER" prefWidth="70.0" maxWidth="70.0" spacing="15.0" styleClass="sidebar" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+               <padding>
+                  <Insets top="13.0" />
+               </padding>
+               <children>
+                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showProfile" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icons/user_profile.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showProfile" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icons/favorite.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showInventory" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icons/inventory.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showMarket" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icons/add_item.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#openNotification" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icons/notification.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#openAste" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icons/auction.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showSettings" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icons/settings.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#handleLogout" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/logout.png" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+               </children>
+            </VBox>
          </left>
          <bottom>
-            <!-- Status bar -->
-            <fx:include source="FooterView.fxml" />
+            <Pane prefHeight="60.0" prefWidth="1000.0" style="-fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-width: 1 0 0 0;" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox alignment="CENTER" spacing="15.0" layoutY="15.0" layoutX="0.0" prefWidth="1000.0">
+                    <children>
+                       <Text fill="#4A2B6B" styleClass="status-bar-label" text="Status:" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                       <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                          <image>
+                             <Image url="@../images/online.png" />
+                          </image>
+                       </ImageView>
+                       <Text fill="#4ce04c" styleClass="status-text-success" text="Online" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                    </children>
+                  </HBox>
+               </children>
+            </Pane>
          </bottom>
          <right>
             <Separator orientation="VERTICAL" prefHeight="700.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER" />
          </right>
          <center>
-            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="829.0" prefWidth="946.0" BorderPane.alignment="CENTER">
+            <ScrollPane fitToWidth="true" fitToHeight="true" BorderPane.alignment="CENTER">
               <content>
-                <AnchorPane prefHeight="858.0" prefWidth="962.0">
+                <AnchorPane>
                      <children>
-                        <VBox prefHeight="1104.0" prefWidth="925.0" style="-fx-background-color: #F8F8F8;">
+                        <VBox style="-fx-background-color: #F8F8F8;" maxWidth="900.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
                            <children>
                               <!-- Barra di ricerca -->
-                              <fx:include source="SearchBarView.fxml">
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </VBox.margin>
-                              </fx:include>
-                              
+                              <HBox alignment="CENTER_LEFT" spacing="5.0" style="-fx-background-color: -fx-primary-ultralight; -fx-background-radius: 8px;">
+   <VBox.margin>
+      <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+   </VBox.margin>
+</HBox>
                               <!-- Sezione Articoli Preferiti -->
-                              <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="228.0" prefWidth="885.0" spacing="5.0" VBox.vgrow="ALWAYS">
+                              <VBox spacing="5.0" maxWidth="900.0" VBox.vgrow="ALWAYS">
                                  <children>
                                     <HBox alignment="CENTER_LEFT" styleClass="section-header">
                                        <children>
@@ -63,11 +148,71 @@
                                           <Insets left="15.0" right="15.0" />
                                        </VBox.margin>
                                     </HBox>
-                                    <ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" prefHeight="287.0" prefWidth="885.0" vbarPolicy="AS_NEEDED">
+                                    <ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED">
                                        <content>
-                                          <HBox fx:id="articoliPreferitiBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="281.0" prefWidth="867.0" spacing="15.0" HBox.hgrow="ALWAYS">
+                                          <HBox fx:id="articoliPreferitiBox" spacing="15.0" HBox.hgrow="ALWAYS">
                                              <children>
-                                                <fx:include source="ItemCard.fxml" />
+                                                <!-- Articolo preferito 1 -->
+                                                <VBox alignment="TOP_CENTER" prefHeight="180.0" prefWidth="120.0" styleClass="card">
+                                                   <children>
+                                                      <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../images/spermatozoi.png" />
+                                                         </image>
+                                                         <VBox.margin>
+                                                            <Insets top="10.0" />
+                                                         </VBox.margin>
+                                                      </ImageView>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Libro Programmazione" textAlignment="CENTER" wrappingWidth="100.0">
+                                                         <VBox.margin>
+                                                            <Insets top="10.0" />
+                                                         </VBox.margin>
+                                                      </Text>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="25€">
+                                                         <VBox.margin>
+                                                            <Insets top="5.0" />
+                                                         </VBox.margin>
+                                                      </Text>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets />
+                                                   </HBox.margin>
+                                                </VBox>
+                                                
+                                                            <!-- Articolo preferito 2 -->
+                                                <VBox alignment="TOP_CENTER" prefHeight="180.0" prefWidth="120.0" styleClass="card">
+                                                   <children>
+                                                      <ImageView fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@../images/spermatozoi.png" />
+                                                         </image>
+                                                         <VBox.margin>
+                                                            <Insets top="10.0" />
+                                                         </VBox.margin>
+                                                      </ImageView>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Appunti Fisica" textAlignment="CENTER" wrappingWidth="100.0">
+                                                         <VBox.margin>
+                                                            <Insets top="10.0" />
+                                                         </VBox.margin>
+                                                      </Text>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="15€">
+                                                         <VBox.margin>
+                                                            <Insets top="5.0" />
+                                                         </VBox.margin>
+                                                      </Text>
+                                                   </children>
+                                                </VBox>
+                                                
+                                                            <!-- Altri articoli (aggiungi quanti ne servono) -->
+                                                <VBox alignment="TOP_CENTER" prefHeight="180.0" prefWidth="120.0" styleClass="card">
+                                       <!-- Contenuto simile -->
+                                    </VBox>
+                                                <VBox alignment="TOP_CENTER" prefHeight="180.0" prefWidth="120.0" styleClass="card">
+                                       <!-- Contenuto simile -->
+                                    </VBox>
+                                                <VBox alignment="TOP_CENTER" prefHeight="180.0" prefWidth="120.0" styleClass="card">
+                                       <!-- Contenuto simile -->
+                                    </VBox>
                                              </children>
                                              <padding>
                                                 <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
@@ -82,7 +227,7 @@
                               </VBox>
                               
                                           <!-- Sezione Utenti Preferiti -->
-                              <VBox maxHeight="388.0" maxWidth="920.0" prefHeight="105.0" prefWidth="885.0" spacing="5.0" VBox.vgrow="ALWAYS">
+                              <VBox spacing="5.0" maxWidth="900.0" VBox.vgrow="ALWAYS">
                                  <children>
                                     <HBox alignment="CENTER_LEFT" styleClass="section-header">
                                        <children>
@@ -104,11 +249,74 @@
                                           <Insets left="15.0" right="15.0" />
                                        </VBox.margin>
                                     </HBox>
-                                    <ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="167.0" prefWidth="885.0" vbarPolicy="AS_NEEDED">
+                                    <ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED">
                                        <content>
-                                          <HBox fx:id="utentiPreferitiBox" prefHeight="162.0" prefWidth="881.0" spacing="20.0" HBox.hgrow="ALWAYS">
+                                          <HBox fx:id="utentiPreferitiBox" spacing="20.0" HBox.hgrow="ALWAYS">
                                              <children>
-                                                <fx:include source="UserCard.fxml" />
+                                                <!-- Utente preferito 1 -->
+                                                <VBox alignment="TOP_CENTER" prefWidth="80.0">
+                                                   <children>
+                                                      <Pane styleClass="user-circle">
+                                                         <children>
+                                                            <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../images/spermatozoi.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </children>
+                                                         <VBox.margin>
+                                                            <Insets />
+                                                         </VBox.margin>
+                                                         <padding>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </padding>
+                                                      </Pane>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mario Rossi" textAlignment="CENTER" wrappingWidth="80.0">
+                                                         <VBox.margin>
+                                                            <Insets top="5.0" />
+                                                         </VBox.margin>
+                                                      </Text>
+                                                   </children>
+                                                </VBox>
+                                                
+                                                            <!-- Utente preferito 2 -->
+                                                <VBox alignment="TOP_CENTER" prefWidth="80.0">
+                                                   <children>
+                                                      <Pane styleClass="user-circle">
+                                                         <children>
+                                                            <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@../images/spermatozoi.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </children>
+                                                         <padding>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                         </padding>
+                                                      </Pane>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Laura Bianchi" textAlignment="CENTER" wrappingWidth="80.0">
+                                                         <VBox.margin>
+                                                            <Insets top="5.0" />
+                                                         </VBox.margin>
+                                                      </Text>
+                                                   </children>
+                                                </VBox>
+                                                
+                                                            <!-- Altri utenti (aggiungi quanti ne servono) -->
+                                                <VBox alignment="TOP_CENTER" prefWidth="80.0">
+                                       <!-- Contenuto simile -->
+                                    </VBox>
+                                                <VBox alignment="TOP_CENTER" prefWidth="80.0">
+                                                   <children>
+                                                      <ScrollPane prefHeight="200.0" prefWidth="200.0" />
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="TOP_CENTER" prefWidth="80.0">
+                                       <!-- Contenuto simile -->
+                                    </VBox>
+                                                <VBox alignment="TOP_CENTER" prefWidth="80.0">
+                                       <!-- Contenuto simile -->
+                                    </VBox>
                                              </children>
                                              <padding>
                                                 <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
@@ -121,32 +329,32 @@
                                     <Insets top="10.0" />
                                  </VBox.margin>
                               </VBox>
-                              <!-- Sezione Aste a cui partecipi -->
-                              <VBox maxWidth="900.0" prefHeight="359.0" prefWidth="885.0" spacing="5.0" VBox.vgrow="ALWAYS">
+                              <HBox alignment="CENTER_LEFT" styleClass="section-header">
                                  <children>
-                                    <HBox alignment="CENTER_LEFT" styleClass="section-header">
-                                       <children>
-                                          <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@../images/elenco_aste.png" />
-                                             </image>
-                                             <HBox.margin>
-                                                <Insets left="15.0" />
-                                             </HBox.margin>
-                                          </ImageView>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Aste a cui partecipi">
-                                             <HBox.margin>
-                                                <Insets left="5.0" />
-                                             </HBox.margin>
-                                          </Text>
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets bottom="5.0" left="15.0" right="15.0" top="10.0" />
-                                       </VBox.margin>
-                                    </HBox>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/elenco_aste.png" />
+                                       </image>
+                                       <HBox.margin>
+                                          <Insets left="15.0" />
+                                       </HBox.margin>
+                                    </ImageView>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Aste a cui partecipi">
+                                       <HBox.margin>
+                                          <Insets left="5.0" />
+                                       </HBox.margin>
+                                    </Text>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="15.0" right="15.0" top="10.0" />
+                                 </VBox.margin>
+                              </HBox>
+                              <!-- Sezione Aste a cui partecipi -->
+                              <VBox spacing="5.0" maxWidth="900.0" VBox.vgrow="ALWAYS">
+                                 <children>
                                     <ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED">
                                        <content>
-                                          <HBox fx:id="astePreferiteBox" prefHeight="164.0" prefWidth="881.0" spacing="20.0">
+                                          <HBox fx:id="astePreferiteBox" spacing="20.0" HBox.hgrow="ALWAYS">
                                              <children>
                                                 <!-- Asta 1 -->
                                                 <VBox alignment="TOP_CENTER" prefHeight="120.0" prefWidth="200.0" styleClass="card">
@@ -204,7 +412,7 @@
                                                    </children>
                                                 </VBox>
                                                 
-                                                                        <!-- Asta 2 -->
+                                                            <!-- Asta 2 -->
                                                 <VBox alignment="TOP_CENTER" prefHeight="120.0" prefWidth="200.0" styleClass="card">
                                                    <children>
                                                       <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" styleClass="card-header">
@@ -268,7 +476,7 @@
                                                    </children>
                                                 </VBox>
                                                 
-                                                                        <!-- Asta 3 -->
+                                                            <!-- Asta 3 -->
                                                 <VBox alignment="TOP_CENTER" prefHeight="120.0" prefWidth="200.0" styleClass="card">
                                                    <children>
                                                       <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" styleClass="card-header">
@@ -345,7 +553,7 @@
                               </VBox>
                            </children>
                            <padding>
-                              <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                              <Insets top="10.0" left="20.0" right="20.0" bottom="10.0"/>
                            </padding>
                         </VBox>
                      </children>

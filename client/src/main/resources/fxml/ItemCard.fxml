@@ -34,7 +34,7 @@
                   <Insets top="10.0" />
                </VBox.margin>
                <image>
-                  <Image url="@../images/immagine_generica.png" />
+                  <Image url="@../images/icons/immagine_generica.png" />
                </image>
             </ImageView>
             

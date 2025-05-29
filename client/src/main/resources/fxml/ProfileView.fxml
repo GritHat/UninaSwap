@@ -24,9 +24,7 @@
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
             <!-- Sidebar navigation -->
-            <VBox alignment="TOP_CENTER" prefHeight="484.0" prefWidth="48.0" spacing="15.0" styleClass="sidebar" BorderPane.alignment="CENTER">
-               <!-- ...existing code... -->
-            </VBox>
+            <fx:include source="SidebarView.fxml" />
          </left>
          <center>
             <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">

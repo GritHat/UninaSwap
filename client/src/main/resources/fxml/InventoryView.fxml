@@ -25,9 +25,7 @@
       <BorderPane layoutX="-2.0" layoutY="-1.0" prefHeight="499.0" prefWidth="549.0">
          <left>
             <!-- Sidebar navigation -->
-            <VBox alignment="TOP_CENTER" prefHeight="484.0" prefWidth="48.0" spacing="15.0" styleClass="sidebar" BorderPane.alignment="CENTER">
-               <!-- ...existing code... -->
-            </VBox>
+            <fx:include source="SidebarView.fxml" />
          </left>
          <center>
             <VBox prefHeight="484.0" prefWidth="501.0" style="-fx-background-color: #F8F8F8;" BorderPane.alignment="CENTER">

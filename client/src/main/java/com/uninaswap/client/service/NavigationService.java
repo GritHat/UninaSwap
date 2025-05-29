@@ -136,6 +136,20 @@ public class NavigationService {
     public Parent loadInventoryView() throws IOException {
         return loadView("/fxml/InventoryView.fxml").getView();
     }
+    
+    /**
+     * Load the notifications view
+     */
+    public Parent loadNotificationsView() throws IOException {
+        return loadView("/fxml/NotificationsView.fxml").getView();
+    }
+
+    /**
+     * Load the prefered view
+    **/
+    public Parent prefered() throws IOException{
+        return loadView("/fxml/PreferedView.fxml").getView();  
+    }
 
     /**
      * Load the listing creation view
@@ -154,15 +168,6 @@ public class NavigationService {
     public void navigateToItemDetails(String itemId) {
         // TODO: Implement navigation logic to item details view using itemId
         System.out.println("Navigating to item details for item: " + itemId);
-    }
-    
-    public void navigateToUserProfile(Long userId) {
-        // Implementa la logica per mostrare la vista profilo utente
-        // Ad esempio: carica la scena del profilo e passa l'userId
-    }
-
-    public Parent navigateToProfile() throws IOException {
-        return loadView("/fxml/ProfileView.fxml").getView();
     }
 
     public Parent navigateToSettings() throws IOException {

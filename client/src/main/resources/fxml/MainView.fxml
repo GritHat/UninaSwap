@@ -20,77 +20,7 @@
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" prefWidth="1000.0" prefHeight="700.0">
          <left>
-            <VBox alignment="TOP_CENTER" prefWidth="70.0" maxWidth="70.0" spacing="15.0" styleClass="sidebar" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
-               <padding>
-                  <Insets top="13.0" />
-               </padding>
-               <children>
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showProfile" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/immagine_profilo.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showProfile" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/preferiti.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showInventory" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/Inventario.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showMarket" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/add_item.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#openNotification" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/notification.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#openAste" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/aste.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showSettings" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/impostazioni.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#handleLogout" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/logout.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-               </children>
-            </VBox>
+            <fx:include source="SidebarView.fxml" />
          </left>
          <bottom>
             <Pane prefHeight="60.0" prefWidth="1000.0" style="-fx-background-color: #f5f5f5; -fx-border-color: #e0e0e0; -fx-border-width: 1 0 0 0;" BorderPane.alignment="CENTER">

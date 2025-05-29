@@ -22,48 +22,7 @@
    <children>
       <BorderPane layoutX="-2.0" layoutY="-1.0" prefHeight="499.0" prefWidth="549.0">
          <left>
-            <VBox alignment="TOP_CENTER" prefHeight="484.0" prefWidth="48.0" spacing="15.0" styleClass="sidebar" BorderPane.alignment="CENTER">
-               <padding>
-                  <Insets top="13.0" />
-               </padding>
-               <children>
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showProfile" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Face-Id-1--Streamline-Ultimate.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-                  <Separator prefWidth="35.0" styleClass="sidebar-separator" />
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showSettings" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Settings-1--Streamline-Ultimate.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-                  <Separator prefWidth="35.0" styleClass="sidebar-separator" />
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#openSupport" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Help-1--Streamline-Ultimate.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-                  <Separator prefWidth="35.0" styleClass="sidebar-separator" />
-                  <ImageView fitHeight="26.0" fitWidth="35.0" onMouseClicked="#logout" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Logout-1--Streamline-Ultimate.png" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-               </children>
-            </VBox>
+            <fx:include source="SidebarView.fxml" />
          </left>
          <center>
             <VBox prefHeight="484.0" prefWidth="501.0" style="-fx-background-color: #F8F8F8;" BorderPane.alignment="CENTER">

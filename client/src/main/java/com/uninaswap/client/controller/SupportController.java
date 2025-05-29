@@ -4,55 +4,71 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import com.uninaswap.client.service.NavigationService;
 
 public class SupportController {
     
+    @FXML private TextField subjectField;
+    @FXML private TextArea messageField;
+    @FXML private Button sendButton;
+    
+    private final NavigationService navigationService = NavigationService.getInstance();
+    
     @FXML
     public void initialize() {
-        // Inizializzazione della vista di supporto
+        // Inizializzazione del controller
     }
     
     @FXML
     public void handleSendMessage(ActionEvent event) {
-        // Implementazione per l'invio del messaggio di supporto
-        // In una versione reale, qui ci sarebbe la logica per inviare il messaggio al server
+        if (validateForm()) {
+            // Qui implementare la logica per inviare il messaggio al servizio di supporto
+            
+            // Mostra un messaggio di conferma
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Richiesta inviata");
+            alert.setHeaderText("La tua richiesta è stata inviata");
+            alert.setContentText("Ti risponderemo al più presto all'indirizzo email associato al tuo account.");
+            alert.showAndWait();
+            
+            // Pulisci il form
+            subjectField.clear();
+            messageField.clear();
+        }
+    }
+    
+    private boolean validateForm() {
+        String subject = subjectField.getText().trim();
+        String message = messageField.getText().trim();
         
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Messaggio Inviato");
-        alert.setHeaderText("Il tuo messaggio è stato inviato con successo");
-        alert.setContentText("Riceverai una risposta al tuo indirizzo email entro 24-48 ore lavorative.");
+        if (subject.isEmpty()) {
+            showError("Oggetto richiesto", "Inserisci l'oggetto della richiesta.");
+            return false;
+        }
+        
+        if (message.isEmpty()) {
+            showError("Messaggio richiesto", "Inserisci il testo del messaggio.");
+            return false;
+        }
+        
+        if (message.length() < 20) {
+            showError("Messaggio troppo breve", "Il messaggio deve contenere almeno 20 caratteri.");
+            return false;
+        }
+        
+        return true;
+    }
+    
+    private void showError(String title, String message) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
         alert.showAndWait();
     }
     
-    @FXML
-    public void openBeginnerGuide(ActionEvent event) {
-        // Apre la guida per principianti (potrebbe aprire un PDF o una nuova vista)
-        openResourceNotAvailableDialog("Guida per principianti");
-    }
-    
-    @FXML
-    public void openVideoTutorials(ActionEvent event) {
-        // Apre i video tutorial (potrebbe aprire un browser con YouTube)
-        openResourceNotAvailableDialog("Video tutorial");
-    }
-    
-    @FXML
-    public void openSellingTips(ActionEvent event) {
-        // Apre i suggerimenti per vendere
-        openResourceNotAvailableDialog("Suggerimenti per vendere");
-    }
-    
-    @FXML
-    public void openSecurityGuide(ActionEvent event) {
-        // Apre la guida sulla sicurezza
-        openResourceNotAvailableDialog("Guida sulla sicurezza");
-    }
-    
-    private void openResourceNotAvailableDialog(String resourceName) {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Risorsa non disponibile");
-        alert.setHeaderText(resourceName);
-        alert.setContentText("Questa risorsa sarà disponibile nella prossima versione dell'applicazione.");
-        alert.showAndWait();
-    }
 }

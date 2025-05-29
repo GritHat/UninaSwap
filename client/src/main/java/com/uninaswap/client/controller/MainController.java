@@ -91,7 +91,7 @@ public class MainController implements Refreshable {
         articoliPreferitiBox.getChildren().clear();
         for (int i = 1; i <= 3; i++) {
             VBox card = new VBox();
-            ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/new/UI_img/spermatozoi.png")));
+            ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/images/spermatozoi.png")));
             img.setFitWidth(100);
             img.setFitHeight(100);
             Text titolo = new Text("Articolo " + i);
@@ -104,7 +104,7 @@ public class MainController implements Refreshable {
         utentiPreferitiBox.getChildren().clear();
         for (int i = 1; i <= 2; i++) {
             VBox userBox = new VBox();
-            ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/new/UI_img/spermatozoi.png")));
+            ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/images/spermatozoi.png")));
             img.setFitWidth(100);
             img.setFitHeight(100);
             Text nome = new Text("Utente " + i);

@@ -161,24 +161,20 @@ public class NavigationService {
         // Ad esempio: carica la scena del profilo e passa l'userId
     }
 
-    public void navigateToProfile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'navigateToProfile'");
+    public Parent navigateToProfile() throws IOException {
+        return loadView("/fxml/ProfileView.fxml").getView();
     }
 
-    public void navigateToSettings() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'navigateToSettings'");
+    public Parent navigateToSettings() throws IOException {
+       return loadView("/fxml/impostazioni.fxml").getView();
     }
 
-    public void navigateToSupport() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'navigateToSupport'");
+    public Parent navigateToSupport() throws IOException {
+        return loadView("/fxml/SupportView.fxml").getView();
     }
 
-    public void logout() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'logout'");
+    public Parent logout() throws IOException{
+        return loadView("/fxml/LoginView.fxml").getView();  
     }
 
 }

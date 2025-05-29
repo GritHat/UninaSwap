@@ -11,7 +11,7 @@
 
 <HBox fx:id="footer" alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="341.0" styleClass="status-bar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.FooterController">
    <children>
-      <Text fill="#e0e0e0" styleClass="status-bar-text" text="Status:">
+      <Text fill="#e0e0e0" styleClass="status-bar-text" text="%dashboard.status.ready">
          <font>
             <Font size="25.0" />
          </font>
@@ -25,7 +25,7 @@
                   <Image url="@../images/icons/status_online.png" />
                </image>
             </ImageView>
-            <Text fx:id="statusText" fill="#4ce04c" styleClass="status-text-success" text="Online">
+            <Text fx:id="statusText" fill="#4ce04c" styleClass="status-text-success" text="%label.connected">
                <font>
                   <Font size="20.0" />
                </font></Text>
@@ -36,7 +36,7 @@
       <Region HBox.hgrow="ALWAYS" />
       
       <!-- Language selector -->
-      <ComboBox fx:id="languageSelector" prefHeight="31.0" prefWidth="99.0" promptText="ING" styleClass="footer-combo">
+      <ComboBox fx:id="languageSelector" prefHeight="31.0" prefWidth="99.0" promptText="%label.language" styleClass="footer-combo">
          <HBox.margin>
             <Insets left="15.0" right="15.0" />
          </HBox.margin>

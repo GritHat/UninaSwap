@@ -26,7 +26,7 @@
                         <Image url="@../images/logo/Logo.png" />
                      </image>
                   </ImageView>
-                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="UninaSwap">
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="%application.title">
                      <font>
                         <Font name="System Bold" size="36.0" />
                      </font>
@@ -50,7 +50,7 @@
                <children>
                   <VBox alignment="CENTER" maxWidth="320.0" spacing="20.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%login.titolo">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%login.title">
                            <font>
                               <Font name="System Bold" size="24.0" />
                            </font>
@@ -63,21 +63,21 @@
                            </VBox.margin>
                         </Label>
                         
-                        <TextField fx:id="emailField" promptText="%login.email.prompt" styleClass="text-field">
+                        <TextField fx:id="emailField" promptText="%label.email" styleClass="text-field">
                            <VBox.margin>
                               <Insets top="20.0" />
                            </VBox.margin>
                         </TextField>
                         
-                        <PasswordField fx:id="passwordField" promptText="%login.password.prompt" styleClass="text-field" />
+                        <PasswordField fx:id="passwordField" promptText="%label.password" styleClass="text-field" />
                         
                         <HBox alignment="CENTER_RIGHT">
                            <children>
-                              <Hyperlink text="%login.password.dimenticata" />
+                              <Hyperlink text="Password dimenticata?" />
                            </children>
                         </HBox>
                         
-                        <Button fx:id="loginButton" defaultButton="true" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="320.0" text="%button.accedi">
+                        <Button fx:id="loginButton" defaultButton="true" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="320.0" text="%button.login">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -85,8 +85,8 @@
                         
                         <HBox alignment="CENTER" spacing="5.0">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%login.no.account" />
-                              <Hyperlink fx:id="registerLink" onAction="#showRegister" text="%button.registrati" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%register.hai.account" />
+                              <Hyperlink fx:id="registerLink" onAction="#showRegister" text="%button.register" />
                            </children>
                            <VBox.margin>
                               <Insets top="10.0" />

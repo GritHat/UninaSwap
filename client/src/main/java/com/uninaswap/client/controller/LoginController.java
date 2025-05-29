@@ -10,11 +10,9 @@ import javafx.scene.Node;
 
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.AuthenticationService;
-import com.uninaswap.client.service.ValidationService;
-import com.uninaswap.client.service.LocaleService;
-import com.uninaswap.client.service.ValidationService.ValidationResult;
-import com.uninaswap.common.message.AuthMessage;
 import com.uninaswap.client.service.UserSessionService;
+import com.uninaswap.client.service.LocaleService;
+import com.uninaswap.common.message.AuthMessage;
 
 public class LoginController {
     
@@ -29,7 +27,6 @@ public class LoginController {
     public LoginController() {
         this.navigationService = NavigationService.getInstance();
         this.authService = AuthenticationService.getInstance();
-        this.validationService = ValidationService.getInstance();
         this.localeService = LocaleService.getInstance();
     }
     
@@ -125,7 +122,7 @@ public class LoginController {
      * Helper method to display messages
      */
     private void showMessage(String messageKey, String styleClass) {
-        messageLabel.setText(localeService.getMessage(messageKey));
+        messageLabel.setText(localeService.getMessage(messageKey)); // Uso il localeService diretto
         messageLabel.getStyleClass().clear();
         messageLabel.getStyleClass().add(styleClass);
     }

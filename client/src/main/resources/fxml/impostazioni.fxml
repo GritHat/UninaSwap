@@ -171,11 +171,7 @@
          </center>
          <bottom>
             <!-- Status bar -->
-            <Pane prefHeight="15.0" prefWidth="546.0" styleClass="status-bar" BorderPane.alignment="CENTER">
-               <children>
-                  <Text fill="#e0e0e0" layoutX="5.0" layoutY="10.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-bar-text" text="UninaSwap v1.0 - Impostazioni" />
-               </children>
-            </Pane>
+            <fx:include source="FooterView.fxml" />
          </bottom>
          <right>
             <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER" />

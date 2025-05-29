@@ -149,11 +149,8 @@
             </VBox>
          </center>
          <bottom>
-            <HBox prefHeight="50.0" prefWidth="549.0" style="-fx-background-color: #FFFFFF;">
-               <children>
-                  <Label text="© 2023 UninaSwap. Tutti i diritti riservati." />
-               </children>
-            </HBox>
+            <!-- Status bar -->
+            <fx:include source="FooterView.fxml" />
          </bottom>
       </BorderPane>
    </children>

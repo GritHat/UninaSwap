@@ -200,9 +200,7 @@
          </center>
          <bottom>
             <!-- Status bar -->
-            <HBox alignment="CENTER_LEFT" prefHeight="15.0" styleClass="status-bar" BorderPane.alignment="CENTER">
-               <!-- ...existing code... -->
-            </HBox>
+            <fx:include source="FooterView.fxml" />
          </bottom>
       </BorderPane>
    </children>

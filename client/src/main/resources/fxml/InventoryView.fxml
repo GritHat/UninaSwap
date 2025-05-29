@@ -187,9 +187,7 @@
          </center>
          <bottom>
             <!-- Status bar -->
-            <Pane prefHeight="15.0" prefWidth="546.0" styleClass="status-bar" BorderPane.alignment="CENTER">
-               <!-- ...existing code... -->
-            </Pane>
+            <fx:include source="FooterView.fxml" />
          </bottom>
          <right>
             <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER" />

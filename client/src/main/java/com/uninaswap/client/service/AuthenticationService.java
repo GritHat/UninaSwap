@@ -67,11 +67,13 @@ public class AuthenticationService {
     /**
      * Send registration request to server
      */
-    public CompletableFuture<Void> register(String username, String email, String password) {
+    public CompletableFuture<Void> register(String firstName, String lastName ,String username, String email, String password) {
         if (!connectToAuthEndpoint())
             return CompletableFuture.failedFuture(new Exception("Failed to connect to authentication endpoint"));
         AuthMessage registerRequest = new AuthMessage();
         registerRequest.setType(AuthMessage.Type.REGISTER_REQUEST);
+        registerRequest.setFirstName(firstName);
+        registerRequest.setLastName(lastName);
         registerRequest.setUsername(username);
         registerRequest.setEmail(email);
         registerRequest.setPassword(password);

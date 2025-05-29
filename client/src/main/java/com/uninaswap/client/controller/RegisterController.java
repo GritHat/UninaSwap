@@ -17,6 +17,8 @@ import com.uninaswap.common.message.AuthMessage;
 
 public class RegisterController {
     
+    @FXML private TextField firstNameField;
+    @FXML private TextField lastNameField;
     @FXML private TextField usernameField;
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
@@ -43,6 +45,8 @@ public class RegisterController {
     
     @FXML
     public void handleRegister(ActionEvent event) {
+        String firstName = firstNameField.getText();
+        String lastName = lastNameField.getText();
         String username = usernameField.getText();
         String email = emailField.getText();
         String password = passwordField.getText();
@@ -58,7 +62,7 @@ public class RegisterController {
         }
         
         try {
-            authService.register(username, email, password);
+            authService.register(firstName, lastName, username, email, password);
             showMessage("register.info.registering", "message-info");
         } catch (Exception e) {
             showMessage("register.error.connection", "message-error");

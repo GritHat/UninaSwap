@@ -24,9 +24,7 @@ public class FooterController {
         languageSelector.setValue("ENG"); // Default language
         
         // Set language change listener
-        languageSelector.setOnAction(event -> {
-            changeLanguage(languageSelector.getValue());
-        });
+        languageSelector.setOnAction(_ -> changeLanguage(languageSelector.getValue()));
         
         // Initialize connection status
         updateConnectionStatus(true);

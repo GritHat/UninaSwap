@@ -8,9 +8,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-
-import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.util.AlertHelper;
@@ -37,7 +34,6 @@ public class SettingsController {
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
     
-    private final NavigationService navigationService = NavigationService.getInstance();
     private final UserSessionService userSessionService = UserSessionService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
     

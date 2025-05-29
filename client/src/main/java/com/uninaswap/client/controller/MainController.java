@@ -382,10 +382,4 @@ public class MainController implements Refreshable {
         }
     }
 
-    /**
-     * Refresh the current view
-     */
-    private void refreshCurrentView() {
-        // TODO: Implement view refresh logic
-    }
 }

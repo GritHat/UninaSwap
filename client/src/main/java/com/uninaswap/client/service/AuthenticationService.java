@@ -13,7 +13,7 @@ import com.uninaswap.common.message.AuthMessage;
  */
 public class AuthenticationService {
     private static AuthenticationService instance;
-    
+
     // Singleton pattern
     public static AuthenticationService getInstance() {
         if (instance == null) {
@@ -21,9 +21,9 @@ public class AuthenticationService {
         }
         return instance;
     }
-    
+
     private final WebSocketClient webSocketClient;
-    
+
     private AuthenticationService() {
         this.webSocketClient = WebSocketManager.getClient();
     }
@@ -40,21 +40,30 @@ public class AuthenticationService {
             return false;
         }
     }
-    
+
     /**
      * Send login request to server
      */
-    public CompletableFuture<Void> login(String username, String password) {
+    public CompletableFuture<Void> login(String usernameOrEmail, String password) {
         if (!connectToAuthEndpoint())
-            return CompletableFuture.failedFuture(new Exception("Failed to connect to authentication endpoint"));    
+            return CompletableFuture.failedFuture(new Exception("Failed to connect to authentication endpoint"));
+
+        boolean isEmail = usernameOrEmail.contains("@");
         AuthMessage loginRequest = new AuthMessage();
         loginRequest.setType(AuthMessage.Type.LOGIN_REQUEST);
-        loginRequest.setUsername(username);
-        loginRequest.setPassword(password);
-        
+
+        // If the input contains '@', treat it as an email
+        if (isEmail) {
+            loginRequest.setEmail(usernameOrEmail);
+            loginRequest.setPassword(password);
+        } else {
+            loginRequest.setUsername(usernameOrEmail);
+            loginRequest.setPassword(password);
+        }
+
         return webSocketClient.sendMessage(loginRequest);
     }
-    
+
     /**
      * Send registration request to server
      */
@@ -66,17 +75,17 @@ public class AuthenticationService {
         registerRequest.setUsername(username);
         registerRequest.setEmail(email);
         registerRequest.setPassword(password);
-        
+
         return webSocketClient.sendMessage(registerRequest);
     }
-    
+
     /**
      * Set message handler for auth responses
      */
     public void setAuthResponseHandler(Consumer<AuthMessage> handler) {
         webSocketClient.registerMessageHandler(AuthMessage.class, handler);
     }
-    
+
     /**
      * Get the WebSocket client instance
      */

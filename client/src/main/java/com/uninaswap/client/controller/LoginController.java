@@ -18,13 +18,12 @@ import com.uninaswap.client.service.UserSessionService;
 
 public class LoginController {
     
-    @FXML private TextField usernameField;
+    @FXML private TextField loginField;
     @FXML private PasswordField passwordField;
     @FXML private Label messageLabel;
     
     private final NavigationService navigationService;
     private final AuthenticationService authService;
-    private final ValidationService validationService;
     private final LocaleService localeService;
     
     public LoginController() {
@@ -41,27 +40,41 @@ public class LoginController {
     }
     
     @FXML
-    public void handleLogin(ActionEvent event) {
-        String username = usernameField.getText();
+    private void handleLogin(ActionEvent event) {
+        String usernameOrEmail = loginField.getText();
         String password = passwordField.getText();
         
-        // Validate input
-        ValidationResult validationResult = validationService.validateLogin(username, password);
-        if (!validationResult.isValid()) {
-            showMessage(validationResult.getMessageKey(), "message-error");
+        if (usernameOrEmail == null || usernameOrEmail.isEmpty()) {
+            showMessage("login.error.username.email.required", "message-error");
             return;
         }
         
-        try {
-            showMessage("login.info.logging", "message-info");
-            authService.login(username, password).whenComplete((_, exception) -> {
-                if (exception != null) {
-                    Platform.runLater(() -> showMessage("login.error.connection", "message-error"));
-                }
-            });
-        } catch (Exception e) {
-            showMessage("login.error.connection", "message-error");
+        if (password == null || password.isEmpty()) {
+            showMessage("login.error.password.required", "message-error");
+            return;
         }
+        
+        showMessage("login.info.logging", "message-info");
+        
+        // Disable login button to prevent multiple clicks
+        Node source = (Node) event.getSource();
+        source.setDisable(true);
+        
+        // Handle the CompletableFuture properly
+        authService.login(usernameOrEmail, password)
+            .thenRun(() -> {
+                // This just indicates the message was sent successfully
+                // The actual authentication result will be handled in handleAuthResponse
+                
+            })
+            .exceptionally(ex -> {
+                // Handle connection errors
+                Platform.runLater(() -> {
+                    source.setDisable(false);
+                    showMessage("login.error.connection", "message-error");
+                });
+                return null;
+            });
     }
     
     @FXML
@@ -89,7 +102,7 @@ public class LoginController {
                     
                     // Navigate to main dashboard on successful login
                     try {
-                        navigationService.navigateToMainDashboard(usernameField);
+                        navigationService.navigateToMainDashboard(loginField);
                     } catch (Exception e) {
                         System.err.println("Error navigating to main dashboard: " + e.getMessage());
                         e.printStackTrace();

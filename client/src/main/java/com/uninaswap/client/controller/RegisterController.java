@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.control.PasswordField;
 
 import com.uninaswap.client.service.NavigationService;
@@ -106,5 +107,17 @@ public class RegisterController {
      */
     public void registerMessageHandler() {
         authService.setAuthResponseHandler(this::handleAuthResponse);
+    }
+
+    @FXML
+    public void openTermsAndConditions(MouseEvent event) {
+        try {
+            // Pass the source of the event to the NavigationService
+            navigationService.navigateToTermsAndConditions((javafx.scene.Node) event.getSource());
+        } catch (Exception e) {
+            System.err.println("Error opening Terms and Conditions: " + e.getMessage());
+            e.printStackTrace();
+            showMessage("navigation.error.terms", "message-error");
+        }
     }
 }

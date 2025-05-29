@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
+import javafx.stage.Window;
+import javafx.stage.Modality;
 
 import com.uninaswap.client.controller.LoginController;
 import com.uninaswap.client.controller.ProfileController;
@@ -57,7 +59,18 @@ public class NavigationService {
      * @param height The height of the new window
      */
     private LoaderBundle loadView(String fxmlPath) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        // Check if the path is valid before attempting to load
+        if (fxmlPath == null || fxmlPath.isEmpty()) {
+            throw new IllegalArgumentException("FXML path cannot be null or empty");
+        }
+        
+        // Get the resource URL and verify it exists
+        java.net.URL resource = getClass().getResource(fxmlPath);
+        if (resource == null) {
+            throw new IOException("Resource not found: " + fxmlPath);
+        }
+        
+        FXMLLoader loader = new FXMLLoader(resource);
         loader.setResources(localeService.getResourceBundle());
         Parent root = loader.load();
         
@@ -78,10 +91,30 @@ public class NavigationService {
     public void navigateToLogin(Node sourceNode) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/LoginView.fxml");
         Parent loginView = loaderBundle.getView();
-        // Get the stage from the source node
-        Stage stage = (Stage) sourceNode.getScene().getWindow();
+
+        Stage stage;
+        if(sourceNode != null && sourceNode.getScene() != null){
+            stage = (Stage) sourceNode.getScene().getWindow();
+        }else{
+            // If source node is null or doesn't have a scene, try to find the active window
+            Window activeWindow = null;
+            for (Window window : Stage.getWindows()) {
+                if (window instanceof Stage && window.isShowing()) {
+                    activeWindow = window;
+                    break;
+                }
+            }
+            
+            if (activeWindow != null) {
+                stage = (Stage) activeWindow;
+            } else {
+                // Create a new stage as a fallback
+                stage = new Stage();
+            }
+        }
+
         stage.setTitle("UninaSwap - Login");
-        stage.setScene(new Scene(loginView, 400, 300));
+        stage.setScene(new Scene(loginView, 800, 600));
         
         // Register the controller's message handler
         LoginController controller = loaderBundle.getLoader().getController();
@@ -90,14 +123,36 @@ public class NavigationService {
     
     /**
      * Navigate to the register screen
+     * @param sourceNode The node that triggered the navigation
      */
     public void navigateToRegister(Node sourceNode) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/RegisterView.fxml");
         Parent registerView = loaderBundle.getView();
         
-        Stage stage = (Stage) sourceNode.getScene().getWindow();
+        Stage stage;
+        if (sourceNode != null && sourceNode.getScene() != null) {
+            // Get the stage from the source node if available
+            stage = (Stage) sourceNode.getScene().getWindow();
+        } else {
+            // If source node is null or doesn't have a scene, try to find the active window
+            Window activeWindow = null;
+            for (Window window : Stage.getWindows()) {
+                if (window instanceof Stage && window.isShowing()) {
+                    activeWindow = window;
+                    break;
+                }
+            }
+            
+            if (activeWindow != null) {
+                stage = (Stage) activeWindow;
+            } else {
+                // Create a new stage as a fallback
+                stage = new Stage();
+            }
+        }
+        
         stage.setTitle("UninaSwap - Register");
-        stage.setScene(new Scene(registerView, 400, 350));
+        stage.setScene(new Scene(registerView, 800, 600)); // Using appropriate dimensions for RegisterView
         
         // Register the controller's message handler
         RegisterController controller = loaderBundle.getLoader().getController();
@@ -182,4 +237,39 @@ public class NavigationService {
         return loadView("/fxml/LoginView.fxml").getView();  
     }
 
+    /**
+     * Navigate to the terms and conditions screen
+     * @param sourceNode The node that triggered the navigation
+     */
+    public void navigateToTermsAndConditions(Node sourceNode) throws IOException {
+        // Define the correct path to the Terms and Conditions FXML file
+        final String TERMS_FXML_PATH = "/fxml/TermsAndConditionsView.fxml";
+        
+        try {
+            LoaderBundle loaderBundle = loadView(TERMS_FXML_PATH);
+            Parent termsView = loaderBundle.getView();
+            
+            // Create a new stage for the Terms and Conditions
+            Stage termsStage = new Stage();
+            termsStage.setTitle("UninaSwap - Termini e Condizioni");
+            
+            // Make it modal so user must interact with it
+            termsStage.initModality(Modality.APPLICATION_MODAL);
+            
+            // Set the owner if sourceNode is not null
+            if (sourceNode != null && sourceNode.getScene() != null && sourceNode.getScene().getWindow() != null) {
+                termsStage.initOwner(sourceNode.getScene().getWindow());
+            }
+            
+            Scene scene = new Scene(termsView, 600, 500);
+            termsStage.setScene(scene);
+            termsStage.setMinWidth(400);
+            termsStage.setMinHeight(300);
+            
+            termsStage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading Terms and Conditions view: " + e.getMessage());
+            throw e; // Re-throw to let caller handle it
+        }
+    }
 }

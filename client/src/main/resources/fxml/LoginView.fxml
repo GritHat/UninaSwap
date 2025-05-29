@@ -23,7 +23,7 @@
                <children>
                   <ImageView fitHeight="150.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../images/Logo.png" />
+                        <Image url="@../images/logo/Logo.png" />
                      </image>
                   </ImageView>
                   <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="UninaSwap">

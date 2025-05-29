@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
+import javafx.scene.Node;
 
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.AuthenticationService;
@@ -66,8 +67,12 @@ public class LoginController {
     @FXML
     public void showRegister(ActionEvent event) {
         try {
-            navigationService.navigateToRegister(usernameField);
-        } catch (Exception e) {
+            // Get the source node from the event
+            Node sourceNode = (Node) event.getSource();
+            navigationService.navigateToRegister(sourceNode);
+        } catch (java.io.IOException e) {
+            System.err.println("Error navigating to register: " + e.getMessage());
+            e.printStackTrace();
             showMessage("navigation.error.load.register", "message-error");
         }
     }

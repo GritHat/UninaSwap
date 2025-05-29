@@ -34,7 +34,13 @@ public class FooterController {
     
     private void changeLanguage(String language) {
         System.out.println("Changing language to: " + language);
-        localeService.setLocale(language.toLowerCase());
+        java.util.Locale locale;
+        if ("ITA".equalsIgnoreCase(language)) {
+            locale = java.util.Locale.of("it", "IT");
+        } else {
+            locale = java.util.Locale.ENGLISH;
+        }
+        localeService.setLocale(locale);
     }
     
     public void updateConnectionStatus(boolean isConnected) {

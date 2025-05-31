@@ -28,14 +28,14 @@
             <fx:include source="SidebarView.fxml" />
          </left>
          <center>
-            <VBox prefHeight="484.0" prefWidth="501.0" style="-fx-background-color: #F8F8F8;" BorderPane.alignment="CENTER">
+            <VBox prefHeight="484.0" prefWidth="501.0" styleClass="settings-content" BorderPane.alignment="CENTER">
                <children>
                   <!-- Header -->
                   <HBox alignment="CENTER_LEFT" styleClass="section-header">
                      <children>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../images/icon/imagine_generica.png" />
+                              <Image url="@../images/icons/settings.png" />
                            </image>
                            <HBox.margin>
                               <Insets left="15.0" />
@@ -64,11 +64,7 @@
                         <!-- Account settings section -->
                         <VBox spacing="15.0">
                            <children>
-                              <Label styleClass="section-title" text="Account">
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
+                              <Label styleClass="section-title" text="Account" />
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
                                     <Label prefWidth="150.0" text="Email" />
@@ -106,11 +102,7 @@
                         <!-- Notification settings section -->
                         <VBox spacing="15.0">
                            <children>
-                              <Label styleClass="section-title" text="Notifiche">
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
+                              <Label styleClass="section-title" text="Notifiche" />
                               <CheckBox fx:id="emailNotificationsCheckBox" mnemonicParsing="false" text="Ricevi notifiche via email" />
                               <CheckBox fx:id="appNotificationsCheckBox" mnemonicParsing="false" text="Ricevi notifiche nell'app" />
                               <CheckBox fx:id="offerNotificationsCheckBox" mnemonicParsing="false" text="Notifiche per nuove offerte" />
@@ -123,11 +115,7 @@
                         <!-- Application settings section -->
                         <VBox spacing="15.0">
                            <children>
-                              <Label styleClass="section-title" text="Applicazione">
-                                 <font>
-                                    <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
+                              <Label styleClass="section-title" text="Applicazione" />
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
                                     <Label prefWidth="150.0" text="Lingua" />
@@ -174,7 +162,7 @@
             <fx:include source="FooterView.fxml" />
          </bottom>
          <right>
-            <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER" />
+            <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" styleClass="right-separator" BorderPane.alignment="CENTER" />
          </right>
       </BorderPane>
    </children>

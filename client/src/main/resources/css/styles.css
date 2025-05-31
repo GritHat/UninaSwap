@@ -33,7 +33,9 @@
 
 /* Base styling */
 .root {
+    font-family: 'Segoe UI', Arial, sans-serif;
     -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #F8F8F8;
     -fx-background-color: -fx-background-light;
 }
 
@@ -60,12 +62,19 @@
 
 /* Button styling */
 .button {
+    background-color: linear-gradient(to bottom, #4A2B6B, #3A2155);
     -fx-background-color: linear-gradient(to bottom, -fx-primary, -fx-primary-dark);
+    color: white;
     -fx-text-fill: -fx-text-light;
+    border-radius: 20px;
     -fx-background-radius: 20px;
+    padding: 8px 15px;
     -fx-padding: 8px 15px;
+    cursor: pointer;
     -fx-cursor: hand;
+    font-weight: bold;
     -fx-font-weight: bold;
+    box-shadow: 0 3px 3px rgba(0,0,0,0.2);
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
 }
 
@@ -361,40 +370,102 @@
 
 /* Modal Dialog Styling */
 .modal-dialog {
+    background-color: white;
     -fx-background-color: white;
+    border-radius: 5px;
     -fx-background-radius: 5px;
+    box-shadow: 0 10px 10px rgba(0,0,0,0.6);
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 10, 0, 0, 0);
+    border: 1px solid #cccccc;
     -fx-border-color: #cccccc;
     -fx-border-radius: 5px;
     -fx-border-width: 1px;
 }
 
+/* Footer status indicators */
+#statusIcon {
+    -fx-opacity: 0.9;
+}
+
+#statusText {
+    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+}
+
+#footer {
+    -fx-alignment: center-left;
+    -fx-spacing: 10px;
+}
+
+#footer .region {
+    -fx-pref-height: 1px;
+}
+
+/** Modal Dialog Header */
 .modal-dialog .button {
+    background-color: #e0e0e0;
     -fx-background-color: #e0e0e0;
+    color: #333333;
     -fx-text-fill: #333333;
+    padding: 8px 20px;
     -fx-padding: 8 20;
+    cursor: pointer;
     -fx-cursor: hand;
+    border-radius: 4px;
     -fx-background-radius: 4px;
+    font-weight: bold;
     -fx-font-weight: bold;
 }
 
 .modal-dialog .button:hover {
+    background-color: #d0d0d0;
     -fx-background-color: #d0d0d0;
 }
 
 .modal-dialog .button:pressed {
+    background-color: #c0c0c0;
     -fx-background-color: #c0c0c0;
 }
 
 .modal-dialog .button-primary {
+    background-color: #4A2B6D;
     -fx-background-color: #4A2B6D;
+    color: white;
     -fx-text-fill: white;
 }
 
 .modal-dialog .button-primary:hover {
+    background-color: #5C3A85;
     -fx-background-color: #5C3A85;
 }
 
 .modal-dialog .button-primary:pressed {
+    background-color: #3A1B5D;
     -fx-background-color: #3A1B5D;
+}
+
+/* Main content area gradient background */
+.main-content-background {
+    background: #FC466B;
+    background: radial-gradient(circle, rgba(252, 70, 107, 1) 0%, rgba(74, 43, 107, 1) 100%);
+    -fx-background-color: radial-gradient(center 50% 50%, radius 100%, rgba(252, 70, 107, 1), rgba(74, 43, 107, 1));
+}
+
+/* Settings page styles */
+.settings-content {
+    background-color: #F8F8F8;
+    -fx-background-color: #F8F8F8;
+}
+
+.section-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Right separator fix */
+.right-separator {
+    -fx-background-color: -fx-primary;
+    background-color: #4A2B6B;
 }

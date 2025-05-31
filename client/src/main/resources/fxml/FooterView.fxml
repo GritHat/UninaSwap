@@ -6,43 +6,30 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <HBox fx:id="footer" alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="341.0" styleClass="status-bar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.FooterController">
-   <children>
-      <Text fill="#e0e0e0" styleClass="status-bar-text" text="%dashboard.status.ready">
-         <font>
-            <Font size="25.0" />
-         </font>
-      </Text>
-      
-      <!-- Connection status -->
-      <HBox alignment="CENTER" spacing="5.0">
-         <children>
-            <ImageView fx:id="statusIcon" fitHeight="24.0" fitWidth="38.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/icons/status_online.png" />
-               </image>
-            </ImageView>
-            <Text fx:id="statusText" fill="#4ce04c" styleClass="status-text-success" text="%label.connected">
-               <font>
-                  <Font size="20.0" />
-               </font></Text>
-         </children>
-      </HBox>
-      
-      <!-- Flexible space -->
-      <Region HBox.hgrow="ALWAYS" />
-      
-      <!-- Language selector -->
-      <ComboBox fx:id="languageSelector" prefHeight="31.0" prefWidth="99.0" promptText="%label.language" styleClass="footer-combo">
-         <HBox.margin>
-            <Insets left="15.0" right="15.0" />
-         </HBox.margin>
-      </ComboBox>
-   </children>
-   <padding>
-      <Insets left="10.0" right="10.0" />
-   </padding>
+  <padding>
+    <Insets left="10.0" right="10.0" top="3.0" bottom="3.0"/>
+  </padding>
+  <children>
+    <Text styleClass="status-bar-text" text="%dashboard.status.ready"/>
+    <!-- Connection status -->
+    <HBox alignment="CENTER" spacing="5.0">
+      <children>
+        <Text fx:id="statusText" styleClass="status-text-success" text="%label.connected"/>
+        <ImageView fx:id="statusIcon" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true"> 
+          <!--Load by controller-->
+        </ImageView>
+        <!-- Flexible space -->
+        <Region HBox.hgrow="ALWAYS"/>
+        <!-- Language selector -->
+        <ComboBox fx:id="languageSelector" prefHeight="24.0" prefWidth="90.0" promptText="%label.language" styleClass="footer-combo">
+          <HBox.margin>
+            <Insets left="15.0" right="10.0"/>
+          </HBox.margin>
+        </ComboBox>
+      </children>
+    </HBox>
+  </children>
 </HBox>

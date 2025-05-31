@@ -26,24 +26,42 @@ import java.io.IOException;
 
 public class MainController implements Refreshable {
 
-    @FXML private Label usernameLabel;
-    @FXML private Label statusLabel;
-    @FXML private Label connectionStatusLabel;
-    @FXML private Label contentAreaTitleLabel;
-    @FXML private Label contentAreaSubtitleLabel;
-    @FXML private StackPane contentArea;
-    @FXML private ImageView headerProfileImageView;
-    @FXML private Button dashboardMenuItem;
-    @FXML private Button marketsMenuItem;
-    @FXML private Button portfolioMenuItem;
-    @FXML private Button tradeMenuItem;
-    @FXML private Button settingsMenuItem;
-    @FXML private Button profileMenuItem;
-    @FXML private Button inventoryMenuItem;
-    @FXML private Button createListingMenuItem;
-    @FXML private Button logoutButton;
-    @FXML private Button quickTradeButton;
-    @FXML private Button viewMarketsButton;
+    @FXML
+    private Label usernameLabel;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Label connectionStatusLabel;
+    @FXML
+    private Label contentAreaTitleLabel;
+    @FXML
+    private Label contentAreaSubtitleLabel;
+    @FXML
+    private StackPane contentArea;
+    @FXML
+    private ImageView headerProfileImageView;
+    @FXML
+    private Button dashboardMenuItem;
+    @FXML
+    private Button marketsMenuItem;
+    @FXML
+    private Button portfolioMenuItem;
+    @FXML
+    private Button tradeMenuItem;
+    @FXML
+    private Button settingsMenuItem;
+    @FXML
+    private Button profileMenuItem;
+    @FXML
+    private Button inventoryMenuItem;
+    @FXML
+    private Button createListingMenuItem;
+    @FXML
+    private Button logoutButton;
+    @FXML
+    private Button quickTradeButton;
+    @FXML
+    private Button viewMarketsButton;
 
     private final NavigationService navigationService;
     private final LocaleService localeService;
@@ -58,22 +76,25 @@ public class MainController implements Refreshable {
         this.imageService = ImageService.getInstance();
     }
 
-    @FXML private HBox articoliPreferitiBox;
-    @FXML private HBox utentiPreferitiBox;
-    @FXML private HBox astePreferiteBox;
-    
+    @FXML
+    private HBox articoliPreferitiBox;
+    @FXML
+    private HBox utentiPreferitiBox;
+    @FXML
+    private HBox astePreferiteBox;
+
     @FXML
     public void initialize() {
         checkAuthentication();
-        statusLabel.setText(localeService.getMessage("dashboard.status.loaded"));
+        // statusLabel.setText(localeService.getMessage("dashboard.status.loaded"));
         connectionStatusLabel.setText(localeService.getMessage("dashboard.status.connected"));
 
         String username = sessionService.getUser().getUsername();
         usernameLabel.setText(localeService.getMessage("dashboard.welcome.user", username));
-    
+
         String profileImagePath = sessionService.getUser().getProfileImagePath();
         loadProfileImageInHeader(profileImagePath);
-        
+
         // Subscribe to profile image change events
         EventBusService.getInstance().subscribe(EventTypes.PROFILE_IMAGE_CHANGED, data -> {
             if (data instanceof String) {
@@ -86,7 +107,7 @@ public class MainController implements Refreshable {
             Platform.runLater(this::refreshAllViews);
         });
 
-        //load cards
+        // load cards
         // Esempio: popola articoli preferiti con dati fittizi
         articoliPreferitiBox.getChildren().clear();
         for (int i = 1; i <= 3; i++) {
@@ -159,7 +180,7 @@ public class MainController implements Refreshable {
     @FXML
     public void showSaved(ActionEvent event) {
         statusLabel.setText(localeService.getMessage("dashboard.view.saved"));
-        //TODO: Load saved content
+        // TODO: Load saved content
     }
 
     @FXML
@@ -178,8 +199,8 @@ public class MainController implements Refreshable {
     @FXML
     public void addItem(ActionEvent event) {
         statusLabel.setText(localeService.getMessage("dashboard.view.add.item"));
-        //TODO: Load add item content
-        //apre l'inventario e poi il popup per aggiungere un nuovo item
+        // TODO: Load add item content
+        // apre l'inventario e poi il popup per aggiungere un nuovo item
     }
 
     @FXML
@@ -188,7 +209,7 @@ public class MainController implements Refreshable {
         try {
             Parent profileView = navigationService.loadProfileView();
             contentArea.getChildren().clear();
-            contentArea.getChildren().add(0,profileView);
+            contentArea.getChildren().add(0, profileView);
         } catch (IOException e) {
             e.printStackTrace();
             statusLabel.setText(localeService.getMessage("dashboard.error.load.profile"));
@@ -262,21 +283,21 @@ public class MainController implements Refreshable {
             return;
         }
         imageService.fetchImage(imagePath)
-            .thenAccept(image -> {
-                Platform.runLater(() -> {
-                    headerProfileImageView.setImage(image);
+                .thenAccept(image -> {
+                    Platform.runLater(() -> {
+                        headerProfileImageView.setImage(image);
 
-                    // Apply circular clip to the image
-                    Circle clip = new Circle(16, 16, 16); // 32/2=16
-                    headerProfileImageView.setClip(clip);
+                        // Apply circular clip to the image
+                        Circle clip = new Circle(16, 16, 16); // 32/2=16
+                        headerProfileImageView.setClip(clip);
+                    });
+                })
+                .exceptionally(ex -> {
+                    // If loading fails, set default image
+                    System.err.println("Failed to load profile image: " + ex.getMessage());
+                    Platform.runLater(this::setDefaultProfileImage);
+                    return null;
                 });
-            })
-            .exceptionally(ex -> {
-                // If loading fails, set default image
-                System.err.println("Failed to load profile image: " + ex.getMessage());
-                Platform.runLater(this::setDefaultProfileImage);
-                return null;
-            });
     }
 
     /**
@@ -337,7 +358,8 @@ public class MainController implements Refreshable {
      * Refreshes the current content view
      */
     private void refreshCurrentContentView() {
-        if (contentArea.getChildren().isEmpty()) return;
+        if (contentArea.getChildren().isEmpty())
+            return;
 
         Node currentView = contentArea.getChildren().get(0);
         Object controller = null;
@@ -359,7 +381,8 @@ public class MainController implements Refreshable {
      * Reloads the current view completely
      */
     private void reloadCurrentView() {
-        if (contentArea.getChildren().isEmpty()) return;
+        if (contentArea.getChildren().isEmpty())
+            return;
 
         Node currentView = contentArea.getChildren().get(0);
         String viewId = currentView.getId();

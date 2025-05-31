@@ -10,26 +10,26 @@ import javafx.scene.text.Text;
 import com.uninaswap.client.service.LocaleService;
 
 public class FooterController {
-    @FXML private HBox footer;
-    @FXML private Text statusText;
-    @FXML private ImageView statusIcon;
-    @FXML private ComboBox<String> languageSelector;
-    
+    @FXML
+    private HBox footer;
+    @FXML
+    private Text statusText;
+    @FXML
+    private ImageView statusIcon;
+    @FXML
+    private ComboBox<String> languageSelector;
+
     private final LocaleService localeService = LocaleService.getInstance();
-    
+
     @FXML
     public void initialize() {
-        // Initialize language options
         languageSelector.getItems().addAll("ITA", "ENG");
-        languageSelector.setValue("ENG"); // Default language
-        
-        // Set language change listener
+        languageSelector.setValue("ENG");
         languageSelector.setOnAction(_ -> changeLanguage(languageSelector.getValue()));
-        
-        // Initialize connection status
+
         updateConnectionStatus(true);
     }
-    
+
     private void changeLanguage(String language) {
         System.out.println("Changing language to: " + language);
         java.util.Locale locale;
@@ -40,16 +40,16 @@ public class FooterController {
         }
         localeService.setLocale(locale);
     }
-    
+
     public void updateConnectionStatus(boolean isConnected) {
         if (isConnected) {
             statusText.setText("Online");
             statusText.getStyleClass().setAll("status-text-success");
-            statusIcon.setImage(new Image(getClass().getResourceAsStream("/images/online.png")));
+            statusIcon.setImage(new Image(getClass().getResourceAsStream("/images/icons/online.png")));
         } else {
             statusText.setText("Offline");
             statusText.getStyleClass().setAll("status-text-warning");
-            statusIcon.setImage(new Image(getClass().getResourceAsStream("/images/offline.png")));
+            statusIcon.setImage(new Image(getClass().getResourceAsStream("/images/icons/offline.png")));
         }
     }
 }

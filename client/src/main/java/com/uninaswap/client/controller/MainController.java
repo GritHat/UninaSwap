@@ -25,21 +25,16 @@ import com.uninaswap.client.service.UserSessionService;
 import java.io.IOException;
 
 public class MainController implements Refreshable {
-
-    @FXML
-    private Label usernameLabel;
-    @FXML
-    private Label statusLabel;
-    @FXML
-    private Label connectionStatusLabel;
-    @FXML
-    private Label contentAreaTitleLabel;
-    @FXML
-    private Label contentAreaSubtitleLabel;
-    @FXML
-    private StackPane contentArea;
-    @FXML
-    private ImageView headerProfileImageView;
+    //NON CI SONO
+    @FXML private Label usernameLabel;
+    @FXML private Label statusLabel;
+    @FXML private Label connectionStatusLabel;
+    @FXML private Label contentAreaTitleLabel;
+    @FXML private Label contentAreaSubtitleLabel;
+    @FXML private StackPane contentArea;
+    @FXML private ImageView headerProfileImageView;
+    
+    
     @FXML
     private Button dashboardMenuItem;
     @FXML

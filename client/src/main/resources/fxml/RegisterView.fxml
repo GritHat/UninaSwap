@@ -58,14 +58,14 @@
                         
                         <HBox spacing="10.0">
                            <children>
-                              <TextField fx:id="nameField" prefHeight="26.0" prefWidth="155.0" promptText="%register.nome.prompt" HBox.hgrow="ALWAYS" />
-                              <TextField fx:id="surnameField" prefHeight="26.0" prefWidth="155.0" promptText="%register.cognome.prompt" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="firstNameField" prefHeight="26.0" prefWidth="155.0" promptText="%register.nome.prompt" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="lastNameField" prefHeight="26.0" prefWidth="155.0" promptText="%register.cognome.prompt" HBox.hgrow="ALWAYS" />
                            </children>
                            <VBox.margin>
                               <Insets top="20.0" />
                            </VBox.margin>
                         </HBox>
-                        <TextField fx:id="emailField1" promptText="%register.username.prompt" />
+                        <TextField fx:id="usernameField" promptText="%register.username.prompt" />
                         
                         <TextField fx:id="emailField" promptText="%register.email.prompt" />
                         

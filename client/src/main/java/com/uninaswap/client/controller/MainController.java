@@ -157,6 +157,12 @@ public class MainController implements Refreshable {
     }
 
     @FXML
+    public void showSaved(ActionEvent event) {
+        statusLabel.setText(localeService.getMessage("dashboard.view.saved"));
+        //TODO: Load saved content
+    }
+
+    @FXML
     public void showTrade(ActionEvent event) {
         statusLabel.setText(localeService.getMessage("dashboard.view.trade"));
         // TODO: Load trade content
@@ -167,6 +173,13 @@ public class MainController implements Refreshable {
         statusLabel.setText(localeService.getMessage("dashboard.view.settings"));
         // TODO: Load settings content
 
+    }
+
+    @FXML
+    public void addItem(ActionEvent event) {
+        statusLabel.setText(localeService.getMessage("dashboard.view.add.item"));
+        //TODO: Load add item content
+        //apre l'inventario e poi il popup per aggiungere un nuovo item
     }
 
     @FXML

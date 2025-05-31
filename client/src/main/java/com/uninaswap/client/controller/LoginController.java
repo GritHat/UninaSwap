@@ -7,6 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 import javafx.scene.Node;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.AuthenticationService;
@@ -15,65 +17,73 @@ import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.common.message.AuthMessage;
 
 public class LoginController {
-    
-    @FXML private TextField loginField;
-    @FXML private PasswordField passwordField;
-    @FXML private Label messageLabel;
-    
+
+    @FXML
+    private TextField loginField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private Label messageLabel;
+
     private final NavigationService navigationService;
     private final AuthenticationService authService;
     private final LocaleService localeService;
-    
+
     public LoginController() {
         this.navigationService = NavigationService.getInstance();
         this.authService = AuthenticationService.getInstance();
         this.localeService = LocaleService.getInstance();
     }
-    
+
     @FXML
     public void initialize() {
         // Set message handler
         registerMessageHandler();
     }
-    
+
     @FXML
     private void handleLogin(ActionEvent event) {
+        Node source = (Node) event.getSource();
+        source.setDisable(true);
+
         String usernameOrEmail = loginField.getText();
         String password = passwordField.getText();
-        
+
         if (usernameOrEmail == null || usernameOrEmail.isEmpty()) {
             showMessage("login.error.username.email.required", "message-error");
             return;
         }
-        
+
         if (password == null || password.isEmpty()) {
             showMessage("login.error.password.required", "message-error");
             return;
         }
-        
+
         showMessage("login.info.logging", "message-info");
-        
-        // Disable login button to prevent multiple clicks
-        Node source = (Node) event.getSource();
-        source.setDisable(true);
-        
+
+        loginField.textProperty().addListener((_, _, _) -> {
+            source.setDisable(false);
+        });
+
+        passwordField.textProperty().addListener((_, _, _) -> {
+            source.setDisable(false);
+        });
+
         // Handle the CompletableFuture properly
         authService.login(usernameOrEmail, password)
-            .thenRun(() -> {
-                // This just indicates the message was sent successfully
-                // The actual authentication result will be handled in handleAuthResponse
-                
-            })
-            .exceptionally(ex -> {
-                // Handle connection errors
-                Platform.runLater(() -> {
-                    source.setDisable(false);
-                    showMessage("login.error.connection", "message-error");
+                .thenRun(() -> {
+                    // This just indicates the message was sent successfully
+                    // The actual authentication result will be handled in handleAuthResponse
+                })
+                .exceptionally(ex -> {
+                    // Handle connection errors
+                    Platform.runLater(() -> {
+                        showMessage("login.error.connection", "message-error");
+                    });
+                    return null;
                 });
-                return null;
-            });
     }
-    
+
     @FXML
     public void showRegister(ActionEvent event) {
         try {
@@ -86,17 +96,17 @@ public class LoginController {
             showMessage("navigation.error.load.register", "message-error");
         }
     }
-    
+
     private void handleAuthResponse(AuthMessage response) {
         Platform.runLater(() -> {
             if (response.getType() == AuthMessage.Type.LOGIN_RESPONSE) {
                 if (response.isSuccess()) {
                     showMessage("login.success", "message-success");
-                    
+
                     // Start user session
                     UserSessionService sessionService = UserSessionService.getInstance();
                     sessionService.startSession(response);
-                    
+
                     // Navigate to main dashboard on successful login
                     try {
                         navigationService.navigateToMainDashboard(loginField);
@@ -107,9 +117,9 @@ public class LoginController {
                     }
                 } else {
                     // Use server's message or fallback
-                    String errorMessage = (response.getMessage() != null && !response.getMessage().isEmpty()) 
-                        ? response.getMessage() 
-                        : localeService.getMessage("login.error.failed");
+                    String errorMessage = (response.getMessage() != null && !response.getMessage().isEmpty())
+                            ? response.getMessage()
+                            : localeService.getMessage("login.error.failed");
                     messageLabel.setText(errorMessage);
                     messageLabel.getStyleClass().clear();
                     messageLabel.getStyleClass().add("message-error");
@@ -117,7 +127,7 @@ public class LoginController {
             }
         });
     }
-    
+
     /**
      * Helper method to display messages
      */

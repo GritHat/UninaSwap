@@ -7,6 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.AuthenticationService;
@@ -24,6 +26,8 @@ public class RegisterController {
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
     @FXML private Label messageLabel;
+    @FXML private Button registerButton;
+    @FXML private CheckBox termsCheckBox;
     
     private final NavigationService navigationService;
     private final AuthenticationService authService;
@@ -40,7 +44,15 @@ public class RegisterController {
     @FXML
     public void initialize() {
         // Set message handler
+        buttonRegister( null); // Initialize button state
         registerMessageHandler();
+    }
+    @FXML
+    private void buttonRegister(ActionEvent event) {
+        registerButton.setDisable(true);
+        termsCheckBox.selectedProperty().addListener((_,_,newValue) ->{
+            registerButton.setDisable(!newValue);
+        });
     }
     
     @FXML
@@ -51,6 +63,7 @@ public class RegisterController {
         String email = emailField.getText();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
+
         
         // Validate input
         ValidationResult validationResult = validationService.validateRegistration(

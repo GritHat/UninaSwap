@@ -65,7 +65,7 @@
                                  <children>
                                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/icons/Book-2.png" />
+                                          <Image url="@../images/icons/book.png" />
                                        </image>
                                     </ImageView>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Guida Rapida">
@@ -83,7 +83,7 @@
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/icons/Document-Text.png" />
+                                          <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
                                     <Hyperlink text="Guida per principianti" />
@@ -92,7 +92,7 @@
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/icons/Document-Text.png" />
+                                          <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
                                     <Hyperlink text="Come vendere articoli" />
@@ -101,7 +101,7 @@
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/icons/Document-Text.png" />
+                                          <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
                                     <Hyperlink text="Partecipare alle aste" />
@@ -110,7 +110,7 @@
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/icons/Document-Text.png" />
+                                          <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
                                     <Hyperlink text="Regolamento della piattaforma" />
@@ -129,7 +129,7 @@
                                  <children>
                                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Message-Question--Streamline-Ultimate.png" />
+                                          <Image url="@../images/icons/faq.png" />
                                        </image>
                                     </ImageView>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Domande Frequenti">
@@ -203,7 +203,7 @@
                                  <children>
                                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Customer-Support-1--Streamline-Ultimate.png" />
+                                          <Image url="@../images/icons/customer_support.png" />
                                        </image>
                                     </ImageView>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Contatta l'Assistenza">
@@ -240,7 +240,7 @@
                                        <graphic>
                                           <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Send-Email--Streamline-Ultimate.png" />
+                                                <Image url="@../images/icons/send.png" />
                                              </image>
                                           </ImageView>
                                        </graphic>
@@ -263,7 +263,7 @@
                                  <children>
                                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Phone-Call-In--Streamline-Ultimate.png" />
+                                          <Image url="@../images/icons/Phone-Call-In--Streamline-Ultimate.png" />
                                        </image>
                                     </ImageView>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Altre Modalità di Contatto">
@@ -281,7 +281,7 @@
                                        <children>
                                           <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Email-Open--Streamline-Ultimate.png" />
+                                                <Image url="@../images/icons/email.png" />
                                              </image>
                                           </ImageView>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Email" />
@@ -293,7 +293,7 @@
                                        <children>
                                           <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Time-Clock-Circle--Streamline-Ultimate.png" />
+                                                <Image url="@../images/icons/clock.png" />
                                              </image>
                                           </ImageView>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Orari" />
@@ -305,7 +305,7 @@
                                        <children>
                                           <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/FAQ-Circle--Streamline-Ultimate.png" />
+                                                <Image url="@../images/icons/faq.png" />
                                              </image>
                                           </ImageView>
                                           <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="FAQ Complete" />

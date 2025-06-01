@@ -148,7 +148,7 @@
                                                        <children>
                                                           <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                                              <image>
-                                                                <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Computer-Laptop--Streamline-Ultimate.png" />
+                                                                <Image url="@../images/icons/laptop.png" />
                                                              </image>
                                                              <HBox.margin>
                                                                 <Insets right="10.0" />
@@ -162,7 +162,7 @@
                                                                    <children>
                                                                       <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                                                          <image>
-                                                                            <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Check-Circle--Streamline-Ultimate.png" />
+                                                                            <Image url="@../images/icons/check.png" />
                                                                          </image>
                                                                       </ImageView>
                                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="%preferiti.asta.tua.offerta" />
@@ -177,7 +177,7 @@
                                                                    <graphic>
                                                                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                                                          <image>
-                                                                            <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Eye-Show--Streamline-Ultimate.png" />
+                                                                            <Image url="@../images/icons/view.png" />
                                                                          </image>
                                                                       </ImageView>
                                                                    </graphic>

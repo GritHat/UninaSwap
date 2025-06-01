@@ -15,8 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="700.0" prefWidth="1000.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.MainController">
+<AnchorPane prefHeight="-Infinity" prefWidth="-Infinity" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.MainController">
   <children>
     <BorderPane prefHeight="700.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <left>
@@ -37,6 +36,9 @@
         <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="806.0" prefWidth="946.0" styleClass="main-content-background" BorderPane.alignment="CENTER">
           <content>
             <AnchorPane prefHeight="775.0" prefWidth="942.0">
+              <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
+              </padding>
               <children>
                 <VBox prefHeight="943.0" prefWidth="928.0" style="-fx-background-color: transparent;">
                   <children>
@@ -54,7 +56,7 @@
                           <children>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@../images/elenco_preferiti.png"/>
+                                <Image url="@../images/icons/elenco_preferiti.png"/>
                               </image>
                               <HBox.margin>
                                 <Insets left="15.0"/>
@@ -94,7 +96,7 @@
                           <children>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@../images/utenti preferiti.png"/>
+                                <Image url="@../images/icons/utenti_preferiti.png"/>
                               </image>
                               <HBox.margin>
                                 <Insets left="15.0"/>
@@ -131,7 +133,7 @@
                       <children>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                           <image>
-                            <Image url="@../images/elenco_aste.png"/>
+                            <Image url="@../images/icons/elenco_aste.png"/>
                           </image>
                           <HBox.margin>
                             <Insets left="15.0"/>
@@ -171,7 +173,7 @@
                                         </Text>
                                         <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                            <Image url="@../images/spermatozoi.png"/>
+                                            <Image url="@../images/icons/notification.png"/>
                                           </image>
                                           <HBox.margin>
                                             <Insets right="10.0"/>
@@ -183,7 +185,7 @@
                                       <children>
                                         <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                            <Image url="@../images/spermatozoi.png"/>
+                                            <Image url="@../images/icons/immagine_generica.png"/>
                                           </image>
                                           <HBox.margin>
                                             <Insets right="10.0"/>
@@ -197,7 +199,7 @@
                                               <children>
                                                 <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                                   <image>
-                                                    <Image url="@../images/spermatozoi.png"/>
+                                                    <Image url="@../images/icons/notification.png"/>
                                                   </image>
                                                 </ImageView>
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="La tua offerta"/>
@@ -226,7 +228,7 @@
                                         </Text>
                                         <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                            <Image url="@../images/spermatozoi.png"/>
+                                            <Image url="@../images/icons/notification.png"/>
                                           </image>
                                           <HBox.margin>
                                             <Insets right="10.0"/>
@@ -238,7 +240,7 @@
                                       <children>
                                         <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                            <Image url="@../images/spermatozoi.png"/>
+                                            <Image url="@../images/icons/immagine_generica.png"/>
                                           </image>
                                           <HBox.margin>
                                             <Insets right="10.0"/>
@@ -252,7 +254,7 @@
                                               <children>
                                                 <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                                   <image>
-                                                    <Image url="@../images/spermatozoi.png"/>
+                                                    <Image url="@../images/icons/notification.png"/>
                                                   </image>
                                                 </ImageView>
                                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-warning" text="Offerta superata"/>
@@ -289,7 +291,7 @@
                                         </Text>
                                         <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                            <Image url="@../images/spermatozoi.png"/>
+                                            <Image url="@../images/icons/notification.png"/>
                                           </image>
                                           <HBox.margin>
                                             <Insets right="10.0"/>
@@ -301,7 +303,7 @@
                                       <children>
                                         <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                            <Image url="@../images/spermatozoi.png"/>
+                                            <Image url="@../images/icons/immagine_generica.png"/>
                                           </image>
                                           <HBox.margin>
                                             <Insets right="10.0"/>
@@ -315,7 +317,7 @@
                                               <children>
                                                 <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                                   <image>
-                                                    <Image url="@../images/spermatozoi.png"/>
+                                                    <Image url="@../images/icons/notification.png"/>
                                                   </image>
                                                 </ImageView>
                                                 <Text fill="#4a2b6b" strokeType="OUTSIDE" strokeWidth="0.0" text="10 offerte"/>
@@ -348,22 +350,20 @@
                       </VBox.margin>
                     </VBox>
                     <VBox fx:id="pene" maxWidth="900.0" spacing="5.0"/>
+                    <!-- Elementi necessari ma invisibili -->
+                    <VBox visible="false" managed="false">
+                      <children>
+                        <Label fx:id="usernameLabel" text="" visible="false"/>
+                        <Label fx:id="statusLabel" text="" visible="false"/>
+                        <Label fx:id="connectionStatusLabel" text="Connected" visible="false"/>
+                        <Label fx:id="contentAreaTitleLabel" text="Dashboard" visible="false"/>
+                        <Label fx:id="contentAreaSubtitleLabel" text="Welcome back" visible="false"/>
+                        <ImageView fx:id="headerProfileImageView" visible="false"/>
+                        <StackPane fx:id="contentArea" visible="false"/>
+                      </children>
+                    </VBox>
                   </children>
-                  <!-- Elementi necessari ma invisibili -->
-                  <VBox visible="false" managed="false">
-                    <children>
-                      <Label fx:id="statusLabel" text="Ready" visible="false"/>
-                      <Label fx:id="connectionStatusLabel" text="Connected" visible="false"/>
-                      <Label fx:id="contentAreaTitleLabel" text="Dashboard" visible="false"/>
-                      <Label fx:id="contentAreaSubtitleLabel" text="Welcome back" visible="false"/>
-                      <ImageView fx:id="headerProfileImageView" visible="false"/>
-                      <StackPane fx:id="contentArea" visible="false"/>
-                    </children>
-                  </VBox>
                 </VBox>
-                <padding>
-                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
-                </padding>
               </children>
             </AnchorPane>
           </content>

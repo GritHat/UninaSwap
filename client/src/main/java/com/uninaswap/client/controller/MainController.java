@@ -12,29 +12,29 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
-
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.service.EventBusService;
-import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
 
 import java.io.IOException;
 
 public class MainController implements Refreshable {
-    //NON CI SONO
-    @FXML private Label usernameLabel;
-    @FXML private Label statusLabel;
-    @FXML private Label connectionStatusLabel;
-    @FXML private Label contentAreaTitleLabel;
-    @FXML private Label contentAreaSubtitleLabel;
-    @FXML private StackPane contentArea;
-    @FXML private ImageView headerProfileImageView;
-    
-    
+    // NON CI SONO
+    @FXML
+    private Label usernameLabel;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Label connectionStatusLabel;
+    @FXML
+    private Label contentAreaTitleLabel;
+    @FXML
+    private Label contentAreaSubtitleLabel;
+    @FXML
+    private StackPane contentArea;
     @FXML
     private Button dashboardMenuItem;
     @FXML
@@ -61,14 +61,12 @@ public class MainController implements Refreshable {
     private final NavigationService navigationService;
     private final LocaleService localeService;
     private final UserSessionService sessionService;
-    private final ImageService imageService;
     private final EventBusService eventBus = EventBusService.getInstance();
 
     public MainController() {
         this.navigationService = NavigationService.getInstance();
         this.localeService = LocaleService.getInstance();
         this.sessionService = UserSessionService.getInstance();
-        this.imageService = ImageService.getInstance();
     }
 
     @FXML
@@ -80,62 +78,78 @@ public class MainController implements Refreshable {
 
     @FXML
     public void initialize() {
-        checkAuthentication();
-        // statusLabel.setText(localeService.getMessage("dashboard.status.loaded"));
-        connectionStatusLabel.setText(localeService.getMessage("dashboard.status.connected"));
+        try {
+            // Inizializza le componenti UI
+            // statusLabel.setText(localeService.getMessage("dashboard.status.loaded"));
+            connectionStatusLabel.setText(localeService.getMessage("dashboard.status.connected"));
 
-        String username = sessionService.getUser().getUsername();
-        usernameLabel.setText(localeService.getMessage("dashboard.welcome.user", username));
+            String username = sessionService.getUser().getUsername();
+            usernameLabel.setText(localeService.getMessage("dashboard.welcome.user", username));
 
-        String profileImagePath = sessionService.getUser().getProfileImagePath();
-        loadProfileImageInHeader(profileImagePath);
+            // Subscribe to locale change events
+            eventBus.subscribe(EventTypes.LOCALE_CHANGED, _ -> {
+                Platform.runLater(this::refreshAllViews);
+            });
 
-        // Subscribe to profile image change events
-        EventBusService.getInstance().subscribe(EventTypes.PROFILE_IMAGE_CHANGED, data -> {
-            if (data instanceof String) {
-                updateProfileImage((String) data);
+            // load cards
+            // Esempio: popola articoli preferiti con dati fittizi
+            articoliPreferitiBox.getChildren().clear();
+            for (int i = 1; i <= 3; i++) {
+                VBox card = new VBox();
+                ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/images/spermatozoi.png")));
+                img.setFitWidth(100);
+                img.setFitHeight(100);
+                Text titolo = new Text("Articolo " + i);
+                Text prezzo = new Text((10 * i) + "€");
+                card.getChildren().addAll(img, titolo, prezzo);
+                articoliPreferitiBox.getChildren().add(card);
             }
-        });
 
-        // Subscribe to locale change events
-        eventBus.subscribe(EventTypes.LOCALE_CHANGED, _ -> {
-            Platform.runLater(this::refreshAllViews);
-        });
+            // Esempio: popola utenti preferiti con dati fittizi
+            utentiPreferitiBox.getChildren().clear();
+            for (int i = 1; i <= 2; i++) {
+                VBox userBox = new VBox();
+                ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/images/spermatozoi.png")));
+                img.setFitWidth(100);
+                img.setFitHeight(100);
+                Text nome = new Text("Utente " + i);
+                userBox.getChildren().addAll(img, nome);
+                utentiPreferitiBox.getChildren().add(userBox);
+            }
 
-        // load cards
-        // Esempio: popola articoli preferiti con dati fittizi
-        articoliPreferitiBox.getChildren().clear();
-        for (int i = 1; i <= 3; i++) {
-            VBox card = new VBox();
-            ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/images/spermatozoi.png")));
-            img.setFitWidth(100);
-            img.setFitHeight(100);
-            Text titolo = new Text("Articolo " + i);
-            Text prezzo = new Text((10 * i) + "€");
-            card.getChildren().addAll(img, titolo, prezzo);
-            articoliPreferitiBox.getChildren().add(card);
-        }
+            // Esempio: popola aste preferite con dati fittizi
+            astePreferiteBox.getChildren().clear();
+            for (int i = 1; i <= 2; i++) {
+                VBox astaBox = new VBox();
+                Text titolo = new Text("Asta " + i);
+                Text offerta = new Text("Offerta: " + (i * 50) + "€");
+                astaBox.getChildren().addAll(titolo, offerta);
+                astePreferiteBox.getChildren().add(astaBox);
+            }
 
-        // Esempio: popola utenti preferiti con dati fittizi
-        utentiPreferitiBox.getChildren().clear();
-        for (int i = 1; i <= 2; i++) {
-            VBox userBox = new VBox();
-            ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/images/spermatozoi.png")));
-            img.setFitWidth(100);
-            img.setFitHeight(100);
-            Text nome = new Text("Utente " + i);
-            userBox.getChildren().addAll(img, nome);
-            utentiPreferitiBox.getChildren().add(userBox);
-        }
+            // Se stai caricando immagini da risorse, assicurati di gestire correttamente le eccezioni
+            // e di verificare che i percorsi siano corretti
 
-        // Esempio: popola aste preferite con dati fittizi
-        astePreferiteBox.getChildren().clear();
-        for (int i = 1; i <= 2; i++) {
-            VBox astaBox = new VBox();
-            Text titolo = new Text("Asta " + i);
-            Text offerta = new Text("Offerta: " + (i * 50) + "€");
-            astaBox.getChildren().addAll(titolo, offerta);
-            astePreferiteBox.getChildren().add(astaBox);
+            // Esempio di come gestire un'immagine in modo sicuro:
+            if (ProfileImageView != null) {
+                String imagePath = "/images/icons/user_profile.png";
+                try {
+                    Image img = new Image(getClass().getResourceAsStream(imagePath));
+                    if (img.isError()) {
+                        System.err.println("Errore nel caricamento dell'immagine: " + img.getException().getMessage());
+                    } else {
+                        ProfileImageView.setImage(img);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Eccezione durante il caricamento dell'immagine: " + e.getMessage());
+                }
+            }
+
+            // Altre inizializzazioni
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Errore durante l'inizializzazione del controller: " + e.getMessage());
         }
     }
 
@@ -242,16 +256,6 @@ public class MainController implements Refreshable {
         }
     }
 
-    @FXML
-    public void openNotifications(ActionEvent event) {
-
-    }
-
-    @FXML
-    public void openAste(ActionEvent event) {
-
-    }
-
     /**
      * Verify that a user is logged in, redirect to login if not
      * Call this from initialize() in protected controllers
@@ -263,57 +267,8 @@ public class MainController implements Refreshable {
                     navigationService.navigateToLogin(usernameLabel);
                 } catch (Exception e) {
                     System.err.println("User is not logged in, redirecting to login screen");
-                    // Log error
                 }
             });
-        }
-    }
-
-    /**
-     * Loads user profile image in the header
-     */
-    private void loadProfileImageInHeader(String imagePath) {
-        if (imagePath == null || imagePath.isEmpty()) {
-            setDefaultProfileImage();
-            return;
-        }
-        imageService.fetchImage(imagePath)
-                .thenAccept(image -> {
-                    Platform.runLater(() -> {
-                        headerProfileImageView.setImage(image);
-
-                        // Apply circular clip to the image
-                        Circle clip = new Circle(16, 16, 16); // 32/2=16
-                        headerProfileImageView.setClip(clip);
-                    });
-                })
-                .exceptionally(ex -> {
-                    // If loading fails, set default image
-                    System.err.println("Failed to load profile image: " + ex.getMessage());
-                    Platform.runLater(this::setDefaultProfileImage);
-                    return null;
-                });
-    }
-
-    /**
-     * Sets a default profile image when no custom image is available
-     */
-    private void setDefaultProfileImage() {
-        // Load default image from resources
-        Image defaultImage = new Image(getClass().getResourceAsStream("/images/default_profile.png"));
-        headerProfileImageView.setImage(defaultImage);
-
-        // Apply circular clip
-        Circle clip = new Circle(16, 16, 16);
-        headerProfileImageView.setClip(clip);
-    }
-
-    /**
-     * Update profile image when profile is changed elsewhere
-     */
-    public void updateProfileImage(String imagePath) {
-        if (imagePath != null && !imagePath.isEmpty()) {
-            loadProfileImageInHeader(imagePath);
         }
     }
 
@@ -330,11 +285,10 @@ public class MainController implements Refreshable {
      * Refreshes the main view elements
      */
     public void refreshUI() {
-        usernameLabel.setText(sessionService.getUser().getUsername());
         statusLabel.setText(localeService.getMessage("label.ready"));
         connectionStatusLabel.setText(localeService.getMessage("label.connected"));
         contentAreaSubtitleLabel.setText(localeService.getMessage("dashboard.contentaread.title"));
-        contentAreaTitleLabel.setText(localeService.getMessage("dashboard.contentaread.subtitle"));
+        contentAreaTitleLabel.setText(localeService.getMessage("dashboard.contentared.subtitle"));
         // Update sidebar menu items
         dashboardMenuItem.setText(localeService.getMessage("dashboard.menu.dashboard"));
         marketsMenuItem.setText(localeService.getMessage("dashboard.menu.markets"));
@@ -413,4 +367,13 @@ public class MainController implements Refreshable {
         }
     }
 
+    @FXML
+    public void openNotifications(ActionEvent event) {
+
+    }
+
+    @FXML
+    public void openAste(ActionEvent event) {
+
+    }
 }

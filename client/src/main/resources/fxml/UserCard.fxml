@@ -16,7 +16,7 @@
                   <Insets top="10.0" />
                </VBox.margin>
                <image>
-                  <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Picture-Sun--Streamline-Ultimate.png" />
+                  <Image url="@../images/icons/user_circle.png" />
                </image>
             </ImageView>
             <Text fx:id="itemName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="item-name" text="%profilo.nome.utente" textAlignment="CENTER" wrappingWidth="100.0">

@@ -74,7 +74,7 @@
                                            <children>
                                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                                  <image>
-                                                    <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Tags-1--Streamline-Ultimate.png" />
+                                                    <Image url="@../images/icons/immagine_generica.png" />
                                                  </image>
                                               </ImageView>
                                               <VBox prefHeight="70.0" prefWidth="365.0">
@@ -106,7 +106,7 @@
                                            <children>
                                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                                  <image>
-                                                    <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Business-Deal-Cash-2--Streamline-Ultimate.png" />
+                                                    <Image url="@../images/icons/immagine_generica.png" />
                                                  </image>
                                               </ImageView>
                                               <VBox prefHeight="70.0" prefWidth="365.0">
@@ -138,7 +138,7 @@
                                            <children>
                                               <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                                                  <image>
-                                                    <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Single-Neutral-Circle--Streamline-Ultimate.png" />
+                                                    <Image url="@../images/icons/user_circle.png" />
                                                  </image>
                                               </ImageView>
                                               <VBox prefHeight="70.0" prefWidth="365.0">

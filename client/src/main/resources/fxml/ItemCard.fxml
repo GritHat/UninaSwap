@@ -76,7 +76,7 @@
       <!-- Icona preferiti sovrapposta (in alto a destra) -->
       <ImageView fx:id="favoriteIcon" fitHeight="22.0" fitWidth="22.0" onMouseClicked="#toggleFavorite" pickOnBounds="true" preserveRatio="true" styleClass="favorite-icon">
          <image>
-            <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Heart-1--Streamline-Ultimate.png" />
+            <Image url="@../images/icons/favorite.png" />
          </image>
          <StackPane.margin>
             <Insets right="-80.0" top="-145.0" />

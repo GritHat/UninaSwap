@@ -12,7 +12,7 @@
       <Insets top="13.0" />
    </padding>
    <children>
-      <ImageView fx:id="profileIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showProfile" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="ProfileImageView" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showProfile" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/icons/user_profile.png" />
          </image>

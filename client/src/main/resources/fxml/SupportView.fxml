@@ -44,7 +44,7 @@
                                     <Insets left="15.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Centro Assistenza">
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.center">
                                  <HBox.margin>
                                     <Insets left="10.0" />
                                  </HBox.margin>
@@ -68,7 +68,7 @@
                                           <Image url="@../images/icons/book.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Guida Rapida">
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.quick.guide">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -78,7 +78,7 @@
                               <Separator prefWidth="200.0" />
                               
                               <VBox spacing="8.0">
-                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="UninaSwap è una piattaforma per lo scambio e la vendita di materiale universitario tra studenti. Ecco alcune risorse utili per iniziare:" wrappingWidth="650.0" />
+                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%support.platform.description" wrappingWidth="650.0" />
                                  
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
@@ -86,7 +86,7 @@
                                           <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
-                                    <Hyperlink text="Guida per principianti" />
+                                    <Hyperlink text="%support.guide.beginners" />
                                  </HBox>
                                  
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -95,7 +95,7 @@
                                           <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
-                                    <Hyperlink text="Come vendere articoli" />
+                                    <Hyperlink text="%support.guide.selling" />
                                  </HBox>
                                  
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -104,7 +104,7 @@
                                           <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
-                                    <Hyperlink text="Partecipare alle aste" />
+                                    <Hyperlink text="%support.guide.auctions" />
                                  </HBox>
                                  
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -113,7 +113,7 @@
                                           <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
-                                    <Hyperlink text="Regolamento della piattaforma" />
+                                    <Hyperlink text="%support.guide.rules" />
                                  </HBox>
                               </VBox>
                            </children>
@@ -132,7 +132,7 @@
                                           <Image url="@../images/icons/faq.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Domande Frequenti">
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.faq">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -143,47 +143,47 @@
                               
                               <Accordion>
                                  <panes>
-                                    <TitledPane animated="false" text="Come posso creare un nuovo annuncio?">
+                                    <TitledPane animated="false" text="%support.faq.create.listing">
                                        <content>
                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0">
                                              <children>
-                                                <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Per creare un nuovo annuncio, vai alla sezione Inventario dal menu laterale e clicca sul pulsante 'Nuovo articolo'. Compila tutti i campi richiesti e carica almeno un'immagine dell'oggetto che vuoi vendere o scambiare." wrappingWidth="620.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                                                <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%support.faq.create.listing.answer" wrappingWidth="620.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
                                              </children>
                                           </AnchorPane>
                                        </content>
                                     </TitledPane>
-                                    <TitledPane animated="false" text="Come funzionano le aste?">
+                                    <TitledPane animated="false" text="%support.faq.auctions">
                                        <content>
                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0">
                                              <children>
-                                                <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Le aste permettono di vendere oggetti al miglior offerente. Quando crei un nuovo annuncio, seleziona l'opzione 'Abilita asta' e imposta un prezzo di partenza e una data di scadenza. Gli altri utenti potranno fare offerte e alla scadenza l'oggetto sarà assegnato all'offerta più alta." wrappingWidth="620.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                                                <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%support.faq.auctions.answer" wrappingWidth="620.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
                                              </children>
                                           </AnchorPane>
                                        </content>
                                     </TitledPane>
-                                    <TitledPane animated="false" text="Come posso modificare i miei dati personali?">
+                                    <TitledPane animated="false" text="%support.faq.edit.profile">
                                        <content>
                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0">
                                              <children>
-                                                <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Per modificare i tuoi dati personali, vai alla sezione Profilo cliccando sull'icona del profilo nel menu laterale, poi clicca sul pulsante 'Modifica Profilo'. Da qui potrai aggiornare il tuo nome, email, foto profilo e altre informazioni." wrappingWidth="620.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                                                <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%support.faq.edit.profile.answer" wrappingWidth="620.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
                                              </children>
                                           </AnchorPane>
                                        </content>
                                     </TitledPane>
-                                    <TitledPane animated="false" text="Come funziona il sistema di valutazione?">
+                                    <TitledPane animated="false" text="%support.faq.rating">
                                        <content>
                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0">
                                              <children>
-                                                <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Dopo ogni transazione completata, acquirenti e venditori possono valutarsi a vicenda con un punteggio da 1 a 5 stelle e lasciare un commento. Queste valutazioni sono visibili sul profilo di ogni utente e aiutano a costruire la reputazione all'interno della community." wrappingWidth="620.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                                                <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%support.faq.rating.answer" wrappingWidth="620.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
                                              </children>
                                           </AnchorPane>
                                        </content>
                                     </TitledPane>
-                                    <TitledPane animated="false" text="Come posso contattare un venditore?">
+                                    <TitledPane animated="false" text="%support.faq.contact.seller">
                                        <content>
                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0">
                                              <children>
-                                                <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Puoi contattare un venditore visitando la pagina dell'annuncio e cliccando sul pulsante 'Contatta Venditore'. Si aprirà una chat privata dove potrai fare domande sull'oggetto o concordare i dettagli della transazione." wrappingWidth="620.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                                                <Text layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="%support.faq.contact.seller.answer" wrappingWidth="620.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
                                              </children>
                                           </AnchorPane>
                                        </content>
@@ -206,7 +206,7 @@
                                           <Image url="@../images/icons/customer_support.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Contatta l'Assistenza">
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.contact.us">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -215,12 +215,12 @@
                               </HBox>
                               <Separator prefWidth="200.0" />
                               
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Non hai trovato risposta alle tue domande? Compila il modulo sottostante per contattare direttamente il nostro team di assistenza." wrappingWidth="650.0" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%support.contact.description" wrappingWidth="650.0" />
                               
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
-                                    <Label prefWidth="100.0" text="Oggetto:" />
-                                    <TextField fx:id="subjectField" prefWidth="300.0" promptText="Inserisci l'oggetto della richiesta" HBox.hgrow="ALWAYS" />
+                                    <Label prefWidth="100.0" text="%support.contact.subject" />
+                                    <TextField fx:id="subjectField" prefWidth="300.0" promptText="%support.contact.subject.prompt" HBox.hgrow="ALWAYS" />
                                  </children>
                                  <VBox.margin>
                                     <Insets top="10.0" />
@@ -229,14 +229,14 @@
                               
                               <VBox spacing="5.0">
                                  <children>
-                                    <Label text="Messaggio:" />
-                                    <TextArea fx:id="messageField" prefHeight="150.0" prefWidth="200.0" promptText="Descrivi dettagliatamente il tuo problema..." wrapText="true" />
+                                    <Label text="%support.contact.message" />
+                                    <TextArea fx:id="messageField" prefHeight="150.0" prefWidth="200.0" promptText="%support.contact.message.prompt" wrapText="true" />
                                  </children>
                               </VBox>
                               
                               <HBox alignment="CENTER_RIGHT">
                                  <children>
-                                    <Button fx:id="sendButton" mnemonicParsing="false" onAction="#handleSendMessage" text="Invia Richiesta">
+                                    <Button fx:id="sendButton" mnemonicParsing="false" onAction="#handleSendMessage" text="%support.contact.send">
                                        <graphic>
                                           <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -266,7 +266,7 @@
                                           <Image url="@../images/icons/Phone-Call-In--Streamline-Ultimate.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Altre Modalità di Contatto">
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.other.contact.methods">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -284,8 +284,8 @@
                                                 <Image url="@../images/icons/email.png" />
                                              </image>
                                           </ImageView>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Email" />
-                                          <Hyperlink text="support@uninaswap.it" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.contact.email" />
+                                          <Hyperlink text="%support.contact.email.address" />
                                        </children>
                                     </VBox>
                                     
@@ -296,8 +296,8 @@
                                                 <Image url="@../images/icons/clock.png" />
                                              </image>
                                           </ImageView>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Orari" />
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Lun-Ven: 9:00-18:00" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.contact.hours" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%support.contact.hours.value" />
                                        </children>
                                     </VBox>
                                     
@@ -308,8 +308,8 @@
                                                 <Image url="@../images/icons/faq.png" />
                                              </image>
                                           </ImageView>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="FAQ Complete" />
-                                          <Hyperlink text="Visita la Knowledge Base" />
+                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.full.faq" />
+                                          <Hyperlink text="%support.knowledge.base.link" />
                                        </children>
                                     </VBox>
                                  </children>

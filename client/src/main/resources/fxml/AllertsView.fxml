@@ -111,13 +111,13 @@
                                               </ImageView>
                                               <VBox prefHeight="70.0" prefWidth="365.0">
                                                  <children>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.offerta.superata" wrappingWidth="363.0">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notification.outbid" wrappingWidth="363.0">
                                                        <font>
                                                           <Font name="System Bold" size="12.0" />
                                                        </font>
                                                     </Text>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.offerta.superata.dettaglio" wrappingWidth="365.0" />
-                                                    <Text fill="#888888" strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.tempo.2h">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notification.outbid.detail" wrappingWidth="365.0" />
+                                                    <Text fill="#888888" strokeType="OUTSIDE" strokeWidth="0.0" text="%notification.time.2h">
                                                        <font>
                                                           <Font size="10.0" />
                                                        </font>
@@ -143,13 +143,13 @@
                                               </ImageView>
                                               <VBox prefHeight="70.0" prefWidth="365.0">
                                                  <children>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.nuovo.follower" wrappingWidth="363.0">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notification.new.follower" wrappingWidth="363.0">
                                                        <font>
                                                           <Font name="System Bold" size="12.0" />
                                                        </font>
                                                     </Text>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.nuovo.follower.dettaglio" wrappingWidth="365.0" />
-                                                    <Text fill="#888888" strokeType="OUTSIDE" strokeWidth="0.0" text="%notifiche.tempo.1g">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%notification.new.follower.detail" wrappingWidth="365.0" />
+                                                    <Text fill="#888888" strokeType="OUTSIDE" strokeWidth="0.0" text="%notification.time.1d">
                                                        <font>
                                                           <Font size="10.0" />
                                                        </font>
@@ -170,17 +170,17 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="%notifiche.tab.acquisti.vendite">
+                      <Tab text="%notification.tab.purchases.sales">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                         </content>
                       </Tab>
-                      <Tab text="%notifiche.tab.aste">
+                      <Tab text="%notification.tab.auctions">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                         </content>
                       </Tab>
-                      <Tab text="%notifiche.tab.sociali">
+                      <Tab text="%notification.tab.social">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                         </content>

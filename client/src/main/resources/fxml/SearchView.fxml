@@ -47,7 +47,7 @@
                                  <font>
                                     <Font size="14.0" />
                                  </font>
-                                 <text>Articoli Preferiti</text>
+                                 <text>%favorites.items</text>
                               </Text>
                            </children>
                         </HBox>
@@ -81,7 +81,7 @@
                                  <font>
                                     <Font size="14.0" />
                                  </font>
-                                 <text>Storico Ordini</text>
+                                 <text>%order.history</text>
                               </Text>
                            </children>
                         </HBox>
@@ -113,7 +113,7 @@
                                  <font>
                                     <Font size="14.0" />
                                  </font>
-                                 <text>Impostazioni</text>
+                                 <text>%settings.title</text>
                               </Text>
                            </children>
                         </HBox>
@@ -122,12 +122,12 @@
                            <children>
                               <Button fx:id="changePasswordButton" mnemonicParsing="false" onAction="#handleChangePassword" prefHeight="40.0" prefWidth="501.0" styleClass="settings-button">
                                  <text>
-                                    <Text text="Cambia Password" />
+                                    <Text text="%button.change.password" />
                                  </text>
                               </Button>
                               <Button fx:id="notificationSettingsButton" mnemonicParsing="false" onAction="#handleNotificationSettings" prefHeight="40.0" prefWidth="501.0" styleClass="settings-button">
                                  <text>
-                                    <Text text="Impostazioni Notifiche" />
+                                    <Text text="%settings.notifications" />
                                  </text>
                               </Button>
                            </children>

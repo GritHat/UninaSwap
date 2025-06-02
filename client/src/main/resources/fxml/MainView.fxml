@@ -62,7 +62,7 @@
                                 <Insets left="15.0"/>
                               </HBox.margin>
                             </ImageView>
-                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Articoli Preferiti">
+                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%favorites.items">
                               <HBox.margin>
                                 <Insets left="5.0"/>
                               </HBox.margin>
@@ -102,7 +102,7 @@
                                 <Insets left="15.0"/>
                               </HBox.margin>
                             </ImageView>
-                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Utenti Preferiti">
+                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%favorites.users">
                               <HBox.margin>
                                 <Insets left="5.0"/>
                               </HBox.margin>
@@ -139,7 +139,7 @@
                             <Insets left="15.0"/>
                           </HBox.margin>
                         </ImageView>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Aste a cui partecipi">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%auctions.participating">
                           <HBox.margin>
                             <Insets left="5.0"/>
                           </HBox.margin>
@@ -161,12 +161,12 @@
                                   <children>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" styleClass="card-header">
                                       <children>
-                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Laptop HP" wrappingWidth="122.13671875">
+                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%item.laptop" wrappingWidth="122.13671875">
                                           <HBox.margin>
                                             <Insets left="10.0"/>
                                           </HBox.margin>
                                         </Text>
-                                        <Text fill="#4a2b6b" strokeType="OUTSIDE" strokeWidth="0.0" text="Scade: 3 giorni">
+                                        <Text fill="#4a2b6b" strokeType="OUTSIDE" strokeWidth="0.0" text="%auction.expiry.days">
                                           <HBox.margin>
                                             <Insets right="2.0"/>
                                           </HBox.margin>
@@ -194,7 +194,7 @@
                                         <VBox alignment="CENTER_LEFT" prefHeight="89.0" prefWidth="109.0">
                                           <children>
                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Offerta attuale:"/>
-                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="€180"/>
+                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%price.amount"/>
                                             <HBox alignment="CENTER_LEFT" spacing="5.0">
                                               <children>
                                                 <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
@@ -202,7 +202,7 @@
                                                     <Image url="@../images/icons/notification.png"/>
                                                   </image>
                                                 </ImageView>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="La tua offerta"/>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="%auction.your.bid"/>
                                               </children>
                                             </HBox>
                                           </children>
@@ -216,12 +216,12 @@
                                   <children>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" styleClass="card-header">
                                       <children>
-                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Libri Ingegneria" wrappingWidth="122.13671875">
+                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%item.engineering.books" wrappingWidth="122.13671875">
                                           <HBox.margin>
                                             <Insets left="10.0"/>
                                           </HBox.margin>
                                         </Text>
-                                        <Text fill="#ff6666" strokeType="OUTSIDE" strokeWidth="0.0" text="Scade: 8 ore">
+                                        <Text fill="#ff6666" strokeType="OUTSIDE" strokeWidth="0.0" text="%auction.expiry.hours">
                                           <HBox.margin>
                                             <Insets right="2.0"/>
                                           </HBox.margin>
@@ -249,7 +249,7 @@
                                         <VBox alignment="CENTER_LEFT" prefHeight="89.0" prefWidth="109.0">
                                           <children>
                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Offerta attuale:"/>
-                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="€75"/>
+                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%price.books"/>
                                             <HBox alignment="CENTER_LEFT" spacing="5.0">
                                               <children>
                                                 <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
@@ -257,10 +257,10 @@
                                                     <Image url="@../images/icons/notification.png"/>
                                                   </image>
                                                 </ImageView>
-                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-warning" text="Offerta superata"/>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-warning" text="%auction.outbid"/>
                                               </children>
                                             </HBox>
-                                            <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="60.0" text="Rilancia" textFill="WHITE">
+                                            <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="60.0" text="%button.bid.again" textFill="WHITE">
                                               <font>
                                                 <Font size="10.0"/>
                                               </font>
@@ -279,12 +279,12 @@
                                   <children>
                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" styleClass="card-header">
                                       <children>
-                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Tablet Samsung" wrappingWidth="122.13671875">
+                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%item.tablet" wrappingWidth="122.13671875">
                                           <HBox.margin>
                                             <Insets left="10.0"/>
                                           </HBox.margin>
                                         </Text>
-                                        <Text fill="#ffa500" strokeType="OUTSIDE" strokeWidth="0.0" text="Scade: 1 giorno">
+                                        <Text fill="#ffa500" strokeType="OUTSIDE" strokeWidth="0.0" text="%auction.expiry.day">
                                           <HBox.margin>
                                             <Insets right="2.0"/>
                                           </HBox.margin>
@@ -312,7 +312,7 @@
                                         <VBox alignment="CENTER_LEFT" prefHeight="89.0" prefWidth="109.0">
                                           <children>
                                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Offerta attuale:"/>
-                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="€120"/>
+                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%price.tablet"/>
                                             <HBox alignment="CENTER_LEFT" spacing="5.0">
                                               <children>
                                                 <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
@@ -320,10 +320,10 @@
                                                     <Image url="@../images/icons/notification.png"/>
                                                   </image>
                                                 </ImageView>
-                                                <Text fill="#4a2b6b" strokeType="OUTSIDE" strokeWidth="0.0" text="10 offerte"/>
+                                                <Text fill="#4a2b6b" strokeType="OUTSIDE" strokeWidth="0.0" text="%auction.bids"/>
                                               </children>
                                             </HBox>
-                                            <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="60.0" text="Offri" textFill="WHITE">
+                                            <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="60.0" text="%button.bid" textFill="WHITE">
                                               <font>
                                                 <Font size="10.0"/>
                                               </font>

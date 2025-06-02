@@ -10,12 +10,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.image.PixelReader;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -31,10 +33,9 @@ import com.uninaswap.client.service.ImageService;
 import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.ProfileUpdateMessage;
 
-public class ProfileController implements Refreshable{
-    
+public class ProfileController implements Refreshable{ 
     @FXML private Label profileTitleLabel;
-    @FXML private TextField usernameField;
+    @FXML private Text usernameField;
     @FXML private TextField emailField;
     @FXML private TextField firstNameField;
     @FXML private TextField lastNameField;
@@ -108,14 +109,25 @@ public class ProfileController implements Refreshable{
     }
     
     private void loadUserProfile() {
-        // Set non-editable fields
-        usernameField.setText(sessionService.getUser().getUsername());
-        emailField.setText(sessionService.getUser().getEmail());
+        if (usernameField != null) {
+            usernameField.setText(sessionService.getUser().getUsername());
+        }
         
-        // Set editable fields
-        firstNameField.setText(sessionService.getUser().getFirstName());
-        lastNameField.setText(sessionService.getUser().getLastName());
-        bioField.setText(sessionService.getUser().getBio());
+        if (emailField != null) {
+            emailField.setText(sessionService.getUser().getEmail());
+        }
+
+        if (firstNameField != null) {
+            firstNameField.setText(sessionService.getUser().getFirstName());
+        }
+        
+        if (lastNameField != null) {
+            lastNameField.setText(sessionService.getUser().getLastName());
+        }
+        
+        if (bioField != null) {
+            bioField.setText(sessionService.getUser().getBio());
+        }
         
         // Set profile image
         String imagePath = sessionService.getUser().getProfileImagePath();

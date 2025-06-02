@@ -19,7 +19,7 @@
                   <Image url="@../images/icons/user_circle.png" />
                </image>
             </ImageView>
-            <Text fx:id="itemName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="item-name" text="%profilo.nome.utente" textAlignment="CENTER" wrappingWidth="100.0">
+            <Text fx:id="itemName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="item-name" text="%profile.user.name" textAlignment="CENTER" wrappingWidth="100.0">
                <VBox.margin>
                   <Insets top="8.0" />
                </VBox.margin>

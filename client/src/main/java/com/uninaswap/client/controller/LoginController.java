@@ -14,7 +14,6 @@ import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.common.message.AuthMessage;
 
 public class LoginController {
-
     @FXML
     private TextField loginField;
     @FXML
@@ -66,14 +65,11 @@ public class LoginController {
             source.setDisable(false);
         });
 
-        // Handle the CompletableFuture properly
         authService.login(usernameOrEmail, password)
                 .thenRun(() -> {
-                    // This just indicates the message was sent successfully
                     // The actual authentication result will be handled in handleAuthResponse
                 })
                 .exceptionally(ex -> {
-                    // Handle connection errors
                     Platform.runLater(() -> {
                         showMessage("login.error.connection", "message-error");
                     });

@@ -109,7 +109,7 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="%inventory.tab.venduti">
+                      <Tab text="%inventory.tab.sold">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -126,7 +126,7 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="%inventory.tab.asteattive">
+                      <Tab text="%inventory.tab.activeauctions">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -143,7 +143,7 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="%inventory.tab.bozze">
+                      <Tab text="%inventory.tab.drafts">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>

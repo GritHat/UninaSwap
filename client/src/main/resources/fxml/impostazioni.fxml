@@ -41,7 +41,7 @@
                               <Insets left="15.0" />
                            </HBox.margin>
                         </ImageView>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Impostazioni">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.title">
                            <HBox.margin>
                               <Insets left="10.0" />
                            </HBox.margin>
@@ -64,32 +64,32 @@
                         <!-- Account settings section -->
                         <VBox spacing="15.0">
                            <children>
-                              <Label styleClass="section-title" text="Account" />
+                              <Label styleClass="section-title" text="%settings.account" />
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
-                                    <Label prefWidth="150.0" text="Email" />
-                                    <TextField fx:id="emailField" prefWidth="250.0" promptText="Email" />
+                                    <Label prefWidth="150.0" text="%label.email" />
+                                    <TextField fx:id="emailField" prefWidth="250.0" promptText="%label.email" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
-                                    <Label prefWidth="150.0" text="Password attuale" />
-                                    <PasswordField fx:id="currentPasswordField" prefWidth="250.0" promptText="Password attuale" />
+                                    <Label prefWidth="150.0" text="%label.current.password" />
+                                    <PasswordField fx:id="currentPasswordField" prefWidth="250.0" promptText="%label.current.password" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
-                                    <Label prefWidth="150.0" text="Nuova password" />
-                                    <PasswordField fx:id="newPasswordField" prefWidth="250.0" promptText="Nuova password" />
+                                    <Label prefWidth="150.0" text="%label.new.password" />
+                                    <PasswordField fx:id="newPasswordField" prefWidth="250.0" promptText="%label.new.password" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
-                                    <Label prefWidth="150.0" text="Conferma password" />
-                                    <PasswordField fx:id="confirmPasswordField" prefWidth="250.0" promptText="Conferma password" />
+                                    <Label prefWidth="150.0" text="%label.new.password.confirm" />
+                                    <PasswordField fx:id="confirmPasswordField" prefWidth="250.0" promptText="%label.new.password.confirm" />
                                  </children>
                               </HBox>
-                              <Button fx:id="changePasswordButton" mnemonicParsing="false" onAction="#handleChangePassword" text="Cambia password">
+                              <Button fx:id="changePasswordButton" mnemonicParsing="false" onAction="#handleChangePassword" text="%settings.button.change.password">
                                  <VBox.margin>
                                     <Insets left="150.0" />
                                  </VBox.margin>
@@ -102,11 +102,11 @@
                         <!-- Notification settings section -->
                         <VBox spacing="15.0">
                            <children>
-                              <Label styleClass="section-title" text="Notifiche" />
-                              <CheckBox fx:id="emailNotificationsCheckBox" mnemonicParsing="false" text="Ricevi notifiche via email" />
-                              <CheckBox fx:id="appNotificationsCheckBox" mnemonicParsing="false" text="Ricevi notifiche nell'app" />
-                              <CheckBox fx:id="offerNotificationsCheckBox" mnemonicParsing="false" text="Notifiche per nuove offerte" />
-                              <CheckBox fx:id="messageNotificationsCheckBox" mnemonicParsing="false" text="Notifiche per nuovi messaggi" />
+                              <Label styleClass="section-title" text="%settings.notifications" />
+                              <CheckBox fx:id="emailNotificationsCheckBox" mnemonicParsing="false" text="%settings.notifications.email" />
+                              <CheckBox fx:id="appNotificationsCheckBox" mnemonicParsing="false" text="%settings.notifications.app" />
+                              <CheckBox fx:id="offerNotificationsCheckBox" mnemonicParsing="false" text="%settings.notifications.offers" />
+                              <CheckBox fx:id="messageNotificationsCheckBox" mnemonicParsing="false" text="%settings.notifications.messages" />
                            </children>
                         </VBox>
                         
@@ -115,22 +115,22 @@
                         <!-- Application settings section -->
                         <VBox spacing="15.0">
                            <children>
-                              <Label styleClass="section-title" text="Applicazione" />
+                              <Label styleClass="section-title" text="%settings.application" />
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
-                                    <Label prefWidth="150.0" text="Lingua" />
-                                    <ComboBox fx:id="languageComboBox" prefWidth="250.0" promptText="Seleziona lingua" />
+                                    <Label prefWidth="150.0" text="%settings.language" />
+                                    <ComboBox fx:id="languageComboBox" prefWidth="250.0" promptText="%settings.language.select" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
-                                    <Label prefWidth="150.0" text="Tema" />
-                                    <ComboBox fx:id="themeComboBox" prefWidth="250.0" promptText="Seleziona tema" />
+                                    <Label prefWidth="150.0" text="%settings.theme" />
+                                    <ComboBox fx:id="themeComboBox" prefWidth="250.0" promptText="%settings.theme.select" />
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
-                                    <Label prefWidth="150.0" text="Dimensione testo" />
+                                    <Label prefWidth="150.0" text="%settings.font.size" />
                                     <Slider fx:id="fontSizeSlider" prefWidth="250.0" />
                                  </children>
                               </HBox>
@@ -142,8 +142,8 @@
                         <!-- Save buttons -->
                         <HBox alignment="CENTER_RIGHT" spacing="15.0">
                            <children>
-                              <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Annulla" />
-                              <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" onAction="#handleSave" text="Salva modifiche" />
+                              <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="%button.cancel" />
+                              <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" onAction="#handleSave" text="%button.save" />
                            </children>
                         </HBox>
                      </children>

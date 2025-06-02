@@ -39,7 +39,7 @@
                   <!-- Tab pane for different favorite categories -->
                   <TabPane prefHeight="400.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                     <tabs>
-                      <Tab text="%preferiti.tab.articoli">
+                      <Tab text="%favorites.tab.items">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -65,7 +65,7 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="%preferiti.tab.utenti">
+                      <Tab text="%favorites.tab.users">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -111,7 +111,7 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="%preferiti.tab.aste">
+                      <Tab text="%favorites.tab.auctions">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -124,12 +124,12 @@
                                                  <children>
                                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="467.0" styleClass="card-header">
                                                        <children>
-                                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%preferiti.asta.titolo" wrappingWidth="122.13671875">
+                                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%favorites.auction.title" wrappingWidth="122.13671875">
                                                              <HBox.margin>
                                                                 <Insets left="10.0" />
                                                              </HBox.margin>
                                                           </Text>
-                                                          <Text fill="#4a2b6b" strokeType="OUTSIDE" strokeWidth="0.0" text="%preferiti.asta.scadenza">
+                                                          <Text fill="#4a2b6l" strokeType="OUTSIDE" strokeWidth="0.0" text="%favorites.auction.expiry">
                                                              <HBox.margin>
                                                                 <Insets right="2.0" />
                                                              </HBox.margin>
@@ -156,8 +156,8 @@
                                                           </ImageView>
                                                           <VBox alignment="CENTER_LEFT" prefHeight="89.0" prefWidth="109.0">
                                                              <children>
-                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%preferiti.asta.offerta.attuale" />
-                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%preferiti.asta.prezzo" />
+                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%favorites.auction.current.bid" />
+                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%favorites.auction.price" />
                                                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
                                                                    <children>
                                                                       <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
@@ -165,15 +165,15 @@
                                                                             <Image url="@../images/icons/check.png" />
                                                                          </image>
                                                                       </ImageView>
-                                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="%preferiti.asta.tua.offerta" />
+                                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="%favorites.auction.your.bid" />
                                                                    </children>
                                                                 </HBox>
                                                              </children>
                                                           </VBox>
                                                           <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="271.0" spacing="10.0">
                                                              <children>
-                                                                <Button mnemonicParsing="false" text="%button.rilancia" />
-                                                                <Button mnemonicParsing="false" text="%button.visualizza">
+                                                                <Button mnemonicParsing="false" text="%button.bid.again" />
+                                                                <Button mnemonicParsing="false" text="%button.view">
                                                                    <graphic>
                                                                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                                                          <image>

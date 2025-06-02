@@ -119,20 +119,20 @@
                         <HBox alignment="CENTER_LEFT" spacing="20.0">
                            <children>
                               <CheckBox mnemonicParsing="false" text="%listing.gift.pickup.only" />
-                              <CheckBox mnemonicParsing="false" text="Spedizione" />
+                              <CheckBox mnemonicParsing="false" text="%listing.shipping" />
                            </children>
                         </HBox>
                         <Separator prefWidth="200.0" />
                         <HBox alignment="CENTER" spacing="15.0">
                            <children>
-                              <CheckBox mnemonicParsing="false" text="Abilita asta" />
-                              <Label text="Data fine asta:" />
-                              <TextField promptText="gg/mm/aaaa" />
+                              <CheckBox mnemonicParsing="false" text="%listing.auction.enable" />
+                              <Label text="%listing.auction.end.date" />
+                              <TextField promptText="%listing.date.format" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" spacing="15.0">
                            <children>
-                              <Button mnemonicParsing="false" style="-fx-background-color: #CCCCCC;" text="Anteprima" textFill="WHITE" />
+                              <Button mnemonicParsing="false" style="-fx-background-color: #CCCCCC;" text="%button.preview" textFill="WHITE" />
                               <Button mnemonicParsing="false" text="%button.create">
                                  <graphic>
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">

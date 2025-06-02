@@ -40,7 +40,7 @@
                   <!-- Add new item button -->
                   <HBox alignment="CENTER_RIGHT">
                      <children>
-                        <Button mnemonicParsing="false" text="%inventory.nuovo.articolo">
+                        <Button mnemonicParsing="false" text="%inventory.new.item">
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -58,7 +58,7 @@
                   <!-- Tab pane for different item states -->
                   <TabPane prefHeight="380.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                     <tabs>
-                      <Tab text="%inventory.tab.invendita">
+                      <Tab text="%inventory.tab.forsale">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
@@ -77,20 +77,20 @@
                                                           <Insets top="10.0" />
                                                        </VBox.margin>
                                                     </ImageView>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%inventory.articolo.nome" textAlignment="CENTER" wrappingWidth="100.0">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%item.name" textAlignment="CENTER" wrappingWidth="100.0">
                                                        <VBox.margin>
                                                           <Insets top="10.0" />
                                                        </VBox.margin>
                                                     </Text>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%inventory.articolo.prezzo">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%item.price">
                                                        <VBox.margin>
                                                           <Insets top="5.0" />
                                                        </VBox.margin>
                                                     </Text>
                                                     <HBox alignment="CENTER" spacing="5.0">
                                                        <children>
-                                                          <Button mnemonicParsing="false" styleClass="small-button" text="%button.modifica" />
-                                                          <Button mnemonicParsing="false" styleClass="small-button" text="%button.rimuovi" />
+                                                          <Button mnemonicParsing="false" styleClass="small-button" text="%button.edit" />
+                                                          <Button mnemonicParsing="false" styleClass="small-button" text="%button.delete" />
                                                        </children>
                                                        <VBox.margin>
                                                           <Insets bottom="5.0" top="10.0" />

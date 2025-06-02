@@ -170,78 +170,25 @@ public class NavigationService {
         stage.setTitle("UninaSwap - Dashboard");
         stage.setScene(new Scene(mainView, 1600, 900));
     }
-    
-    /**
-     * Navigate to the profile view within the content area of the main dashboard
-     */
-    public Parent loadProfileView() throws IOException {
-        LoaderBundle loaderBundle = loadView("/fxml/ProfileView.fxml");
-        Parent profileView = loaderBundle.getView();
-        
-        // Register the controller's message handler
-        ProfileController controller = loaderBundle.getLoader().getController();
-        controller.registerMessageHandler();
-        
-        return profileView;
-    }
-    
-    /**
-     * Load the inventory view
-     */
-    public Parent loadInventoryView() throws IOException {
-        return loadView("/fxml/InventoryView.fxml").getView();
-    }
-    
-    /**
-     * Load the notifications view
-     */
-    public Parent loadNotificationsView() throws IOException {
-        return loadView("/fxml/NotificationsView.fxml").getView();
-    }
-
-    /**
-     * Load the prefered view
-    **/
-    public Parent prefered() throws IOException{
-        return loadView("/fxml/PreferedView.fxml").getView();  
-    }
-
-    /**
-     * Load the listing creation view
-     */
-    public Parent loadListingCreationView() throws IOException {
-        return loadView("/fxml/ListingCreationView.fxml").getView();
-    }
-
-    /**
-     * Convenience method to get Stage from an ActionEvent
-     */
-    public Stage getStageFromEvent(ActionEvent event) {
-        return (Stage)((Node)event.getSource()).getScene().getWindow();
-    }
 
     public void navigateToItemDetails(String itemId) {
         // TODO: Implement navigation logic to item details view using itemId
         System.out.println("Navigating to item details for item: " + itemId);
     }
 
-    public Parent navigateToSettings() throws IOException {
+    public Parent loadSettings() throws IOException {
        return loadView("/fxml/impostazioni.fxml").getView();
     }
 
-    public Parent navigateToSupport() throws IOException {
+    public Parent loadSupport() throws IOException {
         return loadView("/fxml/SupportView.fxml").getView();
-    }
-
-    public Parent logout() throws IOException{
-        return loadView("/fxml/LoginView.fxml").getView();  
     }
 
     /**
      * Navigate to the terms and conditions screen
      * @param sourceNode The node that triggered the navigation
      */
-    public void navigateToTermsAndConditions(Node sourceNode) throws IOException {
+    public void openTermsAndConditions(Node sourceNode) throws IOException {
         // Define the correct path to the Terms and Conditions FXML file
         final String TERMS_FXML_PATH = "/fxml/TermsAndConditionsView.fxml";
         
@@ -271,5 +218,58 @@ public class NavigationService {
             System.err.println("Error loading Terms and Conditions view: " + e.getMessage());
             throw e; // Re-throw to let caller handle it
         }
+    }
+
+    /**
+     * Navigate to the profile view within the content area of the main dashboard
+     */
+    public Parent loadProfileView() throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/ProfileView.fxml");
+        Parent profileView = loaderBundle.getView();
+        
+        // Register the controller's message handler
+        ProfileController controller = loaderBundle.getLoader().getController();
+        controller.registerMessageHandler();
+        
+        return profileView;
+    }
+    
+    /**
+     * Load the inventory view
+     */
+    public Parent loadInventoryView() throws IOException {
+        return loadView("/fxml/InventoryView.fxml").getView();
+    }
+    
+    /**
+     * Load the notifications view
+     */
+    public Parent loadAllertsView() throws IOException {
+        return loadView("/fxml/AllertsView.fxml").getView();
+    }
+
+    /**
+     * Load the prefered view
+    **/
+    public Parent loadSavedView() throws IOException{
+        return loadView("/fxml/SavedView.fxml").getView();  
+    }
+
+    /**
+     * Load the listing creation view
+     */
+    public Parent loadListingCreationView() throws IOException {
+        return loadView("/fxml/ListingCreationView.fxml").getView();
+    }
+
+    public Parent logout() throws IOException{
+        return loadView("/fxml/LoginView.fxml").getView();  
+    }
+
+    /**
+     * Convenience method to get Stage from an ActionEvent
+     */
+    public Stage getStageFromEvent(ActionEvent event) {
+        return (Stage)((Node)event.getSource()).getScene().getWindow();
     }
 }

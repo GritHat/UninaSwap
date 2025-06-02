@@ -41,7 +41,6 @@ public class ProfileController implements Refreshable{
     @FXML private TextArea bioField;
     @FXML private ImageView profileImageView;
     @FXML private Label statusLabel;
-    @FXML private Label usernameLabel;
     @FXML private Label emailLabel;
     @FXML private Label firstNameLabel;
     @FXML private Label lastNameLabel;
@@ -336,7 +335,7 @@ public class ProfileController implements Refreshable{
 
     public void refreshUI() {
         profileTitleLabel.setText(localeService.getMessage("profile.title"));
-        usernameLabel.setText(localeService.getMessage("label.username"));
+        usernameField.setText(localeService.getMessage("label.username"));
         emailLabel.setText(localeService.getMessage("label.email"));
         firstNameLabel.setText(localeService.getMessage("label.firstname"));
         lastNameLabel.setText(localeService.getMessage("label.lastname"));

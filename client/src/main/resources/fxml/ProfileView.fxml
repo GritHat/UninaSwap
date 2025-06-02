@@ -38,7 +38,7 @@
                                  <children>
                                     <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/icons/user_circle.png" />
+                                          <Image url="@../images/icons/user_profile.png" />
                                        </image>
                                     </ImageView>
                                  </children>

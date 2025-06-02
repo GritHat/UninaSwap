@@ -38,7 +38,7 @@ public class SearchController {
     @FXML
     public void showSettings(MouseEvent event) {
         try {
-            navigationService.navigateToSettings();
+            navigationService.loadSettings();
         } catch (Exception e) {
             System.err.println("Errore nella navigazione alle impostazioni: " + e.getMessage());
         }
@@ -47,7 +47,7 @@ public class SearchController {
     @FXML
     public void openSupport(MouseEvent event) {
         try {
-            navigationService.navigateToSupport();
+            navigationService.loadSupport();
         } catch (Exception e) {
             System.err.println("Errore nella navigazione al supporto: " + e.getMessage());
         }

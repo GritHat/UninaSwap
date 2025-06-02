@@ -130,7 +130,7 @@ public class RegisterController {
     public void openTermsAndConditions(MouseEvent event) {
         try {
             // Pass the source of the event to the NavigationService
-            navigationService.navigateToTermsAndConditions((javafx.scene.Node) event.getSource());
+            navigationService.openTermsAndConditions((javafx.scene.Node) event.getSource());
         } catch (Exception e) {
             System.err.println("Error opening Terms and Conditions: " + e.getMessage());
             e.printStackTrace();

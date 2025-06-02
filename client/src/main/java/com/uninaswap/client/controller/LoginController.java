@@ -7,9 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.PasswordField;
 import javafx.scene.Node;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.AuthenticationService;
 import com.uninaswap.client.service.UserSessionService;

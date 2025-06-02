@@ -12,7 +12,7 @@
       <Insets top="13.0" />
    </padding>
    <children>
-      <ImageView fx:id="ProfileImageView" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showProfile" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="ProfileImageIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showProfile" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/icons/user_profile.png" />
          </image>
@@ -32,16 +32,16 @@
       <Separator prefWidth="35.0" styleClass="sidebar-separator" />
       <ImageView fx:id="inventoryIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showInventory" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/icons/inventory.png" />
+            <Image url="@../images/icons/Inventory.png" />
          </image>
          <viewport>
             <Rectangle2D />
          </viewport>
       </ImageView>
       <Separator prefWidth="35.0" styleClass="sidebar-separator" />
-      <ImageView fx:id="notificationsIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showNotifications" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="allertsIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showAllerts" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/icons/notification.png" />
+            <Image url="@../images/icons/Allert.png" />
          </image>
          <viewport>
             <Rectangle2D />
@@ -50,7 +50,7 @@
       <Separator prefWidth="35.0" styleClass="sidebar-separator" />
       <ImageView fx:id="settingsIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showSettings" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/icons/settings.png" />
+            <Image url="@../images/icons/Settings.png" />
          </image>
          <viewport>
             <Rectangle2D />
@@ -59,7 +59,7 @@
       <Separator prefWidth="35.0" styleClass="sidebar-separator" />
       <ImageView fx:id="supportIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showSupport" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/icons/support.png" />
+            <Image url="@../images/icons/Pyke.png" />
          </image>
          <viewport>
             <Rectangle2D />
@@ -68,7 +68,7 @@
       <Separator prefWidth="35.0" styleClass="sidebar-separator" />
       <ImageView fx:id="logoutIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#logout" onMouseMoved="#handleMouseMove" onMouseExited="#handleMouseExit" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../images/icons/logout.png" />
+            <Image url="@../images/icons/Logout.png" />
          </image>
          <viewport>
             <Rectangle2D />

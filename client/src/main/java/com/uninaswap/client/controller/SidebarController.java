@@ -19,21 +19,19 @@ public class SidebarController {
     @FXML
     private VBox sidebar;
     @FXML
-    private ImageView profileIcon;
+    private ImageView ProfileImageIcon;
     @FXML
     private ImageView homeIcon;
     @FXML
     private ImageView inventoryIcon;
     @FXML
-    private ImageView notificationsIcon;
+    private ImageView allertsIcon;
     @FXML
     private ImageView settingsIcon;
     @FXML
     private ImageView supportIcon;
     @FXML
     private ImageView logoutIcon;
-    @FXML
-    private ImageView ProfileImageView;
 
     private final ImageService imageService;
     private final NavigationService navigationService;
@@ -47,9 +45,9 @@ public class SidebarController {
 
     @FXML
     public void initialize() {
-        // Verificare che ProfileImageView sia stato iniettato correttamente
-        if (ProfileImageView == null) {
-            System.err.println("WARNING: ProfileImageView not injected from FXML");
+        // Verificare che ProfileImageIcon sia stato iniettato correttamente
+        if (ProfileImageIcon == null) {
+            System.err.println("WARNING: ProfileImageIcon not injected from FXML");
             return;
         }
 
@@ -65,6 +63,7 @@ public class SidebarController {
         });
     }
 
+    //onMouseClicked event
     @FXML
     public void showProfile(MouseEvent event) {
         try {
@@ -96,9 +95,9 @@ public class SidebarController {
     }
 
     @FXML
-    public void showNotifications(MouseEvent event) {
+    public void showAllerts(MouseEvent event) {
         try {
-            navigationService.loadNotificationsView();
+            navigationService.loadAllertsView();
         } catch (java.io.IOException e) {
             e.printStackTrace();
             // Optionally, show an error dialog to the user
@@ -108,7 +107,7 @@ public class SidebarController {
     @FXML
     public void showSettings(MouseEvent event) {
         try {
-            navigationService.navigateToSettings();
+            navigationService.loadSettings();
         } catch (java.io.IOException e) {
             e.printStackTrace();
             // Optionally, show an error dialog to the user
@@ -118,7 +117,7 @@ public class SidebarController {
     @FXML
     public void showSupport(MouseEvent event) {
         try {
-            navigationService.navigateToSupport();
+            navigationService.loadSupport();
         } catch (java.io.IOException e) {
             e.printStackTrace();
             // Optionally, show an error dialog to the user
@@ -160,7 +159,7 @@ public class SidebarController {
      * Sets a default profile image when no custom image is available
      */
     private void setDefaultProfileImage() {
-        if (ProfileImageView == null)
+        if (ProfileImageIcon == null)
             return;
 
         try {
@@ -172,11 +171,11 @@ public class SidebarController {
                 return;
             }
             
-            ProfileImageView.setImage(defaultImage);
+            ProfileImageIcon.setImage(defaultImage);
 
             // Apply circular clip
             Circle clip = new Circle(13, 13, 13); // Adattato alle dimensioni dell'icona 26x35
-            ProfileImageView.setClip(clip);
+            ProfileImageIcon.setClip(clip);
         } catch (Exception e) {
             System.err.println("Exception setting default profile image: " + e.getMessage());
             e.printStackTrace();
@@ -205,11 +204,11 @@ public class SidebarController {
             imageService.fetchImage(imagePath)
                     .thenAccept(image -> {
                         Platform.runLater(() -> {
-                            ProfileImageView.setImage(image);
+                            ProfileImageIcon.setImage(image);
 
                             // Apply circular clip to the image
                             Circle clip = new Circle(13, 13, 13); // Adattato alle dimensioni dell'icona
-                            ProfileImageView.setClip(clip);
+                            ProfileImageIcon.setClip(clip);
                         });
                     })
                     .exceptionally(ex -> {
@@ -223,5 +222,7 @@ public class SidebarController {
             e.printStackTrace();
             setDefaultProfileImage();
         }
+
+        
     }
 }

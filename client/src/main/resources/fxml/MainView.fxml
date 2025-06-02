@@ -353,13 +353,12 @@
                     <!-- Elementi necessari ma invisibili -->
                     <VBox visible="false" managed="false">
                       <children>
-                        <Label fx:id="usernameLabel" text="" visible="false"/>
-                        <Label fx:id="statusLabel" text="" visible="false"/>
-                        <Label fx:id="connectionStatusLabel" text="Connected" visible="false"/>
-                        <Label fx:id="contentAreaTitleLabel" text="Dashboard" visible="false"/>
-                        <Label fx:id="contentAreaSubtitleLabel" text="Welcome back" visible="false"/>
-                        <ImageView fx:id="headerProfileImageView" visible="false"/>
-                        <StackPane fx:id="contentArea" visible="false"/>
+                        <Label fx:id="usernameLabel" text="" visible="true"/>
+                        <Label fx:id="statusLabel" text="" visible="true"/>
+                        <Label fx:id="connectionStatusLabel" text="Connected" visible="true"/>
+                        <Label fx:id="contentAreaTitleLabel" text="Dashboard" visible="true"/>
+                        <Label fx:id="contentAreaSubtitleLabel" text="Welcome back" visible="true"/>
+                        <StackPane fx:id="contentArea" visible="true"/>
                       </children>
                     </VBox>
                   </children>

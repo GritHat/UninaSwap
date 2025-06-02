@@ -164,8 +164,6 @@ public class SidebarController {
             return;
 
         try {
-            // Carica l'immagine predefinita utilizzando il percorso corretto
-            // Assicurati che questo percorso esista nella struttura delle risorse
             String imagePath = "/images/icons/user_profile.png";
             Image defaultImage = new Image(getClass().getResourceAsStream(imagePath));
             

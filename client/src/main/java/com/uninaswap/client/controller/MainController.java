@@ -7,12 +7,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.service.EventBusService;
@@ -35,6 +31,7 @@ public class MainController implements Refreshable {
     private Label contentAreaSubtitleLabel;
     @FXML
     private StackPane contentArea;
+    
     @FXML
     private Button dashboardMenuItem;
     @FXML
@@ -92,60 +89,23 @@ public class MainController implements Refreshable {
             });
 
             // load cards
-            // Esempio: popola articoli preferiti con dati fittizi
+            /**
             articoliPreferitiBox.getChildren().clear();
             for (int i = 1; i <= 3; i++) {
-                VBox card = new VBox();
-                ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/images/spermatozoi.png")));
-                img.setFitWidth(100);
-                img.setFitHeight(100);
-                Text titolo = new Text("Articolo " + i);
-                Text prezzo = new Text((10 * i) + "€");
-                card.getChildren().addAll(img, titolo, prezzo);
-                articoliPreferitiBox.getChildren().add(card);
             }
 
             // Esempio: popola utenti preferiti con dati fittizi
             utentiPreferitiBox.getChildren().clear();
             for (int i = 1; i <= 2; i++) {
-                VBox userBox = new VBox();
-                ImageView img = new ImageView(new Image(getClass().getResourceAsStream("/images/spermatozoi.png")));
-                img.setFitWidth(100);
-                img.setFitHeight(100);
-                Text nome = new Text("Utente " + i);
-                userBox.getChildren().addAll(img, nome);
-                utentiPreferitiBox.getChildren().add(userBox);
             }
 
             // Esempio: popola aste preferite con dati fittizi
             astePreferiteBox.getChildren().clear();
             for (int i = 1; i <= 2; i++) {
-                VBox astaBox = new VBox();
-                Text titolo = new Text("Asta " + i);
-                Text offerta = new Text("Offerta: " + (i * 50) + "€");
-                astaBox.getChildren().addAll(titolo, offerta);
-                astePreferiteBox.getChildren().add(astaBox);
             }
+            **/
 
-            // Se stai caricando immagini da risorse, assicurati di gestire correttamente le eccezioni
-            // e di verificare che i percorsi siano corretti
-
-            // Esempio di come gestire un'immagine in modo sicuro:
-            if (ProfileImageView != null) {
-                String imagePath = "/images/icons/user_profile.png";
-                try {
-                    Image img = new Image(getClass().getResourceAsStream(imagePath));
-                    if (img.isError()) {
-                        System.err.println("Errore nel caricamento dell'immagine: " + img.getException().getMessage());
-                    } else {
-                        ProfileImageView.setImage(img);
-                    }
-                } catch (Exception e) {
-                    System.err.println("Eccezione durante il caricamento dell'immagine: " + e.getMessage());
-                }
-            }
-
-            // Altre inizializzazioni
+            checkAuthentication();
 
         } catch (Exception e) {
             e.printStackTrace();

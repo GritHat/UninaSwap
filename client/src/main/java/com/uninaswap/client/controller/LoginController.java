@@ -74,7 +74,10 @@ public class LoginController {
                         showMessage("login.error.connection", "message-error");
                     });
                     return null;
-                });
+                }).finally({
+// qui la riattivazione del pulsante
+});
+
     }
 
     @FXML

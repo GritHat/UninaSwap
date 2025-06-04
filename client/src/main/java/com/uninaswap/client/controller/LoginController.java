@@ -57,27 +57,21 @@ public class LoginController {
 
         showMessage("login.info.logging", "message-info");
 
-        loginField.textProperty().addListener((_, _, _) -> {
-            source.setDisable(false);
-        });
-
-        passwordField.textProperty().addListener((_, _, _) -> {
-            source.setDisable(false);
-        });
-
         authService.login(usernameOrEmail, password)
                 .thenRun(() -> {
                     // The actual authentication result will be handled in handleAuthResponse
                 })
-                .exceptionally(ex -> {
+                .exceptionally(_ -> {
                     Platform.runLater(() -> {
                         showMessage("login.error.connection", "message-error");
                     });
                     return null;
-                }).finally({
-// qui la riattivazione del pulsante
-});
-
+                })
+                .whenComplete((_, _) -> {
+                    Platform.runLater(() -> {
+                        source.setDisable(false);
+                    });
+                });
     }
 
     @FXML

@@ -19,10 +19,10 @@ import com.uninaswap.client.controller.RegisterController;
  * This separates navigation concerns from controller business logic.
  */
 public class NavigationService {
-    
+
     private static NavigationService instance;
     private final LocaleService localeService = LocaleService.getInstance();
-    
+
     // Singleton pattern
     public static NavigationService getInstance() {
         if (instance == null) {
@@ -30,21 +30,24 @@ public class NavigationService {
         }
         return instance;
     }
-    
+
     private NavigationService() {
         // Private constructor to enforce singleton pattern
     }
-    
+
     private class LoaderBundle {
         private FXMLLoader loader;
         private Parent view;
+
         public LoaderBundle(FXMLLoader loader, Parent view) {
             this.loader = loader;
             this.view = view;
         }
+
         public FXMLLoader getLoader() {
             return loader;
         }
+
         public Parent getView() {
             return view;
         }
@@ -52,36 +55,37 @@ public class NavigationService {
 
     /**
      * Navigate to the specified view
+     * 
      * @param sourceNode The node that triggered the navigation
-     * @param fxmlPath The path to the FXML file
-     * @param title The title of the new window
-     * @param width The width of the new window
-     * @param height The height of the new window
+     * @param fxmlPath   The path to the FXML file
+     * @param title      The title of the new window
+     * @param width      The width of the new window
+     * @param height     The height of the new window
      */
     private LoaderBundle loadView(String fxmlPath) throws IOException {
         // Check if the path is valid before attempting to load
         if (fxmlPath == null || fxmlPath.isEmpty()) {
             throw new IllegalArgumentException("FXML path cannot be null or empty");
         }
-        
+
         // Get the resource URL and verify it exists
         java.net.URL resource = getClass().getResource(fxmlPath);
         if (resource == null) {
             throw new IOException("Resource not found: " + fxmlPath);
         }
-        
+
         FXMLLoader loader = new FXMLLoader(resource);
         loader.setResources(localeService.getResourceBundle());
         Parent root = loader.load();
-        
+
         // Store the controller in the view's properties
         Object controller = loader.getController();
         root.getProperties().put("controller", controller);
-        
+
         // Also store the ID for easy identification
         String viewName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
         root.setId(viewName);
-        
+
         return new LoaderBundle(loader, root);
     }
 
@@ -93,9 +97,9 @@ public class NavigationService {
         Parent loginView = loaderBundle.getView();
 
         Stage stage;
-        if(sourceNode != null && sourceNode.getScene() != null){
+        if (sourceNode != null && sourceNode.getScene() != null) {
             stage = (Stage) sourceNode.getScene().getWindow();
-        }else{
+        } else {
             // If source node is null or doesn't have a scene, try to find the active window
             Window activeWindow = null;
             for (Window window : Stage.getWindows()) {
@@ -104,7 +108,7 @@ public class NavigationService {
                     break;
                 }
             }
-            
+
             if (activeWindow != null) {
                 stage = (Stage) activeWindow;
             } else {
@@ -115,20 +119,21 @@ public class NavigationService {
 
         stage.setTitle("UninaSwap - Login");
         stage.setScene(new Scene(loginView, 800, 600));
-        
+
         // Register the controller's message handler
         LoginController controller = loaderBundle.getLoader().getController();
         controller.registerMessageHandler();
     }
-    
+
     /**
      * Navigate to the register screen
+     * 
      * @param sourceNode The node that triggered the navigation
      */
     public void navigateToRegister(Node sourceNode) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/RegisterView.fxml");
         Parent registerView = loaderBundle.getView();
-        
+
         Stage stage;
         if (sourceNode != null && sourceNode.getScene() != null) {
             // Get the stage from the source node if available
@@ -142,7 +147,7 @@ public class NavigationService {
                     break;
                 }
             }
-            
+
             if (activeWindow != null) {
                 stage = (Stage) activeWindow;
             } else {
@@ -150,22 +155,22 @@ public class NavigationService {
                 stage = new Stage();
             }
         }
-        
+
         stage.setTitle("UninaSwap - Register");
         stage.setScene(new Scene(registerView, 800, 600)); // Using appropriate dimensions for RegisterView
-        
+
         // Register the controller's message handler
         RegisterController controller = loaderBundle.getLoader().getController();
         controller.registerMessageHandler();
     }
-    
+
     /**
      * Navigate to the main dashboard screen
      */
     public void navigateToMainDashboard(Node sourceNode) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/MainView.fxml");
         Parent mainView = loaderBundle.getView();
-        
+
         Stage stage = (Stage) sourceNode.getScene().getWindow();
         stage.setTitle("UninaSwap - Dashboard");
         stage.setScene(new Scene(mainView, 1600, 900));
@@ -176,8 +181,14 @@ public class NavigationService {
         System.out.println("Navigating to item details for item: " + itemId);
     }
 
-    public Parent loadSettings() throws IOException {
-       return loadView("/fxml/impostazioni.fxml").getView();
+    public Parent loadSettings(Node sourceNode) throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/impostazioni.fxml");
+        Parent settingsView = loaderBundle.getView();
+
+        ProfileController controller = loaderBundle.getLoader().getController();
+        controller.registerMessageHandler();
+
+        return settingsView;
     }
 
     public Parent loadSupport() throws IOException {
@@ -186,33 +197,30 @@ public class NavigationService {
 
     /**
      * Navigate to the terms and conditions screen
+     * 
      * @param sourceNode The node that triggered the navigation
      */
     public void openTermsAndConditions(Node sourceNode) throws IOException {
         // Define the correct path to the Terms and Conditions FXML file
         final String TERMS_FXML_PATH = "/fxml/TermsAndConditionsView.fxml";
-        
+
         try {
             LoaderBundle loaderBundle = loadView(TERMS_FXML_PATH);
             Parent termsView = loaderBundle.getView();
-            
-            // Create a new stage for the Terms and Conditions
+
             Stage termsStage = new Stage();
             termsStage.setTitle("UninaSwap - Termini e Condizioni");
-            
-            // Make it modal so user must interact with it
             termsStage.initModality(Modality.APPLICATION_MODAL);
-            
-            // Set the owner if sourceNode is not null
+
             if (sourceNode != null && sourceNode.getScene() != null && sourceNode.getScene().getWindow() != null) {
                 termsStage.initOwner(sourceNode.getScene().getWindow());
             }
-            
+
             Scene scene = new Scene(termsView, 600, 500);
             termsStage.setScene(scene);
             termsStage.setMinWidth(400);
             termsStage.setMinHeight(300);
-            
+
             termsStage.show();
         } catch (IOException e) {
             System.err.println("Error loading Terms and Conditions view: " + e.getMessage());
@@ -226,50 +234,73 @@ public class NavigationService {
     public Parent loadProfileView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/ProfileView.fxml");
         Parent profileView = loaderBundle.getView();
-        
-        // Register the controller's message handler
+
         ProfileController controller = loaderBundle.getLoader().getController();
         controller.registerMessageHandler();
-        
+
         return profileView;
     }
-    
+
     /**
      * Load the inventory view
      */
     public Parent loadInventoryView() throws IOException {
-        return loadView("/fxml/InventoryView.fxml").getView();
+        LoaderBundle loaderBundle = loadView("/fxml/InventoryView.fxml");
+        Parent inventoryView = loaderBundle.getView();
+
+        ProfileController controller = loaderBundle.getLoader().getController();
+        controller.registerMessageHandler();
+
+        return inventoryView;
     }
-    
+
     /**
      * Load the notifications view
      */
     public Parent loadAllertsView() throws IOException {
-        return loadView("/fxml/AllertsView.fxml").getView();
+        LoaderBundle loaderBundle = loadView("/fxml/AllertsView.fxml");
+        Parent allertsView = loaderBundle.getView();
+
+        ProfileController controller = loaderBundle.getLoader().getController();
+        controller.registerMessageHandler();
+
+        return allertsView;
     }
 
     /**
      * Load the prefered view
-    **/
-    public Parent loadSavedView() throws IOException{
-        return loadView("/fxml/SavedView.fxml").getView();  
+     **/
+    public Parent loadSavedView() throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/SavedView.fxml");
+        Parent savedView = loaderBundle.getView();
+
+        ProfileController controller = loaderBundle.getLoader().getController();
+        controller.registerMessageHandler();
+
+        return savedView;
     }
 
     /**
      * Load the listing creation view
      */
     public Parent loadListingCreationView() throws IOException {
-        return loadView("/fxml/ListingCreationView.fxml").getView();
+        LoaderBundle loaderBundle = loadView("/fxml/ListingCreationView.fxml");
+        Parent listingCreationView = loaderBundle.getView();
+
+        ProfileController controller = loaderBundle.getLoader().getController();
+        controller.registerMessageHandler();
+
+        return listingCreationView;
     }
 
-    public Parent logout() throws IOException{
-        return loadView("/fxml/LoginView.fxml").getView();  
+    public void logout() throws IOException {
+        navigateToLogin(null);;
     }
 
     /**
      * Convenience method to get Stage from an ActionEvent
      */
     public Stage getStageFromEvent(ActionEvent event) {
-        return (Stage)((Node)event.getSource()).getScene().getWindow();
+        return (Stage) ((Node) event.getSource()).getScene().getWindow();
     }
 }

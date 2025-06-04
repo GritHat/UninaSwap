@@ -181,7 +181,7 @@ public class NavigationService {
         System.out.println("Navigating to item details for item: " + itemId);
     }
 
-    public Parent loadSettings(Node sourceNode) throws IOException {
+    public Parent loadSettings() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/impostazioni.fxml");
         Parent settingsView = loaderBundle.getView();
 

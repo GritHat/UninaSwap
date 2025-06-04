@@ -40,17 +40,28 @@ public class LoginController {
     @FXML
     private void handleLogin(ActionEvent event) {
         Node source = (Node) event.getSource();
+        
+        Platform.runLater(() -> {
         source.setDisable(true);
+        });
+        source.getScene().getWindow().requestFocus();
+    
 
         String usernameOrEmail = loginField.getText();
         String password = passwordField.getText();
 
         if (usernameOrEmail == null || usernameOrEmail.isEmpty()) {
+            Platform.runLater(() -> {
+                        source.setDisable(false);
+                    });
             showMessage("login.error.username.email.required", "message-error");
             return;
         }
 
         if (password == null || password.isEmpty()) {
+            Platform.runLater(() -> {
+                        source.setDisable(false);
+                    });
             showMessage("login.error.password.required", "message-error");
             return;
         }
@@ -122,6 +133,7 @@ public class LoginController {
      * Helper method to display messages
      */
     private void showMessage(String messageKey, String styleClass) {
+
         messageLabel.setText(localeService.getMessage(messageKey)); // Uso il localeService diretto
         messageLabel.getStyleClass().clear();
         messageLabel.getStyleClass().add(styleClass);

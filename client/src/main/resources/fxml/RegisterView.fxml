@@ -80,7 +80,7 @@
                            </children>
                         </HBox>
                         
-                        <Button fx:id="registerButton" defaultButton="true" mnemonicParsing="false" onAction="#handleRegister" prefHeight="40.0" prefWidth="320.0" text="%button.register">
+                        <Button fx:id="registerButton" defaultButton="true" mnemonicParsing="false" onAction="#handleRegister" prefHeight="40.0" prefWidth="320.0" text="%button.register" >
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>

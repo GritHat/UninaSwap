@@ -192,7 +192,13 @@ public class NavigationService {
     }
 
     public Parent loadSupport() throws IOException {
-        return loadView("/fxml/SupportView.fxml").getView();
+        LoaderBundle loaderBundle = loadView("/fxml/SupportView.fxml");
+        Parent supportView = loaderBundle.getView();
+
+        ProfileController controller = loaderBundle.getLoader().getController();
+        controller.registerMessageHandler();
+
+        return supportView;
     }
 
     /**
@@ -294,7 +300,8 @@ public class NavigationService {
     }
 
     public void logout() throws IOException {
-        navigateToLogin(null);;
+        navigateToLogin(null);
+        ;
     }
 
     /**

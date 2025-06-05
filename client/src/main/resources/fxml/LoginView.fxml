@@ -71,7 +71,7 @@
                     <Hyperlink text="Password dimenticata?"/>
                   </children>
                 </HBox>
-                <Button fx:id="loginButton" defaultButton="true" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="320.0" text="%button.login">
+                <Button fx:id="loginButton" defaultButton="true" mnemonicParsing="false" onAction="#handleLogin" prefHeight="40.0" prefWidth="320.0" text="%button.login" >
                   <font>
                     <Font name="System Bold" size="14.0"/>
                   </font>

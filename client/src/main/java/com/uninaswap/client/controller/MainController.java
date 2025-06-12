@@ -25,8 +25,6 @@ public class MainController implements Refreshable {
     @FXML
     private Label statusLabel;
     @FXML
-    private Label connectionStatusLabel;
-    @FXML
     private Label contentAreaTitleLabel;
     @FXML
     private Label contentAreaSubtitleLabel;
@@ -57,7 +55,9 @@ public class MainController implements Refreshable {
     private Button viewMarketsButton;
 
     @FXML
-    private VBox sidebar; // sidebar è il nodo root della SidebarView.fxml
+    private VBox sidebarInclude; // Change from SidebarController to VBox
+    @FXML
+    private SidebarController sidebarIncludeController; // Optional: only if you need the controller
 
     private final NavigationService navigationService;
     private final LocaleService localeService;
@@ -82,10 +82,6 @@ public class MainController implements Refreshable {
         try {
             Parent homeView = navigationService.loadHomeView();
             setContent(homeView);
-            // Inizializza le componenti UI
-            // statusLabel.setText(localeService.getMessage("dashboard.status.loaded"));
-            connectionStatusLabel.setText(localeService.getMessage("dashboard.status.connected"));
-
             String username = sessionService.getUser().getUsername();
             usernameLabel.setText(localeService.getMessage("dashboard.welcome.user", username));
 
@@ -97,14 +93,7 @@ public class MainController implements Refreshable {
             checkAuthentication();
 
             // Recupera il controller della sidebar
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SidebarView.fxml"));
-            try {
-                loader.load();
-                SidebarController sidebarController = loader.getController();
-                sidebarController.setMainController(this);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+           sidebarIncludeController.setMainController(this);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,7 +145,6 @@ public class MainController implements Refreshable {
      */
     public void refreshUI() {
         statusLabel.setText(localeService.getMessage("label.ready"));
-        connectionStatusLabel.setText(localeService.getMessage("label.connected"));
         contentAreaSubtitleLabel.setText(localeService.getMessage("dashboard.contentaread.title"));
         contentAreaTitleLabel.setText(localeService.getMessage("dashboard.contentared.subtitle"));
         // Update sidebar menu items

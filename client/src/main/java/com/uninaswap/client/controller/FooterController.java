@@ -13,7 +13,7 @@ public class FooterController {
     @FXML
     private HBox footer;
     @FXML
-    private Text statusText;
+    private Text connectionStatusLabel;
     @FXML
     private ImageView statusIcon;
     @FXML
@@ -26,7 +26,8 @@ public class FooterController {
         languageSelector.getItems().addAll("ITA", "ENG");
         languageSelector.setValue("ENG");
         languageSelector.setOnAction(_ -> changeLanguage(languageSelector.getValue()));
-
+        
+        connectionStatusLabel.setText(localeService.getMessage("dashboard.status.connected"));
         updateConnectionStatus(true);
     }
 
@@ -43,12 +44,12 @@ public class FooterController {
 
     public void updateConnectionStatus(boolean isConnected) {
         if (isConnected) {
-            statusText.setText("Online");
-            statusText.getStyleClass().setAll("status-text-success");
+            connectionStatusLabel.setText("Online");
+            connectionStatusLabel.getStyleClass().setAll("status-text-success");
             statusIcon.setImage(new Image(getClass().getResourceAsStream("/images/icons/online.png")));
         } else {
-            statusText.setText("Offline");
-            statusText.getStyleClass().setAll("status-text-warning");
+            connectionStatusLabel.setText("Offline");
+            connectionStatusLabel.getStyleClass().setAll("status-text-warning");
             statusIcon.setImage(new Image(getClass().getResourceAsStream("/images/icons/offline.png")));
         }
     }

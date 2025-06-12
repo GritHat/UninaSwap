@@ -16,20 +16,32 @@
 <?import javafx.scene.text.Text?>
 
 <StackPane prefHeight="150.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.MainController" stylesheets="@../css/styles.css">
-   <children>
-      <BorderPane prefHeight="700.0" prefWidth="1000.0">
-         <left>
-            <fx:include source="SidebarView.fxml" />
-         </left>
-         <center>
-            <StackPane fx:id="contentArea"/>
-         </center>
-         <bottom>
-            <fx:include source="FooterView.fxml" />
-         </bottom>
-         <right>
-            <Separator orientation="VERTICAL" prefHeight="700.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER" />
-         </right>
-      </BorderPane>
-   </children>
+  <children>
+    <BorderPane prefHeight="700.0" prefWidth="1000.0">
+      <left>
+        <fx:include fx:id="sidebarInclude" source="SidebarView.fxml"/>
+      </left>
+
+      <center>
+        <StackPane fx:id="contentArea"/>
+      </center>
+
+      <bottom>
+        <fx:include source="FooterView.fxml"/>
+      </bottom>
+
+      <right>
+        <Separator orientation="VERTICAL" prefHeight="700.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER"/>
+      </right>
+    </BorderPane>
+    <VBox fx:id="pene" maxWidth="900.0" spacing="5.0"/>
+    <VBox managed="false" visible="false">
+      <children>
+        <Label fx:id="usernameLabel" text="" visible="true"/>
+        <Label fx:id="statusLabel" text="" visible="true"/>
+        <Label fx:id="contentAreaTitleLabel" text="Dashboard" visible="true"/>
+        <Label fx:id="contentAreaSubtitleLabel" text="Welcome back" visible="true"/>
+      </children>
+    </VBox>
+  </children>
 </StackPane>

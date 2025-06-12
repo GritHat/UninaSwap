@@ -89,7 +89,7 @@ public class SidebarController {
     @FXML
     public void showHome(MouseEvent event) {
         try {
-            navigationService.navigateToMainDashboard((javafx.scene.Node) event.getSource());
+            navigationService.loadHomeView();
         } catch (java.io.IOException e) {
             e.printStackTrace();
             // Optionally, show an error dialog to the user

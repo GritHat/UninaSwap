@@ -329,16 +329,6 @@
                 <Insets top="10.0"/>
               </VBox.margin>
             </VBox>
-            <VBox fx:id="pene" maxWidth="900.0" spacing="5.0"/>
-            <VBox managed="false" visible="false">
-              <children>
-                <Label fx:id="usernameLabel" text="" visible="true"/>
-                <Label fx:id="statusLabel" text="" visible="true"/>
-                <Label fx:id="connectionStatusLabel" text="Connected" visible="true"/>
-                <Label fx:id="contentAreaTitleLabel" text="Dashboard" visible="true"/>
-                <Label fx:id="contentAreaSubtitleLabel" text="Welcome back" visible="true"/>
-              </children>
-            </VBox>
           </children>
         </VBox>
       </children>

@@ -38,13 +38,15 @@ public class SidebarController {
 
     @FXML
     private javafx.scene.control.Label statusLabel; // Add this if you have a Label in your FXML for status messages
-    
+
     private final ImageService imageService;
     private final NavigationService navigationService;
     private final UserSessionService sessionService;
 
-    // Add a LocaleService field and initialize it (replace with your actual implementation)
-    private final com.uninaswap.client.service.LocaleService localeService = com.uninaswap.client.service.LocaleService.getInstance();
+    // Add a LocaleService field and initialize it (replace with your actual
+    // implementation)
+    private final com.uninaswap.client.service.LocaleService localeService = com.uninaswap.client.service.LocaleService
+            .getInstance();
 
     private MainController mainController;
 
@@ -52,7 +54,7 @@ public class SidebarController {
         this.imageService = ImageService.getInstance();
         this.navigationService = NavigationService.getInstance();
         this.sessionService = UserSessionService.getInstance();
-        
+
     }
 
     @FXML
@@ -75,7 +77,7 @@ public class SidebarController {
         });
     }
 
-    //onMouseClicked event
+    // onMouseClicked event
     @FXML
     public void showProfile(MouseEvent event) {
         try {
@@ -89,7 +91,8 @@ public class SidebarController {
     @FXML
     public void showHome(MouseEvent event) {
         try {
-            navigationService.loadHomeView();
+            Parent homeView = navigationService.loadHomeView();
+            mainController.setContent(homeView);
         } catch (java.io.IOException e) {
             e.printStackTrace();
             // Optionally, show an error dialog to the user
@@ -99,7 +102,8 @@ public class SidebarController {
     @FXML
     public void showInventory(MouseEvent event) {
         try {
-            navigationService.loadInventoryView();
+            Parent inventoryView = navigationService.loadInventoryView();
+            mainController.setContent(inventoryView);
         } catch (java.io.IOException e) {
             e.printStackTrace();
             // Optionally, show an error dialog to the user
@@ -109,7 +113,8 @@ public class SidebarController {
     @FXML
     public void showAllerts(MouseEvent event) {
         try {
-            navigationService.loadAllertsView();
+            Parent allertsView = navigationService.loadAllertsView();
+            mainController.setContent(allertsView);
         } catch (java.io.IOException e) {
             e.printStackTrace();
             // Optionally, show an error dialog to the user
@@ -119,7 +124,8 @@ public class SidebarController {
     @FXML
     public void showSettings(MouseEvent event) {
         try {
-            navigationService.loadSettings();
+            Parent settingsView = navigationService.loadSettings();
+            mainController.setContent(settingsView);
         } catch (java.io.IOException e) {
             e.printStackTrace();
             // Optionally, show an error dialog to the user
@@ -129,7 +135,8 @@ public class SidebarController {
     @FXML
     public void showSupport(MouseEvent event) {
         try {
-            navigationService.loadSupport();
+            Parent supportView = navigationService.loadSupport();
+            mainController.setContent(supportView);
         } catch (java.io.IOException e) {
             e.printStackTrace();
             // Optionally, show an error dialog to the user
@@ -177,12 +184,12 @@ public class SidebarController {
         try {
             String imagePath = "/images/icons/user_profile.png";
             Image defaultImage = new Image(getClass().getResourceAsStream(imagePath));
-            
+
             if (defaultImage.isError()) {
                 System.err.println("Error loading default profile image: " + defaultImage.getException().getMessage());
                 return;
             }
-            
+
             ProfileImageIcon.setImage(defaultImage);
 
             // Apply circular clip
@@ -235,7 +242,6 @@ public class SidebarController {
             setDefaultProfileImage();
         }
 
-        
     }
 
     public void setMainController(MainController mainController) {

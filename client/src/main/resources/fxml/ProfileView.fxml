@@ -183,11 +183,6 @@
           </content>
         </ScrollPane>
       </center>
-
-      <bottom>
-        <!-- Status bar -->
-        <fx:include source="FooterView.fxml"/>
-      </bottom>
     </BorderPane>
   </children>
 </AnchorPane>

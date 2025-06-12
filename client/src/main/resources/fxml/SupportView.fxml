@@ -24,10 +24,6 @@
 <AnchorPane styleClass="standard-window" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.SupportController">
    <children>
       <BorderPane layoutX="-2.0" layoutY="-1.0" prefHeight="599.0" prefWidth="749.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <left>
-            <!-- Sidebar navigation -->
-            <fx:include source="SidebarView.fxml" />
-         </left>
          <center>
             <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
                <content>
@@ -327,10 +323,6 @@
                </content>
             </ScrollPane>
          </center>
-         <bottom>
-            <!-- Status bar -->
-            <fx:include source="FooterView.fxml" />
-         </bottom>
          <right>
             <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER" />
          </right>

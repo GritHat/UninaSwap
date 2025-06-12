@@ -90,14 +90,6 @@
                 <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
               </padding>
             </VBox>
-            <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="%copyright">
-              <VBox.margin>
-                <Insets top="50.0"/>
-              </VBox.margin>
-              <font>
-                <Font size="10.0"/>
-              </font>
-            </Text>
           </children>
         </VBox>
       </children>

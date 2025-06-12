@@ -53,7 +53,7 @@
             <!-- Tab pane for different item states -->
             <TabPane prefHeight="380.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
               <tabs>
-                <Tab text="%Items">
+                <Tab text="%inventory.title">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                       <children>
@@ -74,6 +74,16 @@
                                     <TableColumn fx:id="availableColumn" prefWidth="75.0" text="Available"/>
                                   </columns>
                                 </TableView>
+                                <!-- Add edit and delete buttons below the table -->
+                                <HBox spacing="10" alignment="CENTER_RIGHT">
+                                  <children>
+                                    <Button fx:id="editButton" text="Edit" disable="true"/>
+                                    <Button fx:id="deleteButton" text="Delete" disable="true"/>
+                                  </children>
+                                  <HBox.margin>
+                                    <Insets top="10.0"/>
+                                  </HBox.margin>
+                                </HBox>
                               </children>
                             </FlowPane>
                           </content>
@@ -86,7 +96,7 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                       <children>
-                        <ScrollPane fx:id="nameColumn" fitToWidth="true" prefHeight="380.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <ScrollPane fitToWidth="true" prefHeight="380.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <content>
                             <FlowPane hgap="15.0" prefWidth="467.0" vgap="15.0">
                               <padding>

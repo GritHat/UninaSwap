@@ -18,6 +18,7 @@ import com.uninaswap.client.controller.HomeController;
 import com.uninaswap.client.controller.InventoryController;
 import com.uninaswap.client.controller.AllertsController;
 import com.uninaswap.client.controller.SavedController;
+import com.uninaswap.client.controller.SettingsController;
 import com.uninaswap.client.controller.ListingCreationController;
 import com.uninaswap.client.controller.SupportController;
 import com.uninaswap.client.controller.TermsAndConditionsController;
@@ -311,10 +312,10 @@ public class NavigationService {
     }
 
     public Parent loadSettings() throws IOException {
-        LoaderBundle loaderBundle = loadView("/fxml/impostazioni.fxml");
+        LoaderBundle loaderBundle = loadView("/fxml/SettingsView.fxml");
         Parent settingsView = loaderBundle.getView();
 
-        TermsAndConditionsController controller = loaderBundle.getLoader().getController();
+        SettingsController controller = loaderBundle.getLoader().getController();
 
         return settingsView;
     }

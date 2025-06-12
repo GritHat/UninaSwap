@@ -111,6 +111,7 @@ public class LoginController {
                     // Navigate to main dashboard on successful login
                     try {
                         navigationService.navigateToMainDashboard(loginField);
+                        navigationService.loadHomeView();
                     } catch (Exception e) {
                         System.err.println("Error navigating to main dashboard: " + e.getMessage());
                         e.printStackTrace();

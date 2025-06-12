@@ -76,9 +76,6 @@
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>com.uninaswap.client.UninaSwapApp</mainClass>
-                    <jvmArgs>
-                        <jvmArg>--enable-native-access=javafx.graphics</jvmArg>
-                    </jvmArgs>
                 </configuration>
             </plugin>
         </plugins>

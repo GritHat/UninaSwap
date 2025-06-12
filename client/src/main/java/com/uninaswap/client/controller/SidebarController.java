@@ -1,23 +1,26 @@
 package com.uninaswap.client.controller;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+
+import java.io.IOException;
+import java.io.ObjectInputFilter.Status;
+
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.UserSessionService;
 
+import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class SidebarController {
-
-    @FXML
-    private VBox sidebar;
     @FXML
     private ImageView ProfileImageIcon;
     @FXML
@@ -33,14 +36,23 @@ public class SidebarController {
     @FXML
     private ImageView logoutIcon;
 
+    @FXML
+    private javafx.scene.control.Label statusLabel; // Add this if you have a Label in your FXML for status messages
+    
     private final ImageService imageService;
     private final NavigationService navigationService;
     private final UserSessionService sessionService;
+
+    // Add a LocaleService field and initialize it (replace with your actual implementation)
+    private final com.uninaswap.client.service.LocaleService localeService = com.uninaswap.client.service.LocaleService.getInstance();
+
+    private MainController mainController;
 
     public SidebarController() {
         this.imageService = ImageService.getInstance();
         this.navigationService = NavigationService.getInstance();
         this.sessionService = UserSessionService.getInstance();
+        
     }
 
     @FXML
@@ -67,10 +79,10 @@ public class SidebarController {
     @FXML
     public void showProfile(MouseEvent event) {
         try {
-            navigationService.loadProfileView();
-        } catch (java.io.IOException e) {
+            Parent profileView = navigationService.loadProfileView();
+            mainController.setContent(profileView);
+        } catch (IOException e) {
             e.printStackTrace();
-            // Optionally, show an error dialog to the user
         }
     }
 
@@ -224,5 +236,9 @@ public class SidebarController {
         }
 
         
+    }
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 }

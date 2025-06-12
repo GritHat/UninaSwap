@@ -13,6 +13,14 @@ import javafx.stage.Modality;
 import com.uninaswap.client.controller.LoginController;
 import com.uninaswap.client.controller.ProfileController;
 import com.uninaswap.client.controller.RegisterController;
+import com.uninaswap.client.controller.MainController;
+import com.uninaswap.client.controller.HomeController;
+import com.uninaswap.client.controller.InventoryController;
+import com.uninaswap.client.controller.AllertsController;
+import com.uninaswap.client.controller.SavedController;
+import com.uninaswap.client.controller.ListingCreationController;
+import com.uninaswap.client.controller.SupportController;
+import com.uninaswap.client.controller.TermsAndConditionsController;
 
 /**
  * Service class to handle navigation between screens.
@@ -174,31 +182,15 @@ public class NavigationService {
         Stage stage = (Stage) sourceNode.getScene().getWindow();
         stage.setTitle("UninaSwap - Dashboard");
         stage.setScene(new Scene(mainView, 1600, 900));
+
+        // Initialize the MainController if needed
+        MainController mainController = loaderBundle.getLoader().getController();
+        mainController.initialize();
     }
 
     public void navigateToItemDetails(String itemId) {
         // TODO: Implement navigation logic to item details view using itemId
         System.out.println("Navigating to item details for item: " + itemId);
-    }
-
-    public Parent loadSettings() throws IOException {
-        LoaderBundle loaderBundle = loadView("/fxml/impostazioni.fxml");
-        Parent settingsView = loaderBundle.getView();
-
-        ProfileController controller = loaderBundle.getLoader().getController();
-        controller.registerMessageHandler();
-
-        return settingsView;
-    }
-
-    public Parent loadSupport() throws IOException {
-        LoaderBundle loaderBundle = loadView("/fxml/SupportView.fxml");
-        Parent supportView = loaderBundle.getView();
-
-        ProfileController controller = loaderBundle.getLoader().getController();
-        controller.registerMessageHandler();
-
-        return supportView;
     }
 
     /**
@@ -235,7 +227,18 @@ public class NavigationService {
     }
 
     /**
-     * Navigate to the profile view within the content area of the main dashboard
+     * Load the home view
+     */
+    public Parent loadHomeView() throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/HomeView.fxml");
+        Parent homeView = loaderBundle.getView();
+
+        HomeController controller = loaderBundle.getLoader().getController();
+        return homeView;
+    }
+
+    /**
+     * Load the profile view
      */
     public Parent loadProfileView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/ProfileView.fxml");
@@ -254,8 +257,7 @@ public class NavigationService {
         LoaderBundle loaderBundle = loadView("/fxml/InventoryView.fxml");
         Parent inventoryView = loaderBundle.getView();
 
-        ProfileController controller = loaderBundle.getLoader().getController();
-        controller.registerMessageHandler();
+        InventoryController controller = loaderBundle.getLoader().getController();
 
         return inventoryView;
     }
@@ -267,8 +269,7 @@ public class NavigationService {
         LoaderBundle loaderBundle = loadView("/fxml/AllertsView.fxml");
         Parent allertsView = loaderBundle.getView();
 
-        ProfileController controller = loaderBundle.getLoader().getController();
-        controller.registerMessageHandler();
+        AllertsController controller = loaderBundle.getLoader().getController();
 
         return allertsView;
     }
@@ -280,8 +281,7 @@ public class NavigationService {
         LoaderBundle loaderBundle = loadView("/fxml/SavedView.fxml");
         Parent savedView = loaderBundle.getView();
 
-        ProfileController controller = loaderBundle.getLoader().getController();
-        controller.registerMessageHandler();
+        SavedController controller = loaderBundle.getLoader().getController();
 
         return savedView;
     }
@@ -293,12 +293,35 @@ public class NavigationService {
         LoaderBundle loaderBundle = loadView("/fxml/ListingCreationView.fxml");
         Parent listingCreationView = loaderBundle.getView();
 
-        ProfileController controller = loaderBundle.getLoader().getController();
-        controller.registerMessageHandler();
+        ListingCreationController controller = loaderBundle.getLoader().getController();
 
         return listingCreationView;
     }
 
+    /**
+     * Load the support view
+     */
+    public Parent loadSupport() throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/SupportView.fxml");
+        Parent supportView = loaderBundle.getView();
+
+        SupportController controller = loaderBundle.getLoader().getController();
+
+        return supportView;
+    }
+
+    public Parent loadSettings() throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/impostazioni.fxml");
+        Parent settingsView = loaderBundle.getView();
+
+        TermsAndConditionsController controller = loaderBundle.getLoader().getController();
+
+        return settingsView;
+    }
+
+    /**
+     * Logout the current user and navigate to the login screen
+     */
     public void logout() throws IOException {
         navigateToLogin(null);
         ;

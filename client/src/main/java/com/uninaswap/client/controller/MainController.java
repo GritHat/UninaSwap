@@ -3,12 +3,14 @@ package com.uninaswap.client.controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.service.EventBusService;
@@ -18,7 +20,6 @@ import com.uninaswap.client.service.UserSessionService;
 import java.io.IOException;
 
 public class MainController implements Refreshable {
-    // NON CI SONO
     @FXML
     private Label usernameLabel;
     @FXML
@@ -29,9 +30,9 @@ public class MainController implements Refreshable {
     private Label contentAreaTitleLabel;
     @FXML
     private Label contentAreaSubtitleLabel;
+    
     @FXML
     private StackPane contentArea;
-    
     @FXML
     private Button dashboardMenuItem;
     @FXML
@@ -55,6 +56,9 @@ public class MainController implements Refreshable {
     @FXML
     private Button viewMarketsButton;
 
+    @FXML
+    private VBox sidebar; // sidebar è il nodo root della SidebarView.fxml
+
     private final NavigationService navigationService;
     private final LocaleService localeService;
     private final UserSessionService sessionService;
@@ -76,6 +80,8 @@ public class MainController implements Refreshable {
     @FXML
     public void initialize() {
         try {
+            Parent homeView = navigationService.loadHomeView();
+            setContent(homeView);
             // Inizializza le componenti UI
             // statusLabel.setText(localeService.getMessage("dashboard.status.loaded"));
             connectionStatusLabel.setText(localeService.getMessage("dashboard.status.connected"));
@@ -88,25 +94,18 @@ public class MainController implements Refreshable {
                 Platform.runLater(this::refreshAllViews);
             });
 
-            // load cards
-            /**
-            articoliPreferitiBox.getChildren().clear();
-            for (int i = 1; i <= 3; i++) {
-            }
-
-            // Esempio: popola utenti preferiti con dati fittizi
-            utentiPreferitiBox.getChildren().clear();
-            for (int i = 1; i <= 2; i++) {
-            }
-
-            // Esempio: popola aste preferite con dati fittizi
-            astePreferiteBox.getChildren().clear();
-            for (int i = 1; i <= 2; i++) {
-            }
-            **/
-
             checkAuthentication();
 
+            // Recupera il controller della sidebar
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SidebarView.fxml"));
+            try {
+                loader.load();
+                SidebarController sidebarController = loader.getController();
+                sidebarController.setMainController(this);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Errore durante l'inizializzazione del controller: " + e.getMessage());
@@ -124,95 +123,6 @@ public class MainController implements Refreshable {
             navigationService.navigateToLogin(usernameLabel);
         } catch (Exception e) {
             statusLabel.setText(localeService.getMessage("dashboard.error.logout", e.getMessage()));
-        }
-    }
-
-    // Navigation methods - these would load different content into the contentArea
-    @FXML
-    public void showDashboard(ActionEvent event) {
-        statusLabel.setText(localeService.getMessage("dashboard.view.dashboard"));
-        // TODO: Load dashboard content
-    }
-
-    @FXML
-    public void showMarkets(ActionEvent event) {
-        statusLabel.setText(localeService.getMessage("dashboard.view.markets"));
-        // TODO: Load markets content
-    }
-
-    @FXML
-    public void showPortfolio(ActionEvent event) {
-        statusLabel.setText(localeService.getMessage("dashboard.view.portfolio"));
-        // TODO: Load portfolio content
-    }
-
-    @FXML
-    public void showSaved(ActionEvent event) {
-        statusLabel.setText(localeService.getMessage("dashboard.view.saved"));
-        // TODO: Load saved content
-    }
-
-    @FXML
-    public void showTrade(ActionEvent event) {
-        statusLabel.setText(localeService.getMessage("dashboard.view.trade"));
-        // TODO: Load trade content
-    }
-
-    @FXML
-    public void showSettings(ActionEvent event) {
-        statusLabel.setText(localeService.getMessage("dashboard.view.settings"));
-        // TODO: Load settings content
-
-    }
-
-    @FXML
-    public void addItem(ActionEvent event) {
-        statusLabel.setText(localeService.getMessage("dashboard.view.add.item"));
-        // TODO: Load add item content
-        // apre l'inventario e poi il popup per aggiungere un nuovo item
-    }
-
-    @FXML
-    public void showProfile(ActionEvent event) {
-        statusLabel.setText(localeService.getMessage("dashboard.view.profile"));
-        try {
-            Parent profileView = navigationService.loadProfileView();
-            contentArea.getChildren().clear();
-            contentArea.getChildren().add(0, profileView);
-        } catch (IOException e) {
-            e.printStackTrace();
-            statusLabel.setText(localeService.getMessage("dashboard.error.load.profile"));
-        }
-    }
-
-    @FXML
-    public void showInventory(ActionEvent event) {
-        statusLabel.setText(localeService.getMessage("dashboard.view.inventory"));
-        try {
-            Parent inventoryView = navigationService.loadInventoryView();
-            inventoryView.setId("inventoryView");
-
-            // Replace content area with inventory view
-            contentArea.getChildren().clear();
-            contentArea.getChildren().add(inventoryView);
-        } catch (IOException e) {
-            statusLabel.setText(localeService.getMessage("dashboard.error.load.inventory"));
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    public void showCreateListing(ActionEvent event) {
-        statusLabel.setText("Creating New Listing");
-        try {
-            Parent listingCreationView = navigationService.loadListingCreationView();
-            listingCreationView.setId("createListingView");
-            // Replace content area with listing creation view
-            contentArea.getChildren().clear();
-            contentArea.getChildren().add(listingCreationView);
-        } catch (IOException e) {
-            statusLabel.setText("Failed to load listing creation view");
-            e.printStackTrace();
         }
     }
 
@@ -297,43 +207,16 @@ public class MainController implements Refreshable {
         String viewId = currentView.getId();
         System.out.println("Reloading view: " + viewId);
 
-        if (viewId != null) {
-            switch (viewId) {
-                case "dashboardView":
-                    showDashboard(null);
-                    break;
-                case "marketsView":
-                    showMarkets(null);
-                    break;
-                case "portfolioView":
-                    showPortfolio(null);
-                    break;
-                case "tradeView":
-                    showTrade(null);
-                    break;
-                case "settingsView":
-                    showSettings(null);
-                    break;
-                case "profileView":
-                    showProfile(null);
-                    break;
-                case "inventoryView":
-                    showInventory(null);
-                    break;
-                case "createListingView":
-                    showCreateListing(null);
-                    break;
-            }
-        }
+        if (viewId != null) {}
     }
 
-    @FXML
-    public void openNotifications(ActionEvent event) {
-
+    /**
+     * Sets the content of the main area
+     * @param newContent The new content to display
+     */
+    public void setContent(Parent newContent) {
+        contentArea.getChildren().setAll(newContent);
     }
 
-    @FXML
-    public void openAste(ActionEvent event) {
 
-    }
 }

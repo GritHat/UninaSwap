@@ -21,7 +21,6 @@ import com.uninaswap.client.controller.SavedController;
 import com.uninaswap.client.controller.SettingsController;
 import com.uninaswap.client.controller.ListingCreationController;
 import com.uninaswap.client.controller.SupportController;
-import com.uninaswap.client.controller.TermsAndConditionsController;
 
 /**
  * Service class to handle navigation between screens.

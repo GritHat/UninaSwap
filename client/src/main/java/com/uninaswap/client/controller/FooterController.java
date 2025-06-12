@@ -44,11 +44,11 @@ public class FooterController {
 
     public void updateConnectionStatus(boolean isConnected) {
         if (isConnected) {
-            connectionStatusLabel.setText("Online");
+            connectionStatusLabel.setText(localeService.getMessage("status.online"));
             connectionStatusLabel.getStyleClass().setAll("status-text-success");
             statusIcon.setImage(new Image(getClass().getResourceAsStream("/images/icons/online.png")));
         } else {
-            connectionStatusLabel.setText("Offline");
+            connectionStatusLabel.setText(localeService.getMessage("status.offline"));
             connectionStatusLabel.getStyleClass().setAll("status-text-warning");
             statusIcon.setImage(new Image(getClass().getResourceAsStream("/images/icons/offline.png")));
         }

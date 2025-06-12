@@ -23,9 +23,4 @@ public class SearchController {
         }
     }
   
-    @FXML
-    public void handleChangePassword(ActionEvent event) {
-        // Implementa il cambio password
-    }
-
 }

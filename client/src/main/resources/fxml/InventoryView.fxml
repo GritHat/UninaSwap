@@ -19,11 +19,6 @@
 <AnchorPane styleClass="standard-window" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.InventoryController">
   <children>
     <BorderPane layoutX="-2.0" layoutY="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <left>
-        <!-- Sidebar navigation -->
-        <fx:include source="SidebarView.fxml"/>
-      </left>
-
       <center>
         <VBox prefHeight="484.0" prefWidth="501.0" style="-fx-background-color: #F8F8F8;" BorderPane.alignment="CENTER">
           <children>
@@ -165,11 +160,6 @@
           </children>
         </VBox>
       </center>
-
-      <bottom>
-        <!-- Status bar -->
-        <fx:include source="FooterView.fxml"/>
-      </bottom>
 
       <right>
         <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6L;" BorderPane.alignment="CENTER"/>

@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
@@ -16,7 +17,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane styleClass="standard-window" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.InventoryController">
+<StackPane styleClass="standard-window" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.InventoryController">
   <children>
     <BorderPane layoutX="-2.0" layoutY="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <center>
@@ -59,7 +60,7 @@
                                 <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
                               </padding>
                               <children>
-                                <TableView fx:id="itemsTable" prefHeight="310.0" prefWidth="451.0">
+                                <TableView fx:id="itemsTable" prefHeight="88.0" prefWidth="451.0">
                                   <columns>
                                     <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name"/>
                                     <TableColumn fx:id="conditionColumn" prefWidth="75.0" text="Condition"/>
@@ -70,10 +71,10 @@
                                   </columns>
                                 </TableView>
                                 <!-- Add edit and delete buttons below the table -->
-                                <HBox spacing="10" alignment="CENTER_RIGHT">
+                                <HBox alignment="CENTER_RIGHT" spacing="10">
                                   <children>
-                                    <Button fx:id="editButton" text="Edit" disable="true"/>
-                                    <Button fx:id="deleteButton" text="Delete" disable="true"/>
+                                    <Button fx:id="editButton" disable="true" text="Edit"/>
+                                    <Button fx:id="deleteButton" disable="true" text="Delete"/>
                                   </children>
                                   <HBox.margin>
                                     <Insets top="10.0"/>
@@ -100,6 +101,7 @@
                             </FlowPane>
                           </content>
                         </ScrollPane>
+                        <ListView layoutX="10.0" layoutY="10.0" prefHeight="319.0" prefWidth="480.0"/>
                       </children>
                     </AnchorPane>
                   </content>
@@ -166,4 +168,4 @@
       </right>
     </BorderPane>
   </children>
-</AnchorPane>
+</StackPane>

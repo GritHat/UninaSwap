@@ -1,31 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/24" 
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.uninaswap.client.controller.ListingCreationController"
-            styleClass="listing-creation-view">
+<BorderPane styleClass="listing-creation-view" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.ListingCreationController">
             
     <top>
         <VBox spacing="10">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
-            <Label text="%listing.create.title" styleClass="section-title"/>
+            <Label styleClass="section-title" text="%listing.create.title" />
             
             <GridPane hgap="10" vgap="10">
-                <Label text="%listing.title.label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                <TextField fx:id="titleField" promptText="%listing.title.prompt" 
-                           GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                <Label text="%listing.title.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <TextField fx:id="titleField" promptText="%listing.title.prompt" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" />
                 
-                <Label text="%listing.description.label" GridPane.rowIndex="1" GridPane.columnIndex="0" 
-                       GridPane.valignment="TOP" />
-                <TextArea fx:id="descriptionArea" promptText="%listing.description.prompt" 
-                          GridPane.rowIndex="1" GridPane.columnIndex="1" prefRowCount="3" />
+                <Label text="%listing.description.label" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                <TextArea fx:id="descriptionArea" prefRowCount="3" promptText="%listing.description.prompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <columnConstraints>
+               <ColumnConstraints />
+               <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
             </GridPane>
         </VBox>
     </top>
@@ -35,14 +53,21 @@
             <Tab fx:id="sellTab" text="%listing.type.sell">
                 <VBox spacing="10">
                     <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
+                        <Insets bottom="10" left="10" right="10" top="10" />
                     </padding>
                     <GridPane hgap="10" vgap="10">
-                        <Label text="%listing.sell.price.label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                        <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                        <Label text="%listing.sell.price.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <TextField fx:id="sellPriceField" prefWidth="100" promptText="%listing.sell.price.prompt" />
                             <ComboBox fx:id="sellCurrencyComboBox" prefWidth="80" />
                         </HBox>
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                  </rowConstraints>
                     </GridPane>
                 </VBox>
             </Tab>
@@ -50,16 +75,15 @@
             <Tab fx:id="tradeTab" text="%listing.type.trade">
                 <VBox spacing="10">
                     <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
+                        <Insets bottom="10" left="10" right="10" top="10" />
                     </padding>
                     
-                    <TitledPane text="%listing.trade.offers.title" expanded="true">
+                    <TitledPane expanded="true" text="%listing.trade.offers.title">
                         <VBox spacing="10">
                             <CheckBox fx:id="acceptMoneyOffersCheckBox" text="%listing.trade.money.offers" />
                             <HBox spacing="10">
                                 <Label text="%listing.trade.reference.price.label" />
-                                <TextField fx:id="referencePriceField" prefWidth="100" 
-                                           promptText="%listing.trade.reference.price.prompt" />
+                                <TextField fx:id="referencePriceField" prefWidth="100" promptText="%listing.trade.reference.price.prompt" />
                                 <ComboBox fx:id="tradeCurrencyComboBox" prefWidth="80" />
                             </HBox>
                             
@@ -68,7 +92,7 @@
                         </VBox>
                     </TitledPane>
                     
-                    <TitledPane text="%listing.trade.desired.categories.title" expanded="true">
+                    <TitledPane expanded="true" text="%listing.trade.desired.categories.title">
                         <VBox spacing="10">
                             <Label text="%listing.trade.categories.label" />
                             <TextField fx:id="categoriesField" promptText="%listing.trade.categories.prompt" />
@@ -80,42 +104,48 @@
             <Tab fx:id="giftTab" text="%listing.type.gift">
                 <VBox spacing="10">
                     <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
+                        <Insets bottom="10" left="10" right="10" top="10" />
                     </padding>
                     
                     <CheckBox fx:id="pickupOnlyCheckBox" text="%listing.gift.pickup.only" />
-                    <CheckBox fx:id="allowThankYouOffersCheckBox" text="%listing.gift.thank.you.offers" selected="true" />
+                    <CheckBox fx:id="allowThankYouOffersCheckBox" selected="true" text="%listing.gift.thank.you.offers" />
                     
                     <Label text="%listing.gift.restrictions.label" />
-                    <TextArea fx:id="restrictionsArea" promptText="%listing.gift.restrictions.prompt" prefRowCount="3" />
+                    <TextArea fx:id="restrictionsArea" prefRowCount="3" promptText="%listing.gift.restrictions.prompt" />
                 </VBox>
             </Tab>
             
             <Tab fx:id="auctionTab" text="%listing.type.auction">
                 <VBox spacing="10">
                     <padding>
-                        <Insets top="10" right="10" bottom="10" left="10"/>
+                        <Insets bottom="10" left="10" right="10" top="10" />
                     </padding>
                     
                     <GridPane hgap="10" vgap="10">
-                        <Label text="%listing.auction.starting.price.label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                        <HBox spacing="10" GridPane.rowIndex="0" GridPane.columnIndex="1">
-                            <TextField fx:id="startingPriceField" prefWidth="100" 
-                                       promptText="%listing.auction.starting.price.prompt" />
+                        <Label text="%listing.auction.starting.price.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <TextField fx:id="startingPriceField" prefWidth="100" promptText="%listing.auction.starting.price.prompt" />
                             <ComboBox fx:id="auctionCurrencyComboBox" prefWidth="80" />
                         </HBox>
                         
-                        <Label text="%listing.auction.reserve.price.label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                        <TextField fx:id="reservePriceField" promptText="%listing.auction.reserve.price.prompt" 
-                                   GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                        <Label text="%listing.auction.reserve.price.label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <TextField fx:id="reservePriceField" promptText="%listing.auction.reserve.price.prompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         
-                        <Label text="%listing.auction.duration.label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                        <ComboBox fx:id="durationComboBox" prefWidth="150" 
-                                  GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                        <Label text="%listing.auction.duration.label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="durationComboBox" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         
-                        <Label text="%listing.auction.bid.increment.label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-                        <TextField fx:id="bidIncrementField" promptText="%listing.auction.bid.increment.prompt" 
-                                   GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                        <Label text="%listing.auction.bid.increment.label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <TextField fx:id="bidIncrementField" promptText="%listing.auction.bid.increment.prompt" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <columnConstraints>
+                     <ColumnConstraints />
+                     <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                     <RowConstraints />
+                  </rowConstraints>
                     </GridPane>
                 </VBox>
             </Tab>
@@ -125,43 +155,43 @@
     <bottom>
         <VBox spacing="10">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets bottom="10" left="10" right="10" top="10" />
             </padding>
             
-            <TitledPane text="%listing.items.title" expanded="true">
+            <TitledPane expanded="true" text="%listing.items.title">
                 <SplitPane dividerPositions="0.5">
                     <VBox spacing="5">
-                        <Label text="%listing.items.available.title" styleClass="subsection-title" />
+                        <Label styleClass="subsection-title" text="%listing.items.available.title" />
                         <TableView fx:id="itemsTable" prefHeight="200">
                             <columns>
-                                <TableColumn fx:id="nameColumn" text="%item.name.column" prefWidth="150" />
-                                <TableColumn fx:id="conditionColumn" text="%item.condition.column" prefWidth="100" />
-                                <TableColumn fx:id="availableQuantityColumn" text="%item.available.column" prefWidth="80" />
+                                <TableColumn fx:id="nameColumn" prefWidth="150" text="%item.name.column" />
+                                <TableColumn fx:id="conditionColumn" prefWidth="100" text="%item.condition.column" />
+                                <TableColumn fx:id="availableQuantityColumn" prefWidth="100.0" text="%item.available.column" />
                             </columns>
                         </TableView>
-                        <HBox spacing="10" alignment="CENTER_LEFT">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
                             <Label text="%listing.items.quantity.label" />
-                            <Spinner fx:id="quantitySpinner" prefWidth="80" />
-                            <Button fx:id="addItemButton" text="%button.add" onAction="#handleAddItem" disable="true" />
+                            <Spinner fx:id="quantitySpinner" editable="true" prefWidth="80" />
+                            <Button fx:id="addItemButton" disable="true" onAction="#handleAddItem" text="%button.add" />
                         </HBox>
                     </VBox>
                     
                     <VBox spacing="5">
-                        <Label text="%listing.items.selected.title" styleClass="subsection-title" />
+                        <Label styleClass="subsection-title" text="%listing.items.selected.title" />
                         <TableView fx:id="selectedItemsTable" prefHeight="200">
                             <columns>
-                                <TableColumn fx:id="selectedNameColumn" text="%item.name.column" prefWidth="150" />
-                                <TableColumn fx:id="selectedQuantityColumn" text="%item.quantity.column" prefWidth="80" />
-                                <TableColumn fx:id="selectedActionColumn" text="%item.action.column" prefWidth="80" />
+                                <TableColumn fx:id="selectedNameColumn" prefWidth="150" text="%item.name.column" />
+                                <TableColumn fx:id="selectedQuantityColumn" prefWidth="91.0" text="%item.quantity.column" />
+                                <TableColumn fx:id="selectedActionColumn" prefWidth="108.0" text="%item.action.column" />
                             </columns>
                         </TableView>
                     </VBox>
                 </SplitPane>
             </TitledPane>
             
-            <HBox spacing="10" alignment="CENTER_RIGHT">
-                <Button fx:id="createButton" text="%button.create" onAction="#handleCreateListing" styleClass="primary-button" />
-                <Button fx:id="cancelButton" text="%button.cancel" onAction="#handleCancel" />
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <Button fx:id="createButton" onAction="#handleCreateListing" styleClass="primary-button" text="%button.create" />
+                <Button fx:id="cancelButton" onAction="#handleCancel" text="%button.cancel" />
             </HBox>
         </VBox>
     </bottom>

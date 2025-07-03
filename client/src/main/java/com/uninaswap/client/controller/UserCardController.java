@@ -18,7 +18,7 @@ public class UserCardController {
     private UserDTO user;
 
     private final NavigationService navigationService = NavigationService.getInstance();
-/* da implementare
+/* TODO: da implementare
     public void setUser(UserDTO user) {
         this.user = user;
         itemName.setText(user.getDisplayName() != null ? user.getDisplayName() : user.getUsername());

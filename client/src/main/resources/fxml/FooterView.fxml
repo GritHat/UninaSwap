@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Label?>
 
 <HBox fx:id="footer" alignment="CENTER_LEFT" prefHeight="32.0" prefWidth="769.0" styleClass="status-bar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.FooterController">
   <padding>

@@ -28,6 +28,9 @@ public class ItemCardController {
     private final NavigationService navigationService = NavigationService.getInstance();
     private final FavoritesService favoritesService = FavoritesService.getInstance();
 
+    public ItemCardController() {
+    }
+
     public ItemCardController(ItemDTO item) {
         this.item = item;
     }

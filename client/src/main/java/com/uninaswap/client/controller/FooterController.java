@@ -7,12 +7,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.collections.FXCollections;
-import javafx.application.Platform;
 import com.uninaswap.client.service.LocaleService;
-import com.uninaswap.client.service.EventBusService;
-import com.uninaswap.client.constants.EventTypes;
 import javafx.util.StringConverter;
-
+import java.lang.classfile.Label;
 import java.util.Locale;
 import java.util.Map;
 
@@ -27,6 +24,8 @@ public class FooterController {
     private ComboBox<String> languageSelector;
     @FXML
     private ComboBox<Locale> languageComboBox;
+    @FXML
+    private Label languageLabel;
 
     private final LocaleService localeService = LocaleService.getInstance();
 

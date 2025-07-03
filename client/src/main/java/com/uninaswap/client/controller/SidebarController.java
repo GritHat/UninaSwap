@@ -1,21 +1,15 @@
 package com.uninaswap.client.controller;
-
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
-
-import java.io.IOException;
-import java.io.ObjectInputFilter.Status;
-
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.UserSessionService;
 
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
+import java.io.IOException;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -44,9 +38,6 @@ public class SidebarController {
     private final ImageService imageService;
     private final NavigationService navigationService;
     private final UserSessionService sessionService;
-
-    private final com.uninaswap.client.service.LocaleService localeService = com.uninaswap.client.service.LocaleService
-            .getInstance();
 
     private MainController mainController;
 
@@ -84,7 +75,7 @@ public class SidebarController {
             Parent profileView = navigationService.loadProfileView();
             mainController.setContent(profileView);
         } catch (IOException e) {
-            
+
             e.printStackTrace();
         }
     }

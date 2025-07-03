@@ -14,13 +14,14 @@ import com.uninaswap.client.controller.LoginController;
 import com.uninaswap.client.controller.ProfileController;
 import com.uninaswap.client.controller.RegisterController;
 import com.uninaswap.client.controller.MainController;
-import com.uninaswap.client.controller.HomeController;
-import com.uninaswap.client.controller.InventoryController;
-import com.uninaswap.client.controller.AllertsController;
-import com.uninaswap.client.controller.SavedController;
-import com.uninaswap.client.controller.SettingsController;
-import com.uninaswap.client.controller.ListingCreationController;
-import com.uninaswap.client.controller.SupportController;
+//TODO: Remove this import if not needed
+// import com.uninaswap.client.controller.HomeController;
+// import com.uninaswap.client.controller.InventoryController;
+// import com.uninaswap.client.controller.AllertsController;
+// import com.uninaswap.client.controller.SavedController;
+// import com.uninaswap.client.controller.SettingsController;
+// import com.uninaswap.client.controller.ListingCreationController;
+// import com.uninaswap.client.controller.SupportController;
 
 /**
  * Service class to handle navigation between screens.
@@ -233,7 +234,6 @@ public class NavigationService {
         LoaderBundle loaderBundle = loadView("/fxml/HomeView.fxml");
         Parent homeView = loaderBundle.getView();
 
-        HomeController controller = loaderBundle.getLoader().getController();
         return homeView;
     }
 
@@ -257,8 +257,6 @@ public class NavigationService {
         LoaderBundle loaderBundle = loadView("/fxml/InventoryView.fxml");
         Parent inventoryView = loaderBundle.getView();
 
-        InventoryController controller = loaderBundle.getLoader().getController();
-
         return inventoryView;
     }
 
@@ -268,8 +266,6 @@ public class NavigationService {
     public Parent loadAllertsView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/AllertsView.fxml");
         Parent allertsView = loaderBundle.getView();
-
-        AllertsController controller = loaderBundle.getLoader().getController();
 
         return allertsView;
     }
@@ -281,8 +277,6 @@ public class NavigationService {
         LoaderBundle loaderBundle = loadView("/fxml/SavedView.fxml");
         Parent savedView = loaderBundle.getView();
 
-        SavedController controller = loaderBundle.getLoader().getController();
-
         return savedView;
     }
 
@@ -292,8 +286,6 @@ public class NavigationService {
     public Parent loadListingCreationView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/ListingCreationView.fxml");
         Parent listingCreationView = loaderBundle.getView();
-
-        ListingCreationController controller = loaderBundle.getLoader().getController();
 
         return listingCreationView;
     }
@@ -305,16 +297,12 @@ public class NavigationService {
         LoaderBundle loaderBundle = loadView("/fxml/SupportView.fxml");
         Parent supportView = loaderBundle.getView();
 
-        SupportController controller = loaderBundle.getLoader().getController();
-
         return supportView;
     }
 
     public Parent loadSettings() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/SettingsView.fxml");
         Parent settingsView = loaderBundle.getView();
-
-        SettingsController controller = loaderBundle.getLoader().getController();
 
         return settingsView;
     }

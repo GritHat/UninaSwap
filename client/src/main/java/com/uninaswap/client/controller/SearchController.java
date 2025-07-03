@@ -3,7 +3,6 @@ package com.uninaswap.client.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import com.uninaswap.client.service.NavigationService;
 
 public class SearchController {
     

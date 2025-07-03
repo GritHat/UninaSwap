@@ -30,6 +30,8 @@ public class SidebarController {
     @FXML
     private ImageView allertsIcon;
     @FXML
+    private ImageView addListingIcon;
+    @FXML
     private ImageView settingsIcon;
     @FXML
     private ImageView supportIcon;
@@ -43,8 +45,6 @@ public class SidebarController {
     private final NavigationService navigationService;
     private final UserSessionService sessionService;
 
-    // Add a LocaleService field and initialize it (replace with your actual
-    // implementation)
     private final com.uninaswap.client.service.LocaleService localeService = com.uninaswap.client.service.LocaleService
             .getInstance();
 
@@ -84,6 +84,7 @@ public class SidebarController {
             Parent profileView = navigationService.loadProfileView();
             mainController.setContent(profileView);
         } catch (IOException e) {
+            
             e.printStackTrace();
         }
     }
@@ -104,6 +105,17 @@ public class SidebarController {
         try {
             Parent inventoryView = navigationService.loadInventoryView();
             mainController.setContent(inventoryView);
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+            // Optionally, show an error dialog to the user
+        }
+    }
+
+    @FXML
+    public void addListing(MouseEvent event) {
+        try {
+            Parent addListingView = navigationService.loadListingCreationView();
+            mainController.setContent(addListingView);
         } catch (java.io.IOException e) {
             e.printStackTrace();
             // Optionally, show an error dialog to the user

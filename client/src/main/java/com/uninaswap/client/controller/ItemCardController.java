@@ -28,6 +28,10 @@ public class ItemCardController {
     private final NavigationService navigationService = NavigationService.getInstance();
     private final FavoritesService favoritesService = FavoritesService.getInstance();
 
+    public ItemCardController(ItemDTO item) {
+        this.item = item;
+    }
+
     @FXML
     public void initialize() {
         // Tooltip per il preferito
@@ -50,7 +54,7 @@ public class ItemCardController {
         isFavorite = favorite;
         String iconPath = favorite
             ? "/images/elenco_preferiti.png"
-            : "/images/streamline-ultimate-colors---free--24x24-PNG/Heart-1--Streamline-Ultimate.png";
+            : "/images/preferiti.png";
         favoriteIcon.setImage(new Image(getClass().getResourceAsStream(iconPath)));
     }
 

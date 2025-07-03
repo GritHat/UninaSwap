@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
@@ -16,10 +15,11 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
 
 <StackPane styleClass="standard-window" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.InventoryController">
   <children>
-    <BorderPane layoutX="-2.0" layoutY="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <BorderPane>
       <center>
         <VBox prefHeight="484.0" prefWidth="501.0" style="-fx-background-color: #F8F8F8;" BorderPane.alignment="CENTER">
           <children>
@@ -29,10 +29,11 @@
                 <Insets bottom="10.0" left="15.0" right="15.0" top="15.0"/>
               </VBox.margin>
             </fx:include>
+            
             <!-- Add new item button -->
             <HBox alignment="CENTER_RIGHT">
               <children>
-                <Button mnemonicParsing="false" text="%inventory.new.item">
+                <Button fx:id="addButton" mnemonicParsing="false" text="%inventory.new.item" onAction="#handleAddItem">
                   <graphic>
                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                       <image>
@@ -46,115 +47,98 @@
                 <Insets right="15.0"/>
               </VBox.margin>
             </HBox>
+            
             <!-- Tab pane for different item states -->
             <TabPane prefHeight="380.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
               <tabs>
+                <!-- Tab inventario -->
                 <Tab text="%inventory.title">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                    <VBox>
                       <children>
-                        <ScrollPane fitToWidth="true" prefHeight="380.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <content>
-                            <FlowPane hgap="15.0" prefWidth="467.0" vgap="15.0">
-                              <padding>
-                                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
-                              </padding>
-                              <children>
-                                <TableView fx:id="itemsTable" prefHeight="88.0" prefWidth="451.0">
-                                  <columns>
-                                    <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name"/>
-                                    <TableColumn fx:id="conditionColumn" prefWidth="75.0" text="Condition"/>
-                                    <TableColumn fx:id="stockColumn" prefWidth="75.0" text="Stock"/>
-                                    <TableColumn fx:id="categoryColumn" prefWidth="75.0" text="Category"/>
-                                    <TableColumn fx:id="reservedColumn" prefWidth="75.0" text="Reserved"/>
-                                    <TableColumn fx:id="availableColumn" prefWidth="75.0" text="Available"/>
-                                  </columns>
-                                </TableView>
-                                <!-- Add edit and delete buttons below the table -->
-                                <HBox alignment="CENTER_RIGHT" spacing="10">
-                                  <children>
-                                    <Button fx:id="editButton" disable="true" text="Edit"/>
-                                    <Button fx:id="deleteButton" disable="true" text="Delete"/>
-                                  </children>
-                                  <HBox.margin>
-                                    <Insets top="10.0"/>
-                                  </HBox.margin>
-                                </HBox>
-                              </children>
-                            </FlowPane>
-                          </content>
-                        </ScrollPane>
+                        <TableView fx:id="itemsTable" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="nameColumn" prefWidth="100.0" text="Name"/>
+                            <TableColumn fx:id="conditionColumn" prefWidth="80.0" text="Condition"/>
+                            <TableColumn fx:id="stockColumn" prefWidth="60.0" text="Stock"/>
+                            <TableColumn fx:id="categoryColumn" prefWidth="100.0" text="Category"/>
+                            <TableColumn fx:id="reservedColumn" prefWidth="80.0" text="Reserved"/>
+                            <TableColumn fx:id="availableColumn" prefWidth="80.0" text="Available"/>
+                          </columns>
+                        </TableView>
+                        
+                        <!-- Buttons for edit and delete -->
+                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                          <children>
+                            <Button fx:id="editButton" disable="true" text="Edit"/>
+                            <Button fx:id="deleteButton" disable="true" text="Delete"/>
+                          </children>
+                          <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                          </padding>
+                        </HBox>
                       </children>
-                    </AnchorPane>
+                    </VBox>
                   </content>
                 </Tab>
+                
+                <!-- Tab in vendita -->
                 <Tab text="%inventory.tab.forsale">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                      <children>
-                        <ScrollPane fitToWidth="true" prefHeight="380.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <content>
-                            <FlowPane hgap="15.0" prefWidth="467.0" vgap="15.0">
-                              <padding>
-                                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
-                              </padding>
-                            </FlowPane>
-                          </content>
-                        </ScrollPane>
-                        <ListView layoutX="10.0" layoutY="10.0" prefHeight="319.0" prefWidth="480.0"/>
-                      </children>
-                    </AnchorPane>
+                    <ScrollPane fitToWidth="true">
+                      <content>
+                        <FlowPane fx:id="forSaleFlowPane" hgap="15.0" vgap="15.0">
+                          <padding>
+                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+                          </padding>
+                        </FlowPane>
+                      </content>
+                    </ScrollPane>
                   </content>
                 </Tab>
+                
+                <!-- Tab venduti -->
                 <Tab text="%inventory.tab.sold">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                      <children>
-                        <ScrollPane fitToWidth="true" prefHeight="380.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <content>
-                            <FlowPane hgap="15.0" prefWidth="467.0" vgap="15.0">
-                              <padding>
-                                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
-                              </padding>
-                            </FlowPane>
-                          </content>
-                        </ScrollPane>
-                      </children>
-                    </AnchorPane>
+                    <ScrollPane fitToWidth="true">
+                      <content>
+                        <FlowPane fx:id="soldFlowPane" hgap="15.0" vgap="15.0">
+                          <padding>
+                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+                          </padding>
+                        </FlowPane>
+                      </content>
+                    </ScrollPane>
                   </content>
                 </Tab>
+                
+                <!-- Tab aste attive -->
                 <Tab text="%inventory.tab.activeauctions">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                      <children>
-                        <ScrollPane fitToWidth="true" prefHeight="380.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <content>
-                            <FlowPane hgap="15.0" prefWidth="467.0" vgap="15.0">
-                              <padding>
-                                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
-                              </padding>
-                            </FlowPane>
-                          </content>
-                        </ScrollPane>
-                      </children>
-                    </AnchorPane>
+                    <ScrollPane fitToWidth="true">
+                      <content>
+                        <FlowPane fx:id="auctionsFlowPane" hgap="15.0" vgap="15.0">
+                          <padding>
+                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+                          </padding>
+                        </FlowPane>
+                      </content>
+                    </ScrollPane>
                   </content>
                 </Tab>
+                
+                <!-- Tab bozze -->
                 <Tab text="%inventory.tab.drafts">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                      <children>
-                        <ScrollPane fitToWidth="true" prefHeight="380.0" prefWidth="501.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <content>
-                            <FlowPane hgap="15.0" prefWidth="467.0" vgap="15.0">
-                              <padding>
-                                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
-                              </padding>
-                            </FlowPane>
-                          </content>
-                        </ScrollPane>
-                      </children>
-                    </AnchorPane>
+                    <ScrollPane fitToWidth="true">
+                      <content>
+                        <FlowPane fx:id="draftsFlowPane" hgap="15.0" vgap="15.0">
+                          <padding>
+                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
+                          </padding>
+                        </FlowPane>
+                      </content>
+                    </ScrollPane>
                   </content>
                 </Tab>
               </tabs>
@@ -162,10 +146,6 @@
           </children>
         </VBox>
       </center>
-
-      <right>
-        <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6L;" BorderPane.alignment="CENTER"/>
-      </right>
     </BorderPane>
   </children>
 </StackPane>

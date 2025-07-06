@@ -252,15 +252,15 @@ public class InventoryController {
     /*
      * Mi piace il disegno
      * ┌─────────────────────────────────┐
-     * │ [Search Bar] [Add +] │
+     * │ [Search Bar]            [Add +] │
      * ├─────────────────────────────────┤
      * │ ┌─────────────────────────────┐ │
-     * │ │ [img] Item Name €XX│ │ ← ItemCard
-     * │ │ Description [•]│ │
+     * │ │ [img] Item Name          €XX│ │ ← ItemCard
+     * │ │ Description              [•]│ │
      * │ └─────────────────────────────┘ │
      * │ ┌─────────────────────────────┐ │
-     * │ │ [img] Item Name 2 €XX │ │ ← ItemCard
-     * │ │ Description 2 [•]│ │
+     * │ │ [img] Item Name 2       €XX │ │ ← ItemCard
+     * │ │ Description 2            [•]│ │
      * │ └─────────────────────────────┘ │
      * └─────────────────────────────────┘
      */

@@ -26,10 +26,13 @@ public class UserCardController {
 
     private UserDTO user;
 
+    // TODO: Load list from database
+    private List<UserDTO> users;
+
     private final NavigationService navigationService = NavigationService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
 
-    //TODO: Check if it works
+    // TODO: Check if it works
     public UserCardController() {
     }
 
@@ -37,13 +40,13 @@ public class UserCardController {
         this.user = user;
     }
 
-    public void loadUserCardsIntoTab(FlowPane container, List<UserDTO> user) {
+    public void loadUserCardsIntoTab(FlowPane container) {
         container.getChildren().clear();
-        for (UserDTO users : user) {
+        for (UserDTO user : users) {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserCardView.fxml"));
                 loader.setResources(localeService.getResourceBundle());
-                loader.setController(new UserCardController(users));
+                loader.setController(new UserCardController(user));
                 container.getChildren().add(loader.load());
             } catch (IOException e) {
                 AlertHelper.showErrorAlert(
@@ -57,7 +60,7 @@ public class UserCardController {
     @FXML
     private void openUserDetails(MouseEvent event) {
         if (user != null) {
-            //TODO: open user profile detail
+            // TODO: open user profile detail
         }
     }
 }

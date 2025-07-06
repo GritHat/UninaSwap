@@ -11,10 +11,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import com.uninaswap.client.service.NavigationService;
+
+import java.util.List;
+
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
+import com.uninaswap.client.controller.UserCardController;
 
 public class MainController implements Refreshable {
     @FXML
@@ -25,7 +29,7 @@ public class MainController implements Refreshable {
     private Label contentAreaTitleLabel;
     @FXML
     private Label contentAreaSubtitleLabel;
-    
+
     @FXML
     private StackPane contentArea;
     @FXML
@@ -60,12 +64,20 @@ public class MainController implements Refreshable {
     private final LocaleService localeService;
     private final UserSessionService sessionService;
     private final EventBusService eventBus = EventBusService.getInstance();
+    private final UserCardController userCard= new UserCardController();
 
     public MainController() {
         this.navigationService = NavigationService.getInstance();
         this.localeService = LocaleService.getInstance();
         this.sessionService = UserSessionService.getInstance();
     }
+    /**
+     * Constructor with dependencies injected
+     * 
+     * @param navigationService Navigation service instance
+     * @param localeService Locale service instance
+     * @param sessionService User session service instance
+     */
 
     @FXML
     private HBox articoliPreferitiBox;
@@ -74,24 +86,28 @@ public class MainController implements Refreshable {
     @FXML
     private HBox astePreferiteBox;
 
+  
+
     @FXML
     public void initialize() {
         try {
+             checkAuthentication();
+
             Parent homeView = navigationService.loadHomeView();
             setContent(homeView);
             String username = sessionService.getUser().getUsername();
             usernameLabel.setText(localeService.getMessage("dashboard.welcome.user", username));
+
+            userCard.loadUserCardsIntoTab(null, List<UserDTO>);
 
             // Subscribe to locale change events
             eventBus.subscribe(EventTypes.LOCALE_CHANGED, _ -> {
                 Platform.runLater(this::refreshAllViews);
             });
 
-            checkAuthentication();
-
             // Recupera il controller della sidebar
-           sidebarIncludeController.setMainController(this);
-            
+            sidebarIncludeController.setMainController(this);
+
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Errore durante l'inizializzazione del controller: " + e.getMessage());
@@ -192,16 +208,17 @@ public class MainController implements Refreshable {
         String viewId = currentView.getId();
         System.out.println("Reloading view: " + viewId);
 
-        if (viewId != null) {}
+        if (viewId != null) {
+        }
     }
 
     /**
      * Sets the content of the main area
+     * 
      * @param newContent The new content to display
      */
     public void setContent(Parent newContent) {
         contentArea.getChildren().setAll(newContent);
     }
-
 
 }

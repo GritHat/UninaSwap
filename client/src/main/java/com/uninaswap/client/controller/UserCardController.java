@@ -1,36 +1,63 @@
 package com.uninaswap.client.controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-
 import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.client.service.NavigationService;
+import com.uninaswap.client.service.LocaleService;
+import com.uninaswap.client.util.AlertHelper;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import java.io.IOException;
+import java.util.List;
 
 public class UserCardController {
 
-    @FXML private VBox itemCard;
-    @FXML private ImageView itemImage;
-    @FXML private Text itemName;
+    @FXML
+    private VBox itemCard;
+    @FXML
+    private ImageView itemImage;
+    @FXML
+    private Text itemName;
 
     private UserDTO user;
 
     private final NavigationService navigationService = NavigationService.getInstance();
-/* TODO: da implementare
-    public void setUser(UserDTO user) {
+    private final LocaleService localeService = LocaleService.getInstance();
+
+    //TODO: Check if it works
+    public UserCardController() {
+    }
+
+    public UserCardController(UserDTO user) {
         this.user = user;
-        itemName.setText(user.getDisplayName() != null ? user.getDisplayName() : user.getUsername());
-        if (user.getProfileImageUrl() != null && !user.getProfileImageUrl().isEmpty()) {
-            itemImage.setImage(new Image(user.getProfileImageUrl(), true));
+    }
+
+    public void loadUserCardsIntoTab(FlowPane container, List<UserDTO> user) {
+        container.getChildren().clear();
+        for (UserDTO users : user) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserCardView.fxml"));
+                loader.setResources(localeService.getResourceBundle());
+                loader.setController(new UserCardController(users));
+                container.getChildren().add(loader.load());
+            } catch (IOException e) {
+                AlertHelper.showErrorAlert(
+                        localeService.getMessage("user.card.load.error.title"),
+                        localeService.getMessage("user.card.load.error.header"),
+                        e.getMessage());
+            }
         }
     }
-*/
+
     @FXML
     private void openUserDetails(MouseEvent event) {
         if (user != null) {
-            //user profile detail
+            //TODO: open user profile detail
         }
     }
 }

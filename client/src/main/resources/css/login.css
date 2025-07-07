@@ -1,0 +1,138 @@
+/* Login View Specific Styles */
+
+/* Left section with logo and branding */
+.login-left-section {
+    -fx-background-color: linear-gradient(to bottom, -fx-primary, -fx-primary-dark);
+}
+
+.login-logo {
+    -fx-fit-height: 150.0;
+    -fx-fit-width: 250.0;
+}
+
+.login-title {
+    -fx-fill: WHITE;
+    -fx-stroke-type: OUTSIDE;
+    -fx-stroke-width: 0.0;
+    -fx-font-family: "System Bold";
+    -fx-font-size: 36.0;
+    -fx-text-alignment: CENTER;
+    /* Add this */
+}
+
+.login-subtitle {
+    -fx-fill: WHITE;
+    -fx-stroke-type: OUTSIDE;
+    -fx-stroke-width: 0.0;
+    -fx-font-size: 18.0;
+    -fx-text-alignment: CENTER;
+    -fx-wrap-text: true;
+}
+
+/* Right section with login form */
+.login-right-section {
+    -fx-background-color: -fx-background-light;
+    -fx-alignment: CENTER;
+    /* Add this to center the entire right section */
+}
+
+.login-form-title {
+    -fx-stroke-type: OUTSIDE;
+    -fx-stroke-width: 0.0;
+    -fx-font-family: "System Bold";
+    -fx-font-size: 24.0;
+    -fx-text-alignment: CENTER;
+    /* Add this */
+}
+
+.login-message-label {
+    -fx-alignment: CENTER;
+    -fx-max-width: 320.0;
+    -fx-text-alignment: CENTER;
+    -fx-wrap-text: true;
+}
+
+.login-button {
+    -fx-pref-height: 40.0;
+    -fx-pref-width: 320.0;
+    -fx-font-family: "System Bold";
+    -fx-font-size: 14.0;
+    -fx-alignment: CENTER;
+    /* Add this */
+}
+
+.login-text {
+    -fx-stroke-type: OUTSIDE;
+    -fx-stroke-width: 0.0;
+    -fx-text-alignment: CENTER;
+    /* Add this */
+}
+
+/* Container sizing */
+.login-left-container {
+    -fx-pref-height: 500.0;
+    -fx-pref-width: 400.0;
+    -fx-alignment: CENTER;
+}
+
+.login-right-container {
+    -fx-alignment: CENTER;
+    /* Make sure this is CENTER */
+}
+
+.login-form-container {
+    -fx-alignment: TOP_CENTER;
+    /* Change this to TOP_CENTER */
+    -fx-max-width: 320.0;
+    -fx-spacing: 20.0;
+    -fx-padding: 30.0;
+}
+
+/* Spacing adjustments */
+.login-title-margin {
+    -fx-margin: 20.0 0 0 0;
+}
+
+.login-subtitle-margin {
+    -fx-margin: 10.0 0 0 0;
+}
+
+.login-message-margin {
+    -fx-margin: 5.0 0 0 0;
+}
+
+.login-field-margin {
+    -fx-margin: 20.0 0 0 0;
+}
+
+.login-register-section {
+    -fx-alignment: CENTER;
+    /* Make sure this is CENTER */
+    -fx-spacing: 5.0;
+    -fx-margin: 10.0 0 0 0;
+}
+
+.login-forgot-password {
+    -fx-alignment: CENTER_RIGHT;
+}
+
+/* Additional fixes for text field alignment */
+.login-right-section .text-field {
+    -fx-alignment: CENTER;
+}
+
+.login-right-section .password-field {
+    -fx-alignment: CENTER;
+}
+
+/* Copyright text */
+.login-copyright {
+    -fx-fill: #666666;
+    -fx-stroke-type: OUTSIDE;
+    -fx-stroke-width: 0.0;
+    -fx-font-size: 10.0;
+}
+
+.login-copyright-margin {
+    -fx-margin: 20.0 0 0 0;
+}

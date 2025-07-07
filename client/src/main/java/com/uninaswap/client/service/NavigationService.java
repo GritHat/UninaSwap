@@ -127,7 +127,10 @@ public class NavigationService {
         }
 
         stage.setTitle("UninaSwap - Login");
-        stage.setScene(new Scene(loginView, 800, 600));
+        stage.setScene(new Scene(
+                loginView,
+                stage.getScene().getWidth(),
+                stage.getScene().getHeight()));
 
         // Register the controller's message handler
         LoginController controller = loaderBundle.getLoader().getController();
@@ -166,7 +169,10 @@ public class NavigationService {
         }
 
         stage.setTitle("UninaSwap - Register");
-        stage.setScene(new Scene(registerView, 800, 600)); // Using appropriate dimensions for RegisterView
+        stage.setScene(
+                new Scene(registerView,
+                        stage.getScene().getWidth(),
+                        stage.getScene().getHeight()));
 
         // Register the controller's message handler
         RegisterController controller = loaderBundle.getLoader().getController();

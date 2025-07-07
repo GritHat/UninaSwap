@@ -1,0 +1,185 @@
+/* Register View Specific Styles */
+
+/* Left section with logo and branding */
+.register-left-section {
+    -fx-background-color: linear-gradient(to bottom, -fx-primary, -fx-primary-dark);
+    -fx-alignment: CENTER;
+    -fx-pref-height: 500.0;
+    -fx-pref-width: 400.0;
+}
+
+.register-logo {
+    -fx-fit-height: 150.0;
+    -fx-fit-width: 250.0;
+    -fx-preserve-ratio: true;
+}
+
+.register-title {
+    -fx-fill: WHITE;
+    -fx-stroke-type: OUTSIDE;
+    -fx-stroke-width: 0.0;
+    -fx-font-family: "System Bold";
+    -fx-font-size: 36.0;
+    -fx-text-alignment: CENTER;
+}
+
+.register-subtitle {
+    -fx-fill: WHITE;
+    -fx-stroke-type: OUTSIDE;
+    -fx-stroke-width: 0.0;
+    -fx-font-size: 18.0;
+    -fx-text-alignment: CENTER;
+    -fx-wrap-text: true;
+}
+
+/* Right section with registration form */
+.register-right-section {
+    -fx-background-color: -fx-background-light;
+    -fx-alignment: CENTER;
+}
+
+.register-form-container {
+    -fx-alignment: CENTER;
+    -fx-max-width: 320.0;
+    -fx-spacing: 15.0;
+    -fx-padding: 25.0 30.0 25.0 30.0;
+}
+
+.register-form-title {
+    -fx-stroke-type: OUTSIDE;
+    -fx-stroke-width: 0.0;
+    -fx-font-family: "System Bold";
+    -fx-font-size: 24.0;
+}
+
+/* Name fields container */
+.register-name-fields {
+    -fx-spacing: 10.0;
+}
+
+.register-name-field {
+    -fx-pref-height: 26.0;
+    -fx-pref-width: 155.0;
+}
+
+/* Form fields */
+.register-field {
+    -fx-pref-height: 40.0;
+    -fx-pref-width: 320.0;
+    -fx-font-size: 14.0;
+    -fx-padding: 10.0 15.0;
+    -fx-background-radius: 20.0;
+    -fx-border-radius: 20.0;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1.0;
+}
+
+.register-field:focused {
+    -fx-border-color: -fx-primary-light;
+    -fx-background-color: -fx-primary-ultralight, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 20.0, 18.0;
+}
+
+/* Terms and conditions section */
+.register-terms-section {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 10.0;
+}
+
+.register-terms-checkbox {
+    -fx-font-size: 12.0;
+}
+
+.register-terms-link {
+    -fx-font-size: 12.0;
+    -fx-text-fill: -fx-primary;
+}
+
+.register-terms-link:hover {
+    -fx-underline: true;
+}
+
+/* Register button */
+.register-button {
+    -fx-pref-height: 40.0;
+    -fx-pref-width: 320.0;
+    -fx-font-family: "System Bold";
+    -fx-font-size: 14.0;
+    -fx-background-color: linear-gradient(to bottom, -fx-primary, -fx-primary-dark);
+    -fx-text-fill: white;
+    -fx-background-radius: 20.0;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 3, 0, 0, 2);
+}
+
+.register-button:hover {
+    -fx-background-color: linear-gradient(to bottom, -fx-primary-light, -fx-primary);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 5, 0, 0, 3);
+}
+
+.register-button:pressed {
+    -fx-background-color: -fx-primary-dark;
+    -fx-translate-y: 1px;
+}
+
+/* Login link section */
+.register-login-section {
+    -fx-alignment: CENTER;
+    -fx-spacing: 5.0;
+}
+
+.register-login-text {
+    -fx-stroke-type: OUTSIDE;
+    -fx-stroke-width: 0.0;
+    -fx-font-size: 14.0;
+}
+
+.register-login-link {
+    -fx-font-size: 14.0;
+    -fx-text-fill: -fx-primary;
+}
+
+.register-login-link:hover {
+    -fx-underline: true;
+}
+
+/* Copyright text */
+.register-copyright {
+    -fx-fill: #666666;
+    -fx-stroke-type: OUTSIDE;
+    -fx-stroke-width: 0.0;
+    -fx-font-size: 10.0;
+}
+
+/* Container margins */
+.register-title-margin {
+    -fx-margin: 20.0 0 0 0;
+}
+
+.register-subtitle-margin {
+    -fx-margin: 10.0 0 0 0;
+}
+
+.register-name-fields-margin {
+    -fx-margin: 20.0 0 0 0;
+}
+
+.register-login-section-margin {
+    -fx-margin: 10.0 0 0 0;
+}
+
+.register-copyright-margin {
+    -fx-margin: 20.0 0 0 0;
+}
+
+/* Focus states for better accessibility */
+.register-field:focused,
+.register-name-field:focused {
+    -fx-effect: dropshadow(three-pass-box, -fx-primary-light, 2, 0, 0, 0);
+}
+
+.register-terms-checkbox:focused {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 3.0;
+}

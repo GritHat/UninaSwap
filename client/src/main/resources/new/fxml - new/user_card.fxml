@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<StackPane style="-fx-border-radius: 222;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox fx:id="itemCard" alignment="TOP_CENTER" onMouseClicked="#openItemDetails" prefHeight="101.0" prefWidth="120.0" styleClass="card">
+         <children>
+            <ImageView fx:id="itemImage" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+               <image>
+                  <Image url="@streamline-ultimate-colors---free--24x24-PNG/Picture-Sun--Streamline-Ultimate.png" />
+               </image>
+            </ImageView>
+            <Text fx:id="itemName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="item-name" text="Nome Utente" textAlignment="CENTER" wrappingWidth="100.0">
+               <VBox.margin>
+                  <Insets top="8.0" />
+               </VBox.margin>
+            </Text>
+         </children>
+      </VBox>
+   </children>
+</StackPane>

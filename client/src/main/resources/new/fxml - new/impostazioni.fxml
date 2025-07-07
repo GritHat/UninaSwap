@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane layoutX="-2.0" layoutY="-1.0" prefHeight="499.0" prefWidth="549.0">
+         <left>
+            <!-- Sidebar navigation -->
+            <VBox alignment="TOP_CENTER" prefHeight="484.0" prefWidth="48.0" spacing="15.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+               <!-- ...existing code... -->
+            </VBox>
+         </left>
+         <center>
+            <VBox prefHeight="484.0" prefWidth="501.0" style="-fx-background-color: #F8F8F8;" BorderPane.alignment="CENTER">
+               <children>
+                  <!-- Header -->
+                  <HBox alignment="CENTER_LEFT" styleClass="section-header">
+                     <children>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Navigation-Menu-Horizontal-1--Streamline-Ultimate.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets left="15.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Impostazioni">
+                           <HBox.margin>
+                              <Insets left="10.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                     </padding>
+                  </HBox>
+                  
+                  <!-- Settings content -->
+                  <VBox spacing="15.0">
+                     <children>
+                        <!-- Account Settings -->
+                        <VBox spacing="10.0" styleClass="card">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Account">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Text>
+                              <Separator prefWidth="200.0" />
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <Label prefWidth="120.0" text="Email:" />
+                                    <TextField prefWidth="300.0" text="mario.rossi@example.com" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <Label prefWidth="120.0" text="Password Attuale:" />
+                                    <PasswordField prefWidth="300.0" promptText="••••••••" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <Label prefWidth="120.0" text="Nuova Password:" />
+                                    <PasswordField prefWidth="300.0" promptText="Lascia vuoto per non cambiare" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" text="Salva Modifiche" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                        
+                        <!-- Notification Settings -->
+                        <VBox spacing="10.0" styleClass="card">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Notifiche">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Text>
+                              <Separator prefWidth="200.0" />
+                              <CheckBox mnemonicParsing="false" selected="true" text="Notifiche Email" />
+                              <CheckBox mnemonicParsing="false" selected="true" text="Notifiche App" />
+                              <CheckBox mnemonicParsing="false" selected="true" text="Offerte e Vendite" />
+                              <CheckBox mnemonicParsing="false" selected="true" text="Messaggi" />
+                              <CheckBox mnemonicParsing="false" text="Novità e Promozioni" />
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                        
+                        <!-- Interface Settings -->
+                        <VBox spacing="10.0" styleClass="card">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Interfaccia">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Text>
+                              <Separator prefWidth="200.0" />
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <Label prefWidth="120.0" text="Lingua:" />
+                                    <ComboBox prefWidth="200.0" promptText="Italiano" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <Label prefWidth="120.0" text="Dimensione testo:" />
+                                    <Slider prefHeight="16.0" prefWidth="200.0" value="50.0" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <CheckBox mnemonicParsing="false" selected="true" text="Mostra suggerimenti" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                        
+                        <!-- Privacy Settings -->
+                        <VBox spacing="10.0" styleClass="card">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="Privacy">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </Text>
+                              <Separator prefWidth="200.0" />
+                              <CheckBox mnemonicParsing="false" selected="true" text="Profilo visibile a tutti" />
+                              <CheckBox mnemonicParsing="false" selected="true" text="Mostra articoli in vendita sul profilo" />
+                              <CheckBox mnemonicParsing="false" text="Condividi statistiche di navigazione" />
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </VBox>
+         </center>
+         <bottom>
+            <!-- Status bar -->
+            <Pane prefHeight="15.0" prefWidth="546.0" styleClass="status-bar" BorderPane.alignment="CENTER">
+               <!-- ...existing code... -->
+            </Pane>
+         </bottom>
+         <right>
+            <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER" />
+         </right>
+      </BorderPane>
+   </children>
+</AnchorPane>

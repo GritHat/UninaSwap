@@ -31,7 +31,7 @@
                       <children>
                         <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
                           <image>
-                            <Image url="@../images/icons/user_profile.png" />
+                            <Image url="@../images/icons/user_profile.png"/>
                           </image>
                         </ImageView>
                       </children>
@@ -40,31 +40,31 @@
                       <children>
                         <Text fx:id="usernameField" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="">
                           <font>
-                            <Font size="24.0" />
+                            <Font size="24.0"/>
                           </font>
                         </Text>
                         <HBox alignment="CENTER_LEFT" spacing="10.0">
                           <children>
-                            <Label text="%profile.student.label" />
-                            <Label text="•" />
-                            <Label text="%profile.member.since" />
+                            <Label text="%profile.student.label"/>
+                            <Label text="•"/>
+                            <Label text="%profile.member.since"/>
                           </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" spacing="15.0">
                           <children>
-                            <Button mnemonicParsing="false" text="%button.edit.profile" />
-                            <Button mnemonicParsing="false" text="%button.settings" />
-                                          <Button mnemonicParsing="false" text="%button.report" />
+                            <Button mnemonicParsing="false" text="%button.edit.profile"/>
+                            <Button mnemonicParsing="false" text="%button.settings"/>
+                            <Button mnemonicParsing="false" text="%button.report"/>
                           </children>
                           <VBox.margin>
-                            <Insets top="5.0" />
+                            <Insets top="5.0"/>
                           </VBox.margin>
                         </HBox>
                       </children>
                     </VBox>
                   </children>
                   <padding>
-                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
                   </padding>
                 </HBox>
                 <!-- User Info Section -->
@@ -76,15 +76,15 @@
                           <children>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Single-Neutral-Actions-Edit--Streamline-Ultimate.png" />
+                                <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Single-Neutral-Actions-Edit--Streamline-Ultimate.png"/>
                               </image>
                               <HBox.margin>
-                                <Insets left="15.0" />
+                                <Insets left="15.0"/>
                               </HBox.margin>
                             </ImageView>
                             <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%profile.personal.info">
                               <HBox.margin>
-                                <Insets left="5.0" />
+                                <Insets left="5.0"/>
                               </HBox.margin>
                             </Text>
                           </children>
@@ -93,25 +93,25 @@
                           <children>
                             <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="10.0">
                               <children>
-                                <Label fx:id="firstNameLabel" minWidth="100.0" text="%profile.first.name.label" />
-                                <TextField fx:id="firstNameField" text="%profile.first.name.value" HBox.hgrow="ALWAYS" />
+                                <Label fx:id="firstNameLabel" minWidth="100.0" text="%profile.first.name.label"/>
+                                <TextField fx:id="firstNameField" text="%profile.first.name.value" HBox.hgrow="ALWAYS"/>
                               </children>
                             </HBox>
                             <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="10.0">
                               <children>
-                                <Label fx:id="lastNameLabel" minWidth="100.0" text="%profile.last.name.label" />
-                                <TextField fx:id="lastNameField" text="%profile.last.name.value" HBox.hgrow="ALWAYS" />
+                                <Label fx:id="lastNameLabel" minWidth="100.0" text="%profile.last.name.label"/>
+                                <TextField fx:id="lastNameField" text="%profile.last.name.value" HBox.hgrow="ALWAYS"/>
                               </children>
                             </HBox>
                             <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="10.0">
                               <children>
-                                <Label fx:id="emailLabel" minWidth="100.0" text="%profile.email.label" />
-                                <TextField fx:id="emailField" text="%profile.email.value" HBox.hgrow="ALWAYS" />
+                                <Label fx:id="emailLabel" minWidth="100.0" text="%profile.email.label"/>
+                                <TextField fx:id="emailField" text="%profile.email.value" HBox.hgrow="ALWAYS"/>
                               </children>
                             </HBox>
                           </children>
                           <padding>
-                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
                           </padding>
                         </VBox>
                       </children>
@@ -122,32 +122,32 @@
                           <children>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                               <image>
-                                <Image url="@../images/icons/immagine_generica.png" />
+                                <Image url="@../images/icons/immagine_generica.png"/>
                               </image>
                               <HBox.margin>
-                                <Insets left="15.0" />
+                                <Insets left="15.0"/>
                               </HBox.margin>
                             </ImageView>
                             <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%profile.biography.label">
                               <HBox.margin>
-                                <Insets left="5.0" />
+                                <Insets left="5.0"/>
                               </HBox.margin>
                             </Text>
                           </children>
                         </HBox>
                         <VBox spacing="10.0" styleClass="card" VBox.vgrow="ALWAYS">
                           <children>
-                            <TextArea fx:id="bioField" prefHeight="157.0" prefWidth="220.0" text="%profile.biography.text" wrapText="true" VBox.vgrow="ALWAYS" />
+                            <TextArea fx:id="bioField" prefHeight="157.0" prefWidth="220.0" text="%profile.biography.text" wrapText="true" VBox.vgrow="ALWAYS"/>
                           </children>
                           <padding>
-                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
                           </padding>
                         </VBox>
                       </children>
                     </VBox>
                   </children>
                   <padding>
-                    <Insets left="15.0" right="15.0" />
+                    <Insets left="15.0" right="15.0"/>
                   </padding>
                 </HBox>
                 <!-- Statistics Section -->
@@ -155,30 +155,30 @@
                   <children>
                     <VBox alignment="CENTER" styleClass="card" HBox.hgrow="ALWAYS">
                       <children>
-                        <Text strokeType="OUTSIDE" styleClass="price-text" text="%profile.stat.sold" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%profile.stat.sold.items" />
+                        <Text strokeType="OUTSIDE" styleClass="price-text" text="%profile.stat.sold"/>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%profile.stat.sold.items"/>
                       </children>
                     </VBox>
                     <VBox alignment="CENTER" styleClass="card" HBox.hgrow="ALWAYS">
                       <children>
-                        <Text strokeType="OUTSIDE" styleClass="price-text" text="%profile.stat.purchased" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%profile.stat.purchased.items" />
+                        <Text strokeType="OUTSIDE" styleClass="price-text" text="%profile.stat.purchased"/>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%profile.stat.purchased.items"/>
                       </children>
                     </VBox>
                     <VBox alignment="CENTER" styleClass="card" HBox.hgrow="ALWAYS">
                       <children>
-                        <Text strokeType="OUTSIDE" styleClass="price-text" text="%profile.stat.rating" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%profile.stat.rating.value" />
+                        <Text strokeType="OUTSIDE" styleClass="price-text" text="%profile.stat.rating"/>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%profile.stat.rating.value"/>
                       </children>
                     </VBox>
                   </children>
                   <VBox.margin>
-                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
                   </VBox.margin>
                 </HBox>
               </children>
               <padding>
-                <Insets bottom="20.0" top="20.0" />
+                <Insets bottom="20.0" top="20.0"/>
               </padding>
             </VBox>
           </content>

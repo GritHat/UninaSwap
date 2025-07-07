@@ -5,6 +5,6 @@ package com.uninaswap.common.enums;
  */
 public enum Currency {
     EUR,
-    USD, 
+    USD,
     GBP
 }

@@ -245,29 +245,6 @@ public class MainController implements Refreshable {
     }
 
     /**
-     * Refreshes the main view elements
-     */
-    public void refreshUI() {
-        usernameLabel.setText(sessionService.getUser().getUsername());
-        statusLabel.setText(localeService.getMessage("label.ready"));
-        connectionStatusLabel.setText(localeService.getMessage("label.connected"));
-        contentAreaSubtitleLabel.setText(localeService.getMessage("dashboard.contentaread.title"));
-        contentAreaTitleLabel.setText(localeService.getMessage("dashboard.contentaread.subtitle"));
-        // Update sidebar menu items
-        dashboardMenuItem.setText(localeService.getMessage("dashboard.menu.dashboard"));
-        marketsMenuItem.setText(localeService.getMessage("dashboard.menu.markets"));
-        portfolioMenuItem.setText(localeService.getMessage("dashboard.menu.portfolio"));
-        tradeMenuItem.setText(localeService.getMessage("dashboard.menu.trade"));
-        settingsMenuItem.setText(localeService.getMessage("dashboard.menu.settings"));
-        profileMenuItem.setText(localeService.getMessage("dashboard.menu.profile"));
-        inventoryMenuItem.setText(localeService.getMessage("dashboard.menu.inventory"));
-        createListingMenuItem.setText(localeService.getMessage("dashboard.menu.create.listing"));
-        logoutButton.setText(localeService.getMessage("button.logout"));
-        quickTradeButton.setText(localeService.getMessage("button.quicktrade"));
-        viewMarketsButton.setText(localeService.getMessage("button.view.markets"));
-    }
-
-    /**
      * Refreshes the current content view
      */
     private void refreshCurrentContentView() {
@@ -291,6 +268,7 @@ public class MainController implements Refreshable {
 
     /**
      * Reloads the current view completely
+     * TODO : This is a temporary solution, ideally we should have a refresh method in each controller
      */
     private void reloadCurrentView() {
         if (contentArea.getChildren().isEmpty()) return;
@@ -330,9 +308,25 @@ public class MainController implements Refreshable {
     }
 
     /**
-     * Refresh the current view
+     * Refreshes the main view elements
      */
-    private void refreshCurrentView() {
-        // TODO: Implement view refresh logic
+    public void refreshUI() {
+        usernameLabel.setText(sessionService.getUser().getUsername());
+        statusLabel.setText(localeService.getMessage("label.ready"));
+        connectionStatusLabel.setText(localeService.getMessage("label.connected"));
+        contentAreaSubtitleLabel.setText(localeService.getMessage("dashboard.contentaread.title"));
+        contentAreaTitleLabel.setText(localeService.getMessage("dashboard.contentaread.subtitle"));
+        // Update sidebar menu items
+        dashboardMenuItem.setText(localeService.getMessage("dashboard.menu.dashboard"));
+        marketsMenuItem.setText(localeService.getMessage("dashboard.menu.markets"));
+        portfolioMenuItem.setText(localeService.getMessage("dashboard.menu.portfolio"));
+        tradeMenuItem.setText(localeService.getMessage("dashboard.menu.trade"));
+        settingsMenuItem.setText(localeService.getMessage("dashboard.menu.settings"));
+        profileMenuItem.setText(localeService.getMessage("dashboard.menu.profile"));
+        inventoryMenuItem.setText(localeService.getMessage("dashboard.menu.inventory"));
+        createListingMenuItem.setText(localeService.getMessage("dashboard.menu.create.listing"));
+        logoutButton.setText(localeService.getMessage("button.logout"));
+        quickTradeButton.setText(localeService.getMessage("button.quicktrade"));
+        viewMarketsButton.setText(localeService.getMessage("button.view.markets"));
     }
 }

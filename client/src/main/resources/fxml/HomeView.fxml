@@ -89,10 +89,7 @@
                 </HBox>
                 <ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED">
                   <content>
-                    <HBox fx:id="utentiPreferitiBox" spacing="20.0" HBox.hgrow="ALWAYS">
-                      <children>
-                        <fx:include source="UserCard.fxml" />
-                      </children>
+                    <HBox fx:id="UserCardBox" spacing="20.0" HBox.hgrow="ALWAYS">
                       <padding>
                         <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
                       </padding>

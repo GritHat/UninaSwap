@@ -1,16 +1,23 @@
 package com.uninaswap.client.controller;
 
-public class HomeController {
 
-    // Example method to initialize the home view
+import javafx.fxml.FXML;
+import javafx.scene.layout.HBox;
+
+public class HomeController {
+    @FXML
+    private HBox UserCardBox;
+
+    private final UserCardController userCard = new UserCardController();
+
+
     public void initialize() {
-        // Initialization logic for the home view
         System.out.println("Home view initialized.");
+
+        userCard.loadUserCardsIntoTab(UserCardBox);
     }
 
-    // Example method to handle a user action
     public void handleUserAction() {
-        // Logic to handle user actions in the home view
         System.out.println("User action handled in home view.");
     }
 }

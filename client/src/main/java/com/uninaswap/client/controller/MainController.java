@@ -10,15 +10,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
 import com.uninaswap.client.service.NavigationService;
-
-import java.util.List;
-
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
-import com.uninaswap.client.controller.UserCardController;
+
 
 public class MainController implements Refreshable {
     @FXML
@@ -64,7 +62,6 @@ public class MainController implements Refreshable {
     private final LocaleService localeService;
     private final UserSessionService sessionService;
     private final EventBusService eventBus = EventBusService.getInstance();
-    private final UserCardController userCard= new UserCardController();
 
     public MainController() {
         this.navigationService = NavigationService.getInstance();
@@ -97,8 +94,6 @@ public class MainController implements Refreshable {
             setContent(homeView);
             String username = sessionService.getUser().getUsername();
             usernameLabel.setText(localeService.getMessage("dashboard.welcome.user", username));
-
-            userCard.loadUserCardsIntoTab(null, List<UserDTO>);
 
             // Subscribe to locale change events
             eventBus.subscribe(EventTypes.LOCALE_CHANGED, _ -> {

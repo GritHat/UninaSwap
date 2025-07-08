@@ -1,4 +1,5 @@
 package com.uninaswap.client.controller;
+
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
@@ -51,21 +52,24 @@ public class SidebarController {
     @FXML
     public void initialize() {
         // Verificare che ProfileImageIcon sia stato iniettato correttamente
-        if (ProfileImageIcon == null) {
-            System.err.println("WARNING: ProfileImageIcon not injected from FXML");
-            return;
-        }
-
-        // Initialization code if needed
-        String profileImagePath = sessionService.getUser().getProfileImagePath();
-        loadProfileImageInHeader(profileImagePath);
-
-        // Subscribe to profile image change events
-        EventBusService.getInstance().subscribe(EventTypes.PROFILE_IMAGE_CHANGED, data -> {
-            if (data instanceof String) {
-                updateProfileImage((String) data);
-            }
-        });
+        /*
+         * if (ProfileImageIcon == null) {
+         * System.err.println("WARNING: ProfileImageIcon not injected from FXML");
+         * return;
+         * }
+         * 
+         * // Initialization code if needed
+         * String profileImagePath = sessionService.getUser().getProfileImagePath();
+         * loadProfileImageInHeader(profileImagePath);
+         * 
+         * // Subscribe to profile image change events
+         * EventBusService.getInstance().subscribe(EventTypes.PROFILE_IMAGE_CHANGED,
+         * data -> {
+         * if (data instanceof String) {
+         * updateProfileImage((String) data);
+         * }
+         * });
+         */
     }
 
     // onMouseClicked event
@@ -159,49 +163,56 @@ public class SidebarController {
     @FXML
     public void handleMouseMove(MouseEvent event) {
         // Get the source of the event (the ImageView that was hovered)
-        ImageView source = (ImageView) event.getSource();
+        // ImageView source = (ImageView) event.getSource();
 
         // Apply a visual effect to indicate hover state
-        source.setScaleX(1.2);
-        source.setScaleY(1.2);
-        source.setOpacity(0.8);
+        // source.setScaleX(1.2);
+        // source.setScaleY(1.2);
+        // source.setOpacity(0.8);
     }
 
     @FXML
     public void handleMouseExit(MouseEvent event) {
         // Reset the visual effect when mouse exits
-        ImageView source = (ImageView) event.getSource();
-
-        source.setScaleX(1.0);
-        source.setScaleY(1.0);
-        source.setOpacity(1.0);
+        /*
+         * ImageView source = (ImageView) event.getSource();
+         * 
+         * source.setScaleX(1.0);
+         * source.setScaleY(1.0);
+         * source.setOpacity(1.0);
+         */
     }
 
     /**
      * Sets a default profile image when no custom image is available
      */
     private void setDefaultProfileImage() {
-        if (ProfileImageIcon == null)
-            return;
-
-        try {
-            String imagePath = "/images/icons/user_profile.png";
-            Image defaultImage = new Image(getClass().getResourceAsStream(imagePath));
-
-            if (defaultImage.isError()) {
-                System.err.println("Error loading default profile image: " + defaultImage.getException().getMessage());
-                return;
-            }
-
-            ProfileImageIcon.setImage(defaultImage);
-
-            // Apply circular clip
-            Circle clip = new Circle(13, 13, 13); // Adattato alle dimensioni dell'icona 26x35
-            ProfileImageIcon.setClip(clip);
-        } catch (Exception e) {
-            System.err.println("Exception setting default profile image: " + e.getMessage());
-            e.printStackTrace();
-        }
+        /*
+         * if (ProfileImageIcon == null)
+         * return;
+         * 
+         * try {
+         * String imagePath = "/images/icons/user_profile.png";
+         * Image defaultImage = new Image(getClass().getResourceAsStream(imagePath));
+         * 
+         * if (defaultImage.isError()) {
+         * System.err.println("Error loading default profile image: " +
+         * defaultImage.getException().getMessage());
+         * return;
+         * }
+         * 
+         * ProfileImageIcon.setImage(defaultImage);
+         * 
+         * // Apply circular clip
+         * Circle clip = new Circle(13, 13, 13); // Adattato alle dimensioni dell'icona
+         * 26x35
+         * ProfileImageIcon.setClip(clip);
+         * } catch (Exception e) {
+         * System.err.println("Exception setting default profile image: " +
+         * e.getMessage());
+         * e.printStackTrace();
+         * }
+         */
     }
 
     /**
@@ -217,34 +228,36 @@ public class SidebarController {
      * Loads user profile image in the header
      */
     private void loadProfileImageInHeader(String imagePath) {
-        if (imagePath == null || imagePath.isEmpty()) {
-            setDefaultProfileImage();
-            return;
-        }
-
-        try {
-            imageService.fetchImage(imagePath)
-                    .thenAccept(image -> {
-                        Platform.runLater(() -> {
-                            ProfileImageIcon.setImage(image);
-
-                            // Apply circular clip to the image
-                            Circle clip = new Circle(13, 13, 13); // Adattato alle dimensioni dell'icona
-                            ProfileImageIcon.setClip(clip);
-                        });
-                    })
-                    .exceptionally(ex -> {
-                        // If loading fails, set default image
-                        System.err.println("Failed to load profile image: " + ex.getMessage());
-                        Platform.runLater(this::setDefaultProfileImage);
-                        return null;
-                    });
-        } catch (Exception e) {
-            System.err.println("Exception in loadProfileImageInHeader: " + e.getMessage());
-            e.printStackTrace();
-            setDefaultProfileImage();
-        }
-
+        /*
+         * if (imagePath == null || imagePath.isEmpty()) {
+         * setDefaultProfileImage();
+         * return;
+         * }
+         * 
+         * try {
+         * imageService.fetchImage(imagePath)
+         * .thenAccept(image -> {
+         * Platform.runLater(() -> {
+         * ProfileImageIcon.setImage(image);
+         * 
+         * // Apply circular clip to the image
+         * Circle clip = new Circle(13, 13, 13); // Adattato alle dimensioni dell'icona
+         * ProfileImageIcon.setClip(clip);
+         * });
+         * })
+         * .exceptionally(ex -> {
+         * // If loading fails, set default image
+         * System.err.println("Failed to load profile image: " + ex.getMessage());
+         * Platform.runLater(this::setDefaultProfileImage);
+         * return null;
+         * });
+         * } catch (Exception e) {
+         * System.err.println("Exception in loadProfileImageInHeader: " +
+         * e.getMessage());
+         * e.printStackTrace();
+         * setDefaultProfileImage();
+         * }
+         */
     }
 
     public void setMainController(MainController mainController) {

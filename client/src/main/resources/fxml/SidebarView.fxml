@@ -2,86 +2,112 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Region?>
 
-<VBox fx:id="sidebar" alignment="TOP_CENTER" prefHeight="484.0" prefWidth="48.0" spacing="15.0" styleClass="sidebar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.SidebarController">
+<VBox fx:id="sidebar" alignment="TOP_CENTER" maxWidth="72.0" minWidth="72.0" prefHeight="484.0" prefWidth="72.0" spacing="15.0" styleClass="sidebar" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.SidebarController">
    <padding>
-      <Insets top="13.0" />
+      <Insets top="10" />
    </padding>
    <children>
-      <ImageView fx:id="ProfileImageIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showProfile" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/icons/user_profile.png" />
-         </image>
-         <viewport>
-            <Rectangle2D />
-         </viewport>
-      </ImageView>
-      <Separator prefWidth="35.0" styleClass="sidebar-separator" />
-      <ImageView fx:id="homeIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showHome" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/icons/home.png" />
-         </image>
-         <viewport>
-            <Rectangle2D />
-         </viewport>
-      </ImageView>
-      <Separator prefWidth="35.0" styleClass="sidebar-separator" />
-      <ImageView fx:id="inventoryIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showInventory" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/icons/Inventory.png" />
-         </image>
-         <viewport>
-            <Rectangle2D />
-         </viewport>
-      </ImageView>
-      <Separator prefWidth="35.0" styleClass="sidebar-separator" />
-      <ImageView fx:id="allertsIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showAllerts" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/icons/Allert.png" />
-         </image>
-         <viewport>
-            <Rectangle2D />
-         </viewport>
-      </ImageView>
-      <Separator prefWidth="35.0" styleClass="sidebar-separator" />
-      <ImageView fx:id="addListingIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#addListing" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/icons/add_item.png" />
-         </image>
-         <viewport>
-            <Rectangle2D />
-         </viewport>
-      </ImageView>
-      <Separator prefWidth="35.0" styleClass="sidebar-separator" />
-      <ImageView fx:id="settingsIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showSettings" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/icons/Settings.png" />
-         </image>
-         <viewport>
-            <Rectangle2D />
-         </viewport>
-      </ImageView>
-      <Separator prefWidth="35.0" styleClass="sidebar-separator" />
-      <ImageView fx:id="supportIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#showSupport" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/icons/Pyke.png" />
-         </image>
-         <viewport>
-            <Rectangle2D />
-         </viewport>
-      </ImageView>
-      <Separator prefWidth="35.0" styleClass="sidebar-separator" />
-      <ImageView fx:id="logoutIcon" fitHeight="26.0" fitWidth="35.0" onMouseClicked="#logout" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/icons/Logout.png" />
-         </image>
-         <viewport>
-            <Rectangle2D />
-         </viewport>
-      </ImageView>
+      <VBox styleClass="sidebar-button" alignment="CENTER"  onMouseClicked="#showProfile" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" spacing="0">
+         <ImageView fx:id="ProfileImageIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/default_profile.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%user.caption"/>
+      </VBox>
+
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showHome" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" >
+         <ImageView fx:id="homeIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/home.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%home.caption"/>
+      </VBox>
+      
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0"  onMouseClicked="#showInventory" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true">
+         <ImageView fx:id="inventoryIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/inventory.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%inventory.caption"/>
+      </VBox>
+      
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showAllerts" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true">
+         <ImageView fx:id="allertsIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/notification.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%notification.caption"/>
+      </VBox>
+      
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0"  onMouseClicked="#addListing" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true">
+         <ImageView fx:id="addListingIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true" >
+            <image>
+               <Image url="@../images/icons/add.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%add_item.caption" wrappingWidth="50.0" textAlignment="CENTER"/>
+      </VBox>
+      
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showSettings" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" >
+         <ImageView fx:id="settingsIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/settings.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%settings.caption"/>
+      </VBox>
+      
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showSupport" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" >
+         <ImageView fx:id="supportIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/support.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%support.caption"/>
+      </VBox>
+      
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#logout" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" >
+         <ImageView fx:id="logoutIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/logout.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%logout.caption"/>
+      </VBox>
    </children>
 </VBox>

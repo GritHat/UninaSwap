@@ -188,7 +188,10 @@ public class NavigationService {
 
         Stage stage = (Stage) sourceNode.getScene().getWindow();
         stage.setTitle("UninaSwap - Dashboard");
-        stage.setScene(new Scene(mainView, 1600, 900));
+        stage.setScene(new Scene(
+                mainView,
+                stage.getScene().getWidth(),
+                stage.getScene().getHeight()));
 
         // Initialize the MainController if needed
         MainController mainController = loaderBundle.getLoader().getController();

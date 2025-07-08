@@ -236,7 +236,7 @@ public class InventoryController {
         container.getChildren().clear();
         for (ItemDTO item : items) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ItemCardView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ItemCard.fxml"));
                 loader.setResources(localeService.getResourceBundle());
                 loader.setController(new ItemCardController(item));
                 container.getChildren().add(loader.load());
@@ -252,15 +252,15 @@ public class InventoryController {
     /*
      * Mi piace il disegno
      * ┌─────────────────────────────────┐
-     * │ [Search Bar]            [Add +] │
+     * │ [Search Bar] [Add +] │
      * ├─────────────────────────────────┤
      * │ ┌─────────────────────────────┐ │
-     * │ │ [img] Item Name          €XX│ │ ← ItemCard
-     * │ │ Description              [•]│ │
+     * │ │ [img] Item Name €XX│ │ ← ItemCard
+     * │ │ Description [•]│ │
      * │ └─────────────────────────────┘ │
      * │ ┌─────────────────────────────┐ │
-     * │ │ [img] Item Name 2       €XX │ │ ← ItemCard
-     * │ │ Description 2            [•]│ │
+     * │ │ [img] Item Name 2 €XX │ │ ← ItemCard
+     * │ │ Description 2 [•]│ │
      * │ └─────────────────────────────┘ │
      * └─────────────────────────────────┘
      */

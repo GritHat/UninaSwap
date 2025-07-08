@@ -3,44 +3,139 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane prefHeight="150.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.MainController" stylesheets="@../css/styles.css">
+<StackPane prefHeight="150.0" prefWidth="200.0" stylesheets="@../css/styles.css" 
+           xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.uninaswap.client.controller.MainController">
   <children>
-    <BorderPane prefHeight="700.0" prefWidth="1000.0">
-      <left>
-        <fx:include fx:id="sidebarInclude" source="SidebarView.fxml"/>
-      </left>
-
+    <BorderPane prefHeight="700.0" prefWidth="1000.0" minWidth="800.0" minHeight="600.0">
+      <!-- Header at the top -->
+      <top>
+        <VBox alignment="CENTER" styleClass="header-container">
+          <children>
+            <!-- Top header bar with logo and user info -->
+            <HBox alignment="CENTER" spacing="20.0" styleClass="header-top-bar">
+              <children>
+                <!-- Logo and app name -->
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                  <children>
+                    <ImageView fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" styleClass="header-logo">
+                      <image>
+                        <Image url="@../images/logo/logo_480x480.png" />
+                      </image>
+                    </ImageView>
+                  </children>
+                </HBox>
+                
+                <!-- Flexible spacer -->
+                <Region HBox.hgrow="ALWAYS" />
+                
+                <!-- Search container -->
+                <HBox alignment="CENTER" spacing="5.0" styleClass="header-search-container" 
+                      minWidth="200.0" maxWidth="400.0" HBox.hgrow="SOMETIMES">
+                  <children>
+                    <TextField fx:id="searchField" alignment="CENTER" 
+                               promptText="%header.search.placeholder" 
+                               styleClass="header-search-field" HBox.hgrow="ALWAYS" />
+                    
+                    <Button fx:id="searchButton" onAction="#handleSearch" styleClass="header-search-button">
+                      <graphic>
+                        <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                          <image>
+                            <Image url="@../images/icons/search.png" />
+                          </image>
+                        </ImageView>
+                      </graphic>
+                    </Button>
+                  </children>
+                </HBox>
+                
+                <!-- Quick filter buttons -->
+                <HBox alignment="CENTER" spacing="5.0" styleClass="header-filters" minWidth="150.0">
+                  <children>
+                    <Button fx:id="allItemsButton" onAction="#filterAll" 
+                            styleClass="header-filter-button, active" text="%header.filter.all" />
+                    <Button fx:id="auctionsButton" onAction="#filterAuctions" 
+                            styleClass="header-filter-button" text="%header.filter.auctions" />
+                    <Button fx:id="tradeButton" onAction="#filterTrade" 
+                            styleClass="header-filter-button" text="%header.filter.trade" />
+                  </children>
+                </HBox>
+                
+                <!-- Flexible spacer -->
+                <Region HBox.hgrow="ALWAYS" />
+                
+                <!-- User info section -->
+                <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="header-user-section">
+                  <children>
+                    <!-- Quick actions -->
+                    <Button fx:id="notificationsButton" onAction="#showNotifications" styleClass="header-icon-button">
+                      <graphic>
+                        <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                          <image>
+                            <Image url="@../images/icons/notification.png" />
+                          </image>
+                        </ImageView>
+                      </graphic>
+                    </Button>
+                    
+                    <Button fx:id="userMenuButton" onAction="#showUserMenu" styleClass="header-icon-button">
+                      <graphic>
+                        <ImageView fx:id="userAvatarImage" fitHeight="32.0" fitWidth="32.0" 
+                                   pickOnBounds="true" preserveRatio="true" styleClass="header-user-avatar">
+                          <image>
+                            <Image url="@../images/icons/default_profile.png" />
+                          </image>
+                        </ImageView>
+                      </graphic>
+                    </Button>
+                  </children>
+                </HBox>
+              </children>
+              <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+              </padding>
+            </HBox>
+          </children>
+        </VBox>
+      </top>
+      
+      <!-- Main content area with responsive sidebar -->
       <center>
-        <StackPane fx:id="contentArea"/>
+        <HBox spacing="0.0" minWidth="800.0">
+          <children>
+            <!-- Sidebar with responsive width -->
+            <fx:include fx:id="sidebarInclude" source="SidebarView.fxml" />
+            
+            <!-- Content area that grows to fill remaining space -->
+            <StackPane fx:id="contentArea" HBox.hgrow="ALWAYS" minWidth="400.0" />
+          </children>
+        </HBox>
       </center>
 
       <bottom>
-        <fx:include source="FooterView.fxml"/>
+        <fx:include source="FooterView.fxml" />
       </bottom>
-
-      <right>
-        <Separator orientation="VERTICAL" prefHeight="700.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER"/>
-      </right>
     </BorderPane>
-    <VBox fx:id="pene" maxWidth="900.0" spacing="5.0"/>
+    
+    <!-- Hidden labels for localization -->
     <VBox managed="false" visible="false">
       <children>
-        <Label fx:id="usernameLabel" text="" visible="true"/>
-        <Label fx:id="statusLabel" text="" visible="true"/>
-        <Label fx:id="contentAreaTitleLabel" text="Dashboard" visible="true"/>
-        <Label fx:id="contentAreaSubtitleLabel" text="Welcome back" visible="true"/>
+        <Label fx:id="usernameLabel" text="" visible="true" />
+        <Label fx:id="statusLabel" text="" visible="true" />
+        <Label fx:id="contentAreaTitleLabel" text="Dashboard" visible="true" />
+        <Label fx:id="contentAreaSubtitleLabel" text="Welcome back" visible="true" />
       </children>
     </VBox>
   </children>

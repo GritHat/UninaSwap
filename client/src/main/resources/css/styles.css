@@ -629,3 +629,28 @@
     -fx-label-padding: 0;
     -fx-translate-y: 0px;
 }
+
+.image-count-indicator {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-text-fill: white;
+    -fx-padding: 2 6 2 6;
+    -fx-background-radius: 10;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+.navigation-dot {
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+.navigation-dots {
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-radius: 10;
+    -fx-padding: 2 8 2 8;
+}
+
+/* Image hover effect for multiple images */
+.card ImageView:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 0);
+}

@@ -6,31 +6,48 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.Node;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.stage.Window;
 import javafx.stage.Modality;
 
+import com.uninaswap.client.controller.ListingDetailsController;
 import com.uninaswap.client.controller.LoginController;
 import com.uninaswap.client.controller.ProfileController;
 import com.uninaswap.client.controller.RegisterController;
 import com.uninaswap.client.controller.MainController;
-//TODO: Remove this import if not needed
-// import com.uninaswap.client.controller.HomeController;
-// import com.uninaswap.client.controller.InventoryController;
-// import com.uninaswap.client.controller.AllertsController;
-// import com.uninaswap.client.controller.SavedController;
-// import com.uninaswap.client.controller.SettingsController;
-// import com.uninaswap.client.controller.ListingCreationController;
-// import com.uninaswap.client.controller.SupportController;
 
 /**
  * Service class to handle navigation between screens.
  * This separates navigation concerns from controller business logic.
  */
 public class NavigationService {
-
     private static NavigationService instance;
     private final LocaleService localeService = LocaleService.getInstance();
+    private final ListingService listingService = ListingService.getInstance();
+
+    // Add navigation history stack
+    private final java.util.Stack<NavigationState> navigationHistory = new java.util.Stack<>();
+    private MainController mainController; // Reference to main controller
+
+    // Navigation state class to store view information
+    private static class NavigationState {
+        private final Parent view;
+        private final String title;
+
+        public NavigationState(Parent view, String title) {
+            this.view = view;
+            this.title = title;
+        }
+
+        public Parent getView() {
+            return view;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+    }
 
     // Singleton pattern
     public static NavigationService getInstance() {
@@ -329,5 +346,130 @@ public class NavigationService {
      */
     public Stage getStageFromEvent(ActionEvent event) {
         return (Stage) ((Node) event.getSource()).getScene().getWindow();
+    }
+
+    public void loadListingDetails(String listingId) {
+        // Fetch listing details and navigate
+        listingService.getListingDetails(listingId)
+                .thenAccept(listing -> {
+                    Platform.runLater(() -> {
+                        try {
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListingDetailsView.fxml"));
+                            Parent detailsView = loader.load();
+
+                            ListingDetailsController controller = loader.getController();
+                            controller.setListing(listing);
+
+                            loadView(detailsView, "Dettagli Inserzione");
+                        } catch (Exception e) {
+                            System.err.println("Error loading listing details: " + e.getMessage());
+                        }
+                    });
+                });
+    }
+
+    /**
+     * Set the main controller reference for navigation
+     */
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
+    /**
+     * Navigate back to the previous view
+     */
+    public void goBack() {
+        if (!navigationHistory.isEmpty()) {
+            // Remove current view from history
+            navigationHistory.pop();
+
+            if (!navigationHistory.isEmpty()) {
+                // Get previous view
+                NavigationState previousState = navigationHistory.peek();
+
+                if (mainController != null) {
+                    Platform.runLater(() -> {
+                        mainController.setContent(previousState.getView());
+                        // Optionally update window title
+                        updateWindowTitle(previousState.getTitle());
+                    });
+                } else {
+                    System.err.println("MainController reference not set in NavigationService");
+                }
+            } else {
+                // No more history, go to home
+                try {
+                    Parent homeView = loadHomeView();
+                    loadView(homeView, "Home");
+                } catch (IOException e) {
+                    System.err.println("Error loading home view: " + e.getMessage());
+                }
+            }
+        } else {
+            // No navigation history, go to home
+            try {
+                Parent homeView = loadHomeView();
+                loadView(homeView, "Home");
+            } catch (IOException e) {
+                System.err.println("Error loading home view: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Load a view and add it to navigation history
+     */
+    public void loadView(Parent view, String title) {
+        if (mainController != null) {
+            Platform.runLater(() -> {
+                // Add current view to history before navigating
+                addToHistory(view, title);
+
+                // Set the new content
+                mainController.setContent(view);
+
+                // Update window title
+                updateWindowTitle(title);
+            });
+        } else {
+            System.err.println("MainController reference not set in NavigationService");
+        }
+    }
+
+    /**
+     * Add a view to navigation history
+     */
+    private void addToHistory(Parent view, String title) {
+        NavigationState state = new NavigationState(view, title);
+        navigationHistory.push(state);
+
+        // Limit history size to prevent memory issues
+        if (navigationHistory.size() > 10) {
+            // Remove oldest entry
+            navigationHistory.remove(0);
+        }
+    }
+
+    /**
+     * Clear navigation history
+     */
+    public void clearHistory() {
+        navigationHistory.clear();
+    }
+
+    /**
+     * Check if there's a previous view to go back to
+     */
+    public boolean canGoBack() {
+        return navigationHistory.size() > 1;
+    }
+
+    /**
+     * Update window title (if applicable)
+     */
+    private void updateWindowTitle(String title) {
+        // This depends on your application structure
+        // You might want to update the main window title or just ignore this
+        System.out.println("Navigation: " + title);
     }
 }

@@ -81,7 +81,7 @@ public class MainController implements Refreshable {
     @FXML
     private SidebarController sidebarIncludeController;
     @FXML
-    private HBox favoriteArticlesContainer;
+    private HBox favoriteListingsContainer;
     @FXML
     private HBox favoriteUsersContainer;
     @FXML
@@ -105,6 +105,9 @@ public class MainController implements Refreshable {
     public void initialize() {
         try {
             checkAuthentication();
+
+            // Register this controller with NavigationService
+            navigationService.setMainController(this);
 
             Parent homeView = navigationService.loadHomeView();
             setContent(homeView);

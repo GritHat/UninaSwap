@@ -21,6 +21,31 @@
     -fx-background-color: transparent;
 }
 
+.placeholder-text {
+    -fx-fill: #888;
+    -fx-font-style: italic;
+    -fx-font-size: 14px;
+    -fx-text-alignment: center;
+}
+
+/* Dynamic listing card marker */
+.dynamic-listing-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
+/* Loading animation */
+.loading-container {
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+}
+
+.loading-text {
+    -fx-fill: #666;
+    -fx-font-size: 16px;
+}
+
 /* Responsive behavior for different screen sizes */
 @media screen and (max-width: 1000px) {
     .home-content-container {

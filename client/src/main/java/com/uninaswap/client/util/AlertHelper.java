@@ -8,15 +8,18 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Window;
+import javafx.scene.control.ButtonBar;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Utility class to simplify the process of creating and showing alerts
  */
 public class AlertHelper {
-    
+
     /**
      * Show an information alert with the provided title and message
      */
@@ -29,7 +32,7 @@ public class AlertHelper {
             alert.showAndWait();
         });
     }
-    
+
     /**
      * Show a warning alert with the provided title and message
      */
@@ -42,7 +45,7 @@ public class AlertHelper {
             alert.showAndWait();
         });
     }
-    
+
     /**
      * Show an error alert with the provided title and message
      */
@@ -55,7 +58,7 @@ public class AlertHelper {
             alert.showAndWait();
         });
     }
-    
+
     /**
      * Show an error alert for an exception, with a stack trace
      */
@@ -91,10 +94,12 @@ public class AlertHelper {
             alert.showAndWait();
         });
     }
-    
+
     /**
      * Create a confirmation dialog that returns a standard Alert object
-     * @return An Alert of type CONFIRMATION that the caller can use with showAndWait()
+     * 
+     * @return An Alert of type CONFIRMATION that the caller can use with
+     *         showAndWait()
      */
     public static Alert createConfirmationDialog(String title, String header, String content) {
         Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -103,16 +108,17 @@ public class AlertHelper {
         alert.setContentText(content);
         return alert;
     }
-    
+
     /**
      * Shows a confirmation dialog and returns true if OK was pressed
+     * 
      * @return true if the user clicked OK, false otherwise
      */
     public static boolean showConfirmationDialog(String title, String header, String content) {
         Alert alert = createConfirmationDialog(title, header, content);
         return alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK;
     }
-    
+
     /**
      * Show an information alert on a specific window
      */
@@ -125,5 +131,164 @@ public class AlertHelper {
             alert.setContentText(content);
             alert.showAndWait();
         });
+    }
+
+    /**
+     * Show a confirmation alert and return the user's choice
+     * 
+     * @param title   The title of the alert
+     * @param header  The header text of the alert
+     * @param content The content text of the alert
+     * @return true if the user clicked OK/Yes, false if they clicked Cancel/No
+     */
+    public static boolean showConfirmationAlert(String title, String header, String content) {
+        final boolean[] result = { false };
+
+        if (Platform.isFxApplicationThread()) {
+            // Already on JavaFX Application Thread
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(header);
+            alert.setContentText(content);
+
+            // Customize button types if needed
+            alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+
+            Optional<ButtonType> buttonClicked = alert.showAndWait();
+            return buttonClicked.isPresent() && buttonClicked.get() == ButtonType.OK;
+        } else {
+            // Need to run on JavaFX Application Thread
+            CountDownLatch latch = new CountDownLatch(1);
+
+            Platform.runLater(() -> {
+                try {
+                    Alert alert = new Alert(AlertType.CONFIRMATION);
+                    alert.setTitle(title);
+                    alert.setHeaderText(header);
+                    alert.setContentText(content);
+
+                    alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
+
+                    Optional<ButtonType> buttonClicked = alert.showAndWait();
+                    result[0] = buttonClicked.isPresent() && buttonClicked.get() == ButtonType.OK;
+                } finally {
+                    latch.countDown();
+                }
+            });
+
+            try {
+                latch.await(); // Wait for the dialog to close
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
+
+            return result[0];
+        }
+    }
+
+    /**
+     * Show a confirmation alert with custom button text
+     * 
+     * @param title       The title of the alert
+     * @param header      The header text of the alert
+     * @param content     The content text of the alert
+     * @param confirmText Text for the confirm button
+     * @param cancelText  Text for the cancel button
+     * @return true if the user clicked the confirm button, false otherwise
+     */
+    public static boolean showConfirmationAlert(String title, String header, String content,
+            String confirmText, String cancelText) {
+        final boolean[] result = { false };
+
+        if (Platform.isFxApplicationThread()) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(header);
+            alert.setContentText(content);
+
+            // Create custom button types
+            ButtonType confirmButton = new ButtonType(confirmText);
+            ButtonType cancelButton = new ButtonType(cancelText, ButtonBar.ButtonData.CANCEL_CLOSE);
+
+            alert.getButtonTypes().setAll(confirmButton, cancelButton);
+
+            Optional<ButtonType> buttonClicked = alert.showAndWait();
+            return buttonClicked.isPresent() && buttonClicked.get() == confirmButton;
+        } else {
+            CountDownLatch latch = new CountDownLatch(1);
+
+            Platform.runLater(() -> {
+                try {
+                    Alert alert = new Alert(AlertType.CONFIRMATION);
+                    alert.setTitle(title);
+                    alert.setHeaderText(header);
+                    alert.setContentText(content);
+
+                    ButtonType confirmButton = new ButtonType(confirmText);
+                    ButtonType cancelButton = new ButtonType(cancelText, ButtonBar.ButtonData.CANCEL_CLOSE);
+
+                    alert.getButtonTypes().setAll(confirmButton, cancelButton);
+
+                    Optional<ButtonType> buttonClicked = alert.showAndWait();
+                    result[0] = buttonClicked.isPresent() && buttonClicked.get() == confirmButton;
+                } finally {
+                    latch.countDown();
+                }
+            });
+
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
+
+            return result[0];
+        }
+    }
+
+    /**
+     * Show a confirmation alert on a specific window
+     */
+    public static boolean showConfirmationAlert(Window owner, String title, String header, String content) {
+        final boolean[] result = { false };
+
+        if (Platform.isFxApplicationThread()) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.initOwner(owner);
+            alert.setTitle(title);
+            alert.setHeaderText(header);
+            alert.setContentText(content);
+
+            Optional<ButtonType> buttonClicked = alert.showAndWait();
+            return buttonClicked.isPresent() && buttonClicked.get() == ButtonType.OK;
+        } else {
+            CountDownLatch latch = new CountDownLatch(1);
+
+            Platform.runLater(() -> {
+                try {
+                    Alert alert = new Alert(AlertType.CONFIRMATION);
+                    alert.initOwner(owner);
+                    alert.setTitle(title);
+                    alert.setHeaderText(header);
+                    alert.setContentText(content);
+
+                    Optional<ButtonType> buttonClicked = alert.showAndWait();
+                    result[0] = buttonClicked.isPresent() && buttonClicked.get() == ButtonType.OK;
+                } finally {
+                    latch.countDown();
+                }
+            });
+
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return false;
+            }
+
+            return result[0];
+        }
     }
 }

@@ -4,43 +4,54 @@ import java.io.Serializable;
 
 public class ListingItemDTO implements Serializable {
     private String itemId;
-    private Integer quantity;
-    private String itemName;  // For display convenience
-    private String itemImagePath;  // For display convenience
-    
+    private String itemName;
+    private String itemImagePath;
+    private String itemCategory; // Add this if not present
+    private int quantity;
+
     // Default constructor
-    public ListingItemDTO() {}
-    
+    public ListingItemDTO() {
+    }
+
     // Getters and setters
     public String getItemId() {
         return itemId;
     }
-    
+
     public void setItemId(String itemId) {
         this.itemId = itemId;
     }
-    
-    public Integer getQuantity() {
+
+    public int getQuantity() {
         return quantity;
     }
-    
-    public void setQuantity(Integer quantity) {
+
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-    
+
     public String getItemName() {
         return itemName;
     }
-    
+
     public void setItemName(String itemName) {
         this.itemName = itemName;
     }
-    
+
     public String getItemImagePath() {
         return itemImagePath;
     }
-    
+
     public void setItemImagePath(String itemImagePath) {
         this.itemImagePath = itemImagePath;
+    }
+
+    // Add getter/setter for category if needed
+    public String getItemCategory() {
+        return itemCategory;
+    }
+
+    public void setItemCategory(String itemCategory) {
+        this.itemCategory = itemCategory;
     }
 }

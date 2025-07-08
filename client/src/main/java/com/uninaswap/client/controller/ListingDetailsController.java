@@ -1,0 +1,742 @@
+package com.uninaswap.client.controller;
+
+import com.uninaswap.client.service.*;
+import com.uninaswap.client.util.AlertHelper;
+import com.uninaswap.common.dto.*;
+import com.uninaswap.common.enums.Currency;
+import com.uninaswap.common.enums.ListingStatus;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.ArrayList;
+
+public class ListingDetailsController {
+
+    // Header elements
+    @FXML
+    private Button backButton;
+    @FXML
+    private Button favoriteButton;
+    @FXML
+    private ImageView favoriteIcon;
+
+    // Image gallery elements
+    @FXML
+    private ImageView mainImage;
+    @FXML
+    private HBox imageNavigation;
+    @FXML
+    private Button prevImageButton;
+    @FXML
+    private Button nextImageButton;
+    @FXML
+    private Label imageCounter;
+    @FXML
+    private ScrollPane thumbnailScrollPane;
+    @FXML
+    private HBox thumbnailContainer;
+
+    // Listing details elements
+    @FXML
+    private Text listingTitle;
+    @FXML
+    private Label categoryLabel;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private TextArea descriptionArea;
+    @FXML
+    private VBox itemsSection;
+    @FXML
+    private VBox itemsList;
+
+    // Seller information
+    @FXML
+    private ImageView sellerAvatar;
+    @FXML
+    private Text sellerName;
+    @FXML
+    private Text sellerRating;
+
+    // Price/Action section
+    @FXML
+    private Text priceLabel;
+    @FXML
+    private Text priceValue;
+    @FXML
+    private Text priceDetails;
+    @FXML
+    private VBox actionButtonsSection;
+
+    // Sell listing actions
+    @FXML
+    private VBox sellActions;
+    @FXML
+    private Button buyNowButton;
+    @FXML
+    private Button makeOfferButton;
+
+    // Trade listing actions
+    @FXML
+    private VBox tradeActions;
+    @FXML
+    private Button proposeTradeButton;
+    @FXML
+    private VBox tradeOptionsSection;
+    @FXML
+    private CheckBox includeMoneyCheckBox;
+    @FXML
+    private HBox moneyOfferSection;
+    @FXML
+    private TextField moneyAmountField;
+    @FXML
+    private ComboBox<Currency> currencyComboBox;
+
+    // Gift listing actions
+    @FXML
+    private VBox giftActions;
+    @FXML
+    private Button requestGiftButton;
+    @FXML
+    private VBox thankYouSection;
+    @FXML
+    private CheckBox offerThankYouCheckBox;
+    @FXML
+    private TextArea thankYouMessageArea;
+
+    // Auction listing actions
+    @FXML
+    private VBox auctionActions;
+    @FXML
+    private Text currentBidValue;
+    @FXML
+    private Text timeRemainingLabel;
+    @FXML
+    private TextField bidAmountField;
+    @FXML
+    private ComboBox<Currency> bidCurrencyComboBox;
+    @FXML
+    private Text minimumBidLabel;
+    @FXML
+    private Button placeBidButton;
+
+    // Common actions
+    @FXML
+    private Button contactSellerButton;
+    @FXML
+    private Button reportListingButton;
+
+    // Services
+    private final NavigationService navigationService = NavigationService.getInstance();
+    private final FavoritesService favoritesService = FavoritesService.getInstance();
+    private final ImageService imageService = ImageService.getInstance();
+    private final ListingService listingService = ListingService.getInstance();
+    private final LocaleService localeService = LocaleService.getInstance();
+    private final UserSessionService sessionService = UserSessionService.getInstance();
+
+    // State
+    private ListingDTO currentListing;
+    private List<String> imageUrls = new ArrayList<>();
+    private int currentImageIndex = 0;
+    private boolean isFavorite = false;
+
+    @FXML
+    public void initialize() {
+        setupCurrencyComboBoxes();
+        setupEventHandlers();
+    }
+
+    private void setupCurrencyComboBoxes() {
+        // Setup currency options
+        List<Currency> currencies = List.of(Currency.EUR, Currency.USD, Currency.GBP);
+        currencyComboBox.setItems(FXCollections.observableArrayList(currencies));
+        bidCurrencyComboBox.setItems(FXCollections.observableArrayList(currencies));
+
+        // Set default currency
+        currencyComboBox.setValue(Currency.EUR);
+        bidCurrencyComboBox.setValue(Currency.EUR);
+    }
+
+    private void setupEventHandlers() {
+        // Money offer checkbox handler
+        includeMoneyCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            moneyOfferSection.setVisible(newVal);
+        });
+
+        // Thank you offer checkbox handler
+        offerThankYouCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            thankYouMessageArea.setVisible(newVal);
+        });
+    }
+
+    public void setListing(ListingDTO listing) {
+        this.currentListing = listing;
+
+        if (listing != null) {
+            Platform.runLater(() -> {
+                populateListingDetails();
+                setupImageGallery();
+                setupActionButtons();
+                initializeFavoriteStatus();
+            });
+        }
+    }
+
+    private void populateListingDetails() {
+        // Basic listing information
+        listingTitle.setText(currentListing.getTitle());
+        descriptionArea.setText(currentListing.getDescription());
+
+        // Category and status
+        categoryLabel.setText(getListingCategory());
+        statusLabel.setText(currentListing.getStatus().toString());
+
+        // Seller information
+        if (currentListing.getCreator() != null) {
+            sellerName.setText(currentListing.getCreator().getUsername());
+            // TODO: Load seller rating and avatar
+            sellerRating.setText("⭐ 4.8 (127 recensioni)"); // Placeholder
+        }
+
+        // Price information
+        setupPriceSection();
+
+        // Items list
+        populateItemsList();
+    }
+
+    private String getListingCategory() {
+        if (currentListing.getItems() != null && !currentListing.getItems().isEmpty()) {
+            String itemCategory = currentListing.getItems().get(0).getItemCategory();
+            if (itemCategory != null && !itemCategory.isEmpty()) {
+                return itemCategory;
+            }
+        }
+        return currentListing.getListingTypeValue();
+    }
+
+    private void setupPriceSection() {
+        String listingType = currentListing.getListingTypeValue();
+
+        switch (listingType.toUpperCase()) {
+            case "SELL":
+                setupSellPricing((SellListingDTO) currentListing);
+                break;
+            case "TRADE":
+                setupTradePricing((TradeListingDTO) currentListing);
+                break;
+            case "GIFT":
+                setupGiftPricing((GiftListingDTO) currentListing);
+                break;
+            case "AUCTION":
+                setupAuctionPricing((AuctionListingDTO) currentListing);
+                break;
+        }
+    }
+
+    private void setupSellPricing(SellListingDTO sellListing) {
+        priceLabel.setText("Prezzo");
+        String currency = sellListing.getCurrency() != null ? sellListing.getCurrency().getSymbol() : "€";
+        priceValue.setText(currency + " " + sellListing.getPrice());
+        priceDetails.setText("Prezzo fisso");
+    }
+
+    private void setupTradePricing(TradeListingDTO tradeListing) {
+        priceLabel.setText("Tipo di scambio");
+        priceValue.setText("Scambio");
+
+        StringBuilder details = new StringBuilder();
+        if (tradeListing.isAcceptMoneyOffers()) {
+            if (tradeListing.getReferencePrice() != null) {
+                String currency = tradeListing.getCurrency() != null ? tradeListing.getCurrency().getSymbol() : "€";
+                details.append("Ref: ").append(currency).append(" ").append(tradeListing.getReferencePrice());
+            }
+        }
+        if (tradeListing.isAcceptMixedOffers()) {
+            details.append(details.length() > 0 ? " | " : "").append("Offerte miste accettate");
+        }
+        priceDetails.setText(details.toString());
+    }
+
+    private void setupGiftPricing(GiftListingDTO giftListing) {
+        priceLabel.setText("Tipo");
+        priceValue.setText("Regalo");
+
+        StringBuilder details = new StringBuilder("Gratuito");
+        if (giftListing.isPickupOnly()) {
+            details.append(" - Solo ritiro");
+        }
+        if (giftListing.isAllowThankYouOffers()) {
+            details.append(" - Ringraziamenti accettati");
+        }
+        priceDetails.setText(details.toString());
+    }
+
+    private void setupAuctionPricing(AuctionListingDTO auctionListing) {
+        priceLabel.setText("Asta");
+
+        BigDecimal currentBid = auctionListing.getCurrentHighestBid();
+        String currency = auctionListing.getCurrency() != null ? auctionListing.getCurrency().getSymbol() : "€";
+
+        if (currentBid != null && currentBid.compareTo(BigDecimal.ZERO) > 0) {
+            priceValue.setText(currency + " " + currentBid);
+            priceDetails.setText("Offerta attuale");
+        } else {
+            priceValue.setText(currency + " " + auctionListing.getStartingPrice());
+            priceDetails.setText("Prezzo di partenza");
+        }
+
+        // Update auction-specific elements
+        currentBidValue.setText(currency + " " +
+                (currentBid != null ? currentBid : auctionListing.getStartingPrice()));
+
+        // Calculate minimum bid
+        BigDecimal minimumBid = auctionListing.getMinimumNextBid();
+        minimumBidLabel.setText("Offerta minima: " + currency + " " + minimumBid);
+
+        // Calculate time remaining
+        updateTimeRemaining(auctionListing);
+    }
+
+    private void updateTimeRemaining(AuctionListingDTO auction) {
+        if (auction.getEndTime() != null) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime endTime = auction.getEndTime();
+
+            if (now.isBefore(endTime)) {
+                long days = ChronoUnit.DAYS.between(now, endTime);
+                long hours = ChronoUnit.HOURS.between(now, endTime) % 24;
+                long minutes = ChronoUnit.MINUTES.between(now, endTime) % 60;
+
+                String timeText = String.format("Tempo rimanente: %d giorni %d ore %d minuti",
+                        days, hours, minutes);
+                timeRemainingLabel.setText(timeText);
+            } else {
+                timeRemainingLabel.setText("Asta terminata");
+                placeBidButton.setDisable(true);
+            }
+        }
+    }
+
+    private void populateItemsList() {
+        itemsList.getChildren().clear();
+
+        if (currentListing.getItems() != null) {
+            for (ListingItemDTO item : currentListing.getItems()) {
+                HBox itemRow = createItemRow(item);
+                itemsList.getChildren().add(itemRow);
+            }
+        }
+    }
+
+    private HBox createItemRow(ListingItemDTO item) {
+        HBox itemRow = new HBox(10);
+        itemRow.getStyleClass().add("item-row");
+
+        // Item image thumbnail
+        ImageView itemImage = new ImageView();
+        itemImage.setFitHeight(40);
+        itemImage.setFitWidth(40);
+        itemImage.setPreserveRatio(true);
+        itemImage.getStyleClass().add("item-thumbnail");
+
+        // Load item image
+        if (item.getItemImagePath() != null && !item.getItemImagePath().isEmpty()) {
+            imageService.fetchImage(item.getItemImagePath())
+                    .thenAccept(image -> Platform.runLater(() -> {
+                        if (image != null && !image.isError()) {
+                            itemImage.setImage(image);
+                        } else {
+                            setDefaultItemImage(itemImage);
+                        }
+                    }));
+        } else {
+            setDefaultItemImage(itemImage);
+        }
+
+        // Item details
+        VBox itemDetails = new VBox(2);
+        Text itemName = new Text(item.getItemName());
+        itemName.getStyleClass().add("item-name");
+        Text itemQuantity = new Text("Quantità: " + item.getQuantity());
+        itemQuantity.getStyleClass().add("item-quantity");
+
+        itemDetails.getChildren().addAll(itemName, itemQuantity);
+
+        itemRow.getChildren().addAll(itemImage, itemDetails);
+        return itemRow;
+    }
+
+    private void setDefaultItemImage(ImageView imageView) {
+        try {
+            Image defaultImage = new Image(getClass()
+                    .getResourceAsStream("/images/icons/immagine_generica.png"));
+            imageView.setImage(defaultImage);
+        } catch (Exception e) {
+            System.err.println("Could not load default item image: " + e.getMessage());
+        }
+    }
+
+    private void setupImageGallery() {
+        // Collect all image URLs from listing items
+        imageUrls.clear();
+        if (currentListing.getItems() != null) {
+            for (ListingItemDTO item : currentListing.getItems()) {
+                String imagePath = item.getItemImagePath();
+                if (imagePath != null && !imagePath.isEmpty() && !imagePath.equals("default")) {
+                    imageUrls.add(imagePath);
+                }
+            }
+        }
+
+        if (!imageUrls.isEmpty()) {
+            currentImageIndex = 0;
+            loadMainImage(imageUrls.get(0));
+
+            if (imageUrls.size() > 1) {
+                setupImageNavigation();
+                createThumbnails();
+            }
+        } else {
+            setDefaultMainImage();
+        }
+
+        updateImageNavigation();
+    }
+
+    private void loadMainImage(String imagePath) {
+        imageService.fetchImage(imagePath)
+                .thenAccept(image -> Platform.runLater(() -> {
+                    if (image != null && !image.isError()) {
+                        mainImage.setImage(image);
+                    } else {
+                        setDefaultMainImage();
+                    }
+                }));
+    }
+
+    private void setDefaultMainImage() {
+        try {
+            Image defaultImage = new Image(getClass()
+                    .getResourceAsStream("/images/icons/immagine_generica.png"));
+            mainImage.setImage(defaultImage);
+        } catch (Exception e) {
+            System.err.println("Could not load default main image: " + e.getMessage());
+        }
+    }
+
+    private void setupImageNavigation() {
+        imageNavigation.setVisible(imageUrls.size() > 1);
+        updateImageCounter();
+    }
+
+    private void updateImageNavigation() {
+        if (imageUrls.size() > 1) {
+            prevImageButton.setDisable(currentImageIndex == 0);
+            nextImageButton.setDisable(currentImageIndex == imageUrls.size() - 1);
+            updateImageCounter();
+        }
+    }
+
+    private void updateImageCounter() {
+        if (!imageUrls.isEmpty()) {
+            imageCounter.setText((currentImageIndex + 1) + " / " + imageUrls.size());
+        }
+    }
+
+    private void createThumbnails() {
+        thumbnailContainer.getChildren().clear();
+
+        for (int i = 0; i < imageUrls.size(); i++) {
+            final int index = i;
+            ImageView thumbnail = new ImageView();
+            thumbnail.setFitHeight(60);
+            thumbnail.setFitWidth(60);
+            thumbnail.setPreserveRatio(true);
+            thumbnail.getStyleClass().add("thumbnail");
+
+            // Load thumbnail image
+            imageService.fetchImage(imageUrls.get(i))
+                    .thenAccept(image -> Platform.runLater(() -> {
+                        if (image != null && !image.isError()) {
+                            thumbnail.setImage(image);
+                        }
+                    }));
+
+            // Add click handler
+            thumbnail.setOnMouseClicked(e -> {
+                currentImageIndex = index;
+                loadMainImage(imageUrls.get(index));
+                updateImageNavigation();
+                updateThumbnailSelection();
+            });
+
+            thumbnailContainer.getChildren().add(thumbnail);
+        }
+
+        thumbnailScrollPane.setVisible(true);
+        updateThumbnailSelection();
+    }
+
+    private void updateThumbnailSelection() {
+        for (int i = 0; i < thumbnailContainer.getChildren().size(); i++) {
+            ImageView thumbnail = (ImageView) thumbnailContainer.getChildren().get(i);
+            if (i == currentImageIndex) {
+                thumbnail.getStyleClass().add("selected-thumbnail");
+            } else {
+                thumbnail.getStyleClass().remove("selected-thumbnail");
+            }
+        }
+    }
+
+    private void setupActionButtons() {
+        // Hide all action sections first
+        sellActions.setVisible(false);
+        tradeActions.setVisible(false);
+        giftActions.setVisible(false);
+        auctionActions.setVisible(false);
+
+        // Show appropriate actions based on listing type
+        String listingType = currentListing.getListingTypeValue();
+        switch (listingType.toUpperCase()) {
+            case "SELL":
+                sellActions.setVisible(true);
+                break;
+            case "TRADE":
+                tradeActions.setVisible(true);
+                break;
+            case "GIFT":
+                giftActions.setVisible(true);
+                break;
+            case "AUCTION":
+                auctionActions.setVisible(true);
+                break;
+        }
+
+        // Disable actions if user is the owner
+        boolean isOwner = currentListing.getCreator() != null &&
+                sessionService.getUser() != null &&
+                currentListing.getCreator().getId().equals(sessionService.getUser().getId());
+
+        if (isOwner) {
+            disableAllActionButtons();
+        }
+    }
+
+    private void disableAllActionButtons() {
+        buyNowButton.setDisable(true);
+        makeOfferButton.setDisable(true);
+        proposeTradeButton.setDisable(true);
+        requestGiftButton.setDisable(true);
+        placeBidButton.setDisable(true);
+
+        buyNowButton.setText("La tua inserzione");
+        makeOfferButton.setText("La tua inserzione");
+        proposeTradeButton.setText("La tua inserzione");
+        requestGiftButton.setText("La tua inserzione");
+        placeBidButton.setText("La tua inserzione");
+    }
+
+    private void initializeFavoriteStatus() {
+        if (currentListing != null) {
+            isFavorite = favoritesService.isFavoriteListing(currentListing.getId());
+            updateFavoriteIcon();
+        }
+    }
+
+    private void updateFavoriteIcon() {
+        String iconPath = isFavorite ? "/images/elenco_preferiti.png" : "/images/preferiti.png";
+        try {
+            Image icon = new Image(getClass().getResourceAsStream(iconPath));
+            favoriteIcon.setImage(icon);
+        } catch (Exception e) {
+            System.err.println("Could not load favorite icon: " + e.getMessage());
+        }
+    }
+
+    // Event Handlers
+    @FXML
+    private void handleBack() {
+        navigationService.goBack();
+    }
+
+    @FXML
+    private void toggleFavorite() {
+        if (currentListing != null) {
+            isFavorite = !isFavorite;
+            updateFavoriteIcon();
+
+            if (isFavorite) {
+                favoritesService.addFavoriteListing(currentListing.getId());
+            } else {
+                favoritesService.removeFavoriteListing(currentListing.getId());
+            }
+        }
+    }
+
+    @FXML
+    private void showPreviousImage() {
+        if (currentImageIndex > 0) {
+            currentImageIndex--;
+            loadMainImage(imageUrls.get(currentImageIndex));
+            updateImageNavigation();
+            updateThumbnailSelection();
+        }
+    }
+
+    @FXML
+    private void showNextImage() {
+        if (currentImageIndex < imageUrls.size() - 1) {
+            currentImageIndex++;
+            loadMainImage(imageUrls.get(currentImageIndex));
+            updateImageNavigation();
+            updateThumbnailSelection();
+        }
+    }
+
+    // Action button handlers
+    @FXML
+    private void handleBuyNow() {
+        if (currentListing instanceof SellListingDTO) {
+            SellListingDTO sellListing = (SellListingDTO) currentListing;
+
+            String message = String.format("Confermi l'acquisto di '%s' per %s %s?",
+                    currentListing.getTitle(),
+                    sellListing.getCurrency().getSymbol(),
+                    sellListing.getPrice());
+
+            boolean confirmed = AlertHelper.showConfirmationAlert(
+                    "Conferma acquisto",
+                    "Acquisto diretto",
+                    message);
+
+            if (confirmed) {
+                // TODO: Implement purchase logic
+                AlertHelper.showInformationAlert(
+                        "Acquisto confermato",
+                        "Il tuo acquisto è stato registrato",
+                        "Riceverai presto i dettagli per il pagamento e la consegna.");
+            }
+        }
+    }
+
+    @FXML
+    private void handleMakeOffer() {
+        // TODO: Open offer dialog
+        AlertHelper.showInformationAlert(
+                "Fai un'offerta",
+                "Funzionalità in sviluppo",
+                "La possibilità di fare offerte sarà disponibile presto.");
+    }
+
+    @FXML
+    private void handleProposeTrade() {
+        // TODO: Open trade proposal dialog
+        AlertHelper.showInformationAlert(
+                "Proponi scambio",
+                "Funzionalità in sviluppo",
+                "La possibilità di proporre scambi sarà disponibile presto.");
+    }
+
+    @FXML
+    private void handleRequestGift() {
+        if (currentListing instanceof GiftListingDTO) {
+            boolean offerThankYou = offerThankYouCheckBox.isSelected();
+            String thankYouMessage = offerThankYou ? thankYouMessageArea.getText() : "";
+
+            String message = "Confermi la richiesta per il regalo '" + currentListing.getTitle() + "'?";
+            if (offerThankYou) {
+                message += "\n\nMessaggio di ringraziamento incluso.";
+            }
+
+            boolean confirmed = AlertHelper.showConfirmationAlert(
+                    "Conferma richiesta regalo",
+                    "Richiesta regalo",
+                    message);
+
+            if (confirmed) {
+                // TODO: Implement gift request logic
+                AlertHelper.showInformationAlert(
+                        "Richiesta inviata",
+                        "La tua richiesta è stata inviata",
+                        "Il donatore riceverà la tua richiesta e ti risponderà presto.");
+            }
+        }
+    }
+
+    @FXML
+    private void handlePlaceBid() {
+        if (currentListing instanceof AuctionListingDTO) {
+            AuctionListingDTO auction = (AuctionListingDTO) currentListing;
+
+            try {
+                BigDecimal bidAmount = new BigDecimal(bidAmountField.getText().trim());
+                BigDecimal minimumBid = auction.getMinimumNextBid();
+
+                if (bidAmount.compareTo(minimumBid) < 0) {
+                    AlertHelper.showWarningAlert(
+                            "Offerta non valida",
+                            "Importo troppo basso",
+                            "L'offerta deve essere almeno " +
+                                    auction.getCurrency().getSymbol() + " " + minimumBid);
+                    return;
+                }
+
+                boolean confirmed = AlertHelper.showConfirmationAlert(
+                        "Conferma offerta",
+                        "Offerta all'asta",
+                        String.format("Confermi l'offerta di %s %s per '%s'?",
+                                bidCurrencyComboBox.getValue().getSymbol(),
+                                bidAmount,
+                                currentListing.getTitle()));
+
+                if (confirmed) {
+                    // TODO: Implement bid placement logic
+                    AlertHelper.showInformationAlert(
+                            "Offerta piazzata",
+                            "La tua offerta è stata registrata",
+                            "Ti aggiorneremo se qualcuno supera la tua offerta.");
+
+                    // Clear bid field
+                    bidAmountField.clear();
+                }
+
+            } catch (NumberFormatException e) {
+                AlertHelper.showWarningAlert(
+                        "Offerta non valida",
+                        "Formato importo errato",
+                        "Inserisci un importo valido.");
+            }
+        }
+    }
+
+    @FXML
+    private void handleContactSeller() {
+        // TODO: Open chat/message dialog
+        AlertHelper.showInformationAlert(
+                "Contatta venditore",
+                "Funzionalità in sviluppo",
+                "La messaggistica diretta sarà disponibile presto.");
+    }
+
+    @FXML
+    private void handleReportListing() {
+        // TODO: Open report dialog
+        AlertHelper.showInformationAlert(
+                "Segnala inserzione",
+                "Funzionalità in sviluppo",
+                "Il sistema di segnalazioni sarà disponibile presto.");
+    }
+}

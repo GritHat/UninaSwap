@@ -1,0 +1,120 @@
+.offer-dialog {
+    -fx-background-color: white;
+}
+
+.offer-content {
+    -fx-background-color: white;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: #2c3e50;
+}
+
+.subsection-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-fill: #34495e;
+}
+
+.section-checkbox {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.listing-info-section {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+}
+
+.listing-thumbnail {
+    -fx-background-radius: 4px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
+.money-offer-section {
+    -fx-background-color: #e8f5e8;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+}
+
+.items-offer-section {
+    -fx-background-color: #e8f0ff;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+}
+
+.constraint-label {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-style: italic;
+}
+
+.add-item-button {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-background-radius: 4px;
+    -fx-font-weight: bold;
+}
+
+.add-item-button:hover {
+    -fx-background-color: #2ecc71;
+}
+
+.add-to-offer-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-background-radius: 4px;
+    -fx-font-size: 12px;
+}
+
+.add-to-offer-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.remove-from-offer-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-background-radius: 4px;
+    -fx-font-size: 12px;
+}
+
+.remove-from-offer-button:hover {
+    -fx-background-color: #c0392b;
+}
+
+.offer-summary {
+    -fx-background-color: #f7f7f7;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-border-color: #bdc3c7;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+}
+
+.summary-content .summary-title {
+    -fx-font-weight: bold;
+    -fx-fill: #2c3e50;
+}
+
+.summary-content .summary-item {
+    -fx-fill: #34495e;
+    -fx-font-size: 13px;
+}
+
+.summary-content .warning-text {
+    -fx-fill: #f39c12;
+    -fx-font-weight: bold;
+}
+
+.summary-content .error-text {
+    -fx-fill: #e74c3c;
+    -fx-font-weight: bold;
+}
+
+.message-section {
+    -fx-background-color: #fef9e7;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+}

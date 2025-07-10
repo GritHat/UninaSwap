@@ -3,6 +3,8 @@ package com.uninaswap.client.controller;
 import com.uninaswap.client.service.FavoritesService;
 import com.uninaswap.client.service.ListingService;
 import com.uninaswap.common.dto.ListingDTO;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -10,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
+import javafx.util.Duration;
 
 import java.io.IOException;
 
@@ -27,7 +30,14 @@ public class HomeController {
 
     private final UserCardController userCard = new UserCardController();
     private final ListingService listingService = ListingService.getInstance();
-    private final FavoritesService favoritesService = FavoritesService.getInstance(); // Add this
+    private final FavoritesService favoritesService = FavoritesService.getInstance();
+
+    // Add flag to track listener registration
+    private boolean listenerRegistered = false;
+
+    // Add debouncing fields
+    private Timeline updateTimeline;
+    private static final Duration DEBOUNCE_DELAY = Duration.millis(100);
 
     @FXML
     public void initialize() {
@@ -49,31 +59,41 @@ public class HomeController {
     }
 
     private void loadHomeData() {
-        // Refresh listings from server
-        listingService.refreshAllListings();
-
-        // Get the observable list
         ObservableList<ListingDTO> allListings = listingService.getAllListingsObservable();
 
-        // Debug log
-        if (allListings.isEmpty()) {
-            System.out.println("La lista è vuota o non inizializzata");
-        } else {
-            System.out.println("Caricate " + allListings.size() + " inserzioni");
+        // Set up listener ONCE with debouncing
+        if (!listenerRegistered) {
+            allListings.addListener((ListChangeListener<ListingDTO>) change -> {
+                debouncedUpdate(allListings);
+            });
+            listenerRegistered = true;
         }
 
-        // Listen for changes in the listings and update UI
-        allListings.addListener((ListChangeListener<ListingDTO>) change -> {
-            Platform.runLater(() -> {
-                System.out.println("Lista aggiornata con " + allListings.size() + " inserzioni");
-                updateHomeViewWithListings(allListings);
-            });
-        });
-
-        // If there are already listings, update immediately
-        if (!allListings.isEmpty()) {
+        // Only refresh if the list is actually empty
+        if (allListings.isEmpty()) {
+            System.out.println("List is empty, refreshing from server...");
+            listingService.refreshAllListings();
+        } else {
+            System.out.println("List already has " + allListings.size() + " items, updating view...");
             updateHomeViewWithListings(allListings);
         }
+    }
+
+    private void debouncedUpdate(ObservableList<ListingDTO> listings) {
+        // Cancel any existing timer
+        if (updateTimeline != null) {
+            updateTimeline.stop();
+        }
+
+        // Create new timer that will fire after a short delay
+        updateTimeline = new Timeline(new KeyFrame(DEBOUNCE_DELAY, e -> {
+            Platform.runLater(() -> {
+                System.out.println("Debounced update: List now has " + listings.size() + " listings");
+                updateHomeViewWithListings(listings);
+            });
+        }));
+
+        updateTimeline.play();
     }
 
     private void updateHomeViewWithListings(ObservableList<ListingDTO> listings) {

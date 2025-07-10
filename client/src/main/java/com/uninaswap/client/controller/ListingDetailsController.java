@@ -4,10 +4,10 @@ import com.uninaswap.client.service.*;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.common.dto.*;
 import com.uninaswap.common.enums.Currency;
-import com.uninaswap.common.enums.ListingStatus;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,12 +15,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ListingDetailsController {
 
@@ -557,7 +558,7 @@ public class ListingDetailsController {
     }
 
     private void updateFavoriteIcon() {
-        String iconPath = isFavorite ? "/images/elenco_preferiti.png" : "/images/preferiti.png";
+        String iconPath = isFavorite ? "/images/icons/elenco_preferiti.png" : "/images/icons/preferiti.png";
         try {
             Image icon = new Image(getClass().getResourceAsStream(iconPath));
             favoriteIcon.setImage(icon);
@@ -634,11 +635,75 @@ public class ListingDetailsController {
 
     @FXML
     private void handleMakeOffer() {
-        // TODO: Open offer dialog
-        AlertHelper.showInformationAlert(
-                "Fai un'offerta",
-                "Funzionalità in sviluppo",
-                "La possibilità di fare offerte sarà disponibile presto.");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/OfferDialogView.fxml"));
+            loader.setResources(localeService.getResourceBundle());
+            DialogPane dialogPane = loader.load();
+
+            ButtonType confirmButtonType = new ButtonType(
+                    localeService.getMessage("offer.dialog.button.send"),
+                    ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancelButtonType = new ButtonType(
+                    localeService.getMessage("offer.dialog.button.cancel"),
+                    ButtonBar.ButtonData.CANCEL_CLOSE);
+            dialogPane.getButtonTypes().addAll(confirmButtonType, cancelButtonType);
+
+            OfferDialogController controller = loader.getController();
+            controller.setListing(currentListing);
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle(localeService.getMessage("offer.dialog.title"));
+            dialog.setHeaderText(localeService.getMessage("offer.dialog.header", currentListing.getTitle()));
+            dialog.setDialogPane(dialogPane);
+
+            // Enable/disable confirm button based on offer validity
+            Button confirmButton = (Button) dialogPane.lookupButton(confirmButtonType);
+            confirmButton.disableProperty().bind(
+                    javafx.beans.binding.Bindings.createBooleanBinding(
+                            () -> !controller.isValidOffer(),
+                            controller.getIncludeMoneyCheckBox().selectedProperty(),
+                            controller.getMoneyAmountField().textProperty(),
+                            controller.getSelectedItems()));
+
+            Optional<ButtonType> result = dialog.showAndWait();
+
+            if (result.isPresent() && result.get() == confirmButtonType) {
+                OfferDTO offer = controller.createOffer();
+                if (offer != null) {
+                    OfferService offerService = OfferService.getInstance();
+                    offerService.createOffer(offer)
+                            .thenAccept(success -> Platform.runLater(() -> {
+                                if (success) {
+                                    AlertHelper.showInformationAlert(
+                                            localeService.getMessage("offer.success.title"),
+                                            localeService.getMessage("offer.success.header"),
+                                            localeService.getMessage("offer.success.message"));
+                                } else {
+                                    AlertHelper.showErrorAlert(
+                                            localeService.getMessage("offer.error.title"),
+                                            localeService.getMessage("offer.error.header"),
+                                            localeService.getMessage("offer.error.connection"));
+                                }
+                            }))
+                            .exceptionally(ex -> {
+                                Platform.runLater(() -> AlertHelper.showErrorAlert(
+                                        localeService.getMessage("offer.error.title"),
+                                        localeService.getMessage("offer.error.header"),
+                                        ex.getMessage()));
+                                return null;
+                            });
+                }
+            }
+
+            // Clean up temporary reservations
+            controller.cleanup();
+
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("offer.error.title"),
+                    localeService.getMessage("offer.error.header"),
+                    e.getMessage());
+        }
     }
 
     @FXML

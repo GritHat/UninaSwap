@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" styleClass="main-content-background" 
-           stylesheets="@../css/styles.css, @../css/listing-details.css" 
-           xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" 
-           fx:controller="com.uninaswap.client.controller.ListingDetailsController">
+<ScrollPane fitToHeight="true" fitToWidth="true" styleClass="main-content-background" stylesheets="@../css/styles.css, @../css/listing-details.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.ListingDetailsController">
    <content>
       <VBox alignment="TOP_CENTER" spacing="20.0" styleClass="listing-details-container">
          <padding>
@@ -35,10 +42,10 @@
          </HBox>
 
          <!-- Main Content Area -->
-         <HBox alignment="TOP_LEFT" spacing="30.0" VBox.vgrow="ALWAYS">
+         <HBox alignment="CENTER" spacing="30.0" VBox.vgrow="ALWAYS">
             <children>
                <!-- Left Side - Images and Details -->
-               <VBox spacing="20.0" styleClass="details-left-panel" HBox.hgrow="ALWAYS">
+               <VBox maxWidth="450.0" spacing="20.0" styleClass="details-left-panel" HBox.hgrow="ALWAYS">
                   <children>
                      <!-- Image Gallery -->
                      <VBox spacing="10.0" styleClass="image-gallery-section">
@@ -46,31 +53,26 @@
                            <!-- Main Image Display -->
                            <StackPane styleClass="main-image-container">
                               <children>
-                                 <ImageView fx:id="mainImage" fitHeight="400.0" fitWidth="600.0" 
-                                           pickOnBounds="true" preserveRatio="true" styleClass="main-image">
+                                 <ImageView fx:id="mainImage" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" styleClass="main-image">
                                     <image>
                                        <Image url="@../images/icons/immagine_generica.png" />
                                     </image>
                                  </ImageView>
                                  
                                  <!-- Image Navigation Controls -->
-                                 <HBox fx:id="imageNavigation" alignment="CENTER" spacing="10.0" 
-                                       styleClass="image-navigation" visible="false">
+                                 <HBox fx:id="imageNavigation" alignment="CENTER" spacing="10.0" styleClass="image-navigation" visible="false">
                                     <StackPane.margin>
                                        <Insets bottom="20.0" />
                                     </StackPane.margin>
-                                    <Button fx:id="prevImageButton" onAction="#showPreviousImage" 
-                                           styleClass="nav-button" text="◀" />
+                                    <Button fx:id="prevImageButton" onAction="#showPreviousImage" styleClass="nav-button" text="◀" />
                                     <Label fx:id="imageCounter" styleClass="image-counter" text="1 / 1" />
-                                    <Button fx:id="nextImageButton" onAction="#showNextImage" 
-                                           styleClass="nav-button" text="▶" />
+                                    <Button fx:id="nextImageButton" onAction="#showNextImage" styleClass="nav-button" text="▶" />
                                  </HBox>
                               </children>
                            </StackPane>
                            
                            <!-- Image Thumbnails -->
-                           <ScrollPane fx:id="thumbnailScrollPane" fitToHeight="true" hbarPolicy="AS_NEEDED" 
-                                      vbarPolicy="NEVER" visible="false">
+                           <ScrollPane fx:id="thumbnailScrollPane" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" visible="false">
                               <content>
                                  <HBox fx:id="thumbnailContainer" spacing="10.0" styleClass="thumbnail-container">
                                     <padding>
@@ -102,8 +104,7 @@
                            <VBox spacing="5.0">
                               <children>
                                  <Text styleClass="section-header" text="Descrizione" />
-                                 <TextArea fx:id="descriptionArea" editable="false" styleClass="description-area" 
-                                          text="Listing description will appear here..." wrapText="true" />
+                                 <TextArea fx:id="descriptionArea" editable="false" styleClass="description-area" text="Listing description will appear here..." wrapText="true" />
                               </children>
                            </VBox>
 
@@ -121,8 +122,7 @@
                                  <Text styleClass="section-header" text="Venditore" />
                                  <HBox alignment="CENTER_LEFT" spacing="15.0">
                                     <children>
-                                       <ImageView fx:id="sellerAvatar" fitHeight="50.0" fitWidth="50.0" 
-                                                 preserveRatio="true" styleClass="seller-avatar">
+                                       <ImageView fx:id="sellerAvatar" fitHeight="50.0" fitWidth="50.0" preserveRatio="true" styleClass="seller-avatar">
                                           <image>
                                              <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Single-Neutral-Circle--Streamline-Ultimate.png" />
                                           </image>
@@ -143,7 +143,7 @@
                </VBox>
 
                <!-- Right Side - Action Panel -->
-               <VBox spacing="20.0" styleClass="action-panel" maxWidth="350.0" minWidth="300.0">
+               <VBox maxWidth="350.0" minWidth="300.0" spacing="20.0" styleClass="action-panel" HBox.hgrow="ALWAYS">
                   <children>
                      <!-- Price/Bid Information -->
                      <VBox spacing="10.0" styleClass="price-section">
@@ -160,18 +160,15 @@
                         <!-- Sell Listing Actions -->
                         <VBox fx:id="sellActions" spacing="10.0" visible="false">
                            <children>
-                              <Button fx:id="buyNowButton" onAction="#handleBuyNow" 
-                                     styleClass="primary-action-button" text="Acquista ora" />
-                              <Button fx:id="makeOfferButton" onAction="#handleMakeOffer" 
-                                     styleClass="secondary-action-button" text="Fai un'offerta" />
+                              <Button fx:id="buyNowButton" onAction="#handleBuyNow" styleClass="primary-action-button" text="Acquista ora" />
+                              <Button fx:id="makeOfferButton" onAction="#handleMakeOffer" styleClass="secondary-action-button" text="Fai un'offerta" />
                            </children>
                         </VBox>
 
                         <!-- Trade Listing Actions -->
                         <VBox fx:id="tradeActions" spacing="10.0" visible="false">
                            <children>
-                              <Button fx:id="proposeTradeButton" onAction="#handleProposeTrade" 
-                                     styleClass="primary-action-button" text="Proponi scambio" />
+                              <Button fx:id="proposeTradeButton" onAction="#handleProposeTrade" styleClass="primary-action-button" text="Proponi scambio" />
                               <VBox fx:id="tradeOptionsSection" spacing="5.0" visible="false">
                                  <children>
                                     <CheckBox fx:id="includeMoneyCheckBox" text="Includi denaro nell'offerta" />
@@ -189,13 +186,11 @@
                         <!-- Gift Listing Actions -->
                         <VBox fx:id="giftActions" spacing="10.0" visible="false">
                            <children>
-                              <Button fx:id="requestGiftButton" onAction="#handleRequestGift" 
-                                     styleClass="primary-action-button" text="Richiedi regalo" />
+                              <Button fx:id="requestGiftButton" onAction="#handleRequestGift" styleClass="primary-action-button" text="Richiedi regalo" />
                               <VBox fx:id="thankYouSection" spacing="5.0">
                                  <children>
                                     <CheckBox fx:id="offerThankYouCheckBox" text="Offri un ringraziamento" />
-                                    <TextArea fx:id="thankYouMessageArea" promptText="Messaggio di ringraziamento (opzionale)" 
-                                             styleClass="thank-you-message" visible="false" wrapText="true" />
+                                    <TextArea fx:id="thankYouMessageArea" promptText="Messaggio di ringraziamento (opzionale)" styleClass="thank-you-message" visible="false" wrapText="true" />
                                  </children>
                               </VBox>
                            </children>
@@ -222,8 +217,7 @@
                                  <children>
                                     <HBox spacing="10.0">
                                        <children>
-                                          <TextField fx:id="bidAmountField" promptText="Inserisci offerta" 
-                                                    styleClass="bid-input" HBox.hgrow="ALWAYS" />
+                                          <TextField fx:id="bidAmountField" promptText="Inserisci offerta" styleClass="bid-input" HBox.hgrow="ALWAYS" />
                                           <ComboBox fx:id="bidCurrencyComboBox" styleClass="currency-combo" />
                                        </children>
                                     </HBox>
@@ -231,8 +225,7 @@
                                  </children>
                               </VBox>
 
-                              <Button fx:id="placeBidButton" onAction="#handlePlaceBid" 
-                                     styleClass="primary-action-button" text="Fai un'offerta" />
+                              <Button fx:id="placeBidButton" onAction="#handlePlaceBid" styleClass="primary-action-button" text="Fai un'offerta" />
                            </children>
                         </VBox>
 
@@ -240,10 +233,8 @@
                         <Separator />
                         <VBox spacing="10.0">
                            <children>
-                              <Button fx:id="contactSellerButton" onAction="#handleContactSeller" 
-                                     styleClass="contact-button" text="Contatta venditore" />
-                              <Button fx:id="reportListingButton" onAction="#handleReportListing" 
-                                     styleClass="report-button" text="Segnala inserzione" />
+                              <Button fx:id="contactSellerButton" onAction="#handleContactSeller" styleClass="contact-button" text="Contatta venditore" />
+                              <Button fx:id="reportListingButton" onAction="#handleReportListing" styleClass="report-button" text="Segnala inserzione" />
                            </children>
                         </VBox>
                      </VBox>

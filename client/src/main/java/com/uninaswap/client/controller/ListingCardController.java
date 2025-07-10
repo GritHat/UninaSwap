@@ -250,8 +250,8 @@ public class ListingCardController {
         // Update favorite icon appearance
         if (favoriteIcon != null) {
             // Use the same icon paths as ItemCardController
-            String iconPath = favorite ? "/images/elenco_preferiti.png" : // Filled heart
-                    "/images/preferiti.png"; // Empty heart
+            String iconPath = favorite ? "/images/icons/elenco_preferiti.png" : // Filled heart
+                    "/images/icons/preferiti.png"; // Empty heart
             try {
                 Image icon = new Image(getClass().getResourceAsStream(iconPath));
                 favoriteIcon.setImage(icon);

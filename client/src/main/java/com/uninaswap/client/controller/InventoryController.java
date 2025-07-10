@@ -7,17 +7,18 @@ import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.common.dto.ItemDTO;
 import com.uninaswap.common.enums.ItemCondition;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 public class InventoryController {
@@ -46,13 +47,11 @@ public class InventoryController {
     private Button refreshButton;
 
     @FXML
-    private FlowPane forSaleFlowPane;
+    private ImageView itemImageView;
     @FXML
-    private FlowPane soldFlowPane;
+    private Label itemNameLabel;
     @FXML
-    private FlowPane auctionsFlowPane;
-    @FXML
-    private FlowPane draftsFlowPane;
+    private Label itemDescriptionLabel;
 
     private final ItemService itemService = ItemService.getInstance();
     private final ImageService imageService = ImageService.getInstance();
@@ -83,12 +82,20 @@ public class InventoryController {
             return Bindings.createObjectBinding(() -> stock - available);
         });
 
+        // Add selection listener to show details
+        itemsTable.getSelectionModel().selectedItemProperty().addListener((_, _, newSelection) -> {
+            if (newSelection != null) {
+                showItemDetails(newSelection);
+            } else {
+                clearItemDetails();
+            }
+        });
+
         // Enable buttons only when item is selected
         editButton.disableProperty().bind(itemsTable.getSelectionModel().selectedItemProperty().isNull());
         deleteButton.disableProperty().bind(itemsTable.getSelectionModel().selectedItemProperty().isNull());
 
         // Load user's items
-        loadItemCardsIntoTab(forSaleFlowPane, itemService.getUserItemsList());
         refreshItems();
     }
 
@@ -138,6 +145,37 @@ public class InventoryController {
 
     private void refreshItems() {
         itemsTable.setItems(itemService.getUserItemsList());
+    }
+
+    private void showItemDetails(ItemDTO item) {
+        itemNameLabel.setText(item.getName());
+        itemDescriptionLabel.setText(item.getDescription());
+
+        if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
+            // Load image using the ImageService
+            imageService.fetchImage(item.getImagePath())
+                    .thenAccept(image -> {
+                        Platform.runLater(() -> {
+                            itemImageView.setImage(image);
+                        });
+                    })
+                    .exceptionally(ex -> {
+                        // If loading fails, set default image
+                        System.err.println("Failed to load item image: " + ex.getMessage());
+                        Platform.runLater(() -> {
+                            itemImageView.setImage(new Image("/images/no_image.png"));
+                        });
+                        return null;
+                    });
+        } else {
+            itemImageView.setImage(new Image("/images/no_image.png"));
+        }
+    }
+
+    private void clearItemDetails() {
+        itemNameLabel.setText("");
+        itemDescriptionLabel.setText("");
+        itemImageView.setImage(null);
     }
 
     private void showItemDialog(ItemDTO item) {
@@ -231,37 +269,4 @@ public class InventoryController {
                     });
         }
     }
-
-    private void loadItemCardsIntoTab(FlowPane container, List<ItemDTO> items) {
-        container.getChildren().clear();
-        for (ItemDTO item : items) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ItemCard.fxml"));
-                loader.setResources(localeService.getResourceBundle());
-                loader.setController(new ItemCardController(item));
-                container.getChildren().add(loader.load());
-            } catch (IOException e) {
-                AlertHelper.showErrorAlert(
-                        localeService.getMessage("item.card.load.error.title"),
-                        localeService.getMessage("item.card.load.error.header"),
-                        e.getMessage());
-            }
-        }
-    }
-
-    /*
-     * Mi piace il disegno
-     * ┌─────────────────────────────────┐
-     * │ [Search Bar] [Add +] │
-     * ├─────────────────────────────────┤
-     * │ ┌─────────────────────────────┐ │
-     * │ │ [img] Item Name €XX│ │ ← ItemCard
-     * │ │ Description [•]│ │
-     * │ └─────────────────────────────┘ │
-     * │ ┌─────────────────────────────┐ │
-     * │ │ [img] Item Name 2 €XX │ │ ← ItemCard
-     * │ │ Description 2 [•]│ │
-     * │ └─────────────────────────────┘ │
-     * └─────────────────────────────────┘
-     */
 }

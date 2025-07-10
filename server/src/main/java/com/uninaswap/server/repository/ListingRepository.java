@@ -45,13 +45,16 @@ public interface ListingRepository extends JpaRepository<ListingEntity, String> 
             "LEFT JOIN FETCH l.listingItems li " +
             "LEFT JOIN FETCH li.item " +
             "LEFT JOIN FETCH l.creator " +
-            "WHERE l.status = :status")
+            "WHERE l.status = :status " +
+            "ORDER BY l.createdAt DESC")
     Page<ListingEntity> findByStatusWithItems(ListingStatus status, Pageable pageable);
 
     // Also add method for finding by user with items
     @Query("SELECT DISTINCT l FROM ListingEntity l " +
             "LEFT JOIN FETCH l.listingItems li " +
             "LEFT JOIN FETCH li.item " +
-            "WHERE l.creator.id = :userId")
+            "LEFT JOIN FETCH l.creator " +
+            "WHERE l.creator.id = :userId " +
+            "ORDER BY l.createdAt DESC")
     List<ListingEntity> findByCreatorIdWithItems(Long userId);
 }

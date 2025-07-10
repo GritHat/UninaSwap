@@ -14,13 +14,20 @@ import com.uninaswap.client.service.FavoritesService;
 
 public class ItemCardController {
 
-    @FXML private VBox itemCard;
-    @FXML private ImageView itemImage;
-    @FXML private Text itemName;
-    @FXML private Text categoryText;
-    @FXML private Text sellerName;
-    @FXML private Text itemPrice;
-    @FXML private ImageView favoriteIcon;
+    @FXML
+    private VBox itemCard;
+    @FXML
+    private ImageView itemImage;
+    @FXML
+    private Text itemName;
+    @FXML
+    private Text categoryText;
+    @FXML
+    private Text sellerName;
+    @FXML
+    private Text itemPrice;
+    @FXML
+    private ImageView favoriteIcon;
 
     private ItemDTO item;
     private boolean isFavorite = false;
@@ -45,19 +52,19 @@ public class ItemCardController {
         this.item = item;
         itemName.setText(item.getName());
         categoryText.setText(item.getCategory());
-        //sellerName.setText(item.getSellerName());
-        //itemPrice.setText(item.getFormattedPrice());
-        //if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
-        //    itemImage.setImage(new Image(item.getImageUrl(), true));
-        //}
+        // sellerName.setText(item.getSellerName());
+        // itemPrice.setText(item.getFormattedPrice());
+        // if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
+        // itemImage.setImage(new Image(item.getImageUrl(), true));
+        // }
         setFavorite(favoritesService.isFavorite(item.getId()));
     }
 
     private void setFavorite(boolean favorite) {
         isFavorite = favorite;
         String iconPath = favorite
-            ? "/images/elenco_preferiti.png"
-            : "/images/preferiti.png";
+                ? "/images/icons/elenco_preferiti.png"
+                : "/images/icons/preferiti.png";
         favoriteIcon.setImage(new Image(getClass().getResourceAsStream(iconPath)));
     }
 
@@ -70,7 +77,8 @@ public class ItemCardController {
 
     @FXML
     private void toggleFavorite(MouseEvent event) {
-        if (item == null) return;
+        if (item == null)
+            return;
         if (isFavorite) {
             favoritesService.removeFavorite(item.getId());
             setFavorite(false);

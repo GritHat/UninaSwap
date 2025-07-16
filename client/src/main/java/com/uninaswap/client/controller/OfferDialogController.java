@@ -1,7 +1,10 @@
 package com.uninaswap.client.controller;
 
+import com.uninaswap.client.constants.EventTypes;
+import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.*;
 import com.uninaswap.client.util.AlertHelper;
+import com.uninaswap.client.viewmodel.*;
 import com.uninaswap.common.dto.*;
 import com.uninaswap.common.enums.Currency;
 import com.uninaswap.common.enums.ItemCondition;
@@ -22,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class OfferDialogController {
 
@@ -51,28 +55,28 @@ public class OfferDialogController {
     @FXML
     private Button addNewItemButton;
     @FXML
-    private TableView<ItemDTO> availableItemsTable;
+    private TableView<ItemViewModel> availableItemsTable;
     @FXML
-    private TableColumn<ItemDTO, String> itemNameColumn;
+    private TableColumn<ItemViewModel, String> itemNameColumn;
     @FXML
-    private TableColumn<ItemDTO, String> itemConditionColumn;
+    private TableColumn<ItemViewModel, String> itemConditionColumn;
     @FXML
-    private TableColumn<ItemDTO, Integer> itemAvailableColumn;
+    private TableColumn<ItemViewModel, Integer> itemAvailableColumn;
     @FXML
-    private TableColumn<ItemDTO, Void> itemQuantityColumn;
+    private TableColumn<ItemViewModel, Void> itemQuantityColumn;
     @FXML
-    private TableColumn<ItemDTO, Void> itemActionColumn;
+    private TableColumn<ItemViewModel, Void> itemActionColumn;
 
     @FXML
-    private TableView<OfferItemDTO> selectedItemsTable;
+    private TableView<OfferItemViewModel> selectedItemsTable;
     @FXML
-    private TableColumn<OfferItemDTO, String> selectedNameColumn;
+    private TableColumn<OfferItemViewModel, String> selectedNameColumn;
     @FXML
-    private TableColumn<OfferItemDTO, String> selectedConditionColumn;
+    private TableColumn<OfferItemViewModel, String> selectedConditionColumn;
     @FXML
-    private TableColumn<OfferItemDTO, Integer> selectedQuantityColumn;
+    private TableColumn<OfferItemViewModel, Integer> selectedQuantityColumn;
     @FXML
-    private TableColumn<OfferItemDTO, Void> selectedRemoveColumn;
+    private TableColumn<OfferItemViewModel, Void> selectedRemoveColumn;
 
     @FXML
     private TextArea messageArea;
@@ -84,11 +88,15 @@ public class OfferDialogController {
     private final ImageService imageService = ImageService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
     private final OfferService offerService = OfferService.getInstance();
+    private final NavigationService navigationService = NavigationService.getInstance();
+    private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
+    private final EventBusService eventBus = EventBusService.getInstance();
 
     // State
     private ListingDTO currentListing;
-    private final ObservableList<OfferItemDTO> selectedItems = FXCollections.observableArrayList();
+    private final ObservableList<OfferItemViewModel> selectedItems = FXCollections.observableArrayList();
     private final Map<String, Integer> tempReservedQuantities = new HashMap<>();
+    private final Map<Integer, Spinner<Integer>> rowSpinners = new HashMap<>();
 
     @FXML
     public void initialize() {
@@ -97,6 +105,14 @@ public class OfferDialogController {
         setupAvailableItemsTable();
         setupSelectedItemsTable();
         updateOfferSummary();
+
+        eventBus.subscribe(EventTypes.ITEM_UPDATED, itemDTO -> {
+            if (itemDTO instanceof ItemDTO) {
+                ItemViewModel itemViewModel = viewModelMapper.toViewModel((ItemDTO) itemDTO);
+                addItemToOffer(itemViewModel, 1);
+            }
+
+        });
     }
 
     public void setListing(ListingDTO listing) {
@@ -133,7 +149,7 @@ public class OfferDialogController {
     }
 
     private void setupAvailableItemsTable() {
-        itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        itemNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
         itemConditionColumn.setCellValueFactory(cellData -> {
             ItemCondition condition = cellData.getValue().getCondition();
@@ -141,7 +157,7 @@ public class OfferDialogController {
         });
 
         itemAvailableColumn.setCellValueFactory(cellData -> {
-            ItemDTO item = cellData.getValue();
+            ItemViewModel item = cellData.getValue();
             int actualAvailable = item.getAvailableQuantity();
             int tempReserved = tempReservedQuantities.getOrDefault(item.getId(), 0);
             int effectiveAvailable = Math.max(0, actualAvailable - tempReserved);
@@ -149,7 +165,7 @@ public class OfferDialogController {
         });
 
         // Quantity spinner column
-        itemQuantityColumn.setCellFactory(col -> new TableCell<ItemDTO, Void>() {
+        itemQuantityColumn.setCellFactory(col -> new TableCell<ItemViewModel, Void>() {
             private final Spinner<Integer> spinner = new Spinner<>();
 
             {
@@ -163,8 +179,9 @@ public class OfferDialogController {
                 super.updateItem(item, empty);
                 if (empty) {
                     setGraphic(null);
+                    rowSpinners.remove(getIndex());
                 } else {
-                    ItemDTO currentItem = getTableView().getItems().get(getIndex());
+                    ItemViewModel currentItem = getTableView().getItems().get(getIndex());
                     int available = currentItem.getAvailableQuantity() -
                             tempReservedQuantities.getOrDefault(currentItem.getId(), 0);
 
@@ -173,22 +190,24 @@ public class OfferDialogController {
                     valueFactory.setMax(Math.max(1, available));
                     valueFactory.setValue(1);
 
-                    setGraphic(available > 0 ? spinner : null);
+                    if (available > 0) {
+                        setGraphic(spinner);
+                        rowSpinners.put(getIndex(), spinner);
+                    } else {
+                        setGraphic(null);
+                        rowSpinners.remove(getIndex());
+                    }
                 }
             }
         });
 
         // Add button column
-        itemActionColumn.setCellFactory(col -> new TableCell<ItemDTO, Void>() {
+        itemActionColumn.setCellFactory(col -> new TableCell<ItemViewModel, Void>() {
             private final Button addButton = new Button("Aggiungi");
 
             {
                 addButton.setOnAction(e -> {
-                    ItemDTO item = getTableView().getItems().get(getIndex());
-                    TableCell<ItemDTO, Void> quantityCell = (TableCell<ItemDTO, Void>) getTableView().getColumns()
-                            .get(3).getCellFactory().call(null);
-
-                    // Get quantity from the spinner in the same row
+                    ItemViewModel item = getTableView().getItems().get(getIndex());
                     int quantity = getQuantityFromRow(getIndex());
                     addItemToOffer(item, quantity);
                 });
@@ -201,7 +220,7 @@ public class OfferDialogController {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    ItemDTO currentItem = getTableView().getItems().get(getIndex());
+                    ItemViewModel currentItem = getTableView().getItems().get(getIndex());
                     int available = currentItem.getAvailableQuantity() -
                             tempReservedQuantities.getOrDefault(currentItem.getId(), 0);
                     addButton.setDisable(available <= 0);
@@ -212,33 +231,27 @@ public class OfferDialogController {
     }
 
     private int getQuantityFromRow(int rowIndex) {
-        // Get the spinner from the quantity column
-        TableRow<ItemDTO> row = availableItemsTable.getRowFactory().call(availableItemsTable);
-        TableCell<ItemDTO, Void> cell = (TableCell<ItemDTO, Void>) availableItemsTable.getColumns().get(3)
-                .getCellFactory().call(null);
-
-        // For now, return 1 as default. In a real implementation,
-        // you'd need to track the spinner values more carefully
-        return 1;
+        Spinner<Integer> spinner = rowSpinners.get(rowIndex);
+        return spinner != null ? spinner.getValue() : 1;
     }
 
     private void setupSelectedItemsTable() {
-        selectedNameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
+        selectedNameColumn.setCellValueFactory(cellData -> cellData.getValue().itemNameProperty());
 
         selectedConditionColumn.setCellValueFactory(cellData -> {
             ItemCondition condition = cellData.getValue().getCondition();
             return new SimpleStringProperty(condition != null ? condition.getDisplayName() : "");
         });
 
-        selectedQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        selectedQuantityColumn.setCellValueFactory(cellData -> cellData.getValue().quantityProperty().asObject());
 
         // Remove button column
-        selectedRemoveColumn.setCellFactory(col -> new TableCell<OfferItemDTO, Void>() {
+        selectedRemoveColumn.setCellFactory(col -> new TableCell<OfferItemViewModel, Void>() {
             private final Button removeButton = new Button("Rimuovi");
 
             {
                 removeButton.setOnAction(e -> {
-                    OfferItemDTO item = getTableView().getItems().get(getIndex());
+                    OfferItemViewModel item = getTableView().getItems().get(getIndex());
                     removeItemFromOffer(item);
                 });
                 removeButton.getStyleClass().add("remove-from-offer-button");
@@ -252,6 +265,10 @@ public class OfferDialogController {
         });
 
         selectedItemsTable.setItems(selectedItems);
+    }
+
+    public void handleAddNewItem() {
+        navigationService.openItemDialog(new ItemViewModel());
     }
 
     private void populateListingInfo() {
@@ -345,18 +362,23 @@ public class OfferDialogController {
     }
 
     private void loadAvailableItems() {
-        availableItemsTable.setItems(itemService.getUserItemsList());
+        // Convert ItemDTOs from service to ItemViewModels
+        ObservableList<ItemViewModel> itemViewModels = FXCollections.observableArrayList();
+        itemService.getUserItemsList().forEach(itemDTO -> {
+            itemViewModels.add(viewModelMapper.toViewModel(itemDTO));
+        });
+        availableItemsTable.setItems(itemViewModels);
     }
 
-    private void addItemToOffer(ItemDTO item, int quantity) {
+    private void addItemToOffer(ItemViewModel item, int quantity) {
         // Check if item is already in the offer
-        Optional<OfferItemDTO> existingItem = selectedItems.stream()
+        Optional<OfferItemViewModel> existingItem = selectedItems.stream()
                 .filter(offerItem -> offerItem.getItemId().equals(item.getId()))
                 .findFirst();
 
         if (existingItem.isPresent()) {
             // Update quantity
-            OfferItemDTO existing = existingItem.get();
+            OfferItemViewModel existing = existingItem.get();
             int newQuantity = existing.getQuantity() + quantity;
             int available = item.getAvailableQuantity() - tempReservedQuantities.getOrDefault(item.getId(), 0);
 
@@ -376,7 +398,7 @@ public class OfferDialogController {
             int available = item.getAvailableQuantity() - tempReservedQuantities.getOrDefault(item.getId(), 0);
 
             if (quantity <= available) {
-                OfferItemDTO offerItem = new OfferItemDTO(
+                OfferItemViewModel offerItem = new OfferItemViewModel(
                         item.getId(),
                         item.getName(),
                         item.getImagePath(),
@@ -398,7 +420,7 @@ public class OfferDialogController {
         updateOfferSummary();
     }
 
-    private void removeItemFromOffer(OfferItemDTO offerItem) {
+    private void removeItemFromOffer(OfferItemViewModel offerItem) {
         selectedItems.remove(offerItem);
 
         // Update temp reserved quantities
@@ -414,84 +436,6 @@ public class OfferDialogController {
         updateOfferSummary();
     }
 
-    @FXML
-    private void handleAddNewItem() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ItemDialogView.fxml"));
-            loader.setResources(localeService.getResourceBundle());
-            DialogPane dialogPane = loader.load();
-
-            ButtonType confirmButtonType = new ButtonType(
-                    localeService.getMessage("button.confirm"),
-                    ButtonBar.ButtonData.OK_DONE);
-            ButtonType cancelButtonType = new ButtonType(
-                    localeService.getMessage("button.cancel"),
-                    ButtonBar.ButtonData.CANCEL_CLOSE);
-            dialogPane.getButtonTypes().addAll(confirmButtonType, cancelButtonType);
-
-            ItemDialogController controller = loader.getController();
-            controller.setItem(new ItemDTO());
-
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setTitle(localeService.getMessage("item.add.title"));
-            dialog.setHeaderText(localeService.getMessage("item.add.header"));
-            dialog.setDialogPane(dialogPane);
-
-            Optional<ButtonType> result = dialog.showAndWait();
-
-            if (result.isPresent() && result.get() == confirmButtonType) {
-                ItemDTO newItem = controller.getUpdatedItem();
-                File selectedImageFile = controller.getSelectedImageFile();
-
-                // Upload image and save item
-                if (selectedImageFile != null) {
-                    imageService.uploadImageViaHttp(selectedImageFile)
-                            .thenAccept(imagePath -> {
-                                newItem.setImagePath(imagePath);
-                                saveNewItemAndAddToOffer(newItem);
-                            })
-                            .exceptionally(ex -> {
-                                AlertHelper.showErrorAlert(
-                                        "Errore caricamento immagine",
-                                        "Impossibile caricare l'immagine",
-                                        ex.getMessage());
-                                return null;
-                            });
-                } else {
-                    saveNewItemAndAddToOffer(newItem);
-                }
-            }
-        } catch (IOException e) {
-            AlertHelper.showErrorAlert(
-                    "Errore",
-                    "Impossibile aprire il dialogo",
-                    e.getMessage());
-        }
-    }
-
-    private void saveNewItemAndAddToOffer(ItemDTO newItem) {
-        itemService.addItem(newItem)
-                .thenAccept(savedItem -> Platform.runLater(() -> {
-                    // Refresh available items table
-                    loadAvailableItems();
-
-                    // Automatically add the new item to the offer
-                    addItemToOffer(savedItem, 1);
-
-                    AlertHelper.showInformationAlert(
-                            "Oggetto aggiunto",
-                            "Nuovo oggetto creato",
-                            "L'oggetto è stato aggiunto al tuo inventario e all'offerta.");
-                }))
-                .exceptionally(ex -> {
-                    Platform.runLater(() -> AlertHelper.showErrorAlert(
-                            "Errore salvataggio",
-                            "Impossibile salvare l'oggetto",
-                            ex.getMessage()));
-                    return null;
-                });
-    }
-
     private void updateOfferSummary() {
         offerSummaryContent.getChildren().clear();
 
@@ -501,7 +445,6 @@ public class OfferDialogController {
                 BigDecimal amount = new BigDecimal(moneyAmountField.getText().trim());
                 Currency currency = currencyComboBox.getValue();
 
-                // Use localized message
                 String moneyOfferText = localeService.getMessage("offer.summary.money.offer",
                         currency.getSymbol(), amount);
                 Text moneyText = new Text(moneyOfferText);
@@ -531,7 +474,7 @@ public class OfferDialogController {
             itemsTitle.getStyleClass().add("summary-title");
             offerSummaryContent.getChildren().add(itemsTitle);
 
-            for (OfferItemDTO item : selectedItems) {
+            for (OfferItemViewModel item : selectedItems) {
                 String itemText = localeService.getMessage("offer.summary.item.entry",
                         item.getItemName(), item.getQuantity());
                 Text itemEntry = new Text("• " + itemText);
@@ -580,12 +523,13 @@ public class OfferDialogController {
         return true;
     }
 
-    public OfferDTO createOffer() {
+    public CompletableFuture<Boolean> createOffer() {
         if (!isValidOffer()) {
-            return null;
+            return CompletableFuture.completedFuture(false);
         }
 
-        OfferDTO offer = new OfferDTO();
+        // Create OfferViewModel instead of OfferDTO
+        OfferViewModel offer = new OfferViewModel();
         offer.setListingId(currentListing.getId());
         offer.setMessage(messageArea.getText().trim());
 
@@ -596,23 +540,25 @@ public class OfferDialogController {
                 offer.setAmount(amount);
                 offer.setCurrency(currencyComboBox.getValue());
             } catch (NumberFormatException e) {
-                // This shouldn't happen if validation is correct
-                return null;
+                return CompletableFuture.completedFuture(false);
             }
         }
 
         // Set item offers
         if (!selectedItems.isEmpty()) {
-            List<OfferItemDTO> offerItems = new ArrayList<>(selectedItems);
-            offer.setOfferItems(offerItems);
+            offer.getOfferItems().setAll(selectedItems);
         }
 
-        return offer;
+        return offerService.createOffer(offer)
+                .thenApply(createdOffer -> true)
+                .exceptionally(ex -> false);
     }
 
     public void cleanup() {
         // Reset temp reserved quantities
         tempReservedQuantities.clear();
+        // Clear spinner references
+        rowSpinners.clear();
     }
 
     public CheckBox getIncludeMoneyCheckBox() {
@@ -623,7 +569,7 @@ public class OfferDialogController {
         return moneyAmountField;
     }
 
-    public ObservableList<OfferItemDTO> getSelectedItems() {
+    public ObservableList<OfferItemViewModel> getSelectedItems() {
         return selectedItems;
     }
 }

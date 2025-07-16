@@ -3,6 +3,7 @@ package com.uninaswap.client.controller;
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
+import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.UserSessionService;
 
@@ -39,6 +40,8 @@ public class SidebarController {
     private final ImageService imageService;
     private final NavigationService navigationService;
     private final UserSessionService sessionService;
+    private final EventBusService eventBus = EventBusService.getInstance();
+    private final LocaleService localeService = LocaleService.getInstance();
 
     private MainController mainController;
 
@@ -146,6 +149,16 @@ public class SidebarController {
             mainController.setContent(supportView);
         } catch (java.io.IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void showOffers(MouseEvent event) {
+        try {
+            Parent offersView = navigationService.loadOffersView();
+            mainController.setContent(offersView);
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
             // Optionally, show an error dialog to the user
         }
     }
@@ -154,65 +167,9 @@ public class SidebarController {
     public void logout(MouseEvent event) {
         try {
             navigationService.logout();
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-            // Optionally, show an error dialog to the user
+        } catch (Exception e) {
+            statusLabel.setText(localeService.getMessage("dashboard.error.logout", e.getMessage()));
         }
-    }
-
-    @FXML
-    public void handleMouseMove(MouseEvent event) {
-        // Get the source of the event (the ImageView that was hovered)
-        // ImageView source = (ImageView) event.getSource();
-
-        // Apply a visual effect to indicate hover state
-        // source.setScaleX(1.2);
-        // source.setScaleY(1.2);
-        // source.setOpacity(0.8);
-    }
-
-    @FXML
-    public void handleMouseExit(MouseEvent event) {
-        // Reset the visual effect when mouse exits
-        /*
-         * ImageView source = (ImageView) event.getSource();
-         * 
-         * source.setScaleX(1.0);
-         * source.setScaleY(1.0);
-         * source.setOpacity(1.0);
-         */
-    }
-
-    /**
-     * Sets a default profile image when no custom image is available
-     */
-    private void setDefaultProfileImage() {
-        /*
-         * if (ProfileImageIcon == null)
-         * return;
-         * 
-         * try {
-         * String imagePath = "/images/icons/user_profile.png";
-         * Image defaultImage = new Image(getClass().getResourceAsStream(imagePath));
-         * 
-         * if (defaultImage.isError()) {
-         * System.err.println("Error loading default profile image: " +
-         * defaultImage.getException().getMessage());
-         * return;
-         * }
-         * 
-         * ProfileImageIcon.setImage(defaultImage);
-         * 
-         * // Apply circular clip
-         * Circle clip = new Circle(13, 13, 13); // Adattato alle dimensioni dell'icona
-         * 26x35
-         * ProfileImageIcon.setClip(clip);
-         * } catch (Exception e) {
-         * System.err.println("Exception setting default profile image: " +
-         * e.getMessage());
-         * e.printStackTrace();
-         * }
-         */
     }
 
     /**

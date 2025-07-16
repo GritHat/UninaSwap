@@ -14,7 +14,8 @@ public class OfferDTO implements Serializable {
 
     private String id;
     private String listingId;
-    private UserDTO user;
+    private ListingDTO listing;
+    private UserDTO offeringUser;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private OfferStatus status;
@@ -50,12 +51,12 @@ public class OfferDTO implements Serializable {
         this.listingId = listingId;
     }
 
-    public UserDTO getUser() {
-        return user;
+    public UserDTO getOfferingUser() {
+        return offeringUser;
     }
 
-    public void setUser(UserDTO user) {
-        this.user = user;
+    public void setOfferingUser(UserDTO user) {
+        this.offeringUser = user;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -112,5 +113,13 @@ public class OfferDTO implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public ListingDTO getListing() {
+        return listing;
+    }
+
+    public void setListing(ListingDTO listing) {
+        this.listing = listing;
     }
 }

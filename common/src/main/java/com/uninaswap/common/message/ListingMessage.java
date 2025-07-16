@@ -19,111 +19,102 @@ public class ListingMessage extends Message {
         GET_LISTING_DETAIL_REQUEST,
         GET_LISTING_DETAIL_RESPONSE
     }
-    
+
     private Type type;
-    private String listingTypeValue;  // "SELL", "TRADE", "GIFT", "AUCTION"
+    private String listingTypeValue; // "SELL", "TRADE", "GIFT", "AUCTION"
     private ListingDTO listing;
     private List<ListingDTO> listings;
     private String errorMessage;
-    private boolean success;
     private String listingId;
-    
+
     // For pagination
     private int page;
     private int size;
     private long totalElements;
     private int totalPages;
-    
+
     // Default constructor
     public ListingMessage() {
-        setMessageType("LISTING");
+        setMessageType("listing");
     }
-    
+
     // Getters and setters
     public Type getType() {
         return type;
     }
-    
+
     public void setType(Type type) {
         this.type = type;
     }
-    
+
     public String getListingTypeValue() {
         return listingTypeValue;
     }
-    
+
     public void setListingTypeValue(String listingTypeValue) {
         this.listingTypeValue = listingTypeValue;
     }
-    
+
     public ListingDTO getListing() {
         return listing;
     }
-    
+
     public void setListing(ListingDTO listing) {
         this.listing = listing;
     }
-    
+
     public List<ListingDTO> getListings() {
         return listings;
     }
-    
+
     public void setListings(List<ListingDTO> listings) {
         this.listings = listings;
     }
-    
+
     public String getErrorMessage() {
         return errorMessage;
     }
-    
+
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
-    
-    public boolean isSuccess() {
-        return success;
-    }
-    
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-    
+
     public String getListingId() {
         return listingId;
     }
-    
+
     public void setListingId(String listingId) {
         this.listingId = listingId;
     }
-    
+
     public int getPage() {
         return page;
     }
-    
+
     public void setPage(int page) {
         this.page = page;
     }
-    
+
     public int getSize() {
         return size;
     }
-    
+
     public void setSize(int size) {
         this.size = size;
     }
-    
+
     public long getTotalElements() {
         return totalElements;
     }
-    
+
     public void setTotalElements(long totalElements) {
         this.totalElements = totalElements;
     }
-    
+
     public int getTotalPages() {
         return totalPages;
     }
-    
+
     public void setTotalPages(int totalPages) {
         this.totalPages = totalPages;
     }

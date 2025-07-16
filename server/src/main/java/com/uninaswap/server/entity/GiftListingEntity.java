@@ -3,8 +3,6 @@ package com.uninaswap.server.entity;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.uninaswap.common.enums.ListingStatus;
 import com.uninaswap.common.enums.OfferStatus;
 
 /**
@@ -22,11 +20,7 @@ public class GiftListingEntity extends ListingEntity {
 
     // Thank-you offer settings
     @Column(nullable = false)
-    private boolean allowThankYouOffers = true;
-
-    @OneToOne
-    @JoinColumn(name = "selected_recipient_id")
-    private UserEntity selectedRecipient;
+    private boolean allowThankYouOffers;
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OfferEntity> thankYouOffers = new ArrayList<>();
@@ -38,7 +32,7 @@ public class GiftListingEntity extends ListingEntity {
 
     // Constructor with required fields
     public GiftListingEntity(String title, String description, UserEntity creator, String ImagePath,
-            boolean pickupOnly, String restrictions) {
+            boolean pickupOnly, String restrictions, boolean allowThankYouOffers) {
         super();
         this.setTitle(title);
         this.setDescription(description);
@@ -46,6 +40,7 @@ public class GiftListingEntity extends ListingEntity {
         this.setImagePath(ImagePath);
         this.pickupOnly = pickupOnly;
         this.restrictions = restrictions;
+        this.allowThankYouOffers = allowThankYouOffers;
     }
 
     /**
@@ -105,26 +100,6 @@ public class GiftListingEntity extends ListingEntity {
         return false;
     }
 
-    /**
-     * Set the selected recipient for this gift
-     * 
-     * @param recipient The user to receive the gift
-     */
-    public void selectRecipient(UserEntity recipient) {
-        this.selectedRecipient = recipient;
-        this.setStatus(ListingStatus.PENDING);
-    }
-
-    /**
-     * Mark the gift as completed (delivered to recipient)
-     */
-    public void markAsDelivered() {
-        if (this.selectedRecipient == null) {
-            throw new IllegalStateException("Cannot mark as delivered without a selected recipient");
-        }
-        this.setStatus(ListingStatus.COMPLETED);
-    }
-
     @Override
     public String getListingType() {
         return "Gift";
@@ -168,14 +143,6 @@ public class GiftListingEntity extends ListingEntity {
 
     public void setAllowThankYouOffers(boolean allowThankYouOffers) {
         this.allowThankYouOffers = allowThankYouOffers;
-    }
-
-    public UserEntity getSelectedRecipient() {
-        return selectedRecipient;
-    }
-
-    public void setSelectedRecipient(UserEntity selectedRecipient) {
-        this.selectedRecipient = selectedRecipient;
     }
 
     public List<OfferEntity> getThankYouOffers() {

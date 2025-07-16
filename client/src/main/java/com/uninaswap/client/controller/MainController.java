@@ -262,18 +262,6 @@ public class MainController implements Refreshable {
                 });
     }
 
-    // Existing methods
-    @FXML
-    public void handleLogout(ActionEvent event) {
-        try {
-            eventBus.clearAllSubscriptions();
-            sessionService.endSession();
-            navigationService.navigateToLogin(usernameLabel);
-        } catch (Exception e) {
-            statusLabel.setText(localeService.getMessage("dashboard.error.logout", e.getMessage()));
-        }
-    }
-
     private void checkAuthentication() {
         if (!sessionService.isLoggedIn()) {
             Platform.runLater(() -> {

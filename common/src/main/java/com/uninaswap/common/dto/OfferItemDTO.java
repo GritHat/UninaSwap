@@ -9,6 +9,9 @@ public class OfferItemDTO {
     private ItemCondition condition;
     private int quantity;
 
+    public OfferItemDTO() {
+    }
+
     public OfferItemDTO(String itemId, String itemName, String itemImagePath, ItemCondition condition,
             int quantity) {
         this.itemId = itemId;

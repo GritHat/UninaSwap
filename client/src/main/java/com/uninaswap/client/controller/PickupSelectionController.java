@@ -1,0 +1,654 @@
+package com.uninaswap.client.controller;
+
+import com.uninaswap.client.service.LocaleService;
+import com.uninaswap.client.service.PickupService;
+import com.uninaswap.client.util.AlertHelper;
+import com.uninaswap.common.dto.PickupDTO;
+import com.uninaswap.common.enums.PickupStatus;
+import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class PickupSelectionController {
+
+    @FXML
+    private Label titleLabel;
+
+    @FXML
+    private Label instructionsLabel;
+
+    @FXML
+    private VBox availableDatesSection;
+
+    @FXML
+    private FlowPane availableDatesPane;
+
+    @FXML
+    private Label timeRangeLabel;
+
+    @FXML
+    private VBox selectedDateTimeSection;
+
+    @FXML
+    private DatePicker selectedDatePicker;
+
+    @FXML
+    private Spinner<Integer> selectedHourSpinner;
+
+    @FXML
+    private Spinner<Integer> selectedMinuteSpinner;
+
+    @FXML
+    private Label locationLabel;
+
+    @FXML
+    private Label detailsLabel;
+
+    @FXML
+    private TextArea detailsArea;
+
+    @FXML
+    private Button acceptButton;
+
+    @FXML
+    private Button rejectButton;
+
+    @FXML
+    private Button counterProposeButton;
+
+    @FXML
+    private Button cancelButton;
+
+    // Counter proposal section (initially hidden)
+    @FXML
+    private VBox counterProposalSection;
+
+    @FXML
+    private TextField counterLocationField;
+
+    @FXML
+    private Spinner<Integer> counterStartHourSpinner;
+
+    @FXML
+    private Spinner<Integer> counterStartMinuteSpinner;
+
+    @FXML
+    private Spinner<Integer> counterEndHourSpinner;
+
+    @FXML
+    private Spinner<Integer> counterEndMinuteSpinner;
+
+    @FXML
+    private DatePicker counterStartDatePicker;
+
+    @FXML
+    private DatePicker counterEndDatePicker;
+
+    @FXML
+    private FlowPane counterSelectedDatesPane;
+
+    @FXML
+    private Button addCounterDateRangeButton;
+
+    @FXML
+    private Button clearCounterDatesButton;
+
+    @FXML
+    private Label counterSelectedDatesCountLabel;
+
+    @FXML
+    private TextArea counterDetailsArea;
+
+    @FXML
+    private Button submitCounterProposalButton;
+
+    @FXML
+    private Button cancelCounterProposalButton;
+
+    // Services
+    private final LocaleService localeService = LocaleService.getInstance();
+    private final PickupService pickupService = PickupService.getInstance();
+
+    // Data
+    private PickupDTO currentPickup;
+    private List<LocalDate> counterSelectedDates = new ArrayList<>();
+    private boolean isCounterProposalMode = false;
+
+    @FXML
+    public void initialize() {
+        setupTimeSpinners();
+        setupLabels();
+        setupCounterProposalSection();
+        updateUI();
+    }
+
+    private void setupTimeSpinners() {
+        // Selected time spinners
+        selectedHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12));
+        selectedMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15));
+
+        // Counter proposal time spinners
+        counterStartHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9));
+        counterStartMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15));
+        counterEndHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 18));
+        counterEndMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15));
+
+        // Make spinners editable
+        selectedHourSpinner.setEditable(true);
+        selectedMinuteSpinner.setEditable(true);
+        counterStartHourSpinner.setEditable(true);
+        counterStartMinuteSpinner.setEditable(true);
+        counterEndHourSpinner.setEditable(true);
+        counterEndMinuteSpinner.setEditable(true);
+
+        // Add validation listeners for counter proposal
+        counterStartHourSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateCounterTimeRange());
+        counterStartMinuteSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateCounterTimeRange());
+        counterEndHourSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateCounterTimeRange());
+        counterEndMinuteSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateCounterTimeRange());
+    }
+
+    private void setupLabels() {
+        titleLabel.setText(localeService.getMessage("pickup.selection.title", "Select Pickup Time"));
+        instructionsLabel.setText(localeService.getMessage("pickup.selection.instructions",
+                "Choose a convenient date and time from the available options, or propose an alternative"));
+
+        acceptButton.setText(localeService.getMessage("pickup.selection.accept", "Accept Time"));
+        rejectButton.setText(localeService.getMessage("pickup.selection.reject", "Reject"));
+        counterProposeButton.setText(localeService.getMessage("pickup.selection.counter", "Counter Propose"));
+        cancelButton.setText(localeService.getMessage("pickup.selection.cancel", "Cancel"));
+
+        submitCounterProposalButton
+                .setText(localeService.getMessage("pickup.counter.submit", "Submit Counter Proposal"));
+        cancelCounterProposalButton
+                .setText(localeService.getMessage("pickup.counter.cancel", "Cancel Counter Proposal"));
+
+        addCounterDateRangeButton.setText(localeService.getMessage("pickup.add.dates", "Add Date Range"));
+        clearCounterDatesButton.setText(localeService.getMessage("pickup.clear.dates", "Clear All"));
+    }
+
+    private void setupCounterProposalSection() {
+        counterProposalSection.setVisible(false);
+        counterProposalSection.setManaged(false);
+
+        // Setup date pickers for counter proposal
+        LocalDate today = LocalDate.now();
+        counterStartDatePicker.setValue(today);
+        counterEndDatePicker.setValue(today.plusDays(7));
+
+        // Disable past dates
+        counterStartDatePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                setDisable(empty || date.isBefore(today));
+            }
+        });
+
+        counterEndDatePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                LocalDate startDate = counterStartDatePicker.getValue();
+                setDisable(empty || date.isBefore(today) ||
+                        (startDate != null && date.isBefore(startDate)));
+            }
+        });
+
+        // Update end date picker when start date changes
+        counterStartDatePicker.valueProperty().addListener((obs, oldDate, newDate) -> {
+            if (newDate != null && counterEndDatePicker.getValue() != null &&
+                    counterEndDatePicker.getValue().isBefore(newDate)) {
+                counterEndDatePicker.setValue(newDate);
+            }
+        });
+
+        updateCounterSelectedDatesDisplay();
+    }
+
+    public void setPickup(PickupDTO pickup) {
+        this.currentPickup = pickup;
+        updateUI();
+    }
+
+    private void updateUI() {
+        if (currentPickup == null)
+            return;
+
+        // Update available dates display
+        updateAvailableDatesDisplay();
+
+        // Update time range
+        if (currentPickup.getStartTime() != null && currentPickup.getEndTime() != null) {
+            timeRangeLabel.setText(String.format("%s - %s",
+                    currentPickup.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                    currentPickup.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))));
+        }
+
+        // Update location and details
+        locationLabel.setText(currentPickup.getLocation() != null ? currentPickup.getLocation() : "");
+        detailsArea.setText(currentPickup.getDetails() != null ? currentPickup.getDetails() : "");
+        detailsArea.setEditable(false);
+
+        // Set up date picker for selection
+        if (!currentPickup.getAvailableDates().isEmpty()) {
+            selectedDatePicker.setValue(currentPickup.getAvailableDates().get(0));
+        }
+
+        // Set default time to middle of available range
+        if (currentPickup.getStartTime() != null && currentPickup.getEndTime() != null) {
+            LocalTime middleTime = currentPickup.getStartTime().plusMinutes(
+                    java.time.Duration.between(currentPickup.getStartTime(), currentPickup.getEndTime()).toMinutes()
+                            / 2);
+            selectedHourSpinner.getValueFactory().setValue(middleTime.getHour());
+            selectedMinuteSpinner.getValueFactory().setValue(middleTime.getMinute());
+        }
+
+        // Validate initial selection
+        validateSelection();
+    }
+
+    private void updateAvailableDatesDisplay() {
+        availableDatesPane.getChildren().clear();
+
+        if (currentPickup.getAvailableDates() != null) {
+            for (LocalDate date : currentPickup.getAvailableDates()) {
+                Label dateLabel = new Label(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                dateLabel.getStyleClass().add("available-date-chip");
+
+                // Add click handler to select this date
+                dateLabel.setOnMouseClicked(e -> {
+                    selectedDatePicker.setValue(date);
+                    validateSelection();
+                });
+
+                availableDatesPane.getChildren().add(dateLabel);
+            }
+        }
+    }
+
+    @FXML
+    private void handleAccept() {
+        if (!validateSelection()) {
+            return;
+        }
+
+        LocalDate selectedDate = selectedDatePicker.getValue();
+        LocalTime selectedTime = LocalTime.of(selectedHourSpinner.getValue(), selectedMinuteSpinner.getValue());
+
+        acceptButton.setDisable(true);
+
+        pickupService.acceptPickup(currentPickup.getId(), selectedDate, selectedTime)
+                .thenAccept(success -> Platform.runLater(() -> {
+                    if (success) {
+                        AlertHelper.showInformationAlert(
+                                localeService.getMessage("pickup.accept.success.title", "Pickup Confirmed"),
+                                localeService.getMessage("pickup.accept.success.header", "Success"),
+                                localeService.getMessage("pickup.accept.success.message",
+                                        String.format("Pickup confirmed for %s at %s",
+                                                selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                                                selectedTime.format(DateTimeFormatter.ofPattern("HH:mm")))));
+                        closeWindow();
+                    } else {
+                        AlertHelper.showErrorAlert(
+                                localeService.getMessage("pickup.accept.error.title", "Error"),
+                                localeService.getMessage("pickup.accept.error.header", "Failed to confirm pickup"),
+                                localeService.getMessage("pickup.accept.error.message",
+                                        "Could not confirm the pickup time"));
+                        acceptButton.setDisable(false);
+                    }
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        AlertHelper.showErrorAlert(
+                                localeService.getMessage("pickup.accept.error.title", "Error"),
+                                localeService.getMessage("pickup.accept.error.header", "Connection Error"),
+                                ex.getMessage());
+                        acceptButton.setDisable(false);
+                    });
+                    return null;
+                });
+    }
+
+    @FXML
+    private void handleReject() {
+        Alert confirmation = AlertHelper.createConfirmationDialog(
+                localeService.getMessage("pickup.reject.confirm.title", "Reject Pickup"),
+                localeService.getMessage("pickup.reject.confirm.header", "Reject Pickup Proposal"),
+                localeService.getMessage("pickup.reject.confirm.message",
+                        "Are you sure you want to reject this pickup proposal? This will cancel the accepted offer."));
+
+        confirmation.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                rejectButton.setDisable(true);
+
+                pickupService.updatePickupStatus(currentPickup.getId(), PickupStatus.DECLINED)
+                        .thenAccept(success -> Platform.runLater(() -> {
+                            if (success) {
+                                AlertHelper.showInformationAlert(
+                                        localeService.getMessage("pickup.reject.success.title", "Pickup Rejected"),
+                                        localeService.getMessage("pickup.reject.success.header", "Pickup Rejected"),
+                                        localeService.getMessage("pickup.reject.success.message",
+                                                "The pickup proposal has been rejected. The offer will be cancelled."));
+                                closeWindow();
+                            } else {
+                                AlertHelper.showErrorAlert(
+                                        localeService.getMessage("pickup.reject.error.title", "Error"),
+                                        localeService.getMessage("pickup.reject.error.header",
+                                                "Failed to reject pickup"),
+                                        localeService.getMessage("pickup.reject.error.message",
+                                                "Could not reject the pickup"));
+                                rejectButton.setDisable(false);
+                            }
+                        }))
+                        .exceptionally(ex -> {
+                            Platform.runLater(() -> {
+                                AlertHelper.showErrorAlert(
+                                        localeService.getMessage("pickup.reject.error.title", "Error"),
+                                        localeService.getMessage("pickup.reject.error.header", "Connection Error"),
+                                        ex.getMessage());
+                                rejectButton.setDisable(false);
+                            });
+                            return null;
+                        });
+            }
+        });
+    }
+
+    @FXML
+    private void handleCounterPropose() {
+        isCounterProposalMode = true;
+
+        // Hide main selection section
+        availableDatesSection.setVisible(false);
+        availableDatesSection.setManaged(false);
+        selectedDateTimeSection.setVisible(false);
+        selectedDateTimeSection.setManaged(false);
+
+        // Show counter proposal section
+        counterProposalSection.setVisible(true);
+        counterProposalSection.setManaged(true);
+
+        // Update instructions
+        instructionsLabel.setText(localeService.getMessage("pickup.counter.instructions",
+                "Propose your available dates and time range for pickup"));
+
+        // Hide original buttons
+        acceptButton.setVisible(false);
+        rejectButton.setVisible(false);
+        counterProposeButton.setVisible(false);
+
+        // Prefill with original location if available
+        if (currentPickup.getLocation() != null) {
+            counterLocationField.setText(currentPickup.getLocation());
+        }
+    }
+
+    @FXML
+    private void handleAddCounterDateRange() {
+        LocalDate startDate = counterStartDatePicker.getValue();
+        LocalDate endDate = counterEndDatePicker.getValue();
+
+        if (startDate == null || endDate == null) {
+            AlertHelper.showWarningAlert(
+                    localeService.getMessage("pickup.validation.title", "Validation Error"),
+                    localeService.getMessage("pickup.validation.header", "Invalid Input"),
+                    localeService.getMessage("pickup.validation.dates.required",
+                            "Please select both start and end dates"));
+            return;
+        }
+
+        if (startDate.isAfter(endDate)) {
+            AlertHelper.showWarningAlert(
+                    localeService.getMessage("pickup.validation.title", "Validation Error"),
+                    localeService.getMessage("pickup.validation.header", "Invalid Input"),
+                    localeService.getMessage("pickup.validation.dates.order",
+                            "Start date must be before or equal to end date"));
+            return;
+        }
+
+        // Add all dates in the range
+        List<LocalDate> datesToAdd = new ArrayList<>();
+        LocalDate current = startDate;
+        while (!current.isAfter(endDate)) {
+            if (!counterSelectedDates.contains(current)) {
+                datesToAdd.add(current);
+            }
+            current = current.plusDays(1);
+        }
+
+        counterSelectedDates.addAll(datesToAdd);
+        counterSelectedDates.sort(LocalDate::compareTo);
+        updateCounterSelectedDatesDisplay();
+
+        AlertHelper.showInformationAlert(
+                localeService.getMessage("pickup.dates.added.title", "Dates Added"),
+                localeService.getMessage("pickup.dates.added.header", "Success"),
+                String.format(
+                        localeService.getMessage("pickup.dates.added.message", "Added %d dates to your availability"),
+                        datesToAdd.size()));
+    }
+
+    @FXML
+    private void handleClearCounterDates() {
+        if (counterSelectedDates.isEmpty()) {
+            return;
+        }
+
+        Alert confirmation = AlertHelper.createConfirmationDialog(
+                localeService.getMessage("pickup.clear.confirm.title", "Clear Dates"),
+                localeService.getMessage("pickup.clear.confirm.header", "Clear All Selected Dates"),
+                localeService.getMessage("pickup.clear.confirm.message",
+                        "Are you sure you want to clear all selected dates?"));
+
+        confirmation.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                counterSelectedDates.clear();
+                updateCounterSelectedDatesDisplay();
+            }
+        });
+    }
+
+    @FXML
+    private void handleSubmitCounterProposal() {
+        if (!validateCounterProposal()) {
+            return;
+        }
+
+        LocalTime startTime = LocalTime.of(counterStartHourSpinner.getValue(), counterStartMinuteSpinner.getValue());
+        LocalTime endTime = LocalTime.of(counterEndHourSpinner.getValue(), counterEndMinuteSpinner.getValue());
+
+        // Create new pickup with counter proposal
+        PickupDTO counterPickupDTO = new PickupDTO(
+                currentPickup.getOfferId(),
+                new ArrayList<>(counterSelectedDates),
+                startTime,
+                endTime,
+                counterLocationField.getText().trim(),
+                counterDetailsArea.getText().trim(),
+                null // createdByUserId will be set by the service
+        );
+
+        submitCounterProposalButton.setDisable(true);
+
+        // First reject the current pickup
+        pickupService.updatePickupStatus(currentPickup.getId(), PickupStatus.DECLINED)
+                .thenCompose(rejected -> {
+                    if (rejected) {
+                        // Then create the counter proposal
+                        return pickupService.createPickup(counterPickupDTO);
+                    } else {
+                        throw new RuntimeException("Failed to reject current pickup");
+                    }
+                })
+                .thenAccept(success -> Platform.runLater(() -> {
+                    if (success) {
+                        AlertHelper.showInformationAlert(
+                                localeService.getMessage("pickup.counter.success.title", "Counter Proposal Sent"),
+                                localeService.getMessage("pickup.counter.success.header", "Success"),
+                                localeService.getMessage("pickup.counter.success.message",
+                                        "Your counter proposal has been sent. The other party can now review your availability."));
+                        closeWindow();
+                    } else {
+                        AlertHelper.showErrorAlert(
+                                localeService.getMessage("pickup.counter.error.title", "Error"),
+                                localeService.getMessage("pickup.counter.error.header",
+                                        "Failed to send counter proposal"),
+                                localeService.getMessage("pickup.counter.error.message",
+                                        "Could not send the counter proposal"));
+                        submitCounterProposalButton.setDisable(false);
+                    }
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        AlertHelper.showErrorAlert(
+                                localeService.getMessage("pickup.counter.error.title", "Error"),
+                                localeService.getMessage("pickup.counter.error.header", "Connection Error"),
+                                ex.getMessage());
+                        submitCounterProposalButton.setDisable(false);
+                    });
+                    return null;
+                });
+    }
+
+    @FXML
+    private void handleCancelCounterProposal() {
+        isCounterProposalMode = false;
+
+        // Show main selection section
+        availableDatesSection.setVisible(true);
+        availableDatesSection.setManaged(true);
+        selectedDateTimeSection.setVisible(true);
+        selectedDateTimeSection.setManaged(true);
+
+        // Hide counter proposal section
+        counterProposalSection.setVisible(false);
+        counterProposalSection.setManaged(false);
+
+        // Restore original instructions
+        instructionsLabel.setText(localeService.getMessage("pickup.selection.instructions",
+                "Choose a convenient date and time from the available options, or propose an alternative"));
+
+        // Show original buttons
+        acceptButton.setVisible(true);
+        rejectButton.setVisible(true);
+        counterProposeButton.setVisible(true);
+
+        // Clear counter proposal data
+        counterSelectedDates.clear();
+        updateCounterSelectedDatesDisplay();
+    }
+
+    @FXML
+    private void handleCancel() {
+        closeWindow();
+    }
+
+    private boolean validateSelection() {
+        if (currentPickup == null)
+            return false;
+
+        LocalDate selectedDate = selectedDatePicker.getValue();
+        LocalTime selectedTime = LocalTime.of(selectedHourSpinner.getValue(), selectedMinuteSpinner.getValue());
+
+        // Check if selected date is available
+        if (!currentPickup.getAvailableDates().contains(selectedDate)) {
+            acceptButton.setDisable(true);
+            return false;
+        }
+
+        // Check if selected time is within range
+        if (selectedTime.isBefore(currentPickup.getStartTime()) || selectedTime.isAfter(currentPickup.getEndTime())) {
+            acceptButton.setDisable(true);
+            return false;
+        }
+
+        acceptButton.setDisable(false);
+        return true;
+    }
+
+    private void validateCounterTimeRange() {
+        LocalTime startTime = LocalTime.of(counterStartHourSpinner.getValue(), counterStartMinuteSpinner.getValue());
+        LocalTime endTime = LocalTime.of(counterEndHourSpinner.getValue(), counterEndMinuteSpinner.getValue());
+
+        if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
+            submitCounterProposalButton.setDisable(true);
+        } else {
+            submitCounterProposalButton.setDisable(false);
+        }
+    }
+
+    private boolean validateCounterProposal() {
+        // Check location
+        if (counterLocationField.getText().trim().isEmpty()) {
+            AlertHelper.showWarningAlert(
+                    localeService.getMessage("pickup.validation.title", "Validation Error"),
+                    localeService.getMessage("pickup.validation.header", "Invalid Input"),
+                    localeService.getMessage("pickup.validation.location.required", "Please enter a pickup location"));
+            counterLocationField.requestFocus();
+            return false;
+        }
+
+        // Check time range
+        LocalTime startTime = LocalTime.of(counterStartHourSpinner.getValue(), counterStartMinuteSpinner.getValue());
+        LocalTime endTime = LocalTime.of(counterEndHourSpinner.getValue(), counterEndMinuteSpinner.getValue());
+
+        if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
+            AlertHelper.showWarningAlert(
+                    localeService.getMessage("pickup.validation.title", "Validation Error"),
+                    localeService.getMessage("pickup.validation.header", "Invalid Input"),
+                    localeService.getMessage("pickup.validation.time.invalid", "End time must be after start time"));
+            counterStartHourSpinner.requestFocus();
+            return false;
+        }
+
+        // Check selected dates
+        if (counterSelectedDates.isEmpty()) {
+            AlertHelper.showWarningAlert(
+                    localeService.getMessage("pickup.validation.title", "Validation Error"),
+                    localeService.getMessage("pickup.validation.header", "Invalid Input"),
+                    localeService.getMessage("pickup.validation.dates.empty",
+                            "Please select at least one available date"));
+            return false;
+        }
+
+        return true;
+    }
+
+    private void updateCounterSelectedDatesDisplay() {
+        counterSelectedDatesPane.getChildren().clear();
+
+        counterSelectedDatesCountLabel.setText(String.format(
+                localeService.getMessage("pickup.dates.selected.count", "Selected dates: %d"),
+                counterSelectedDates.size()));
+
+        for (LocalDate date : counterSelectedDates) {
+            Label dateLabel = new Label(date.toString());
+            dateLabel.getStyleClass().add("date-chip");
+
+            Button removeButton = new Button("×");
+            removeButton.getStyleClass().add("date-chip-remove");
+            removeButton.setOnAction(e -> {
+                counterSelectedDates.remove(date);
+                updateCounterSelectedDatesDisplay();
+            });
+
+            dateLabel.setGraphic(removeButton);
+            counterSelectedDatesPane.getChildren().add(dateLabel);
+        }
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) cancelButton.getScene().getWindow();
+        stage.close();
+    }
+}

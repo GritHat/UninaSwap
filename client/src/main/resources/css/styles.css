@@ -11,7 +11,7 @@
     -fx-accent-light: #A569BD;
 
     /* Colori neutri */
-    -fx-background-light: #F8F8F8;
+    -fx-background-light: #FFFFFF;
     -fx-card-bg: #FFFFFF;
     -fx-light-grey: #E0E0E0;
     -fx-mid-grey: #CCCCCC;
@@ -35,7 +35,7 @@
 .root {
     font-family: 'Segoe UI', Arial, sans-serif;
     -fx-font-family: 'Segoe UI', Arial, sans-serif;
-    background-color: #F8F8F8;
+    background-color: -fx-background-light;
     -fx-background-color: -fx-background-light;
 }
 
@@ -491,8 +491,8 @@
 
 /* Settings page styles */
 .settings-content {
-    background-color: #F8F8F8;
-    -fx-background-color: #F8F8F8;
+    background-color: -fx-background-light;
+    -fx-background-color: -fx-background-light;
 }
 
 .section-title {
@@ -653,4 +653,975 @@
 /* Image hover effect for multiple images */
 .card ImageView:hover {
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 0);
+}
+
+/* =========================
+   TABLE STYLING
+   ========================= */
+
+/* Main table container */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+/* Table header */
+.table-view .column-header-background {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 12px 12px 0 0;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 0 1 0 0;
+    -fx-padding: 12px 8px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-view .column-header:last-child {
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-color: transparent -fx-primary-light transparent -fx-primary-light !important;
+}
+
+.table-view .column-header-background .column-header:last-child {
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-color: transparent !important;
+}
+
+.table-view .nested-column-header:last-child {
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-color: transparent !important;
+}
+
+.table-view .table-column:last-child .column-header {
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-color: transparent !important;
+}
+
+.table-view.compact .column-header:last-child {
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-color: transparent !important;
+}
+
+.table-view .column-header-background>*:last-child {
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-right: none !important;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+/* Table rows */
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #F0F0F0;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #FAFAFA;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-border-color: -fx-primary-light;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #F0EBFF;
+}
+
+.table-view .table-row-cell:selected:hover {
+    -fx-background-color: -fx-primary-ultralight;
+}
+
+/* Table cells */
+.table-view .table-cell {
+    -fx-border-color: transparent;
+    -fx-padding: 12px 8px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-text-fill: -fx-text-dark;
+    -fx-font-size: 12px;
+}
+
+/* Remove default focus indicators */
+.table-view:focused .table-row-cell:selected {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-border-color: -fx-primary-light;
+}
+
+/* Table corner rounding for last row */
+.table-view .table-row-cell:last-child {
+    -fx-background-radius: 0 0 12px 12px;
+}
+
+/* Scrollbar styling for tables */
+.table-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 8px;
+}
+
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: -fx-primary-light;
+    -fx-background-radius: 4px;
+}
+
+.table-view .scroll-bar:vertical .track {
+    -fx-background-color: #F0F0F0;
+    -fx-background-radius: 4px;
+}
+
+.table-view .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-pref-height: 8px;
+}
+
+.table-view .scroll-bar:horizontal .thumb {
+    -fx-background-color: -fx-primary-light;
+    -fx-background-radius: 4px;
+}
+
+.table-view .scroll-bar:horizontal .track {
+    -fx-background-color: #F0F0F0;
+    -fx-background-radius: 4px;
+}
+
+/* Table empty row styling */
+.table-view .table-row-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-view .table-row-cell:empty .table-cell {
+    -fx-border-color: transparent;
+}
+
+/* Placeholder text for empty tables */
+.table-view .placeholder .label {
+    -fx-text-fill: -fx-text-subtle;
+    -fx-font-style: italic;
+    -fx-font-size: 14px;
+}
+
+/* =========================
+   OFFER DIALOG SPECIFIC TABLE STYLING
+   ========================= */
+
+/* Buttons in table cells */
+.table-view .add-to-offer-button {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-background-radius: 20px;
+    /* Changed from 6px to 20px for rounded corners */
+    -fx-border-radius: 20px;
+    /* Changed from 6px to 20px for rounded corners */
+    -fx-padding: 6px 12px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
+}
+
+.table-view .add-to-offer-button:hover {
+    -fx-background-color: -fx-primary-light;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+}
+
+.table-view .add-to-offer-button:pressed {
+    -fx-background-color: -fx-primary-dark;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 1, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+.table-view .remove-from-offer-button {
+    -fx-background-color: -fx-warning;
+    -fx-text-fill: white;
+    -fx-background-radius: 20px;
+    /* Changed from 6px to 20px for rounded corners */
+    -fx-border-radius: 20px;
+    /* Changed from 6px to 20px for rounded corners */
+    -fx-padding: 6px 12px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
+}
+
+.table-view .remove-from-offer-button:hover {
+    -fx-background-color: -fx-warning-light;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+}
+
+.table-view .remove-from-offer-button:pressed {
+    -fx-background-color: #C0392B;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 1, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+/* Enhanced table rounded corners */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+    -fx-border-width: 0;
+}
+
+/* Ensure the entire table container has rounded corners */
+.table-view .virtual-flow {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0 0 12px 12px;
+}
+
+.table-view .virtual-flow .clipped-container {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0 0 12px 12px;
+}
+
+.table-view .virtual-flow .sheet {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0 0 12px 12px;
+}
+
+/* Make sure last row has proper rounded bottom corners */
+.table-view .table-row-cell:last-child {
+    -fx-background-radius: 0 0 12px 12px;
+}
+
+/* For compact tables in dialogs */
+.table-view.compact {
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+}
+
+.table-view.compact .virtual-flow {
+    -fx-background-radius: 0 0 8px 8px;
+}
+
+.table-view.compact .virtual-flow .clipped-container {
+    -fx-background-radius: 0 0 8px 8px;
+}
+
+.table-view.compact .virtual-flow .sheet {
+    -fx-background-radius: 0 0 8px 8px;
+}
+
+.table-view.compact .table-row-cell:last-child {
+    -fx-background-radius: 0 0 8px 8px;
+}
+
+/* =========================
+   RESPONSIVE TABLE ADJUSTMENTS
+   ========================= */
+
+/* For smaller tables in dialogs */
+.offer-dialog .table-view {
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+}
+
+.offer-dialog .table-view .column-header-background {
+    -fx-background-radius: 8px 8px 0 0;
+}
+
+.offer-dialog .table-view .table-row-cell:last-child {
+    -fx-background-radius: 0 0 8px 8px;
+}
+
+/* Alternating row colors that work with your color scheme */
+.table-view .table-row-cell:filled:even {
+    -fx-background-color: white;
+}
+
+.table-view .table-row-cell:filled:odd {
+    -fx-background-color: #FAFAFA;
+}
+
+.table-view .table-row-cell:filled:selected:even,
+.table-view .table-row-cell:filled:selected:odd {
+    -fx-background-color: -fx-primary-ultralight;
+}
+
+/* Fix the last column header border - enhanced specificity */
+.table-view .column-header:last-child {
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-color: transparent -fx-primary-light transparent -fx-primary-light !important;
+}
+
+/* Also target the filler area to ensure it matches the header background */
+.table-view .column-header-background .filler {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-border-color: transparent;
+}
+
+.table-view .filler {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-border-color: transparent;
+}
+
+/* Additional fix for table header corners and borders */
+.table-view .column-header-background {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 12px 12px 0 0;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Ensure no borders on the rightmost area */
+.table-view .column-header-background .nested-column-header:last-child {
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+}
+
+/* For compact tables */
+.table-view.compact .column-header:last-child {
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-color: transparent !important;
+}
+
+/* Target specific column positions for offer dialog tables */
+.offer-dialog .table-view .column-header:nth-child(5) {
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-color: transparent !important;
+}
+
+.offer-dialog .table-view .column-header:nth-child(4) {
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-color: transparent !important;
+}
+
+/* Universal approach - remove right borders from all last columns */
+.table-view .column-header:nth-last-child(1) {
+    -fx-border-width: 0 0 1 0 !important;
+    -fx-border-right-width: 0 !important;
+    -fx-border-right-color: transparent !important;
+}
+
+/* Comprehensive last column border removal */
+.table-view .column-header:last-child,
+.table-view .column-header:nth-last-child(1),
+.table-view .nested-column-header:last-child,
+.table-view .table-column:last-child .column-header {
+    -fx-border-right-width: 0 !important;
+    -fx-border-right-color: transparent !important;
+    -fx-border-width: 0 0 1 0 !important;
+}
+
+/* =========================
+   SPINNER STYLING
+   ========================= */
+
+/* Main spinner container */
+.spinner {
+    -fx-background-color: white;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-border-width: 1px;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.spinner:focused {
+    -fx-border-color: -fx-primary-light;
+    -fx-background-color: -fx-primary-ultralight, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 20px, 18px;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.3), 4, 0, 0, 0);
+}
+
+/* Spinner text field */
+.spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 18px 0 0 18px;
+    -fx-border-radius: 18px 0 0 18px;
+    -fx-padding: 6px 8px;
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-text-dark;
+    -fx-alignment: center;
+}
+
+.spinner .text-field:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-effect: none;
+}
+
+/* Spinner button container */
+.spinner .spinner-button-container {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0 18px 18px 0;
+    -fx-border-radius: 0 18px 18px 0;
+}
+
+/* Spinner increment button */
+.spinner .increment-arrow-button {
+    -fx-background-color: -fx-background-light;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-width: 0 0 0.5 1;
+    -fx-background-radius: 0 18px 0 0;
+    -fx-border-radius: 0 18px 0 0;
+    -fx-padding: 3px 6px;
+    -fx-cursor: hand;
+}
+
+.spinner .increment-arrow-button:hover {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-border-color: -fx-primary-light;
+}
+
+.spinner .increment-arrow-button:pressed {
+    -fx-background-color: -fx-primary-light;
+    -fx-translate-y: 1px;
+}
+
+/* Spinner decrement button */
+.spinner .decrement-arrow-button {
+    -fx-background-color: -fx-background-light;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-width: 0.5 0 0 1;
+    -fx-background-radius: 0 0 18px 0;
+    -fx-border-radius: 0 0 18px 0;
+    -fx-padding: 3px 6px;
+    -fx-cursor: hand;
+}
+
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-border-color: -fx-primary-light;
+}
+
+.spinner .decrement-arrow-button:pressed {
+    -fx-background-color: -fx-primary-light;
+    -fx-translate-y: 1px;
+}
+
+/* Spinner arrows */
+.spinner .increment-arrow {
+    -fx-background-color: -fx-primary;
+    -fx-shape: "M 0 3 L 3 0 L 6 3 Z";
+    -fx-scale-shape: true;
+    -fx-pref-width: 6px;
+    -fx-pref-height: 4px;
+}
+
+.spinner .decrement-arrow {
+    -fx-background-color: -fx-primary;
+    -fx-shape: "M 0 0 L 3 3 L 6 0 Z";
+    -fx-scale-shape: true;
+    -fx-pref-width: 6px;
+    -fx-pref-height: 4px;
+}
+
+.spinner .increment-arrow-button:hover .increment-arrow,
+.spinner .decrement-arrow-button:hover .decrement-arrow {
+    -fx-background-color: -fx-primary-dark;
+}
+
+/* Compact spinner styling for tables */
+.table-view .spinner {
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-pref-height: 26px;
+    -fx-max-height: 26px;
+}
+
+.table-view .spinner .text-field {
+    -fx-background-radius: 13px 0 0 13px;
+    -fx-border-radius: 13px 0 0 13px;
+    -fx-padding: 4px 6px;
+    -fx-font-size: 11px;
+}
+
+.table-view .spinner .spinner-button-container {
+    -fx-background-radius: 0 13px 13px 0;
+    -fx-border-radius: 0 13px 13px 0;
+}
+
+.table-view .spinner .increment-arrow-button {
+    -fx-background-radius: 0 13px 0 0;
+    -fx-border-radius: 0 13px 0 0;
+    -fx-padding: 2px 4px;
+}
+
+.table-view .spinner .decrement-arrow-button {
+    -fx-background-radius: 0 0 13px 0;
+    -fx-border-radius: 0 0 13px 0;
+    -fx-padding: 2px 4px;
+}
+
+.table-view .spinner .increment-arrow,
+.table-view .spinner .decrement-arrow {
+    -fx-pref-width: 5px;
+    -fx-pref-height: 3px;
+}
+
+/* Disabled spinner styling */
+.spinner:disabled {
+    -fx-background-color: -fx-background-light;
+    -fx-border-color: -fx-mid-grey;
+    -fx-opacity: 0.6;
+}
+
+.spinner:disabled .text-field {
+    -fx-text-fill: -fx-text-subtle;
+}
+
+.spinner:disabled .increment-arrow-button,
+.spinner:disabled .decrement-arrow-button {
+    -fx-background-color: -fx-mid-grey;
+    -fx-cursor: default;
+}
+
+.spinner:disabled .increment-arrow,
+.spinner:disabled .decrement-arrow {
+    -fx-background-color: -fx-text-subtle;
+}
+
+/* Form spinner styling (larger, for dialogs) */
+.form-spinner {
+    -fx-pref-height: 35px;
+    -fx-min-height: 35px;
+    -fx-max-height: 35px;
+    -fx-pref-width: 120px;
+}
+
+.form-spinner .text-field {
+    -fx-padding: 8px 10px;
+    -fx-font-size: 13px;
+}
+
+.form-spinner .increment-arrow-button,
+.form-spinner .decrement-arrow-button {
+    -fx-padding: 4px 8px;
+}
+
+.form-spinner .increment-arrow,
+.form-spinner .decrement-arrow {
+    -fx-pref-width: 7px;
+    -fx-pref-height: 5px;
+}
+
+/* Specific styling for item dialog spinners */
+.item-dialog .spinner {
+    -fx-pref-height: 32px;
+    -fx-min-height: 32px;
+    -fx-max-height: 32px;
+}
+
+.item-dialog .spinner .text-field {
+    -fx-padding: 6px 8px;
+    -fx-font-size: 12px;
+}
+
+/* Remove any default styling that might interfere */
+.spinner .spinner-buttons-container {
+    -fx-background-color: transparent;
+}
+
+/* Ensure proper alignment and sizing */
+.spinner>.text-field {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.spinner .increment-arrow-button {
+    -fx-background-color: -fx-background-light;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-width: 0 0 0.5 1;
+    -fx-background-radius: 0 18px 0 0;
+    -fx-border-radius: 0 18px 0 0;
+    -fx-padding: 3px 8px 3px 6px;
+    /* Added 2px right padding */
+    -fx-cursor: hand;
+}
+
+/* Spinner decrement button */
+.spinner .decrement-arrow-button {
+    -fx-background-color: -fx-background-light;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-width: 0.5 0 0 1;
+    -fx-background-radius: 0 0 18px 0;
+    -fx-border-radius: 0 0 18px 0;
+    -fx-padding: 3px 8px 3px 6px;
+    /* Added 2px right padding */
+    -fx-cursor: hand;
+}
+
+/* Compact spinner styling for tables - also update these */
+.table-view .spinner .increment-arrow-button {
+    -fx-background-radius: 0 13px 0 0;
+    -fx-border-radius: 0 13px 0 0;
+    -fx-padding: 2px 6px 2px 4px;
+    /* Added 2px right padding */
+}
+
+.table-view .spinner .decrement-arrow-button {
+    -fx-background-radius: 0 0 13px 0;
+    -fx-border-radius: 0 0 13px 0;
+    -fx-padding: 2px 6px 2px 4px;
+    /* Added 2px right padding */
+}
+
+/* Form spinner styling - also update these */
+.form-spinner .increment-arrow-button,
+.form-spinner .decrement-arrow-button {
+    -fx-padding: 4px 10px 4px 8px;
+    /* Added 2px right padding */
+}
+
+/* =========================
+   TAB PANE STYLING
+   ========================= */
+
+/* Main tab pane container */
+.tab-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+}
+
+/* Tab header area */
+.tab-pane .tab-header-area {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 12px 12px 0 0;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8px 8px 0 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 4, 0, 0, 1);
+}
+
+/* Tab header background */
+.tab-pane .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+/* Individual tab styling */
+.tab-pane .tab {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-width: 1 1 0 1;
+    -fx-border-radius: 8px 8px 0 0;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+/* Tab hover state */
+.tab-pane .tab:hover {
+    -fx-background-color: white;
+    -fx-border-color: -fx-primary-light;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.2), 4, 0, 0, 2);
+    -fx-translate-y: -2px;
+}
+
+/* Selected tab styling */
+.tab-pane .tab:selected {
+    -fx-background-color: white;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 1 1 0 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.3), 6, 0, 0, 3);
+    -fx-translate-y: -3px;
+}
+
+/* Tab label styling */
+.tab-pane .tab .tab-label {
+    -fx-text-fill: -fx-text-mid;
+    -fx-font-weight: normal;
+    -fx-font-size: 13px;
+}
+
+.tab-pane .tab:hover .tab-label {
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+}
+
+/* Tab content area */
+.tab-pane .tab-content-area {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 12px 12px;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 0 1 1 1;
+    -fx-border-radius: 0 0 12px 12px;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+/* Remove default tab close button if not needed */
+.tab-pane .tab .tab-close-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 50%;
+    -fx-cursor: hand;
+    -fx-opacity: 0.6;
+}
+
+.tab-pane .tab .tab-close-button:hover {
+    -fx-background-color: -fx-warning-light;
+    -fx-opacity: 1;
+}
+
+/* Tab down arrow for tab overflow */
+.tab-pane .tab-down-button {
+    -fx-background-color: -fx-primary;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-padding: 6px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
+}
+
+.tab-pane .tab-down-button:hover {
+    -fx-background-color: -fx-primary-light;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+}
+
+.tab-pane .tab-down-button .arrow {
+    -fx-background-color: white;
+}
+
+/* Headers container styling */
+.tab-pane .headers-region {
+    -fx-background-color: transparent;
+    -fx-background-radius: 12px 12px 0 0;
+}
+
+/* Control buttons area */
+.tab-pane .control-buttons-tab {
+    -fx-background-color: transparent;
+    -fx-background-radius: 12px 12px 0 0;
+    -fx-padding: 0 8px;
+}
+
+/* Animation for tab transitions */
+.tab-pane .tab {
+    -fx-transition-duration: 0.2s;
+}
+
+/* Specific styling for offers tab pane */
+.offers-tab-pane {
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 10, 0, 0, 2);
+}
+
+.offers-tab-pane .tab-header-area {
+    -fx-background-color: linear-gradient(to bottom, -fx-primary-ultralight, rgba(240, 235, 255, 0.7));
+    -fx-padding: 10px 10px 0 10px;
+}
+
+.offers-tab-pane .tab {
+    -fx-padding: 10px 18px;
+    -fx-min-width: 120px;
+    -fx-alignment: center;
+}
+
+.offers-tab-pane .tab .tab-label {
+    -fx-font-size: 14px;
+}
+
+/* Compact tab styling for smaller spaces */
+.tab-pane.compact {
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+}
+
+.tab-pane.compact .tab-header-area {
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 6px 6px 0 6px;
+}
+
+.tab-pane.compact .tab {
+    -fx-background-radius: 6px 6px 0 0;
+    -fx-border-radius: 6px 6px 0 0;
+    -fx-padding: 6px 12px;
+}
+
+.tab-pane.compact .tab-content-area {
+    -fx-background-radius: 0 0 8px 8px;
+    -fx-border-radius: 0 0 8px 8px;
+}
+
+/* Tab indicator line for selected tab */
+.tab-pane .tab:selected::after {
+    -fx-background-color: -fx-primary;
+    -fx-pref-height: 3px;
+    -fx-background-radius: 2px;
+}
+
+/* Ensure proper spacing between tabs */
+.tab-pane .tab:not(:first-child) {
+    -fx-margin: 0 0 0 2px;
+}
+
+/* First tab specific styling */
+.tab-pane .tab:first-child {
+    -fx-border-radius: 8px 8px 0 0;
+    -fx-background-radius: 8px 8px 0 0;
+}
+
+/* Last tab specific styling */
+.tab-pane .tab:last-child {
+    -fx-border-radius: 8px 8px 0 0;
+    -fx-background-radius: 8px 8px 0 0;
+}
+
+/* Focus styling for accessibility */
+.tab-pane .tab:focused {
+    -fx-border-color: -fx-primary;
+    -fx-border-width: 2 2 0 2;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.4), 6, 0, 0, 0);
+}
+
+/* Disabled tab styling */
+.tab-pane .tab:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+.tab-pane .tab:disabled .tab-label {
+    -fx-text-fill: -fx-text-subtle;
+}
+
+/* Tab content padding adjustment */
+.tab-pane .tab-content-area .tab-pane-content {
+    -fx-padding: 0;
+}
+
+/* Ensure content area fills properly */
+.tab-pane>.tab-content-area>.tab-pane-content {
+    -fx-background-color: transparent;
+}
+
+/* Pickup Scheduling Styles */
+.title-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.subtitle-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #7f8c8d;
+}
+
+.section-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e;
+}
+
+.help-text {
+    -fx-font-size: 11px;
+    -fx-text-fill: #95a5a6;
+    -fx-font-style: italic;
+}
+
+.date-chip {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 15px;
+    -fx-font-size: 11px;
+}
+
+.date-chip-remove {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 0px 5px;
+}
+
+.date-chip-remove:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 10px;
+}
+
+.primary-button {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 20px;
+    -fx-background-radius: 5px;
+}
+
+.primary-button:hover {
+    -fx-background-color: #27ae60;
+}
+
+.primary-button:disabled {
+    -fx-background-color: #95a5a6;
+}
+
+/* Pickup Selection Styles */
+.available-date-chip {
+    -fx-background-color: #e8f4f8;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 8px 12px;
+    -fx-background-radius: 15px;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+    -fx-border-color: #3498db;
+    -fx-border-width: 1px;
+    -fx-border-radius: 15px;
+}
+
+.available-date-chip:hover {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+.time-range-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 5px 10px;
+    -fx-background-color: #ecf0f1;
+    -fx-background-radius: 5px;
+}
+
+.field-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e;
+}
+
+.info-label {
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 5px;
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 3px;
+}
+
+.reject-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 20px;
+    -fx-background-radius: 5px;
+}
+
+.reject-button:hover {
+    -fx-background-color: #c0392b;
+}
+
+.reject-button:disabled {
+    -fx-background-color: #bdc3c7;
 }

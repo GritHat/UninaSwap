@@ -668,31 +668,28 @@ public class ListingDetailsController {
             Optional<ButtonType> result = dialog.showAndWait();
 
             if (result.isPresent() && result.get() == confirmButtonType) {
-                OfferDTO offer = controller.createOffer();
-                if (offer != null) {
-                    OfferService offerService = OfferService.getInstance();
-                    offerService.createOffer(offer)
-                            .thenAccept(success -> Platform.runLater(() -> {
-                                if (success) {
-                                    AlertHelper.showInformationAlert(
-                                            localeService.getMessage("offer.success.title"),
-                                            localeService.getMessage("offer.success.header"),
-                                            localeService.getMessage("offer.success.message"));
-                                } else {
-                                    AlertHelper.showErrorAlert(
-                                            localeService.getMessage("offer.error.title"),
-                                            localeService.getMessage("offer.error.header"),
-                                            localeService.getMessage("offer.error.connection"));
-                                }
-                            }))
-                            .exceptionally(ex -> {
-                                Platform.runLater(() -> AlertHelper.showErrorAlert(
+                // Now using the ViewModel-based service
+                controller.createOffer()
+                        .thenAccept(success -> Platform.runLater(() -> {
+                            if (success) {
+                                AlertHelper.showInformationAlert(
+                                        localeService.getMessage("offer.success.title"),
+                                        localeService.getMessage("offer.success.header"),
+                                        localeService.getMessage("offer.success.message"));
+                            } else {
+                                AlertHelper.showErrorAlert(
                                         localeService.getMessage("offer.error.title"),
                                         localeService.getMessage("offer.error.header"),
-                                        ex.getMessage()));
-                                return null;
-                            });
-                }
+                                        localeService.getMessage("offer.error.connection"));
+                            }
+                        }))
+                        .exceptionally(ex -> {
+                            Platform.runLater(() -> AlertHelper.showErrorAlert(
+                                    localeService.getMessage("offer.error.title"),
+                                    localeService.getMessage("offer.error.header"),
+                                    ex.getMessage()));
+                            return null;
+                        });
             }
 
             // Clean up temporary reservations
@@ -708,11 +705,87 @@ public class ListingDetailsController {
 
     @FXML
     private void handleProposeTrade() {
-        // TODO: Open trade proposal dialog
-        AlertHelper.showInformationAlert(
-                "Proponi scambio",
-                "Funzionalità in sviluppo",
-                "La possibilità di proporre scambi sarà disponibile presto.");
+        // Only allow for trade listings
+        if (!(currentListing instanceof TradeListingDTO)) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("trade.propose.error.title"),
+                    localeService.getMessage("trade.propose.error.header"),
+                    localeService.getMessage("trade.propose.error.notrade"));
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/OfferDialogView.fxml"));
+            loader.setResources(localeService.getResourceBundle());
+            DialogPane dialogPane = loader.load();
+
+            ButtonType confirmButtonType = new ButtonType(
+                    localeService.getMessage("trade.dialog.button.send", "Invia proposta"),
+                    ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancelButtonType = new ButtonType(
+                    localeService.getMessage("trade.dialog.button.cancel", "Annulla"),
+                    ButtonBar.ButtonData.CANCEL_CLOSE);
+            dialogPane.getButtonTypes().addAll(confirmButtonType, cancelButtonType);
+
+            OfferDialogController controller = loader.getController();
+            controller.setListing(currentListing);
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle(localeService.getMessage("trade.dialog.title", "Proponi scambio"));
+            dialog.setHeaderText(localeService.getMessage("trade.dialog.header",
+                    "Proponi uno scambio per: " + currentListing.getTitle()));
+            dialog.setDialogPane(dialogPane);
+
+            // Enable/disable confirm button based on offer validity
+            Button confirmButton = (Button) dialogPane.lookupButton(confirmButtonType);
+            confirmButton.disableProperty().bind(
+                    javafx.beans.binding.Bindings.createBooleanBinding(
+                            () -> !controller.isValidOffer(),
+                            controller.getIncludeMoneyCheckBox().selectedProperty(),
+                            controller.getMoneyAmountField().textProperty(),
+                            controller.getSelectedItems()));
+
+            Optional<ButtonType> result = dialog.showAndWait();
+
+            if (result.isPresent() && result.get() == confirmButtonType) {
+                // Now using the ViewModel-based service - same pattern as handleMakeOffer
+                controller.createOffer()
+                        .thenAccept(success -> Platform.runLater(() -> {
+                            if (success) {
+                                AlertHelper.showInformationAlert(
+                                        localeService.getMessage("trade.success.title", "Proposta inviata"),
+                                        localeService.getMessage("trade.success.header",
+                                                "La tua proposta di scambio è stata inviata"),
+                                        localeService.getMessage("trade.success.message",
+                                                "Il proprietario riceverà la tua proposta e ti risponderà presto."));
+                            } else {
+                                AlertHelper.showErrorAlert(
+                                        localeService.getMessage("trade.error.title", "Errore"),
+                                        localeService.getMessage("trade.error.header",
+                                                "Impossibile inviare la proposta"),
+                                        localeService.getMessage("trade.error.connection",
+                                                "Errore di connessione durante l'invio della proposta"));
+                            }
+                        }))
+                        .exceptionally(ex -> {
+                            Platform.runLater(() -> AlertHelper.showErrorAlert(
+                                    localeService.getMessage("trade.error.title", "Errore"),
+                                    localeService.getMessage("trade.error.header",
+                                            "Impossibile inviare la proposta"),
+                                    ex.getMessage()));
+                            return null;
+                        });
+            }
+
+            // Clean up temporary reservations
+            controller.cleanup();
+
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("trade.error.title", "Errore"),
+                    localeService.getMessage("trade.error.header", "Impossibile aprire la finestra di proposta"),
+                    e.getMessage());
+        }
     }
 
     @FXML

@@ -18,4 +18,6 @@ public final class EventTypes {
     // Other event types...
     public static final String PROFILE_IMAGE_CHANGED = "profile.image.changed";
     public static final String SEARCH_REQUESTED = "search.requested";
+    public static final String ITEM_UPDATED = "item.updated";
+    public static final String OFFER_UPDATED = "offer.updated";
 }

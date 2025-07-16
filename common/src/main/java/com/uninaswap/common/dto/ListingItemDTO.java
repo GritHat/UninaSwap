@@ -6,8 +6,9 @@ public class ListingItemDTO implements Serializable {
     private String itemId;
     private String itemName;
     private String itemImagePath;
-    private String itemCategory; // Add this if not present
+    private String itemCategory;
     private int quantity;
+    private ItemDTO item;
 
     // Default constructor
     public ListingItemDTO() {
@@ -53,5 +54,13 @@ public class ListingItemDTO implements Serializable {
 
     public void setItemCategory(String itemCategory) {
         this.itemCategory = itemCategory;
+    }
+
+    public ItemDTO getItem() {
+        return item;
+    }
+
+    public void setItem(ItemDTO item) {
+        this.item = item;
     }
 }

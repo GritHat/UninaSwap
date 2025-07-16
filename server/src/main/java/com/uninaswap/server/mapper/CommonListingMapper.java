@@ -15,10 +15,12 @@ import java.util.stream.Collectors;
 public class CommonListingMapper {
 
     private final UserMapper userMapper;
+    private final ItemMapper itemMapper;
 
     @Autowired
-    public CommonListingMapper(UserMapper userMapper) {
+    public CommonListingMapper(UserMapper userMapper, ItemMapper itemMapper) {
         this.userMapper = userMapper;
+        this.itemMapper = itemMapper;
     }
 
     /**
@@ -63,6 +65,7 @@ public class CommonListingMapper {
         dto.setItemImagePath(entity.getItem().getImagePath());
         dto.setItemCategory(entity.getItem().getCategory()); // Add this line
         dto.setQuantity(entity.getQuantity());
+        dto.setItem(itemMapper.toDto(entity.getItem()));
         return dto;
     }
 }

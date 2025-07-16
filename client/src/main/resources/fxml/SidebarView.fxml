@@ -14,7 +14,7 @@
       <Insets top="10" />
    </padding>
    <children>
-      <VBox styleClass="sidebar-button" alignment="CENTER"  onMouseClicked="#showProfile" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" spacing="0">
+      <VBox styleClass="sidebar-button" alignment="CENTER"  onMouseClicked="#showProfile" pickOnBounds="true" spacing="0">
          <ImageView fx:id="ProfileImageIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/default_profile.png" />
@@ -26,7 +26,7 @@
          <Text styleClass="button-caption" text="%user.caption"/>
       </VBox>
 
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showHome" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" >
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showHome" pickOnBounds="true" >
          <ImageView fx:id="homeIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/home.png" />
@@ -38,7 +38,7 @@
          <Text styleClass="button-caption" text="%home.caption"/>
       </VBox>
       
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0"  onMouseClicked="#showInventory" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true">
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0"  onMouseClicked="#showInventory" pickOnBounds="true">
          <ImageView fx:id="inventoryIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/inventory.png" />
@@ -50,7 +50,7 @@
          <Text styleClass="button-caption" text="%inventory.caption"/>
       </VBox>
       
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showAllerts" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true">
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showAllerts" pickOnBounds="true">
          <ImageView fx:id="allertsIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/notification.png" />
@@ -62,7 +62,7 @@
          <Text styleClass="button-caption" text="%notification.caption"/>
       </VBox>
       
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0"  onMouseClicked="#addListing" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true">
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0"  onMouseClicked="#addListing" pickOnBounds="true">
          <ImageView fx:id="addListingIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true" >
             <image>
                <Image url="@../images/icons/add.png" />
@@ -74,7 +74,7 @@
          <Text styleClass="button-caption" text="%add_item.caption" wrappingWidth="50.0" textAlignment="CENTER"/>
       </VBox>
       
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showSettings" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" >
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showSettings" pickOnBounds="true" >
          <ImageView fx:id="settingsIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/settings.png" />
@@ -86,7 +86,7 @@
          <Text styleClass="button-caption" text="%settings.caption"/>
       </VBox>
       
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showSupport" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" >
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showSupport" pickOnBounds="true" >
          <ImageView fx:id="supportIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/support.png" />
@@ -97,8 +97,20 @@
          </ImageView>
          <Text styleClass="button-caption" text="%support.caption"/>
       </VBox>
+
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showOffers" pickOnBounds="true" >
+         <ImageView fx:id="offersIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/offers.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%offers.caption"/>
+      </VBox>
       
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#logout" onMouseExited="#handleMouseExit" onMouseMoved="#handleMouseMove" pickOnBounds="true" >
+      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#logout" pickOnBounds="true" >
          <ImageView fx:id="logoutIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/logout.png" />

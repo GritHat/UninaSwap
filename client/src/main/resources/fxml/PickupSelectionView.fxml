@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.uninaswap.client.controller.PickupSelectionController"
+           fitToWidth="true" prefWidth="700" prefHeight="800">
+   
+   <VBox spacing="20" prefWidth="680">
+      <padding>
+         <Insets top="20" right="20" bottom="20" left="20" />
+      </padding>
+
+      <!-- Header -->
+      <VBox spacing="5">
+         <Label fx:id="titleLabel" styleClass="title-label" />
+         <Label fx:id="instructionsLabel" styleClass="subtitle-label" wrapText="true" />
+      </VBox>
+
+      <Separator />
+
+      <!-- Available Dates Section -->
+      <VBox fx:id="availableDatesSection" spacing="10">
+         <Label text="Available Dates" styleClass="section-label" />
+         <ScrollPane maxHeight="120" fitToWidth="true">
+            <FlowPane fx:id="availableDatesPane" hgap="8" vgap="8" />
+         </ScrollPane>
+         <Label text="Click on a date to select it" styleClass="help-text" />
+      </VBox>
+
+      <!-- Time Range Display -->
+      <VBox spacing="5">
+         <Label text="Available Time Range" styleClass="section-label" />
+         <Label fx:id="timeRangeLabel" styleClass="time-range-label" />
+      </VBox>
+
+      <!-- Selected Date and Time Section -->
+      <VBox fx:id="selectedDateTimeSection" spacing="15">
+         <Label text="Select Your Preferred Time" styleClass="section-label" />
+         
+         <GridPane hgap="10" vgap="10" maxWidth="400">
+            <columnConstraints>
+               <ColumnConstraints minWidth="100" />
+               <ColumnConstraints minWidth="150" />
+            </columnConstraints>
+            
+            <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <DatePicker fx:id="selectedDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            
+            <Label text="Time:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <HBox spacing="5" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <Spinner fx:id="selectedHourSpinner" prefWidth="60" />
+               <Label text=":" />
+               <Spinner fx:id="selectedMinuteSpinner" prefWidth="60" />
+            </HBox>
+         </GridPane>
+      </VBox>
+
+      <!-- Location and Details -->
+      <VBox spacing="10">
+         <Label text="Pickup Details" styleClass="section-label" />
+         
+         <VBox spacing="5">
+            <Label text="Location:" styleClass="field-label" />
+            <Label fx:id="locationLabel" styleClass="info-label" wrapText="true" />
+         </VBox>
+         
+         <VBox spacing="5">
+            <Label text="Additional Details:" styleClass="field-label" />
+            <TextArea fx:id="detailsArea" prefRowCount="3" maxWidth="500" editable="false" />
+         </VBox>
+      </VBox>
+
+      <!-- Counter Proposal Section (initially hidden) -->
+      <VBox fx:id="counterProposalSection" spacing="15">
+         <Separator />
+         
+         <Label text="Counter Proposal - Your Availability" styleClass="section-label" />
+         
+         <!-- Counter Location -->
+         <VBox spacing="5">
+            <Label text="Preferred Location" styleClass="field-label" />
+            <TextField fx:id="counterLocationField" maxWidth="400" 
+                      promptText="Enter your preferred pickup location" />
+         </VBox>
+         
+         <!-- Counter Time Range -->
+         <VBox spacing="10">
+            <Label text="Your Available Time Range" styleClass="field-label" />
+            <HBox spacing="10" alignment="CENTER_LEFT">
+               <Label text="From:" />
+               <Spinner fx:id="counterStartHourSpinner" prefWidth="60" />
+               <Label text=":" />
+               <Spinner fx:id="counterStartMinuteSpinner" prefWidth="60" />
+               
+               <Label text="To:" />
+               <Spinner fx:id="counterEndHourSpinner" prefWidth="60" />
+               <Label text=":" />
+               <Spinner fx:id="counterEndMinuteSpinner" prefWidth="60" />
+            </HBox>
+         </VBox>
+         
+         <!-- Counter Date Selection -->
+         <VBox spacing="10">
+            <Label text="Your Available Dates" styleClass="field-label" />
+            
+            <GridPane hgap="10" vgap="10">
+               <columnConstraints>
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+                  <ColumnConstraints />
+               </columnConstraints>
+               
+               <Label text="Start Date:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+               <DatePicker fx:id="counterStartDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+               
+               <Label text="End Date:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+               <DatePicker fx:id="counterEndDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               
+               <Button fx:id="addCounterDateRangeButton" onAction="#handleAddCounterDateRange" 
+                       GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="2" />
+            </GridPane>
+            
+            <HBox spacing="10" alignment="CENTER_LEFT">
+               <Label fx:id="counterSelectedDatesCountLabel" />
+               <Button fx:id="clearCounterDatesButton" onAction="#handleClearCounterDates" />
+            </HBox>
+            
+            <!-- Counter Selected Dates Display -->
+            <ScrollPane maxHeight="120" fitToWidth="true">
+               <FlowPane fx:id="counterSelectedDatesPane" hgap="5" vgap="5" />
+            </ScrollPane>
+         </VBox>
+         
+         <!-- Counter Details -->
+         <VBox spacing="5">
+            <Label text="Additional Details (Optional)" styleClass="field-label" />
+            <TextArea fx:id="counterDetailsArea" prefRowCount="3" maxWidth="400" 
+                     promptText="Add any special instructions or information" />
+         </VBox>
+         
+         <!-- Counter Proposal Actions -->
+         <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button fx:id="cancelCounterProposalButton" onAction="#handleCancelCounterProposal" />
+            <Button fx:id="submitCounterProposalButton" onAction="#handleSubmitCounterProposal" 
+                    styleClass="primary-button" />
+         </HBox>
+      </VBox>
+
+      <!-- Main Actions -->
+      <HBox spacing="15" alignment="CENTER">
+         <Button fx:id="rejectButton" onAction="#handleReject" styleClass="reject-button" />
+         <Button fx:id="counterProposeButton" onAction="#handleCounterPropose" styleClass="secondary-button" />
+         <Button fx:id="acceptButton" onAction="#handleAccept" styleClass="primary-button" />
+         <Button fx:id="cancelButton" onAction="#handleCancel" />
+      </HBox>
+   </VBox>
+</ScrollPane>

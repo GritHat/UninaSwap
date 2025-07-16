@@ -13,19 +13,16 @@ import java.util.stream.Collectors;
 @Component
 public class ListingMapper {
 
-    private final UserMapper userMapper;
     private final SellListingMapper sellListingMapper;
     private final TradeListingMapper tradeListingMapper;
     private final GiftListingMapper giftListingMapper;
     private final AuctionListingMapper auctionListingMapper;
 
     @Autowired
-    public ListingMapper(UserMapper userMapper,
-            SellListingMapper sellListingMapper,
+    public ListingMapper(SellListingMapper sellListingMapper,
             TradeListingMapper tradeListingMapper,
             GiftListingMapper giftListingMapper,
             AuctionListingMapper auctionListingMapper) {
-        this.userMapper = userMapper;
         this.sellListingMapper = sellListingMapper;
         this.tradeListingMapper = tradeListingMapper;
         this.giftListingMapper = giftListingMapper;
@@ -50,42 +47,5 @@ public class ListingMapper {
             throw new UnsupportedOperationException(
                     "Unknown listing entity type: " + entity.getClass().getSimpleName());
         }
-    }
-
-    // Helper method to map listing items
-    protected List<ListingItemDTO> mapListingItems(List<ListingItemEntity> entities) {
-        if (entities == null || entities.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        return entities.stream()
-                .map(this::mapListingItem)
-                .collect(Collectors.toList());
-    }
-
-    protected ListingItemDTO mapListingItem(ListingItemEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-
-        ListingItemDTO dto = new ListingItemDTO();
-        dto.setItemId(entity.getItem().getId());
-        dto.setItemName(entity.getItem().getName());
-        dto.setItemImagePath(entity.getItem().getImagePath());
-        dto.setQuantity(entity.getQuantity());
-        return dto;
-    }
-
-    // Common method to set shared attributes from entity to DTO
-    protected void mapCommonFields(ListingEntity entity, ListingDTO dto) {
-        dto.setId(entity.getId());
-        dto.setTitle(entity.getTitle());
-        dto.setDescription(entity.getDescription());
-        dto.setCreatedAt(entity.getCreatedAt());
-        dto.setUpdatedAt(entity.getUpdatedAt());
-        dto.setCreator(userMapper.toDto(entity.getCreator()));
-        dto.setStatus(entity.getStatus());
-        dto.setFeatured(entity.isFeatured());
-        dto.setItems(mapListingItems(entity.getListingItems()));
     }
 }

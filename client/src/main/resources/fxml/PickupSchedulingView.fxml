@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.uninaswap.client.controller.PickupSchedulingController"
+      spacing="15" prefWidth="600" prefHeight="700">
+   <padding>
+      <Insets top="20" right="20" bottom="20" left="20" />
+   </padding>
+
+   <!-- Header -->
+   <VBox spacing="5">
+      <Label fx:id="titleLabel" styleClass="title-label" />
+      <Label fx:id="instructionsLabel" styleClass="subtitle-label" wrapText="true" />
+   </VBox>
+
+   <Separator />
+
+   <!-- Location Section -->
+   <VBox spacing="10">
+      <Label text="Pickup Location" styleClass="section-label" />
+      <TextField fx:id="locationField" maxWidth="400" />
+   </VBox>
+
+   <!-- Time Range Section -->
+   <VBox spacing="10">
+      <Label text="Available Time Range" styleClass="section-label" />
+      <HBox spacing="10" alignment="CENTER_LEFT">
+         <Label text="From:" />
+         <Spinner fx:id="startHourSpinner" prefWidth="70" />
+         <Label text=":" />
+         <Spinner fx:id="startMinuteSpinner" prefWidth="70" />
+         
+         <Label text="To:" />
+         <Spinner fx:id="endHourSpinner" prefWidth="70" />
+         <Label text=":" />
+         <Spinner fx:id="endMinuteSpinner" prefWidth="70" />
+      </HBox>
+      <Label text="This time range will apply to all selected dates" 
+             styleClass="help-text" wrapText="true" />
+   </VBox>
+
+   <!-- Date Selection Section -->
+   <VBox spacing="10">
+      <Label text="Available Dates" styleClass="section-label" />
+      
+      <GridPane hgap="10" vgap="10">
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         
+         <Label text="Start Date:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+         <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+         
+         <Label text="End Date:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+         <DatePicker fx:id="endDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         
+         <Button fx:id="addDateRangeButton" onAction="#handleAddDateRange" 
+                 GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="2" />
+      </GridPane>
+      
+      <HBox spacing="10" alignment="CENTER_LEFT">
+         <Label fx:id="selectedDatesCountLabel" />
+         <Button fx:id="clearDatesButton" onAction="#handleClearDates" />
+      </HBox>
+      
+      <!-- Selected Dates Display -->
+      <ScrollPane maxHeight="150" fitToWidth="true">
+         <FlowPane fx:id="selectedDatesPane" hgap="5" vgap="5" />
+      </ScrollPane>
+   </VBox>
+
+   <!-- Details Section -->
+   <VBox spacing="10">
+      <Label text="Additional Details (Optional)" styleClass="section-label" />
+      <TextArea fx:id="detailsArea" prefRowCount="3" maxWidth="400" />
+      <Label text="You can add any special instructions or additional information here" 
+             styleClass="help-text" wrapText="true" />
+   </VBox>
+
+   <!-- Actions -->
+   <HBox spacing="10" alignment="CENTER_RIGHT">
+      <Button fx:id="cancelButton" onAction="#handleCancel" cancelButton="true" />
+      <Button fx:id="confirmButton" onAction="#handleConfirm" defaultButton="true" 
+              styleClass="primary-button" />
+   </HBox>
+</VBox>

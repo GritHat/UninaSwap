@@ -1,9 +1,15 @@
 package com.uninaswap.client.service;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.Node;
 import javafx.stage.Stage;
 import javafx.application.Platform;
@@ -11,11 +17,20 @@ import javafx.event.ActionEvent;
 import javafx.stage.Window;
 import javafx.stage.Modality;
 
+import com.uninaswap.client.controller.ItemDialogController;
 import com.uninaswap.client.controller.ListingDetailsController;
 import com.uninaswap.client.controller.LoginController;
 import com.uninaswap.client.controller.ProfileController;
 import com.uninaswap.client.controller.RegisterController;
+import com.uninaswap.client.mapper.ViewModelMapper;
+import com.uninaswap.client.util.AlertHelper;
+import com.uninaswap.client.viewmodel.ItemViewModel;
+import com.uninaswap.client.viewmodel.OfferViewModel;
+import com.uninaswap.common.dto.ItemDTO;
 import com.uninaswap.client.controller.MainController;
+import com.uninaswap.client.controller.PickupSchedulingController;
+import com.uninaswap.client.controller.PickupSelectionController;
+import com.uninaswap.common.dto.PickupDTO;
 
 /**
  * Service class to handle navigation between screens.
@@ -25,7 +40,10 @@ public class NavigationService {
     private static NavigationService instance;
     private final LocaleService localeService = LocaleService.getInstance();
     private final ListingService listingService = ListingService.getInstance();
-
+    private final ImageService imageService = ImageService.getInstance();
+    private final ItemService itemService = ItemService.getInstance();
+    private final UserSessionService sessionService = UserSessionService.getInstance();
+    private final EventBusService eventBus = EventBusService.getInstance();
     // Add navigation history stack
     private final java.util.Stack<NavigationState> navigationHistory = new java.util.Stack<>();
     private MainController mainController; // Reference to main controller
@@ -337,8 +355,9 @@ public class NavigationService {
      * Logout the current user and navigate to the login screen
      */
     public void logout() throws IOException {
+        sessionService.endSession();
+        eventBus.clearAllSubscriptions();
         navigateToLogin(null);
-        ;
     }
 
     /**
@@ -346,6 +365,17 @@ public class NavigationService {
      */
     public Stage getStageFromEvent(ActionEvent event) {
         return (Stage) ((Node) event.getSource()).getScene().getWindow();
+    }
+
+    /**
+     * Load offers view
+     */
+    public Parent loadOffersView() throws IOException {
+
+        LoaderBundle loaderBundle = loadView("/fxml/OffersView.fxml");
+        Parent offersView = loaderBundle.getView();
+
+        return offersView;
     }
 
     public void loadListingDetails(String listingId) {
@@ -373,6 +403,122 @@ public class NavigationService {
      */
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
+    }
+
+    public void openItemDialog(ItemViewModel itemViewModel) {
+        try {
+            ItemDTO item = ViewModelMapper.getInstance().toDTO(itemViewModel);
+            // Load the dialog FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ItemDialogView.fxml"));
+            loader.setResources(localeService.getResourceBundle());
+            DialogPane dialogPane = loader.load();
+            // Create custom button types with localized text
+            ButtonType confirmButtonType = new ButtonType(
+                    localeService.getMessage("button.confirm"),
+                    ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancelButtonType = new ButtonType(
+                    localeService.getMessage("button.cancel"),
+                    ButtonBar.ButtonData.CANCEL_CLOSE);
+            dialogPane.getButtonTypes().addAll(confirmButtonType, cancelButtonType);
+            // Get the controller
+            ItemDialogController controller = loader.getController();
+
+            // Set up the item in the controller
+            controller.setItem(item);
+
+            // Create the dialog
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle(localeService.getMessage(item.getId() == null ? "item.add.title" : "item.edit.title"));
+            dialog.setHeaderText(
+                    localeService.getMessage(item.getId() == null ? "item.add.header" : "item.edit.header"));
+            dialog.setDialogPane(dialogPane);
+
+            // Show the dialog and handle result
+            Optional<ButtonType> result = dialog.showAndWait();
+
+            if (result.isPresent() && result.get() == confirmButtonType) {
+                ItemDTO updatedItem = controller.getUpdatedItem();
+                File selectedImageFile = controller.getSelectedImageFile();
+
+                // If we have a new image, upload it first using HTTP
+                if (selectedImageFile != null) {
+                    imageService.uploadImageViaHttp(selectedImageFile)
+                            .thenAccept(imagePath -> {
+                                updatedItem.setImagePath(imagePath);
+                                itemService.saveItem(updatedItem);
+                            })
+                            .exceptionally(ex -> {
+                                AlertHelper.showErrorAlert(
+                                        localeService.getMessage("item.image.upload.error.title"),
+                                        localeService.getMessage("item.image.upload.error.header"),
+                                        ex.getMessage());
+                                return null;
+                            });
+                } else {
+                    // No new image, just save the item
+                    itemService.saveItem(updatedItem);
+                }
+            }
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("item.dialog.error.title"),
+                    localeService.getMessage("item.dialog.error.header"),
+                    e.getMessage());
+        }
+    }
+
+    public void openPickupScheduling(OfferViewModel offer, Stage parentStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PickupSchedulingView.fxml"));
+            Parent root = loader.load();
+
+            PickupSchedulingController controller = loader.getController();
+            controller.setOfferId(offer.getId());
+
+            Stage stage = new Stage();
+            stage.setTitle(localeService.getMessage("pickup.scheduling.window.title", "Schedule Pickup"));
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            // Center on parent window
+            stage.initOwner(parentStage);
+            stage.centerOnScreen();
+
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("error.title", "Error"),
+                    localeService.getMessage("error.header", "Failed to open pickup scheduling"),
+                    e.getMessage());
+        }
+    }
+
+    public void openPickupSelection(PickupDTO pickup, Stage parentStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PickupSelectionView.fxml"));
+            Parent root = loader.load();
+
+            PickupSelectionController controller = loader.getController();
+            controller.setPickup(pickup);
+
+            Stage stage = new Stage();
+            stage.setTitle(localeService.getMessage("pickup.selection.window.title", "Select Pickup Time"));
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(parentStage);
+            stage.centerOnScreen();
+
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("error.title", "Error"),
+                    localeService.getMessage("error.header", "Failed to open pickup selection"),
+                    e.getMessage());
+        }
     }
 
     /**

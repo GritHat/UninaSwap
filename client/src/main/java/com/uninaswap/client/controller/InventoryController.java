@@ -1,41 +1,42 @@
 package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.ItemService;
+import com.uninaswap.client.constants.EventTypes;
+import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.LocaleService;
+import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.util.AlertHelper;
-import com.uninaswap.common.dto.ItemDTO;
+import com.uninaswap.client.viewmodel.ItemViewModel;
+import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.common.enums.ItemCondition;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 
 public class InventoryController {
+
+    // Update table to use ItemViewModel instead of ItemDTO
     @FXML
-    private TableView<ItemDTO> itemsTable;
+    private TableView<ItemViewModel> itemsTable;
     @FXML
-    private TableColumn<ItemDTO, String> nameColumn;
+    private TableColumn<ItemViewModel, String> nameColumn;
     @FXML
-    private TableColumn<ItemDTO, String> conditionColumn;
+    private TableColumn<ItemViewModel, String> conditionColumn;
     @FXML
-    private TableColumn<ItemDTO, Integer> stockColumn;
+    private TableColumn<ItemViewModel, Integer> stockColumn;
     @FXML
-    private TableColumn<ItemDTO, String> categoryColumn;
+    private TableColumn<ItemViewModel, String> categoryColumn;
     @FXML
-    private TableColumn<ItemDTO, Integer> reservedColumn;
+    private TableColumn<ItemViewModel, Integer> reservedColumn;
     @FXML
-    private TableColumn<ItemDTO, Integer> availableColumn;
+    private TableColumn<ItemViewModel, Integer> availableColumn;
 
     @FXML
     private Button addButton;
@@ -56,30 +57,31 @@ public class InventoryController {
     private final ItemService itemService = ItemService.getInstance();
     private final ImageService imageService = ImageService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
+    private final EventBusService eventBus = EventBusService.getInstance();
+    private final NavigationService navigationService = NavigationService.getInstance();
+    private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
 
     @FXML
     public void initialize() {
-        // Configure the table columns
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        // Configure the table columns to work with ItemViewModel
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 
         conditionColumn.setCellValueFactory(cellData -> {
             ItemCondition condition = cellData.getValue().getCondition();
             return new SimpleStringProperty(condition != null ? condition.getDisplayName() : "");
         });
 
-        stockColumn.setCellValueFactory(new PropertyValueFactory<>("stockQuantity"));
-        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("category"));
+        stockColumn.setCellValueFactory(cellData -> cellData.getValue().totalQuantityProperty().asObject());
+        categoryColumn.setCellValueFactory(cellData -> cellData.getValue().itemCategoryProperty());
 
         // Add cell factories for the new columns
-        availableColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        availableColumn.setCellValueFactory(cellData -> cellData.getValue().availableQuantityProperty().asObject());
 
         // Calculate reserved quantity (total - available)
         reservedColumn.setCellValueFactory(cellData -> {
-            int stock = cellData.getValue().getStockQuantity() != null ? cellData.getValue().getStockQuantity() : 0;
-            int available = cellData.getValue().getAvailableQuantity() != null
-                    ? cellData.getValue().getAvailableQuantity()
-                    : 0;
-            return Bindings.createObjectBinding(() -> stock - available);
+            return Bindings.createObjectBinding(() -> cellData.getValue().getReservedQuantity(),
+                    cellData.getValue().totalQuantityProperty(),
+                    cellData.getValue().availableQuantityProperty());
         });
 
         // Add selection listener to show details
@@ -97,24 +99,39 @@ public class InventoryController {
 
         // Load user's items
         refreshItems();
+
+        eventBus.subscribe(EventTypes.ITEM_UPDATED, _ -> {
+            refreshItems();
+        });
+        eventBus.subscribe(EventTypes.USER_LOGGED_OUT, _ -> {
+            Platform.runLater(() -> {
+                // Clear the table and details
+                itemsTable.getItems().clear();
+                clearItemDetails();
+                System.out.println("InventoryController: Cleared view on logout");
+            });
+        });
     }
 
     @FXML
     private void handleAddItem() {
-        showItemDialog(new ItemDTO());
+        // Create a new empty ItemViewModel for adding
+        ItemViewModel newItem = new ItemViewModel();
+        navigationService.openItemDialog(newItem);
     }
 
     @FXML
     private void handleEditItem() {
-        ItemDTO selectedItem = itemsTable.getSelectionModel().getSelectedItem();
+        ItemViewModel selectedItem = itemsTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
-            showItemDialog(selectedItem);
+            // Pass the ItemViewModel directly to the navigation service
+            navigationService.openItemDialog(selectedItem);
         }
     }
 
     @FXML
     private void handleDeleteItem() {
-        ItemDTO selectedItem = itemsTable.getSelectionModel().getSelectedItem();
+        ItemViewModel selectedItem = itemsTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             Alert confirmation = AlertHelper.createConfirmationDialog(
                     localeService.getMessage("item.delete.title"),
@@ -144,14 +161,15 @@ public class InventoryController {
     }
 
     private void refreshItems() {
-        itemsTable.setItems(itemService.getUserItemsList());
+        // Convert ItemDTOs from service to ItemViewModels
+        itemsTable.setItems(itemService.getUserItemsListAsViewModel());
     }
 
-    private void showItemDetails(ItemDTO item) {
+    private void showItemDetails(ItemViewModel item) {
         itemNameLabel.setText(item.getName());
         itemDescriptionLabel.setText(item.getDescription());
 
-        if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
+        if (item.hasImage()) {
             // Load image using the ImageService
             imageService.fetchImage(item.getImagePath())
                     .thenAccept(image -> {
@@ -176,97 +194,5 @@ public class InventoryController {
         itemNameLabel.setText("");
         itemDescriptionLabel.setText("");
         itemImageView.setImage(null);
-    }
-
-    private void showItemDialog(ItemDTO item) {
-        try {
-            // Load the dialog FXML
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ItemDialogView.fxml"));
-            loader.setResources(localeService.getResourceBundle());
-            DialogPane dialogPane = loader.load();
-            // Create custom button types with localized text
-            ButtonType confirmButtonType = new ButtonType(
-                    localeService.getMessage("button.confirm"),
-                    ButtonBar.ButtonData.OK_DONE);
-            ButtonType cancelButtonType = new ButtonType(
-                    localeService.getMessage("button.cancel"),
-                    ButtonBar.ButtonData.CANCEL_CLOSE);
-            dialogPane.getButtonTypes().addAll(confirmButtonType, cancelButtonType);
-            // Get the controller
-            ItemDialogController controller = loader.getController();
-
-            // Set up the item in the controller
-            controller.setItem(item);
-
-            // Create the dialog
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setTitle(localeService.getMessage(item.getId() == null ? "item.add.title" : "item.edit.title"));
-            dialog.setHeaderText(
-                    localeService.getMessage(item.getId() == null ? "item.add.header" : "item.edit.header"));
-            dialog.setDialogPane(dialogPane);
-
-            // Show the dialog and handle result
-            Optional<ButtonType> result = dialog.showAndWait();
-
-            if (result.isPresent() && result.get() == confirmButtonType) {
-                ItemDTO updatedItem = controller.getUpdatedItem();
-                File selectedImageFile = controller.getSelectedImageFile();
-
-                // If we have a new image, upload it first using HTTP
-                if (selectedImageFile != null) {
-                    imageService.uploadImageViaHttp(selectedImageFile)
-                            .thenAccept(imagePath -> {
-                                updatedItem.setImagePath(imagePath);
-                                saveItem(updatedItem);
-                            })
-                            .exceptionally(ex -> {
-                                AlertHelper.showErrorAlert(
-                                        localeService.getMessage("item.image.upload.error.title"),
-                                        localeService.getMessage("item.image.upload.error.header"),
-                                        ex.getMessage());
-                                return null;
-                            });
-                } else {
-                    // No new image, just save the item
-                    saveItem(updatedItem);
-                }
-            }
-        } catch (IOException e) {
-            AlertHelper.showErrorAlert(
-                    localeService.getMessage("item.dialog.error.title"),
-                    localeService.getMessage("item.dialog.error.header"),
-                    e.getMessage());
-        }
-    }
-
-    private void saveItem(ItemDTO item) {
-        // Determine if this is a new or existing item
-        if (item.getId() == null || item.getId().isEmpty()) {
-            // Add new item
-            itemService.addItem(item)
-                    .thenAccept(_ -> {
-                        refreshItems();
-                    })
-                    .exceptionally(ex -> {
-                        AlertHelper.showErrorAlert(
-                                localeService.getMessage("item.add.error.title"),
-                                localeService.getMessage("item.add.error.header"),
-                                ex.getMessage());
-                        return null;
-                    });
-        } else {
-            // Update existing item
-            itemService.updateItem(item)
-                    .thenAccept(_ -> {
-                        refreshItems();
-                    })
-                    .exceptionally(ex -> {
-                        AlertHelper.showErrorAlert(
-                                localeService.getMessage("item.edit.error.title"),
-                                localeService.getMessage("item.edit.error.header"),
-                                ex.getMessage());
-                        return null;
-                    });
-        }
     }
 }

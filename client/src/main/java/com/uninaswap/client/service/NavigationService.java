@@ -25,12 +25,19 @@ import com.uninaswap.client.controller.RegisterController;
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.ItemViewModel;
+import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.viewmodel.OfferViewModel;
+import com.uninaswap.client.viewmodel.UserViewModel;
 import com.uninaswap.common.dto.ItemDTO;
 import com.uninaswap.client.controller.MainController;
 import com.uninaswap.client.controller.PickupSchedulingController;
 import com.uninaswap.client.controller.PickupSelectionController;
 import com.uninaswap.common.dto.PickupDTO;
+import com.uninaswap.client.controller.ReviewCreateController;
+import com.uninaswap.client.controller.UserFavoritesController;
+import com.uninaswap.client.controller.UserFollowersController;
+import com.uninaswap.client.controller.UserReviewsController;
+import com.uninaswap.client.controller.ReportDialogController;
 
 /**
  * Service class to handle navigation between screens.
@@ -517,6 +524,162 @@ public class NavigationService {
             AlertHelper.showErrorAlert(
                     localeService.getMessage("error.title", "Error"),
                     localeService.getMessage("error.header", "Failed to open pickup selection"),
+                    e.getMessage());
+        }
+    }
+
+    public void openReviewCreate(OfferViewModel offer, Stage parentStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ReviewCreateView.fxml"));
+            Parent root = loader.load();
+
+            ReviewCreateController controller = loader.getController();
+            controller.setOffer(offer);
+
+            Stage stage = new Stage();
+            stage.setTitle(localeService.getMessage("review.create.window.title", "Write Review"));
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(parentStage);
+            stage.centerOnScreen();
+
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("error.title", "Error"),
+                    localeService.getMessage("error.header", "Failed to open review creation"),
+                    e.getMessage());
+        }
+    }
+
+    public void openUserReviews(UserViewModel user, Stage parentStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserReviewsView.fxml"));
+            Parent root = loader.load();
+
+            UserReviewsController controller = loader.getController();
+            controller.setUser(user);
+
+            Stage stage = new Stage();
+            stage.setTitle(localeService.getMessage("reviews.window.title", "User Reviews"));
+            stage.setScene(new Scene(root));
+            stage.setResizable(true);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(parentStage);
+            stage.centerOnScreen();
+
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("error.title", "Error"),
+                    localeService.getMessage("error.header", "Failed to open user reviews"),
+                    e.getMessage());
+        }
+    }
+
+    public void openReportDialog(UserViewModel user, Stage parentStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ReportDialogView.fxml"));
+            Parent root = loader.load();
+
+            ReportDialogController controller = loader.getController();
+            controller.setReportedUser(user);
+
+            Stage stage = new Stage();
+            stage.setTitle(localeService.getMessage("report.dialog.window.title", "Report User"));
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(parentStage);
+            stage.centerOnScreen();
+
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("error.title", "Error"),
+                    localeService.getMessage("error.header", "Failed to open report dialog"),
+                    e.getMessage());
+        }
+    }
+
+    public void openReportDialog(ListingViewModel listing, Stage parentStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ReportDialogView.fxml"));
+            Parent root = loader.load();
+
+            ReportDialogController controller = loader.getController();
+            controller.setReportedListing(listing);
+
+            Stage stage = new Stage();
+            stage.setTitle(localeService.getMessage("report.dialog.window.title", "Report Listing"));
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(parentStage);
+            stage.centerOnScreen();
+
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("error.title", "Error"),
+                    localeService.getMessage("error.header", "Failed to open report dialog"),
+                    e.getMessage());
+        }
+    }
+
+    public void openUserFollowers(UserViewModel user, Stage parentStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserFollowersView.fxml"));
+            Parent root = loader.load();
+
+            UserFollowersController controller = loader.getController();
+            controller.setUser(user);
+
+            Stage stage = new Stage();
+            stage.setTitle(localeService.getMessage("followers.window.title", "Followers & Following"));
+            stage.setScene(new Scene(root));
+            stage.setResizable(true);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(parentStage);
+            stage.centerOnScreen();
+
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("error.title", "Error"),
+                    localeService.getMessage("error.header", "Failed to open followers view"),
+                    e.getMessage());
+        }
+    }
+
+    public void openUserFavorites(UserViewModel user, Stage parentStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserFavoritesView.fxml"));
+            Parent root = loader.load();
+
+            UserFavoritesController controller = loader.getController();
+            controller.setUser(user);
+
+            Stage stage = new Stage();
+            stage.setTitle(localeService.getMessage("favorites.window.title", "Favorite Listings"));
+            stage.setScene(new Scene(root));
+            stage.setResizable(true);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(parentStage);
+            stage.centerOnScreen();
+
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("error.title", "Error"),
+                    localeService.getMessage("error.header", "Failed to open favorites view"),
                     e.getMessage());
         }
     }

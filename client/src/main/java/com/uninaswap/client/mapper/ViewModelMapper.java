@@ -119,6 +119,7 @@ public class ViewModelMapper {
         viewModel.setAddress(dto.getAddress());
         viewModel.setCity(dto.getCity());
         viewModel.setCountry(dto.getCountry());
+        viewModel.setBio(dto.getBio());
         // Add rating and review count if available in DTO
         // viewModel.setRating(dto.getRating());
         // viewModel.setReviewCount(dto.getReviewCount());
@@ -144,6 +145,7 @@ public class ViewModelMapper {
         dto.setAddress(viewModel.getAddress());
         dto.setCity(viewModel.getCity());
         dto.setCountry(viewModel.getCountry());
+        dto.setBio(viewModel.getBio());
 
         return dto;
     }
@@ -205,6 +207,7 @@ public class ViewModelMapper {
             viewModel = new GiftListingViewModel();
         } else if (dto instanceof TradeListingDTO) {
             viewModel = new TradeListingViewModel();
+            viewModel.setAcceptMoneyOffers((TradeListingDTO) dto.isAcceptMoneyOffer());
         } else if (dto instanceof SellListingDTO) {
             viewModel = new SellListingViewModel();
         } else if (dto instanceof AuctionListingDTO) {
@@ -290,6 +293,177 @@ public class ViewModelMapper {
         return dto;
     }
 
+    // Review mappings
+    public ReviewViewModel toViewModel(ReviewDTO dto) {
+        if (dto == null)
+            return null;
+
+        ReviewViewModel viewModel = new ReviewViewModel();
+        viewModel.setId(dto.getId());
+        viewModel.setReviewer(toViewModel(dto.getReviewer()));
+        viewModel.setReviewedUser(toViewModel(dto.getReviewedUser()));
+        viewModel.setOfferId(dto.getOfferId());
+        viewModel.setScore(dto.getScore());
+        viewModel.setComment(dto.getComment());
+        viewModel.setCreatedAt(dto.getCreatedAt());
+        viewModel.setUpdatedAt(dto.getUpdatedAt());
+
+        return viewModel;
+    }
+
+    public ReviewDTO toDTO(ReviewViewModel viewModel) {
+        if (viewModel == null)
+            return null;
+
+        ReviewDTO dto = new ReviewDTO();
+        dto.setId(viewModel.getId());
+        dto.setReviewer(toDTO(viewModel.getReviewer()));
+        dto.setReviewedUser(toDTO(viewModel.getReviewedUser()));
+        dto.setOfferId(viewModel.getOfferId());
+        dto.setScore(viewModel.getScore());
+        dto.setComment(viewModel.getComment());
+        dto.setCreatedAt(viewModel.getCreatedAt());
+        dto.setUpdatedAt(viewModel.getUpdatedAt());
+
+        return dto;
+    }
+
+    // User Report mappings
+    public UserReportViewModel toViewModel(UserReportDTO dto) {
+        if (dto == null)
+            return null;
+
+        UserReportViewModel viewModel = new UserReportViewModel();
+        viewModel.setId(dto.getId());
+        viewModel.setReportingUser(toViewModel(dto.getReportingUser()));
+        viewModel.setReportedUser(toViewModel(dto.getReportedUser()));
+        viewModel.setReason(dto.getReason());
+        viewModel.setDescription(dto.getDescription());
+        viewModel.setCreatedAt(dto.getCreatedAt());
+        viewModel.setUpdatedAt(dto.getUpdatedAt());
+        viewModel.setReviewed(dto.isReviewed());
+        viewModel.setAdminNotes(dto.getAdminNotes());
+
+        return viewModel;
+    }
+
+    public UserReportDTO toDTO(UserReportViewModel viewModel) {
+        if (viewModel == null)
+            return null;
+
+        UserReportDTO dto = new UserReportDTO();
+        dto.setId(viewModel.getId());
+        dto.setReportingUser(toDTO(viewModel.getReportingUser()));
+        dto.setReportedUser(toDTO(viewModel.getReportedUser()));
+        dto.setReason(viewModel.getReason());
+        dto.setDescription(viewModel.getDescription());
+        dto.setCreatedAt(viewModel.getCreatedAt());
+        dto.setUpdatedAt(viewModel.getUpdatedAt());
+        dto.setReviewed(viewModel.isReviewed());
+        dto.setAdminNotes(viewModel.getAdminNotes());
+
+        return dto;
+    }
+
+    // Listing Report mappings
+    public ListingReportViewModel toViewModel(ListingReportDTO dto) {
+        if (dto == null)
+            return null;
+
+        ListingReportViewModel viewModel = new ListingReportViewModel();
+        viewModel.setId(dto.getId());
+        viewModel.setReportingUser(toViewModel(dto.getReportingUser()));
+        viewModel.setReportedListing(toViewModel(dto.getReportedListing()));
+        viewModel.setReason(dto.getReason());
+        viewModel.setDescription(dto.getDescription());
+        viewModel.setCreatedAt(dto.getCreatedAt());
+        viewModel.setUpdatedAt(dto.getUpdatedAt());
+        viewModel.setReviewed(dto.isReviewed());
+        viewModel.setAdminNotes(dto.getAdminNotes());
+
+        return viewModel;
+    }
+
+    public ListingReportDTO toDTO(ListingReportViewModel viewModel) {
+        if (viewModel == null)
+            return null;
+
+        ListingReportDTO dto = new ListingReportDTO();
+        dto.setId(viewModel.getId());
+        dto.setReportingUser(toDTO(viewModel.getReportingUser()));
+        dto.setReportedListing(toDTO(viewModel.getReportedListing()));
+        dto.setReason(viewModel.getReason());
+        dto.setDescription(viewModel.getDescription());
+        dto.setCreatedAt(viewModel.getCreatedAt());
+        dto.setUpdatedAt(viewModel.getUpdatedAt());
+        dto.setReviewed(viewModel.isReviewed());
+        dto.setAdminNotes(viewModel.getAdminNotes());
+
+        return dto;
+    }
+
+    // Favorite mappings
+    public FavoriteViewModel toViewModel(FavoriteDTO dto) {
+        if (dto == null)
+            return null;
+
+        FavoriteViewModel viewModel = new FavoriteViewModel();
+        viewModel.setId(dto.getId());
+        viewModel.setUserId(dto.getUserId());
+        viewModel.setListingId(dto.getListingId());
+        viewModel.setUser(toViewModel(dto.getUser()));
+        viewModel.setListing(toViewModel(dto.getListing()));
+        viewModel.setCreatedAt(dto.getCreatedAt());
+
+        return viewModel;
+    }
+
+    public FavoriteDTO toDTO(FavoriteViewModel viewModel) {
+        if (viewModel == null)
+            return null;
+
+        FavoriteDTO dto = new FavoriteDTO();
+        dto.setId(viewModel.getId());
+        dto.setUserId(viewModel.getUserId());
+        dto.setListingId(viewModel.getListingId());
+        dto.setUser(toDTO(viewModel.getUser()));
+        dto.setListing(toDTO(viewModel.getListing()));
+        dto.setCreatedAt(viewModel.getCreatedAt());
+
+        return dto;
+    }
+
+    // Follower mappings
+    public FollowerViewModel toViewModel(FollowerDTO dto) {
+        if (dto == null)
+            return null;
+
+        FollowerViewModel viewModel = new FollowerViewModel();
+        viewModel.setId(dto.getId());
+        viewModel.setFollowerId(dto.getFollowerId());
+        viewModel.setFollowedId(dto.getFollowedId());
+        viewModel.setFollower(toViewModel(dto.getFollower()));
+        viewModel.setFollowed(toViewModel(dto.getFollowed()));
+        viewModel.setCreatedAt(dto.getCreatedAt());
+
+        return viewModel;
+    }
+
+    public FollowerDTO toDTO(FollowerViewModel viewModel) {
+        if (viewModel == null)
+            return null;
+
+        FollowerDTO dto = new FollowerDTO();
+        dto.setId(viewModel.getId());
+        dto.setFollowerId(viewModel.getFollowerId());
+        dto.setFollowedId(viewModel.getFollowedId());
+        dto.setFollower(toDTO(viewModel.getFollower()));
+        dto.setFollowed(toDTO(viewModel.getFollowed()));
+        dto.setCreatedAt(viewModel.getCreatedAt());
+
+        return dto;
+    }
+
     // Convenience methods for collections
     public List<UserViewModel> toUserViewModels(List<UserDTO> dtos) {
         if (dtos == null)
@@ -309,6 +483,12 @@ public class ViewModelMapper {
         return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
     }
 
+    public List<ReviewViewModel> toReviewViewModels(List<ReviewDTO> dtos) {
+        if (dtos == null)
+            return null;
+        return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
+    }
+
     public List<UserDTO> toUserDTOs(List<UserViewModel> viewModels) {
         if (viewModels == null)
             return null;
@@ -322,6 +502,60 @@ public class ViewModelMapper {
     }
 
     public List<OfferDTO> toOfferDTOs(List<OfferViewModel> viewModels) {
+        if (viewModels == null)
+            return null;
+        return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public List<ReviewDTO> toReviewDTOs(List<ReviewViewModel> viewModels) {
+        if (viewModels == null)
+            return null;
+        return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public List<UserReportViewModel> toUserReportViewModels(List<UserReportDTO> dtos) {
+        if (dtos == null)
+            return null;
+        return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
+    }
+
+    public List<UserReportDTO> toUserReportDTOs(List<UserReportViewModel> viewModels) {
+        if (viewModels == null)
+            return null;
+        return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public List<ListingReportViewModel> toListingReportViewModels(List<ListingReportDTO> dtos) {
+        if (dtos == null)
+            return null;
+        return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
+    }
+
+    public List<ListingReportDTO> toListingReportDTOs(List<ListingReportViewModel> viewModels) {
+        if (viewModels == null)
+            return null;
+        return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public List<FavoriteViewModel> toFavoriteViewModels(List<FavoriteDTO> dtos) {
+        if (dtos == null)
+            return null;
+        return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
+    }
+
+    public List<FavoriteDTO> toFavoriteDTOs(List<FavoriteViewModel> viewModels) {
+        if (viewModels == null)
+            return null;
+        return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public List<FollowerViewModel> toFollowerViewModels(List<FollowerDTO> dtos) {
+        if (dtos == null)
+            return null;
+        return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
+    }
+
+    public List<FollowerDTO> toFollowerDTOs(List<FollowerViewModel> viewModels) {
         if (viewModels == null)
             return null;
         return viewModels.stream().map(this::toDTO).collect(Collectors.toList());

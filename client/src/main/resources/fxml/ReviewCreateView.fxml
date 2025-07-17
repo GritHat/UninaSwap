@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.uninaswap.client.controller.ReviewCreateController"
+      spacing="20" prefWidth="500" prefHeight="600">
+   <padding>
+      <Insets top="20" right="20" bottom="20" left="20" />
+   </padding>
+
+   <!-- Header -->
+   <VBox spacing="5">
+      <Label fx:id="titleLabel" styleClass="title-label" />
+      <Label fx:id="instructionsLabel" styleClass="subtitle-label" wrapText="true" />
+   </VBox>
+
+   <Separator />
+
+   <!-- Transaction Details -->
+   <VBox spacing="10">
+      <Label fx:id="reviewingUserLabel" styleClass="section-label" />
+      <Label fx:id="offerDetailsLabel" styleClass="info-label" wrapText="true" />
+   </VBox>
+
+   <!-- Rating Section -->
+   <VBox spacing="15">
+      <Label text="Rating" styleClass="section-label" />
+      
+      <VBox spacing="10" alignment="CENTER">
+         <HBox fx:id="starsContainer" spacing="5" alignment="CENTER" />
+         <Label fx:id="scoreLabel" styleClass="score-label" />
+      </VBox>
+      
+      <Label text="Click on a star to rate your experience" 
+             styleClass="help-text" alignment="CENTER" />
+   </VBox>
+
+   <!-- Comment Section -->
+   <VBox spacing="10" VBox.vgrow="ALWAYS">
+      <Label text="Review Comment (Optional)" styleClass="section-label" />
+      
+      <TextArea fx:id="commentTextArea" 
+                prefRowCount="6" 
+                VBox.vgrow="ALWAYS" />
+      
+      <HBox alignment="CENTER_RIGHT">
+         <Label fx:id="characterCountLabel" styleClass="character-count" />
+      </HBox>
+      
+      <Label text="Share details about your experience with this user" 
+             styleClass="help-text" wrapText="true" />
+   </VBox>
+
+   <!-- Actions -->
+   <HBox spacing="10" alignment="CENTER_RIGHT">
+      <Button fx:id="cancelButton" onAction="#handleCancel" />
+      <Button fx:id="submitButton" onAction="#handleSubmit" 
+              styleClass="primary-button" />
+   </HBox>
+</VBox>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.uninaswap.client.controller.UserFavoritesController"
+      spacing="15" prefWidth="700" prefHeight="600">
+   <padding>
+      <Insets top="20" right="20" bottom="20" left="20" />
+   </padding>
+
+   <!-- Header -->
+   <VBox spacing="5">
+      <Label fx:id="titleLabel" styleClass="title-label" />
+   </VBox>
+
+   <Separator />
+
+   <!-- User Summary -->
+   <VBox spacing="15" styleClass="favorites-summary-section">
+      <Label fx:id="userNameLabel" styleClass="user-name-label" />
+      
+      <HBox spacing="20" alignment="CENTER_LEFT">
+         <Label fx:id="totalFavoritesLabel" styleClass="total-count-label" />
+         <Button fx:id="refreshButton" onAction="#handleRefresh" />
+      </HBox>
+   </VBox>
+
+   <Separator />
+
+   <!-- Favorites Table -->
+   <TableView fx:id="favoritesTable" VBox.vgrow="ALWAYS">
+      <columns>
+         <TableColumn fx:id="listingTitleColumn" prefWidth="200" text="Title" />
+         <TableColumn fx:id="listingTypeColumn" prefWidth="100" text="Type" />
+         <TableColumn fx:id="listingPriceColumn" prefWidth="100" text="Price" />
+         <TableColumn fx:id="listingDateColumn" prefWidth="100" text="Date Added" />
+         <TableColumn fx:id="listingActionsColumn" prefWidth="150" text="Actions" />
+      </columns>
+      <placeholder>
+         <Label text="No favorite listings yet" />
+      </placeholder>
+   </TableView>
+
+   <!-- Actions -->
+   <HBox spacing="10" alignment="CENTER_RIGHT">
+      <Button fx:id="closeButton" onAction="#handleClose" />
+   </HBox>
+</VBox>

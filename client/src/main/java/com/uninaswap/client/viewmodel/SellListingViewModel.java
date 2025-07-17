@@ -49,4 +49,9 @@ public class SellListingViewModel extends ListingViewModel {
         this.currency.set(currency);
     }
 
+    @Override
+    public String getListingTypeValue() {
+        return "SELL";
+    }
+
 }

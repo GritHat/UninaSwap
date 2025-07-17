@@ -130,4 +130,9 @@ public class AuctionListingViewModel extends ListingViewModel {
     public int getDurationInDays() {
         return durationInDays.get();
     }
+
+    @Override
+    public String getListingTypeValue() {
+        return "AUCTION";
+    }
 }

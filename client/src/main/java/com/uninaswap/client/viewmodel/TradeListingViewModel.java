@@ -49,4 +49,9 @@ public class TradeListingViewModel extends ListingViewModel {
         this.tradeDetails.set(tradeDetails);
     }
 
+    @Override
+    public String getListingTypeValue() {
+        return "TRADE";
+    }
+
 }

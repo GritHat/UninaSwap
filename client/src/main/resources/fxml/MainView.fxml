@@ -120,6 +120,9 @@
             
             <!-- Content area that grows to fill remaining space -->
             <StackPane fx:id="contentArea" HBox.hgrow="ALWAYS" minWidth="400.0" />
+            
+            <!-- Favorites Drawer on the right -->
+            <HBox fx:id="favoritesDrawerContainer" />
           </children>
         </HBox>
       </center>

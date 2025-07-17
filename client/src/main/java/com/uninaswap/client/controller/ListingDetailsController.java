@@ -1,7 +1,10 @@
 package com.uninaswap.client.controller;
 
+import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.*;
 import com.uninaswap.client.util.AlertHelper;
+import com.uninaswap.client.viewmodel.ListingViewModel;
+import com.uninaswap.client.viewmodel.UserViewModel;
 import com.uninaswap.common.dto.*;
 import com.uninaswap.common.enums.Currency;
 import javafx.application.Platform;
@@ -14,6 +17,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -871,10 +875,17 @@ public class ListingDetailsController {
 
     @FXML
     private void handleReportListing() {
-        // TODO: Open report dialog
-        AlertHelper.showInformationAlert(
-                "Segnala inserzione",
-                "Funzionalità in sviluppo",
-                "Il sistema di segnalazioni sarà disponibile presto.");
+        if (currentListing != null) {
+            ListingViewModel listingViewModel = ViewModelMapper.getInstance().toViewModel(currentListing);
+            navigationService.openReportDialog(listingViewModel, (Stage) backButton.getScene().getWindow());
+        }
+    }
+
+    @FXML
+    private void handleReportUser() {
+        if (currentListing != null && currentListing.getCreator() != null) {
+            UserViewModel userViewModel = ViewModelMapper.getInstance().toViewModel(currentListing.getCreator());
+            navigationService.openReportDialog(userViewModel, (Stage) backButton.getScene().getWindow());
+        }
     }
 }

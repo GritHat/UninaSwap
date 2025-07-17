@@ -1625,3 +1625,427 @@
 .reject-button:disabled {
     -fx-background-color: #bdc3c7;
 }
+
+/* Review Creation Styles */
+.star-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 24px;
+    -fx-cursor: hand;
+    -fx-padding: 5px;
+}
+
+.star-empty {
+    -fx-text-fill: #ddd;
+}
+
+.star-filled {
+    -fx-text-fill: #ffd700;
+}
+
+.star-button:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.score-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.character-count {
+    -fx-font-size: 11px;
+    -fx-text-fill: #7f8c8d;
+}
+
+.character-count-exceeded {
+    -fx-text-fill: #e74c3c;
+    -fx-font-weight: bold;
+}
+
+/* User Reviews Styles */
+.rating-summary-section {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 20px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.user-name-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.average-rating-label {
+    -fx-font-size: 48px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.total-reviews-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d;
+}
+
+.rating-star-filled {
+    -fx-text-fill: #ffd700;
+    -fx-font-size: 20px;
+}
+
+.rating-star-half {
+    -fx-text-fill: #ffd700;
+    -fx-font-size: 20px;
+}
+
+.rating-star-empty {
+    -fx-text-fill: #ddd;
+    -fx-font-size: 20px;
+}
+
+.rating-progress-bar {
+    -fx-accent: #ffd700;
+}
+
+.rating-progress-bar .bar {
+    -fx-background-color: #ffd700;
+    -fx-background-radius: 4px;
+}
+
+.rating-progress-bar .track {
+    -fx-background-color: #e9ecef;
+    -fx-background-radius: 4px;
+}
+
+.review-details-section {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 15px;
+    -fx-background-radius: 5px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+.detail-star-filled {
+    -fx-text-fill: #ffd700;
+    -fx-font-size: 16px;
+}
+
+.detail-star-half {
+    -fx-text-fill: #ffd700;
+    -fx-font-size: 16px;
+}
+
+.detail-star-empty {
+    -fx-text-fill: #ddd;
+    -fx-font-size: 16px;
+}
+
+.section-subtitle {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d;
+    -fx-font-weight: bold;
+}
+
+/* Report Dialog Styles */
+.report-dialog {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.reason-combo-box {
+    -fx-pref-width: 300px;
+}
+
+.report-description-area {
+    -fx-pref-height: 120px;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.character-count {
+    -fx-font-size: 11px;
+    -fx-text-fill: #6c757d;
+}
+
+.character-count-exceeded {
+    -fx-text-fill: #dc3545;
+    -fx-font-weight: bold;
+}
+
+.report-target-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+    -fx-font-size: 14px;
+}
+
+.report-section-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #343a40;
+    -fx-font-size: 12px;
+}
+
+.report-help-text {
+    -fx-font-size: 11px;
+    -fx-text-fill: #6c757d;
+    -fx-font-style: italic;
+}
+
+/* Report button styles for integration */
+.report-button {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 12px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.report-button:hover {
+    -fx-background-color: #c82333;
+}
+
+.report-button:pressed {
+    -fx-background-color: #bd2130;
+}
+
+/* User Summary Sections */
+.user-summary-section,
+.favorites-summary-section {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 20px;
+    -fx-background-radius: 8px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.user-name-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.count-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.count-description {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d;
+    -fx-font-weight: bold;
+}
+
+.total-count-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #495057;
+    -fx-font-weight: bold;
+}
+
+/* Action buttons in tables */
+.primary-button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-padding: 4px 8px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.primary-button:hover {
+    -fx-background-color: #0056b3;
+}
+
+.secondary-button {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-padding: 4px 8px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #545b62;
+}
+
+.danger-button {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-padding: 4px 8px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+.danger-button:hover {
+    -fx-background-color: #c82333;
+}
+
+/* Table styling improvements */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.table-view .column-header {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #e3f2fd;
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Add these styles to your main CSS file */
+
+/* Favorites Drawer Styles */
+.favorites-drawer {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 0 0 0 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, -2, 0);
+}
+
+.drawer-toggle-button {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1;
+    -fx-border-radius: 8 0 0 8;
+    -fx-background-radius: 8 0 0 8;
+    -fx-padding: 8 6 8 6;
+    -fx-min-width: 30;
+    -fx-pref-width: 30;
+    -fx-max-width: 30;
+    -fx-cursor: hand;
+}
+
+.drawer-toggle-button:hover {
+    -fx-background-color: #e9ecef;
+}
+
+.drawer-header {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 0 0 1 0;
+}
+
+.drawer-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+
+.drawer-titled-pane {
+    -fx-background-color: transparent;
+}
+
+.drawer-titled-pane>.title {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 10;
+}
+
+.drawer-titled-pane>.content {
+    -fx-background-color: #ffffff;
+    -fx-padding: 0;
+}
+
+.drawer-count-label {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 11px;
+}
+
+.drawer-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.drawer-scroll-pane>.viewport {
+    -fx-background-color: transparent;
+}
+
+.drawer-item {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8;
+    -fx-cursor: hand;
+}
+
+.drawer-item:hover {
+    -fx-background-color: #f8f9fa;
+}
+
+.drawer-item-header {
+    -fx-alignment: center-left;
+}
+
+.drawer-thumbnail,
+.drawer-avatar {
+    -fx-background-color: #e9ecef;
+    -fx-background-radius: 4;
+}
+
+.drawer-avatar {
+    -fx-background-radius: 20;
+}
+
+.drawer-item-title {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-fill: #212529;
+}
+
+.drawer-item-subtitle {
+    -fx-font-size: 10px;
+    -fx-fill: #6c757d;
+}
+
+.drawer-empty-label {
+    -fx-text-fill: #6c757d;
+    -fx-font-style: italic;
+    -fx-font-size: 11px;
+    -fx-alignment: center;
+    -fx-padding: 20;
+}
+
+/* Responsive drawer */
+@media (max-width: 1200px) {
+    .favorites-drawer {
+        -fx-pref-width: 250;
+        -fx-max-width: 250;
+        -fx-min-width: 250;
+    }
+}
+
+@media (max-width: 900px) {
+    .favorites-drawer {
+        -fx-pref-width: 220;
+        -fx-max-width: 220;
+        -fx-min-width: 220;
+    }
+}

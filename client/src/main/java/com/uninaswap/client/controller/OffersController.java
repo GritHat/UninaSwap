@@ -227,6 +227,8 @@ public class OffersController {
             private final Button viewButton = new Button(localeService.getMessage("offers.button.view", "View"));
             private final Button withdrawButton = new Button(
                     localeService.getMessage("offers.button.withdraw", "Withdraw"));
+            private final Button reviewButton = new Button(
+                    localeService.getMessage("offers.button.review", "Review"));
 
             @Override
             protected void updateItem(Void item, boolean empty) {
@@ -237,7 +239,11 @@ public class OffersController {
                 } else {
                     OfferViewModel offer = getTableView().getItems().get(getIndex());
 
-                    if (isReceived) {
+                    if (offer.getStatus() == OfferStatus.COMPLETED) {
+                        // For completed offers, show review button
+                        reviewButton.setOnAction(_ -> handleCreateReview(offer));
+                        setGraphic(reviewButton);
+                    } else if (isReceived) {
                         // For received offers, show view button
                         viewButton.setOnAction(_ -> showOfferDetails(offer));
                         setGraphic(viewButton);
@@ -416,6 +422,10 @@ public class OffersController {
 
     private void handleSchedulePickup(OfferViewModel offer) {
         navigationService.openPickupScheduling(offer, (Stage) acceptOfferButton.getScene().getWindow());
+    }
+
+    private void handleCreateReview(OfferViewModel offer) {
+        navigationService.openReviewCreate(offer, (Stage) acceptOfferButton.getScene().getWindow());
     }
 
     private void refreshOffers() {

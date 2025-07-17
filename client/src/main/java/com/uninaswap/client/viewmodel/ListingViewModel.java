@@ -139,4 +139,6 @@ public abstract class ListingViewModel {
     public void setFeatured(boolean featured) {
         this.featured.set(featured);
     }
+
+    public abstract String getListingTypeValue();
 }

@@ -49,4 +49,9 @@ public class GiftListingViewModel extends ListingViewModel {
         this.giftDetails.set(giftDetails);
     }
 
+    @Override
+    public String getListingTypeValue() {
+        return "GIFT";
+    }
+
 }

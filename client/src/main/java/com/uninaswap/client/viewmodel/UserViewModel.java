@@ -20,6 +20,7 @@ public class UserViewModel {
     private final StringProperty country = new SimpleStringProperty();
     private final DoubleProperty rating = new SimpleDoubleProperty(0.0);
     private final IntegerProperty reviewCount = new SimpleIntegerProperty(0);
+    private final StringProperty bio = new SimpleStringProperty();
 
     // Constructors
     public UserViewModel() {
@@ -90,6 +91,10 @@ public class UserViewModel {
 
     public IntegerProperty reviewCountProperty() {
         return reviewCount;
+    }
+
+    public StringProperty bioProperty() {
+        return bio;
     }
 
     // Getters and setters
@@ -211,6 +216,14 @@ public class UserViewModel {
 
     public void setReviewCount(int reviewCount) {
         this.reviewCount.set(reviewCount);
+    }
+
+    public String getBio() {
+        return bio.get();
+    }
+
+    public void setBio(String bio) {
+        this.bio.set(bio);
     }
 
     // Utility methods

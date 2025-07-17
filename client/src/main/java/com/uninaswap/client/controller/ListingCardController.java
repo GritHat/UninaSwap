@@ -1,10 +1,12 @@
 package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.NavigationService;
+import com.uninaswap.client.viewmodel.AuctionListingViewModel;
+import com.uninaswap.client.viewmodel.ListingItemViewModel;
+import com.uninaswap.client.viewmodel.ListingViewModel;
+import com.uninaswap.client.viewmodel.SellListingViewModel;
 import com.uninaswap.client.service.FavoritesService;
 import com.uninaswap.client.service.ImageService;
-import com.uninaswap.common.dto.ListingDTO;
-import com.uninaswap.common.dto.ListingItemDTO;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -41,7 +43,7 @@ public class ListingCardController {
     @FXML
     private ImageView favoriteIcon;
 
-    private ListingDTO listing;
+    private ListingViewModel listing;
     private boolean isFavorite = false;
 
     private final NavigationService navigationService = NavigationService.getInstance();
@@ -55,7 +57,7 @@ public class ListingCardController {
     public ListingCardController() {
     }
 
-    public ListingCardController(ListingDTO listing) {
+    public ListingCardController(ListingViewModel listing) {
         this.listing = listing;
     }
 
@@ -68,7 +70,7 @@ public class ListingCardController {
         }
     }
 
-    public void setListing(ListingDTO listing) {
+    public void setListing(ListingViewModel listing) {
         this.listing = listing;
 
         if (listing != null) {
@@ -78,8 +80,8 @@ public class ListingCardController {
             }
 
             // Set seller name
-            if (sellerName != null && listing.getCreator() != null) {
-                sellerName.setText(listing.getCreator().getUsername());
+            if (sellerName != null && listing.getUser() != null) {
+                sellerName.setText(listing.getUser().getUsername());
             }
 
             // Set price based on listing type
@@ -104,7 +106,7 @@ public class ListingCardController {
         }
     }
 
-    private void loadListingImages(ListingDTO listing) {
+    private void loadListingImages(ListingViewModel listing) {
         availableImagePaths = getAllImagePaths(listing);
         currentImageIndex = 0;
 
@@ -121,12 +123,12 @@ public class ListingCardController {
         }
     }
 
-    private List<String> getAllImagePaths(ListingDTO listing) {
+    private List<String> getAllImagePaths(ListingViewModel listing) {
         List<String> imagePaths = new ArrayList<>();
 
         if (listing.getItems() != null) {
-            for (ListingItemDTO item : listing.getItems()) {
-                String imagePath = item.getItemImagePath();
+            for (ListingItemViewModel item : listing.getItems()) {
+                String imagePath = item.getItem().getImagePath();
                 if (imagePath != null && !imagePath.isEmpty() && !imagePath.equals("default")) {
                     imagePaths.add(imagePath);
                 }
@@ -175,14 +177,13 @@ public class ListingCardController {
         }
     }
 
-    private String getPriceText(ListingDTO listing) {
+    private String getPriceText(ListingViewModel listing) {
         String type = listing.getListingTypeValue();
 
         switch (type.toUpperCase()) {
             case "SELL":
-                // Try to get price from SellListingDTO
-                if (listing instanceof com.uninaswap.common.dto.SellListingDTO) {
-                    com.uninaswap.common.dto.SellListingDTO sellListing = (com.uninaswap.common.dto.SellListingDTO) listing;
+                if (listing instanceof SellListingViewModel) {
+                    SellListingViewModel sellListing = (SellListingViewModel) listing;
                     BigDecimal price = sellListing.getPrice();
                     String currency = sellListing.getCurrency() != null ? sellListing.getCurrency().getSymbol() : "€";
                     return currency + " " + price;
@@ -196,10 +197,9 @@ public class ListingCardController {
                 return "Regalo";
 
             case "AUCTION":
-                // Try to get current bid from AuctionListingDTO
-                if (listing instanceof com.uninaswap.common.dto.AuctionListingDTO) {
-                    com.uninaswap.common.dto.AuctionListingDTO auctionListing = (com.uninaswap.common.dto.AuctionListingDTO) listing;
-                    BigDecimal currentBid = auctionListing.getCurrentHighestBid();
+                if (listing instanceof AuctionListingViewModel) {
+                    AuctionListingViewModel auctionListing = (AuctionListingViewModel) listing;
+                    BigDecimal currentBid = auctionListing.getHighestBid();
                     if (currentBid != null && currentBid.compareTo(BigDecimal.ZERO) > 0) {
                         String currency = auctionListing.getCurrency() != null
                                 ? auctionListing.getCurrency().getSymbol()
@@ -220,10 +220,10 @@ public class ListingCardController {
         }
     }
 
-    private String getListingCategory(ListingDTO listing) {
+    private String getListingCategory(ListingViewModel listing) {
         if (listing.getItems() != null && !listing.getItems().isEmpty()) {
             // Get category from first item
-            String itemCategory = listing.getItems().get(0).getItemCategory();
+            String itemCategory = listing.getItems().get(0).getItem().getItemCategory();
             if (itemCategory != null && !itemCategory.isEmpty()) {
                 return itemCategory;
             }

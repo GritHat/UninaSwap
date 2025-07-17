@@ -5,7 +5,6 @@ import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.*;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.*;
-import com.uninaswap.common.dto.*;
 import com.uninaswap.common.enums.Currency;
 import com.uninaswap.common.enums.ItemCondition;
 import javafx.application.Platform;
@@ -93,7 +92,7 @@ public class OfferDialogController {
     private final EventBusService eventBus = EventBusService.getInstance();
 
     // State
-    private ListingDTO currentListing;
+    private ListingViewModel currentListing;
     private final ObservableList<OfferItemViewModel> selectedItems = FXCollections.observableArrayList();
     private final Map<String, Integer> tempReservedQuantities = new HashMap<>();
     private final Map<Integer, Spinner<Integer>> rowSpinners = new HashMap<>();
@@ -106,16 +105,15 @@ public class OfferDialogController {
         setupSelectedItemsTable();
         updateOfferSummary();
 
-        eventBus.subscribe(EventTypes.ITEM_UPDATED, itemDTO -> {
-            if (itemDTO instanceof ItemDTO) {
-                ItemViewModel itemViewModel = viewModelMapper.toViewModel((ItemDTO) itemDTO);
-                addItemToOffer(itemViewModel, 1);
+        eventBus.subscribe(EventTypes.ITEM_UPDATED, itemViewModel -> {
+            if (itemViewModel instanceof ItemViewModel) {
+                addItemToOffer((ItemViewModel) itemViewModel, 1);
             }
 
         });
     }
 
-    public void setListing(ListingDTO listing) {
+    public void setListing(ListingViewModel listing) {
         this.currentListing = listing;
 
         if (listing != null) {
@@ -275,12 +273,12 @@ public class OfferDialogController {
         listingTitle.setText(currentListing.getTitle());
 
         // Set listing price info
-        if (currentListing instanceof SellListingDTO) {
-            SellListingDTO sellListing = (SellListingDTO) currentListing;
+        if (currentListing instanceof SellListingViewModel) {
+            SellListingViewModel sellListing = (SellListingViewModel) currentListing;
             String currency = sellListing.getCurrency() != null ? sellListing.getCurrency().getSymbol() : "€";
             listingPrice.setText(currency + " " + sellListing.getPrice());
-        } else if (currentListing instanceof TradeListingDTO) {
-            TradeListingDTO tradeListing = (TradeListingDTO) currentListing;
+        } else if (currentListing instanceof TradeListingViewModel) {
+            TradeListingViewModel tradeListing = (TradeListingViewModel) currentListing;
             if (tradeListing.isAcceptMoneyOffers() && tradeListing.getReferencePrice() != null) {
                 String currency = tradeListing.getCurrency() != null ? tradeListing.getCurrency().getSymbol() : "€";
                 listingPrice.setText("Rif: " + currency + " " + tradeListing.getReferencePrice());
@@ -291,7 +289,7 @@ public class OfferDialogController {
 
         // Load listing image
         if (currentListing.getItems() != null && !currentListing.getItems().isEmpty()) {
-            String imagePath = currentListing.getItems().get(0).getItemImagePath();
+            String imagePath = currentListing.getItems().get(0).getItem().getImagePath();
             if (imagePath != null && !imagePath.isEmpty()) {
                 imageService.fetchImage(imagePath)
                         .thenAccept(image -> Platform.runLater(() -> {
@@ -330,13 +328,13 @@ public class OfferDialogController {
                 includeMoneyCheckBox.setDisable(true); // Force money offer for sell listings
 
                 // Set constraint label for sell listings
-                SellListingDTO sellListing = (SellListingDTO) currentListing;
+                SellListingViewModel sellListing = (SellListingViewModel) currentListing;
                 String constraintText = localeService.getMessage("offer.constraint.sell.price");
                 priceConstraintLabel.setText(constraintText);
                 break;
 
             case "TRADE":
-                TradeListingDTO tradeListing = (TradeListingDTO) currentListing;
+                TradeListingViewModel tradeListing = (TradeListingViewModel) currentListing;
 
                 // Show money section only if trade accepts money offers
                 moneyOfferSection.setVisible(tradeListing.isAcceptMoneyOffers());
@@ -452,8 +450,8 @@ public class OfferDialogController {
                 offerSummaryContent.getChildren().add(moneyText);
 
                 // Validate money offer constraints
-                if (currentListing instanceof SellListingDTO) {
-                    SellListingDTO sellListing = (SellListingDTO) currentListing;
+                if (currentListing instanceof SellListingViewModel) {
+                    SellListingViewModel sellListing = (SellListingViewModel) currentListing;
                     if (amount.compareTo(sellListing.getPrice()) >= 0) {
                         Text warningText = new Text(
                                 "⚠ " + localeService.getMessage("offer.validation.amount.too.high"));
@@ -509,8 +507,8 @@ public class OfferDialogController {
                 }
 
                 // Check constraints for sell listings
-                if (currentListing instanceof SellListingDTO) {
-                    SellListingDTO sellListing = (SellListingDTO) currentListing;
+                if (currentListing instanceof SellListingViewModel) {
+                    SellListingViewModel sellListing = (SellListingViewModel) currentListing;
                     if (amount.compareTo(sellListing.getPrice()) >= 0) {
                         return false;
                     }

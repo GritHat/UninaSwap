@@ -1,7 +1,9 @@
 package com.uninaswap.client.service;
 
 import com.uninaswap.client.websocket.WebSocketClient;
+import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.util.WebSocketManager;
+import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.common.dto.ListingDTO;
 import com.uninaswap.common.message.ListingMessage;
 
@@ -16,8 +18,8 @@ import javafx.collections.ObservableList;
 public class ListingService {
     private static ListingService instance;
     private final WebSocketClient webSocketClient;
-    private final ObservableList<ListingDTO> userListings = FXCollections.observableArrayList();
-    private final ObservableList<ListingDTO> allListings = FXCollections.observableArrayList();
+    private final ObservableList<ListingViewModel> userListings = FXCollections.observableArrayList();
+    private final ObservableList<ListingViewModel> allListings = FXCollections.observableArrayList();
 
     private CompletableFuture<?> futureToComplete;
     private Consumer<ListingMessage> messageCallback;
@@ -157,14 +159,14 @@ public class ListingService {
     }
 
     // Get observable lists for UI binding
-    public ObservableList<ListingDTO> getUserListingsObservable() {
+    public ObservableList<ListingViewModel> getUserListingsObservable() {
         if (userListings.isEmpty()) {
             refreshUserListings();
         }
         return userListings;
     }
 
-    public ObservableList<ListingDTO> getAllListingsObservable() {
+    public ObservableList<ListingViewModel> getAllListingsObservable() {
         if (allListings.isEmpty()) {
             refreshAllListings();
         }
@@ -176,8 +178,11 @@ public class ListingService {
         getMyListings()
                 .thenAccept(listings -> {
                     Platform.runLater(() -> {
+                        List<ListingViewModel> viewModels = listings.stream()
+                                .map(ViewModelMapper.getInstance()::toViewModel)
+                                .toList();
                         userListings.clear();
-                        userListings.addAll(listings);
+                        userListings.addAll(viewModels);
                     });
                 })
                 .exceptionally(ex -> {
@@ -190,8 +195,11 @@ public class ListingService {
         getListings(0, 50) // First page with 50 items
                 .thenAccept(listings -> {
                     Platform.runLater(() -> {
+                        List<ListingViewModel> viewModels = listings.stream()
+                                .map(ViewModelMapper.getInstance()::toViewModel)
+                                .toList();
                         allListings.clear();
-                        allListings.addAll(listings);
+                        allListings.addAll(viewModels);
                     });
                 })
                 .exceptionally(ex -> {
@@ -221,7 +229,12 @@ public class ListingService {
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
                         // Use setAll() instead of clear() + addAll()
-                        allListings.setAll(message.getListings() != null ? message.getListings() : new ArrayList<>());
+                        List<ListingDTO> listings = message.getListings() != null ? message.getListings()
+                                : new ArrayList<>();
+                        List<ListingViewModel> viewModels = listings.stream()
+                                .map(ViewModelMapper.getInstance()::toViewModel)
+                                .toList();
+                        allListings.setAll(viewModels);
                         if (futureToComplete != null) {
                             ((CompletableFuture<List<ListingDTO>>) futureToComplete).complete(
                                     message.getListings() != null ? message.getListings() : new ArrayList<>());
@@ -240,7 +253,12 @@ public class ListingService {
             case GET_MY_LISTINGS_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
-                        userListings.setAll(message.getListings() != null ? message.getListings() : new ArrayList<>());
+                        List<ListingDTO> listings = message.getListings() != null ? message.getListings()
+                                : new ArrayList<>();
+                        List<ListingViewModel> viewModels = listings.stream()
+                                .map(ViewModelMapper.getInstance()::toViewModel)
+                                .toList();
+                        userListings.setAll(viewModels);
                         if (futureToComplete != null) {
                             ((CompletableFuture<List<ListingDTO>>) futureToComplete).complete(
                                     message.getListings() != null ? message.getListings() : new ArrayList<>());
@@ -259,8 +277,8 @@ public class ListingService {
             case CREATE_LISTING_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
-                        userListings.add(message.getListing());
-                        allListings.add(message.getListing());
+                        userListings.add(ViewModelMapper.getInstance().toViewModel(message.getListing()));
+                        allListings.add(ViewModelMapper.getInstance().toViewModel(message.getListing()));
                         if (futureToComplete != null) {
                             ((CompletableFuture<ListingDTO>) futureToComplete).complete(message.getListing());
                             futureToComplete = null;
@@ -280,8 +298,8 @@ public class ListingService {
                     if (message.isSuccess()) {
                         // Update in both lists
                         ListingDTO updated = message.getListing();
-                        updateListingInObservableList(userListings, updated);
-                        updateListingInObservableList(allListings, updated);
+                        updateListingInObservableList(userListings, ViewModelMapper.getInstance().toViewModel(updated));
+                        updateListingInObservableList(allListings, ViewModelMapper.getInstance().toViewModel(updated));
 
                         if (futureToComplete != null) {
                             ((CompletableFuture<ListingDTO>) futureToComplete).complete(updated);
@@ -348,7 +366,7 @@ public class ListingService {
     }
 
     // Helper method to update a listing in an ObservableList
-    private void updateListingInObservableList(ObservableList<ListingDTO> list, ListingDTO updated) {
+    private void updateListingInObservableList(ObservableList<ListingViewModel> list, ListingViewModel updated) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId().equals(updated.getId())) {
                 list.set(i, updated);

@@ -205,9 +205,11 @@ public class ViewModelMapper {
         ListingViewModel viewModel;
         if (dto instanceof GiftListingDTO) {
             viewModel = new GiftListingViewModel();
+            ((GiftListingViewModel) viewModel).setPickupOnly(((GiftListingDTO) dto).isPickupOnly());
+            ((GiftListingViewModel) viewModel).setAllowThankYouOffers(((GiftListingDTO) dto).isAllowThankYouOffers());
         } else if (dto instanceof TradeListingDTO) {
             viewModel = new TradeListingViewModel();
-            viewModel.setAcceptMoneyOffers((TradeListingDTO) dto.isAcceptMoneyOffer());
+            ((TradeListingViewModel) viewModel).setAcceptMoneyOffers(((TradeListingDTO) dto).isAcceptMoneyOffers());
         } else if (dto instanceof SellListingDTO) {
             viewModel = new SellListingViewModel();
         } else if (dto instanceof AuctionListingDTO) {

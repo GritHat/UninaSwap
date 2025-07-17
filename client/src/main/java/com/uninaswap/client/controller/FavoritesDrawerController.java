@@ -295,7 +295,7 @@ public class FavoritesDrawerController {
 
     private void handleListingClick(ListingViewModel listing) {
         try {
-            Parent listingDetailsView = navigationService.loadListingDetails(listing.getId());
+            Parent listingDetailsView = navigationService.loadListingDetails(listing);
             mainController.setContent(listingDetailsView);
         } catch (Exception e) {
             AlertHelper.showErrorAlert(

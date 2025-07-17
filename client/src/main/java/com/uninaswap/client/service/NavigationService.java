@@ -385,24 +385,13 @@ public class NavigationService {
         return offersView;
     }
 
-    public void loadListingDetails(String listingId) {
-        // Fetch listing details and navigate
-        listingService.getListingDetails(listingId)
-                .thenAccept(listing -> {
-                    Platform.runLater(() -> {
-                        try {
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListingDetailsView.fxml"));
-                            Parent detailsView = loader.load();
+    public Parent loadListingDetails(ListingViewModel listing) throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/ListingDetailsView.fxml");
+        Parent detailsView = loaderBundle.getView();
 
-                            ListingDetailsController controller = loader.getController();
-                            controller.setListing(listing);
-
-                            loadView(detailsView, "Dettagli Inserzione");
-                        } catch (Exception e) {
-                            System.err.println("Error loading listing details: " + e.getMessage());
-                        }
-                    });
-                });
+        ListingDetailsController controller = loaderBundle.getLoader().getController();
+        controller.setListing(listing);
+        return detailsView;
     }
 
     /**

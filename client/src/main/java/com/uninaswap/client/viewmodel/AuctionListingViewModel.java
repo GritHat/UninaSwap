@@ -18,6 +18,7 @@ public class AuctionListingViewModel extends ListingViewModel {
     private final ObjectProperty<LocalDateTime> auctionStartTime = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDateTime> auctionEndTime = new SimpleObjectProperty<>();
     private final ObjectProperty<BigDecimal> highestBid = new SimpleObjectProperty<>();
+    private final ObjectProperty<BigDecimal> minimumBidIncrement = new SimpleObjectProperty<>();
     private final ObjectProperty<UserViewModel> highestBidder = new SimpleObjectProperty<>();
     private final IntegerProperty durationInDays = new SimpleIntegerProperty();
 
@@ -64,6 +65,10 @@ public class AuctionListingViewModel extends ListingViewModel {
         return durationInDays;
     }
 
+    public ObjectProperty<BigDecimal> minimumBidIncrementProperty() {
+        return minimumBidIncrement;
+    }
+
     // Setters
     public void setStartingPrice(BigDecimal startingPrice) {
         this.startingPrice.set(startingPrice);
@@ -95,6 +100,10 @@ public class AuctionListingViewModel extends ListingViewModel {
 
     public void setDurationInDays(int durationInDays) {
         this.durationInDays.set(durationInDays);
+    }
+
+    public void setMinimumBidIncrement(BigDecimal minimumBidIncrement) {
+        this.minimumBidIncrement.set(minimumBidIncrement);
     }
 
     // Getters
@@ -131,8 +140,20 @@ public class AuctionListingViewModel extends ListingViewModel {
         return durationInDays.get();
     }
 
+    public BigDecimal getMinimumBidIncrement() {
+        return minimumBidIncrement.get();
+    }
+
     @Override
     public String getListingTypeValue() {
         return "AUCTION";
+    }
+
+    public BigDecimal getMinimumNextBid() {
+        if (highestBid != null && highestBid.get().compareTo(BigDecimal.ZERO) > 0) {
+            return highestBid.get().add(minimumBidIncrement.get());
+        } else {
+            return startingPrice.get();
+        }
     }
 }

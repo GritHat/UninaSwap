@@ -3,9 +3,13 @@ package com.uninaswap.client.controller;
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.*;
 import com.uninaswap.client.util.AlertHelper;
+import com.uninaswap.client.viewmodel.AuctionListingViewModel;
+import com.uninaswap.client.viewmodel.GiftListingViewModel;
+import com.uninaswap.client.viewmodel.ListingItemViewModel;
 import com.uninaswap.client.viewmodel.ListingViewModel;
+import com.uninaswap.client.viewmodel.SellListingViewModel;
+import com.uninaswap.client.viewmodel.TradeListingViewModel;
 import com.uninaswap.client.viewmodel.UserViewModel;
-import com.uninaswap.common.dto.*;
 import com.uninaswap.common.enums.Currency;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -152,7 +156,7 @@ public class ListingDetailsController {
     private final UserSessionService sessionService = UserSessionService.getInstance();
 
     // State
-    private ListingDTO currentListing;
+    private ListingViewModel currentListing;
     private List<String> imageUrls = new ArrayList<>();
     private int currentImageIndex = 0;
     private boolean isFavorite = false;
@@ -186,7 +190,7 @@ public class ListingDetailsController {
         });
     }
 
-    public void setListing(ListingDTO listing) {
+    public void setListing(ListingViewModel listing) {
         this.currentListing = listing;
 
         if (listing != null) {
@@ -209,8 +213,8 @@ public class ListingDetailsController {
         statusLabel.setText(currentListing.getStatus().toString());
 
         // Seller information
-        if (currentListing.getCreator() != null) {
-            sellerName.setText(currentListing.getCreator().getUsername());
+        if (currentListing.getUser() != null) {
+            sellerName.setText(currentListing.getUser().getUsername());
             // TODO: Load seller rating and avatar
             sellerRating.setText("⭐ 4.8 (127 recensioni)"); // Placeholder
         }
@@ -224,7 +228,7 @@ public class ListingDetailsController {
 
     private String getListingCategory() {
         if (currentListing.getItems() != null && !currentListing.getItems().isEmpty()) {
-            String itemCategory = currentListing.getItems().get(0).getItemCategory();
+            String itemCategory = currentListing.getItems().get(0).getItem().getItemCategory();
             if (itemCategory != null && !itemCategory.isEmpty()) {
                 return itemCategory;
             }
@@ -237,28 +241,28 @@ public class ListingDetailsController {
 
         switch (listingType.toUpperCase()) {
             case "SELL":
-                setupSellPricing((SellListingDTO) currentListing);
+                setupSellPricing((SellListingViewModel) currentListing);
                 break;
             case "TRADE":
-                setupTradePricing((TradeListingDTO) currentListing);
+                setupTradePricing((TradeListingViewModel) currentListing);
                 break;
             case "GIFT":
-                setupGiftPricing((GiftListingDTO) currentListing);
+                setupGiftPricing((GiftListingViewModel) currentListing);
                 break;
             case "AUCTION":
-                setupAuctionPricing((AuctionListingDTO) currentListing);
+                setupAuctionPricing((AuctionListingViewModel) currentListing);
                 break;
         }
     }
 
-    private void setupSellPricing(SellListingDTO sellListing) {
+    private void setupSellPricing(SellListingViewModel sellListing) {
         priceLabel.setText("Prezzo");
         String currency = sellListing.getCurrency() != null ? sellListing.getCurrency().getSymbol() : "€";
         priceValue.setText(currency + " " + sellListing.getPrice());
         priceDetails.setText("Prezzo fisso");
     }
 
-    private void setupTradePricing(TradeListingDTO tradeListing) {
+    private void setupTradePricing(TradeListingViewModel tradeListing) {
         priceLabel.setText("Tipo di scambio");
         priceValue.setText("Scambio");
 
@@ -275,7 +279,7 @@ public class ListingDetailsController {
         priceDetails.setText(details.toString());
     }
 
-    private void setupGiftPricing(GiftListingDTO giftListing) {
+    private void setupGiftPricing(GiftListingViewModel giftListing) {
         priceLabel.setText("Tipo");
         priceValue.setText("Regalo");
 
@@ -289,10 +293,10 @@ public class ListingDetailsController {
         priceDetails.setText(details.toString());
     }
 
-    private void setupAuctionPricing(AuctionListingDTO auctionListing) {
+    private void setupAuctionPricing(AuctionListingViewModel auctionListing) {
         priceLabel.setText("Asta");
 
-        BigDecimal currentBid = auctionListing.getCurrentHighestBid();
+        BigDecimal currentBid = auctionListing.getHighestBid();
         String currency = auctionListing.getCurrency() != null ? auctionListing.getCurrency().getSymbol() : "€";
 
         if (currentBid != null && currentBid.compareTo(BigDecimal.ZERO) > 0) {
@@ -315,10 +319,10 @@ public class ListingDetailsController {
         updateTimeRemaining(auctionListing);
     }
 
-    private void updateTimeRemaining(AuctionListingDTO auction) {
-        if (auction.getEndTime() != null) {
+    private void updateTimeRemaining(AuctionListingViewModel auction) {
+        if (auction.getAuctionEndTime() != null) {
             LocalDateTime now = LocalDateTime.now();
-            LocalDateTime endTime = auction.getEndTime();
+            LocalDateTime endTime = auction.getAuctionEndTime();
 
             if (now.isBefore(endTime)) {
                 long days = ChronoUnit.DAYS.between(now, endTime);
@@ -339,14 +343,14 @@ public class ListingDetailsController {
         itemsList.getChildren().clear();
 
         if (currentListing.getItems() != null) {
-            for (ListingItemDTO item : currentListing.getItems()) {
+            for (ListingItemViewModel item : currentListing.getItems()) {
                 HBox itemRow = createItemRow(item);
                 itemsList.getChildren().add(itemRow);
             }
         }
     }
 
-    private HBox createItemRow(ListingItemDTO item) {
+    private HBox createItemRow(ListingItemViewModel item) {
         HBox itemRow = new HBox(10);
         itemRow.getStyleClass().add("item-row");
 
@@ -358,8 +362,8 @@ public class ListingDetailsController {
         itemImage.getStyleClass().add("item-thumbnail");
 
         // Load item image
-        if (item.getItemImagePath() != null && !item.getItemImagePath().isEmpty()) {
-            imageService.fetchImage(item.getItemImagePath())
+        if (item.getItem().getImagePath() != null && !item.getItem().getImagePath().isEmpty()) {
+            imageService.fetchImage(item.getItem().getImagePath())
                     .thenAccept(image -> Platform.runLater(() -> {
                         if (image != null && !image.isError()) {
                             itemImage.setImage(image);
@@ -373,7 +377,7 @@ public class ListingDetailsController {
 
         // Item details
         VBox itemDetails = new VBox(2);
-        Text itemName = new Text(item.getItemName());
+        Text itemName = new Text(item.getName());
         itemName.getStyleClass().add("item-name");
         Text itemQuantity = new Text("Quantità: " + item.getQuantity());
         itemQuantity.getStyleClass().add("item-quantity");
@@ -398,8 +402,8 @@ public class ListingDetailsController {
         // Collect all image URLs from listing items
         imageUrls.clear();
         if (currentListing.getItems() != null) {
-            for (ListingItemDTO item : currentListing.getItems()) {
-                String imagePath = item.getItemImagePath();
+            for (ListingItemViewModel item : currentListing.getItems()) {
+                String imagePath = item.getItem().getImagePath();
                 if (imagePath != null && !imagePath.isEmpty() && !imagePath.equals("default")) {
                     imageUrls.add(imagePath);
                 }
@@ -531,9 +535,9 @@ public class ListingDetailsController {
         }
 
         // Disable actions if user is the owner
-        boolean isOwner = currentListing.getCreator() != null &&
+        boolean isOwner = currentListing.getUser() != null &&
                 sessionService.getUser() != null &&
-                currentListing.getCreator().getId().equals(sessionService.getUser().getId());
+                currentListing.getUser().getId().equals(sessionService.getUser().getId());
 
         if (isOwner) {
             disableAllActionButtons();
@@ -614,8 +618,8 @@ public class ListingDetailsController {
     // Action button handlers
     @FXML
     private void handleBuyNow() {
-        if (currentListing instanceof SellListingDTO) {
-            SellListingDTO sellListing = (SellListingDTO) currentListing;
+        if (currentListing instanceof SellListingViewModel) {
+            SellListingViewModel sellListing = (SellListingViewModel) currentListing;
 
             String message = String.format("Confermi l'acquisto di '%s' per %s %s?",
                     currentListing.getTitle(),
@@ -710,7 +714,7 @@ public class ListingDetailsController {
     @FXML
     private void handleProposeTrade() {
         // Only allow for trade listings
-        if (!(currentListing instanceof TradeListingDTO)) {
+        if (!(currentListing instanceof TradeListingViewModel)) {
             AlertHelper.showErrorAlert(
                     localeService.getMessage("trade.propose.error.title"),
                     localeService.getMessage("trade.propose.error.header"),
@@ -794,7 +798,7 @@ public class ListingDetailsController {
 
     @FXML
     private void handleRequestGift() {
-        if (currentListing instanceof GiftListingDTO) {
+        if (currentListing instanceof GiftListingViewModel) {
             boolean offerThankYou = offerThankYouCheckBox.isSelected();
             String thankYouMessage = offerThankYou ? thankYouMessageArea.getText() : "";
 
@@ -820,8 +824,8 @@ public class ListingDetailsController {
 
     @FXML
     private void handlePlaceBid() {
-        if (currentListing instanceof AuctionListingDTO) {
-            AuctionListingDTO auction = (AuctionListingDTO) currentListing;
+        if (currentListing instanceof AuctionListingViewModel) {
+            AuctionListingViewModel auction = (AuctionListingViewModel) currentListing;
 
             try {
                 BigDecimal bidAmount = new BigDecimal(bidAmountField.getText().trim());
@@ -876,15 +880,14 @@ public class ListingDetailsController {
     @FXML
     private void handleReportListing() {
         if (currentListing != null) {
-            ListingViewModel listingViewModel = ViewModelMapper.getInstance().toViewModel(currentListing);
-            navigationService.openReportDialog(listingViewModel, (Stage) backButton.getScene().getWindow());
+            navigationService.openReportDialog(currentListing, (Stage) backButton.getScene().getWindow());
         }
     }
 
     @FXML
     private void handleReportUser() {
-        if (currentListing != null && currentListing.getCreator() != null) {
-            UserViewModel userViewModel = ViewModelMapper.getInstance().toViewModel(currentListing.getCreator());
+        if (currentListing != null && currentListing.getUser() != null) {
+            UserViewModel userViewModel = currentListing.getUser();
             navigationService.openReportDialog(userViewModel, (Stage) backButton.getScene().getWindow());
         }
     }

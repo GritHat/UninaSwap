@@ -363,7 +363,7 @@ public class ItemService {
 
     private void publishItemUpdatedEvent(ItemDTO item) {
         // Publish an event to notify other parts of the application
-        eventBus.publishEvent(EventTypes.ITEM_UPDATED, item);
+        eventBus.publishEvent(EventTypes.ITEM_UPDATED, ViewModelMapper.getInstance().toViewModel(item));
     }
 
     public void setMessageCallback(Consumer<ItemMessage> callback) {

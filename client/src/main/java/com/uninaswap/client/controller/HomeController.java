@@ -2,7 +2,8 @@ package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.FavoritesService;
 import com.uninaswap.client.service.ListingService;
-import com.uninaswap.common.dto.ListingDTO;
+import com.uninaswap.client.viewmodel.ListingViewModel;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -59,11 +60,11 @@ public class HomeController {
     }
 
     private void loadHomeData() {
-        ObservableList<ListingDTO> allListings = listingService.getAllListingsObservable();
+        ObservableList<ListingViewModel> allListings = listingService.getAllListingsObservable();
 
         // Set up listener ONCE with debouncing
         if (!listenerRegistered) {
-            allListings.addListener((ListChangeListener<ListingDTO>) change -> {
+            allListings.addListener((ListChangeListener<ListingViewModel>) change -> {
                 debouncedUpdate(allListings);
             });
             listenerRegistered = true;
@@ -79,7 +80,7 @@ public class HomeController {
         }
     }
 
-    private void debouncedUpdate(ObservableList<ListingDTO> listings) {
+    private void debouncedUpdate(ObservableList<ListingViewModel> listings) {
         // Cancel any existing timer
         if (updateTimeline != null) {
             updateTimeline.stop();
@@ -96,12 +97,12 @@ public class HomeController {
         updateTimeline.play();
     }
 
-    private void updateHomeViewWithListings(ObservableList<ListingDTO> listings) {
+    private void updateHomeViewWithListings(ObservableList<ListingViewModel> listings) {
         // Clear existing content
         clearAllContainers();
 
         // Separate listings by type and favorites
-        for (ListingDTO listing : listings) {
+        for (ListingViewModel listing : listings) {
             try {
                 Node listingCard = createListingCard(listing);
 
@@ -140,7 +141,7 @@ public class HomeController {
         addPlaceholdersIfEmpty();
     }
 
-    private Node createListingCard(ListingDTO listing) throws IOException {
+    private Node createListingCard(ListingViewModel listing) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListingCardView.fxml"));
 
         // Create controller with the listing data
@@ -187,8 +188,8 @@ public class HomeController {
         if (favoriteListingsContainer != null) {
             favoriteListingsContainer.getChildren().clear();
 
-            ObservableList<ListingDTO> allListings = listingService.getAllListingsObservable();
-            for (ListingDTO listing : allListings) {
+            ObservableList<ListingViewModel> allListings = listingService.getAllListingsObservable();
+            for (ListingViewModel listing : allListings) {
                 if (favoritesService.isFavoriteListing(listing.getId())) {
                     try {
                         Node favoriteCard = createListingCard(listing);

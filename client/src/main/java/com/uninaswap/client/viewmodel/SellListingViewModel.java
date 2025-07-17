@@ -1,15 +1,19 @@
 package com.uninaswap.client.viewmodel;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.uninaswap.common.enums.Currency;
 import com.uninaswap.common.enums.ListingStatus;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class SellListingViewModel extends ListingViewModel {
-    private final StringProperty price = new SimpleStringProperty();
-    private final StringProperty currency = new SimpleStringProperty();
+    private final ObjectProperty<BigDecimal> price = new SimpleObjectProperty<>();
+    private final ObjectProperty<Currency> currency = new SimpleObjectProperty<>();
 
     // Constructors
     public SellListingViewModel() {
@@ -17,35 +21,35 @@ public class SellListingViewModel extends ListingViewModel {
     }
 
     public SellListingViewModel(String id, String title, String description, UserViewModel user,
-            LocalDateTime createdAt, ListingStatus status, boolean featured, String price, String currency) {
+            LocalDateTime createdAt, ListingStatus status, boolean featured, BigDecimal price, Currency currency) {
         super(id, title, description, user, createdAt, status, featured);
         setPrice(price);
         setCurrency(currency);
     }
 
     // Property getters
-    public StringProperty priceProperty() {
+    public ObjectProperty<BigDecimal> priceProperty() {
         return price;
     }
 
-    public StringProperty currencyProperty() {
+    public ObjectProperty<Currency> currencyProperty() {
         return currency;
     }
 
     // Getters and setters
-    public String getPrice() {
+    public BigDecimal getPrice() {
         return price.get();
     }
 
-    public void setPrice(String price) {
+    public void setPrice(BigDecimal price) {
         this.price.set(price);
     }
 
-    public String getCurrency() {
+    public Currency getCurrency() {
         return currency.get();
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(Currency currency) {
         this.currency.set(currency);
     }
 

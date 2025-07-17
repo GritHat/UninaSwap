@@ -4,12 +4,16 @@ import java.time.LocalDateTime;
 
 import com.uninaswap.common.enums.ListingStatus;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class GiftListingViewModel extends ListingViewModel {
     private final StringProperty giftType = new SimpleStringProperty();
     private final StringProperty giftDetails = new SimpleStringProperty();
+    private final BooleanProperty pickupOnly = new SimpleBooleanProperty();
+    private final BooleanProperty allowThankYouOffers = new SimpleBooleanProperty();
 
     // Constructors
     public GiftListingViewModel() {
@@ -32,6 +36,14 @@ public class GiftListingViewModel extends ListingViewModel {
         return giftDetails;
     }
 
+    public BooleanProperty pickupOnlyProperty() {
+        return pickupOnly;
+    }
+
+    public BooleanProperty allowThankYouOffersProperty() {
+        return allowThankYouOffers;
+    }
+
     // Getters and setters
     public String getGiftType() {
         return giftType.get();
@@ -47,6 +59,22 @@ public class GiftListingViewModel extends ListingViewModel {
 
     public void setGiftDetails(String giftDetails) {
         this.giftDetails.set(giftDetails);
+    }
+
+    public boolean isPickupOnly() {
+        return pickupOnly.get();
+    }
+
+    public void setPickupOnly(boolean pickupOnly) {
+        this.pickupOnly.set(pickupOnly);
+    }
+
+    public boolean isAllowThankYouOffers() {
+        return allowThankYouOffers.get();
+    }
+
+    public void setAllowThankYouOffers(boolean allowThankYouOffer) {
+        this.allowThankYouOffers.set(allowThankYouOffer);
     }
 
     @Override

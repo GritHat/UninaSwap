@@ -11,6 +11,8 @@ import com.uninaswap.client.viewmodel.UserViewModel;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -63,12 +65,15 @@ public class FavoritesDrawerController {
     private final BooleanProperty drawerVisible = new SimpleBooleanProperty(false);
     private MainController mainController;
 
+    // Add reference to observable lists
+    private ObservableList<FavoriteViewModel> userFavorites;
+
     @FXML
     public void initialize() {
         setupLabels();
         setupDrawerToggle();
         setupExpandablePanes();
-        loadFavorites();
+        setupFavoritesObservableList(); // NEW METHOD
         loadFollowing();
 
         // Hide drawer initially
@@ -117,24 +122,33 @@ public class FavoritesDrawerController {
         });
     }
 
+    private void setupFavoritesObservableList() {
+        // Get the observable list from FavoritesService
+        userFavorites = favoritesService.getUserFavoritesList();
+
+        // Set up listener for automatic updates
+        userFavorites.addListener((ListChangeListener<FavoriteViewModel>) change -> {
+            Platform.runLater(() -> {
+                populateFavoritesList(userFavorites);
+                updateFavoritesCount(userFavorites.size());
+            });
+        });
+    }
+
     @FXML
     private void handleToggleDrawer() {
         drawerVisible.set(!drawerVisible.get());
     }
 
     private void loadFavorites() {
-        favoritesService.getUserFavorites()
-                .thenAccept(favorites -> Platform.runLater(() -> {
-                    populateFavoritesList(favorites);
-                    updateFavoritesCount(favorites.size());
-                }))
-                .exceptionally(ex -> {
-                    Platform.runLater(() -> {
-                        System.err.println("Failed to load favorites: " + ex.getMessage());
-                        updateFavoritesCount(0);
-                    });
-                    return null;
-                });
+        // If the observable list is empty, refresh from server
+        if (userFavorites.isEmpty()) {
+            favoritesService.refreshUserFavorites();
+        } else {
+            // Use existing data
+            populateFavoritesList(userFavorites);
+            updateFavoritesCount(userFavorites.size());
+        }
     }
 
     private void loadFollowing() {
@@ -146,7 +160,7 @@ public class FavoritesDrawerController {
         });
     }
 
-    private void populateFavoritesList(List<?> favorites) {
+    private void populateFavoritesList(ObservableList<FavoriteViewModel> favorites) {
         favoritesContainer.getChildren().clear();
 
         if (favorites.isEmpty()) {
@@ -156,13 +170,10 @@ public class FavoritesDrawerController {
             return;
         }
 
-        for (Object favorite : favorites) {
-            if (favorite instanceof FavoriteViewModel) {
-                FavoriteViewModel favoriteViewModel = (FavoriteViewModel) favorite;
-                if (favoriteViewModel.getListing() != null) {
-                    VBox listingItem = createListingItem(favoriteViewModel.getListing());
-                    favoritesContainer.getChildren().add(listingItem);
-                }
+        for (FavoriteViewModel favorite : favorites) {
+            if (favorite.getListing() != null) {
+                VBox listingItem = createListingItem(favorite.getListing());
+                favoritesContainer.getChildren().add(listingItem);
             }
         }
     }
@@ -328,7 +339,8 @@ public class FavoritesDrawerController {
     }
 
     public void refreshData() {
-        loadFavorites();
+        // Simply trigger refresh - the observable list will update automatically
+        favoritesService.refreshUserFavorites();
         loadFollowing();
     }
 

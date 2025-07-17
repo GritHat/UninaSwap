@@ -1,16 +1,10 @@
 package com.uninaswap.common.message;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.uninaswap.common.dto.FavoriteDTO;
 import com.uninaswap.common.dto.ListingDTO;
 
 import java.util.List;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "messageType")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = FavoriteMessage.class, name = "favorite")
-})
 public class FavoriteMessage extends Message {
 
     public enum Type {
@@ -35,7 +29,7 @@ public class FavoriteMessage extends Message {
     private FavoriteDTO favorite;
     private List<FavoriteDTO> favorites;
     private List<ListingDTO> favoriteListings;
-    private boolean isFavorite;
+    private boolean favoriteEnabled;
     private int page = 0;
     private int size = 20;
     private long totalElements = 0;
@@ -44,6 +38,7 @@ public class FavoriteMessage extends Message {
     // Default constructor
     public FavoriteMessage() {
         super();
+        setMessageType("favorite");
     }
 
     // Getters and setters
@@ -95,12 +90,12 @@ public class FavoriteMessage extends Message {
         this.favoriteListings = favoriteListings;
     }
 
-    public boolean isFavorite() {
-        return isFavorite;
+    public boolean isFavoriteEnabled() {
+        return favoriteEnabled;
     }
 
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
+    public void setFavoriteEnabled(boolean favoriteEnabled) {
+        this.favoriteEnabled = favoriteEnabled;
     }
 
     public int getPage() {

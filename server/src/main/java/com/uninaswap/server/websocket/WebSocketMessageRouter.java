@@ -32,6 +32,7 @@ public class WebSocketMessageRouter extends TextWebSocketHandler {
             OfferWebSocketHandler offerHandler,
             PickupWebSocketHandler pickupHandler,
             ReviewWebSocketHandler reviewHandler, // Add this parameter
+            FavoriteWebSocketHandler favoriteHandler,
             SessionService sessionService) {
         this.objectMapper = objectMapper;
         this.sessionService = sessionService;
@@ -39,6 +40,7 @@ public class WebSocketMessageRouter extends TextWebSocketHandler {
         // Register handlers for different message types
         handlerMap.put("auth", authHandler);
         handlerMap.put("profile", profileHandler);
+        handlerMap.put("favorite", favoriteHandler);
         handlerMap.put("image", imageHandler);
         handlerMap.put("item", itemHandler);
         handlerMap.put("listing", listingHandler);

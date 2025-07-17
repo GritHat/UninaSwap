@@ -584,13 +584,39 @@ public class ListingDetailsController {
     @FXML
     private void toggleFavorite() {
         if (currentListing != null) {
-            isFavorite = !isFavorite;
+            // Optimistic UI update
+            boolean newFavoriteState = !isFavorite;
+            isFavorite = newFavoriteState;
             updateFavoriteIcon();
 
-            if (isFavorite) {
-                favoritesService.addFavoriteListing(currentListing.getId());
+            // Sync with server
+            if (newFavoriteState) {
+                favoritesService.addFavoriteToServer(currentListing.getId())
+                        .thenAccept(favoriteViewModel -> Platform.runLater(() -> {
+                            // Server sync successful - observable lists updated via message handler
+                            System.out.println("Successfully added listing to favorites: " + currentListing.getId());
+                        }))
+                        .exceptionally(ex -> {
+                            // Revert UI on failure
+                            isFavorite = false;
+                            updateFavoriteIcon();
+                            System.err.println("Failed to add to favorites: " + ex.getMessage());
+                            return null;
+                        });
             } else {
-                favoritesService.removeFavoriteListing(currentListing.getId());
+                favoritesService.removeFavoriteFromServer(currentListing.getId())
+                        .thenAccept(success -> Platform.runLater(() -> {
+                            // Server sync successful - observable lists updated via message handler
+                            System.out
+                                    .println("Successfully removed listing from favorites: " + currentListing.getId());
+                        }))
+                        .exceptionally(ex -> {
+                            // Revert UI on failure
+                            isFavorite = true;
+                            updateFavoriteIcon();
+                            System.err.println("Failed to remove from favorites: " + ex.getMessage());
+                            return null;
+                        });
             }
         }
     }

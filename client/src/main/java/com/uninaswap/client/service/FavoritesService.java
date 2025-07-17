@@ -3,6 +3,7 @@ package com.uninaswap.client.service;
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.client.viewmodel.FavoriteViewModel;
+import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.websocket.WebSocketClient;
 import com.uninaswap.common.dto.FavoriteDTO;
 import com.uninaswap.common.dto.ListingDTO;
@@ -27,9 +28,12 @@ public class FavoritesService {
     private final Set<String> favoriteListingIds = new HashSet<>();
     private final Set<Long> favoriteUserIds = new HashSet<>();
 
-    // Observable lists for UI binding
+    // Observable lists for UI binding - THESE SHOULD BE THE MAIN DATA SOURCE
     private final ObservableList<FavoriteViewModel> userFavorites = FXCollections.observableArrayList();
     private final ObservableList<ListingDTO> favoriteListings = FXCollections.observableArrayList();
+
+    // Add observable list for listing ViewModels (similar to ListingService)
+    private final ObservableList<ListingViewModel> favoriteListingViewModels = FXCollections.observableArrayList();
 
     // Listener functionality
     private final List<Consumer<String>> listingFavoriteChangeListeners = new ArrayList<>();
@@ -58,7 +62,7 @@ public class FavoritesService {
      */
     public CompletableFuture<FavoriteViewModel> addFavoriteToServer(String listingId) {
         CompletableFuture<FavoriteViewModel> future = new CompletableFuture<>();
-
+        System.err.println("Adding favorite to server: " + listingId);
         FavoriteMessage message = new FavoriteMessage();
         message.setType(FavoriteMessage.Type.ADD_FAVORITE_REQUEST);
         message.setListingId(listingId);
@@ -241,131 +245,6 @@ public class FavoritesService {
         return Collections.unmodifiableSet(favoriteUserIds);
     }
 
-    // === MESSAGE HANDLING ===
-
-    @SuppressWarnings("unchecked")
-    private void handleFavoriteMessage(FavoriteMessage message) {
-        if (message.getType() == null) {
-            System.err.println("Received favorite message with null type: " + message.getErrorMessage());
-            if (!message.isSuccess() && futureToComplete != null) {
-                futureToComplete.completeExceptionally(
-                        new Exception("Server error: " + message.getErrorMessage()));
-                futureToComplete = null;
-            }
-            return;
-        }
-
-        switch (message.getType()) {
-            case ADD_FAVORITE_RESPONSE:
-                Platform.runLater(() -> {
-                    if (message.isSuccess()) {
-                        FavoriteViewModel favoriteViewModel = viewModelMapper.toViewModel(message.getFavorite());
-                        userFavorites.add(favoriteViewModel);
-                        if (futureToComplete != null) {
-                            ((CompletableFuture<FavoriteViewModel>) futureToComplete).complete(favoriteViewModel);
-                            futureToComplete = null;
-                        }
-                    } else {
-                        if (futureToComplete != null) {
-                            futureToComplete.completeExceptionally(
-                                    new Exception("Failed to add favorite: " + message.getErrorMessage()));
-                            futureToComplete = null;
-                        }
-                    }
-                });
-                break;
-
-            case REMOVE_FAVORITE_RESPONSE:
-                Platform.runLater(() -> {
-                    if (message.isSuccess()) {
-                        if (futureToComplete != null) {
-                            ((CompletableFuture<Boolean>) futureToComplete).complete(true);
-                            futureToComplete = null;
-                        }
-                    } else {
-                        if (futureToComplete != null) {
-                            futureToComplete.completeExceptionally(
-                                    new Exception("Failed to remove favorite: " + message.getErrorMessage()));
-                            futureToComplete = null;
-                        }
-                    }
-                });
-                break;
-
-            case GET_USER_FAVORITES_RESPONSE:
-                Platform.runLater(() -> {
-                    if (message.isSuccess()) {
-                        List<FavoriteDTO> favorites = message.getFavorites() != null ? message.getFavorites()
-                                : new ArrayList<>();
-                        List<FavoriteViewModel> favoriteViewModels = favorites.stream()
-                                .map(viewModelMapper::toViewModel)
-                                .collect(Collectors.toList());
-                        userFavorites.setAll(favoriteViewModels);
-
-                        // Update favorite listings
-                        if (message.getFavoriteListings() != null) {
-                            favoriteListings.setAll(message.getFavoriteListings());
-                        }
-
-                        if (futureToComplete != null) {
-                            ((CompletableFuture<List<FavoriteDTO>>) futureToComplete).complete(favorites);
-                            futureToComplete = null;
-                        }
-                    } else {
-                        if (futureToComplete != null) {
-                            futureToComplete.completeExceptionally(
-                                    new Exception("Failed to get favorites: " + message.getErrorMessage()));
-                            futureToComplete = null;
-                        }
-                    }
-                });
-                break;
-
-            case IS_FAVORITE_RESPONSE:
-                Platform.runLater(() -> {
-                    if (message.isSuccess()) {
-                        if (futureToComplete != null) {
-                            ((CompletableFuture<Boolean>) futureToComplete).complete(message.isFavorite());
-                            futureToComplete = null;
-                        }
-                    } else {
-                        if (futureToComplete != null) {
-                            futureToComplete.completeExceptionally(
-                                    new Exception("Failed to check favorite status: " + message.getErrorMessage()));
-                            futureToComplete = null;
-                        }
-                    }
-                });
-                break;
-
-            case TOGGLE_FAVORITE_RESPONSE:
-                Platform.runLater(() -> {
-                    if (message.isSuccess()) {
-                        if (futureToComplete != null) {
-                            ((CompletableFuture<Boolean>) futureToComplete).complete(message.isFavorite());
-                            futureToComplete = null;
-                        }
-                    } else {
-                        if (futureToComplete != null) {
-                            futureToComplete.completeExceptionally(
-                                    new Exception("Failed to toggle favorite: " + message.getErrorMessage()));
-                            futureToComplete = null;
-                        }
-                    }
-                });
-                break;
-
-            default:
-                System.out.println("Unhandled favorite message type: " + message.getType());
-                break;
-        }
-
-        // Call any registered callback
-        if (messageCallback != null) {
-            messageCallback.accept(message);
-        }
-    }
-
     // === LISTENER MANAGEMENT ===
 
     // Listing favorite listeners
@@ -440,46 +319,232 @@ public class FavoritesService {
         return favoriteItemIds.size() + favoriteListingIds.size() + favoriteUserIds.size();
     }
 
-    // === OBSERVABLE LISTS GETTERS ===
+    // === OBSERVABLE LISTS GETTERS (Main data source for UI) ===
 
     public ObservableList<FavoriteViewModel> getUserFavoritesList() {
+        if (userFavorites.isEmpty()) {
+            refreshUserFavorites();
+        }
         return userFavorites;
     }
 
     public ObservableList<ListingDTO> getFavoriteListingsList() {
+        if (favoriteListings.isEmpty()) {
+            refreshUserFavorites();
+        }
         return favoriteListings;
     }
 
-    // Set a callback for incoming messages
-    public void setMessageCallback(Consumer<FavoriteMessage> callback) {
-        this.messageCallback = callback;
+    // NEW: Add ViewModel observable list getter
+    public ObservableList<ListingViewModel> getFavoriteListingViewModels() {
+        if (favoriteListingViewModels.isEmpty()) {
+            refreshUserFavorites();
+        }
+        return favoriteListingViewModels;
     }
 
-    // === SYNC METHODS ===
+    // === REFRESH METHODS (similar to ListingService) ===
 
-    public void syncFavoritesFromBackend(Set<String> backendFavoriteItems,
-            Set<String> backendFavoriteListings,
-            Set<Long> backendFavoriteUsers) {
-        // Sync items
-        favoriteItemIds.clear();
-        favoriteItemIds.addAll(backendFavoriteItems);
+    public void refreshUserFavorites() {
+        getUserFavorites()
+                .thenAccept(favorites -> {
+                    Platform.runLater(() -> {
+                        // Update FavoriteViewModels
+                        List<FavoriteViewModel> favoriteViewModels = favorites.stream()
+                                .map(viewModelMapper::toViewModel)
+                                .collect(Collectors.toList());
+                        userFavorites.setAll(favoriteViewModels);
 
-        // Sync listings
+                        // Update ListingDTOs
+                        List<ListingDTO> listings = favorites.stream()
+                                .map(FavoriteDTO::getListing)
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList());
+                        favoriteListings.setAll(listings);
+
+                        // Update ListingViewModels
+                        List<ListingViewModel> listingViewModels = listings.stream()
+                                .map(viewModelMapper::toViewModel)
+                                .collect(Collectors.toList());
+                        favoriteListingViewModels.setAll(listingViewModels);
+
+                        // Update local tracking sets
+                        syncLocalFavoriteIds(favorites);
+                    });
+                })
+                .exceptionally(ex -> {
+                    System.err.println("Error refreshing favorites: " + ex.getMessage());
+                    return null;
+                });
+    }
+
+    private void syncLocalFavoriteIds(List<FavoriteDTO> favorites) {
+        // Update local tracking sets from server data
+        Set<String> serverListingIds = favorites.stream()
+                .map(FavoriteDTO::getListingId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
         favoriteListingIds.clear();
-        favoriteListingIds.addAll(backendFavoriteListings);
-
-        // Sync users
-        favoriteUserIds.clear();
-        favoriteUserIds.addAll(backendFavoriteUsers);
-
-        System.out.println("Synced favorites from backend: " +
-                favoriteItemIds.size() + " items, " +
-                favoriteListingIds.size() + " listings, " +
-                favoriteUserIds.size() + " users");
+        favoriteListingIds.addAll(serverListingIds);
     }
 
-    public void syncFavoritesToBackend() {
-        // TODO: Implement backend sync
-        System.out.println("Syncing favorites to backend...");
+    // === UPDATE MESSAGE HANDLING TO USE OBSERVABLE LISTS ===
+
+    @SuppressWarnings("unchecked")
+    private void handleFavoriteMessage(FavoriteMessage message) {
+        if (message.getType() == null) {
+            System.err.println("Received favorite message with null type: " + message.getErrorMessage());
+            if (!message.isSuccess() && futureToComplete != null) {
+                futureToComplete.completeExceptionally(
+                        new Exception("Server error: " + message.getErrorMessage()));
+                futureToComplete = null;
+            }
+            return;
+        }
+
+        switch (message.getType()) {
+            case ADD_FAVORITE_RESPONSE:
+                Platform.runLater(() -> {
+                    if (message.isSuccess()) {
+                        FavoriteViewModel favoriteViewModel = viewModelMapper.toViewModel(message.getFavorite());
+
+                        // Add to observable lists
+                        userFavorites.add(favoriteViewModel);
+
+                        if (favoriteViewModel.getListing() != null) {
+                            favoriteListings.add(message.getFavorite().getListing());
+                            favoriteListingViewModels.add(favoriteViewModel.getListing());
+                        }
+
+                        // Update local tracking
+                        if (message.getFavorite().getListingId() != null) {
+                            favoriteListingIds.add(message.getFavorite().getListingId());
+                        }
+
+                        if (futureToComplete != null) {
+                            ((CompletableFuture<FavoriteViewModel>) futureToComplete).complete(favoriteViewModel);
+                            futureToComplete = null;
+                        }
+                    } else {
+                        if (futureToComplete != null) {
+                            futureToComplete.completeExceptionally(
+                                    new Exception("Failed to add favorite: " + message.getErrorMessage()));
+                            futureToComplete = null;
+                        }
+                    }
+                });
+                break;
+
+            case REMOVE_FAVORITE_RESPONSE:
+                Platform.runLater(() -> {
+                    if (message.isSuccess()) {
+                        String listingId = message.getListingId();
+
+                        // Remove from observable lists
+                        userFavorites.removeIf(fav -> fav.getListingId().equals(listingId));
+                        favoriteListings.removeIf(listing -> listing.getId().equals(listingId));
+                        favoriteListingViewModels.removeIf(listing -> listing.getId().equals(listingId));
+
+                        // Update local tracking
+                        favoriteListingIds.remove(listingId);
+
+                        if (futureToComplete != null) {
+                            ((CompletableFuture<Boolean>) futureToComplete).complete(true);
+                            futureToComplete = null;
+                        }
+                    } else {
+                        if (futureToComplete != null) {
+                            futureToComplete.completeExceptionally(
+                                    new Exception("Failed to remove favorite: " + message.getErrorMessage()));
+                            futureToComplete = null;
+                        }
+                    }
+                });
+                break;
+
+            case GET_USER_FAVORITES_RESPONSE:
+                Platform.runLater(() -> {
+                    if (message.isSuccess()) {
+                        List<FavoriteDTO> favorites = message.getFavorites() != null ? message.getFavorites()
+                                : new ArrayList<>();
+
+                        // Update all observable lists
+                        List<FavoriteViewModel> favoriteViewModels = favorites.stream()
+                                .map(viewModelMapper::toViewModel)
+                                .collect(Collectors.toList());
+                        userFavorites.setAll(favoriteViewModels);
+
+                        List<ListingDTO> listings = favorites.stream()
+                                .map(FavoriteDTO::getListing)
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList());
+                        favoriteListings.setAll(listings);
+
+                        List<ListingViewModel> listingViewModels = listings.stream()
+                                .map(viewModelMapper::toViewModel)
+                                .collect(Collectors.toList());
+                        favoriteListingViewModels.setAll(listingViewModels);
+
+                        // Update local tracking
+                        syncLocalFavoriteIds(favorites);
+
+                        if (futureToComplete != null) {
+                            ((CompletableFuture<List<FavoriteDTO>>) futureToComplete).complete(favorites);
+                            futureToComplete = null;
+                        }
+                    } else {
+                        if (futureToComplete != null) {
+                            futureToComplete.completeExceptionally(
+                                    new Exception("Failed to get favorites: " + message.getErrorMessage()));
+                            futureToComplete = null;
+                        }
+                    }
+                });
+                break;
+
+            case IS_FAVORITE_RESPONSE:
+                Platform.runLater(() -> {
+                    if (message.isSuccess()) {
+                        if (futureToComplete != null) {
+                            ((CompletableFuture<Boolean>) futureToComplete).complete(message.isFavoriteEnabled());
+                            futureToComplete = null;
+                        }
+                    } else {
+                        if (futureToComplete != null) {
+                            futureToComplete.completeExceptionally(
+                                    new Exception("Failed to check favorite status: " + message.getErrorMessage()));
+                            futureToComplete = null;
+                        }
+                    }
+                });
+                break;
+
+            case TOGGLE_FAVORITE_RESPONSE:
+                Platform.runLater(() -> {
+                    if (message.isSuccess()) {
+                        if (futureToComplete != null) {
+                            ((CompletableFuture<Boolean>) futureToComplete).complete(message.isFavoriteEnabled());
+                            futureToComplete = null;
+                        }
+                    } else {
+                        if (futureToComplete != null) {
+                            futureToComplete.completeExceptionally(
+                                    new Exception("Failed to toggle favorite: " + message.getErrorMessage()));
+                            futureToComplete = null;
+                        }
+                    }
+                });
+                break;
+
+            default:
+                System.out.println("Unhandled favorite message type: " + message.getType());
+                break;
+        }
+
+        // Call any registered callback
+        if (messageCallback != null) {
+            messageCallback.accept(message);
+        }
     }
 }

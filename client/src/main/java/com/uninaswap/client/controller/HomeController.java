@@ -40,6 +40,9 @@ public class HomeController {
     private Timeline updateTimeline;
     private static final Duration DEBOUNCE_DELAY = Duration.millis(100);
 
+    // Add reference to favorite listings observable list
+    private ObservableList<ListingViewModel> favoriteListingViewModels;
+
     @FXML
     public void initialize() {
         System.out.println("Home view initialized.");
@@ -47,15 +50,26 @@ public class HomeController {
         // Load user cards
         userCard.loadUserCardsIntoTab(UserCardBox);
 
+        setupFavoritesListener();
+
         // Load listings and set up data binding
         loadHomeData();
 
         // Listen for favorite changes to update the favorites section
-        favoritesService.addListingFavoriteChangeListener(listingId -> {
+        favoritesService.addListingFavoriteChangeListener(_ -> {
             Platform.runLater(() -> {
-                // Refresh the favorites container when favorites change
                 updateFavoritesContainer();
             });
+        });
+    }
+
+    private void setupFavoritesListener() {
+        // Get the observable list from FavoritesService
+        favoriteListingViewModels = favoritesService.getFavoriteListingViewModels();
+
+        // Set up listener for automatic updates
+        favoriteListingViewModels.addListener((ListChangeListener<ListingViewModel>) change -> {
+            Platform.runLater(this::updateFavoritesContainer);
         });
     }
 
@@ -78,6 +92,14 @@ public class HomeController {
             System.out.println("List already has " + allListings.size() + " items, updating view...");
             updateHomeViewWithListings(allListings);
         }
+
+        // ALSO refresh favorites if empty
+        if (favoriteListingViewModels.isEmpty()) {
+            System.out.println("Favorites list is empty, refreshing from server...");
+            favoritesService.refreshUserFavorites();
+        } else {
+            updateFavoritesContainer();
+        }
     }
 
     private void debouncedUpdate(ObservableList<ListingViewModel> listings) {
@@ -97,11 +119,35 @@ public class HomeController {
         updateTimeline.play();
     }
 
+    // SIMPLIFIED: Use observable list directly instead of checking each listing
+    private void updateFavoritesContainer() {
+        if (favoriteListingsContainer != null) {
+            favoriteListingsContainer.getChildren().clear();
+
+            // Use the observable list directly - no need to check individual listings
+            for (ListingViewModel listing : favoriteListingViewModels) {
+                try {
+                    Node favoriteCard = createListingCard(listing);
+                    favoriteListingsContainer.getChildren().add(favoriteCard);
+                } catch (IOException e) {
+                    System.err.println("Error creating favorite card: " + e.getMessage());
+                }
+            }
+
+            // Add placeholder if no favorites
+            if (favoriteListingsContainer.getChildren().isEmpty()) {
+                javafx.scene.text.Text placeholder = new javafx.scene.text.Text("Nessun preferito trovato");
+                placeholder.getStyleClass().add("placeholder-text");
+                favoriteListingsContainer.getChildren().add(placeholder);
+            }
+        }
+    }
+
     private void updateHomeViewWithListings(ObservableList<ListingViewModel> listings) {
         // Clear existing content
         clearAllContainers();
 
-        // Separate listings by type and favorites
+        // Separate listings by type (but DON'T handle favorites here)
         for (ListingViewModel listing : listings) {
             try {
                 Node listingCard = createListingCard(listing);
@@ -124,12 +170,8 @@ public class HomeController {
                         break;
                 }
 
-                // Add to favorites container only if it's actually a favorite
-                if (favoriteListingsContainer != null &&
-                        favoritesService.isFavoriteListing(listing.getId())) {
-                    Node favoriteCard = createListingCard(listing);
-                    favoriteListingsContainer.getChildren().add(favoriteCard);
-                }
+                // DON'T add to favorites container here - it's handled by
+                // updateFavoritesContainer()
 
             } catch (Exception e) {
                 System.err.println("Error creating listing card for: " + listing.getTitle());
@@ -181,31 +223,6 @@ public class HomeController {
             javafx.scene.text.Text placeholder = new javafx.scene.text.Text("Nessun preferito trovato");
             placeholder.getStyleClass().add("placeholder-text");
             favoriteListingsContainer.getChildren().add(placeholder);
-        }
-    }
-
-    private void updateFavoritesContainer() {
-        if (favoriteListingsContainer != null) {
-            favoriteListingsContainer.getChildren().clear();
-
-            ObservableList<ListingViewModel> allListings = listingService.getAllListingsObservable();
-            for (ListingViewModel listing : allListings) {
-                if (favoritesService.isFavoriteListing(listing.getId())) {
-                    try {
-                        Node favoriteCard = createListingCard(listing);
-                        favoriteListingsContainer.getChildren().add(favoriteCard);
-                    } catch (IOException e) {
-                        System.err.println("Error creating favorite card: " + e.getMessage());
-                    }
-                }
-            }
-
-            // Add placeholder if no favorites
-            if (favoriteListingsContainer.getChildren().isEmpty()) {
-                javafx.scene.text.Text placeholder = new javafx.scene.text.Text("Nessun preferito trovato");
-                placeholder.getStyleClass().add("placeholder-text");
-                favoriteListingsContainer.getChildren().add(placeholder);
-            }
         }
     }
 

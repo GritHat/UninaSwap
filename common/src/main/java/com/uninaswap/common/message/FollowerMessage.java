@@ -1,16 +1,10 @@
 package com.uninaswap.common.message;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.uninaswap.common.dto.FollowerDTO;
 import com.uninaswap.common.dto.UserDTO;
 
 import java.util.List;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "messageType")
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = FollowerMessage.class, name = "follower")
-})
 public class FollowerMessage extends Message {
 
     public enum Type {
@@ -51,6 +45,7 @@ public class FollowerMessage extends Message {
     // Default constructor
     public FollowerMessage() {
         super();
+        setMessageType("follower");
     }
 
     // Getters and setters

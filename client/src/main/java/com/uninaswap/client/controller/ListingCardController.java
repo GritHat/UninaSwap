@@ -290,14 +290,35 @@ public class ListingCardController {
         event.consume(); // Prevent triggering openListingDetails
 
         if (listing != null) {
-            // Toggle favorite status
-            setFavorite(!isFavorite);
+            // Optimistic UI update
+            boolean newFavoriteState = !isFavorite;
+            setFavorite(newFavoriteState);
 
-            // Update backend
-            if (isFavorite) {
-                favoritesService.addFavoriteListing(listing.getId());
+            // Sync with server
+            if (newFavoriteState) {
+                favoritesService.addFavoriteToServer(listing.getId())
+                        .thenAccept(favoriteViewModel -> Platform.runLater(() -> {
+                            // Server sync successful - local tracking is updated via message handler
+                            System.out.println("Successfully added listing to favorites: " + listing.getId());
+                        }))
+                        .exceptionally(ex -> {
+                            // Revert UI on failure
+                            setFavorite(false);
+                            System.err.println("Failed to add to favorites: " + ex.getMessage());
+                            return null;
+                        });
             } else {
-                favoritesService.removeFavoriteListing(listing.getId());
+                favoritesService.removeFavoriteFromServer(listing.getId())
+                        .thenAccept(success -> Platform.runLater(() -> {
+                            // Server sync successful - local tracking is updated via message handler
+                            System.out.println("Successfully removed listing from favorites: " + listing.getId());
+                        }))
+                        .exceptionally(ex -> {
+                            // Revert UI on failure
+                            setFavorite(true);
+                            System.err.println("Failed to remove from favorites: " + ex.getMessage());
+                            return null;
+                        });
             }
         }
     }

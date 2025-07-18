@@ -30,6 +30,8 @@ public class HomeController {
 
     // Containers from FXML
     @FXML
+    private ScrollPane allListingsContainerWrapper;
+    @FXML
     private FlowPane allListingsContainer; // Changed from HBox to FlowPane
     @FXML
     private HBox favoriteListingsContainer;
@@ -89,23 +91,14 @@ public class HomeController {
     // NEW METHOD: Setup scroll listener for pagination
     private void setupAllListingsScrollListener() {
         Platform.runLater(() -> {
-            // Find the ScrollPane parent of allListingsContainer
-            Parent parent = allListingsContainer.getParent();
-            while (parent != null && !(parent instanceof ScrollPane)) {
-                parent = parent.getParent();
-            }
-
-            if (parent instanceof ScrollPane) {
-                allListingsScrollPane = (ScrollPane) parent;
-
-                // Add scroll listener for pagination
-                allListingsScrollPane.vvalueProperty().addListener((observable, oldValue, newValue) -> {
-                    // Check if we're near the bottom (95% scrolled)
-                    if (newValue.doubleValue() > 0.95 && !isLoadingMore && hasMoreListings) {
-                        loadMoreListings();
-                    }
-                });
-            }
+            // Add scroll listener for pagination
+            allListingsContainerWrapper.vvalueProperty().addListener((observable, oldValue, newValue) -> {
+                // Check if we're near the bottom (95% scrolled)
+                System.out.println("loading more listings");
+                if (newValue.doubleValue() > 0.95 && !isLoadingMore && hasMoreListings) {
+                    loadMoreListings();
+                }
+            });
         });
     }
 
@@ -154,6 +147,9 @@ public class HomeController {
 
         System.out.println("Loading more listings - page: " + currentPage);
 
+        // Set the flag in ListingService to indicate this is pagination
+        listingService.setLoadingMore(true);
+
         listingService.getListings(currentPage, LISTINGS_PER_PAGE)
                 .thenAccept(newListings -> Platform.runLater(() -> {
                     hideLoadingIndicator();
@@ -161,13 +157,8 @@ public class HomeController {
                         hasMoreListings = false;
                         System.out.println("No more listings available");
                     } else {
-                        // Convert DTOs to ViewModels and add to the observable list
-                        List<ListingViewModel> newViewModels = newListings.stream()
-                                .map(ViewModelMapper.getInstance()::toViewModel)
-                                .collect(Collectors.toList());
-
-                        // Add to the service's observable list (this will trigger UI update)
-                        listingService.getAllListingsObservable().addAll(newViewModels);
+                        // The service will automatically append the listings due to the flag
+                        // No need to manually add them here
 
                         System.out.println("Loaded " + newListings.size() + " more listings");
 
@@ -182,6 +173,7 @@ public class HomeController {
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
                         hideLoadingIndicator();
+                        listingService.setLoadingMore(false); // Reset flag on error
                         System.err.println("Error loading more listings: " + ex.getMessage());
                         isLoadingMore = false;
                         currentPage--; // Reset page counter on error

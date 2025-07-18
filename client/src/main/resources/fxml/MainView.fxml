@@ -105,9 +105,13 @@
                       <children>
                         <!-- Sidebar with responsive width -->
                         <fx:include fx:id="sidebarInclude" source="SidebarView.fxml" />
-                        <!-- Content area that grows to fill remaining space -->
-                        <StackPane fx:id="contentArea" minWidth="400.0" HBox.hgrow="ALWAYS" />                                                <!-- Favorites Drawer on the right -->
-                        <fx:include fx:id="favoritesDrawerInclude" source="FavoritesDrawerView.fxml" />
+                              <StackPane prefHeight="150.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                                <children>
+                                  <!-- Content area that grows to fill remaining space -->
+                                  <StackPane fx:id="contentArea" minWidth="400.0" />                                                <!-- Favorites Drawer on the right -->
+                                  <fx:include fx:id="favoritesDrawerInclude" mouseTransparent="true" source="FavoritesDrawerView.fxml" />
+                                </children>
+                              </StackPane>
                       </children>
                     </HBox>
                      </children>

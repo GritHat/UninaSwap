@@ -24,6 +24,9 @@ public class ListingService {
     private CompletableFuture<?> futureToComplete;
     private Consumer<ListingMessage> messageCallback;
 
+    // Add a flag to track if we're loading more or refreshing
+    private boolean isLoadingMore = false;
+
     private ListingService() {
         this.webSocketClient = WebSocketManager.getClient();
         this.webSocketClient.registerMessageHandler(ListingMessage.class, this::handleListingMessage);
@@ -219,6 +222,11 @@ public class ListingService {
         });
     }
 
+    // Add method to set loading more flag
+    public void setLoadingMore(boolean loadingMore) {
+        this.isLoadingMore = loadingMore;
+    }
+
     // Handle incoming messages
     @SuppressWarnings("unchecked")
     private void handleListingMessage(ListingMessage message) {
@@ -239,19 +247,32 @@ public class ListingService {
             case GET_LISTINGS_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
-                        // Use setAll() instead of clear() + addAll()
                         List<ListingDTO> listings = message.getListings() != null ? message.getListings()
                                 : new ArrayList<>();
                         List<ListingViewModel> viewModels = listings.stream()
                                 .map(ViewModelMapper.getInstance()::toViewModel)
                                 .toList();
-                        allListings.setAll(viewModels);
+                        
+                        // Check if we're loading more or refreshing
+                        if (isLoadingMore) {
+                            // Append new listings to existing ones
+                            allListings.addAll(viewModels);
+                            System.out.println("Added " + viewModels.size() + " more listings. Total: " + allListings.size());
+                        } else {
+                            // Replace all listings (initial load or refresh)
+                            allListings.setAll(viewModels);
+                            System.out.println("Loaded " + viewModels.size() + " listings (initial/refresh)");
+                        }
+                        
+                        // Reset the flag
+                        isLoadingMore = false;
+                        
                         if (futureToComplete != null) {
-                            ((CompletableFuture<List<ListingDTO>>) futureToComplete).complete(
-                                    message.getListings() != null ? message.getListings() : new ArrayList<>());
+                            ((CompletableFuture<List<ListingDTO>>) futureToComplete).complete(listings);
                             futureToComplete = null;
                         }
                     } else {
+                        isLoadingMore = false; // Reset flag on error too
                         if (futureToComplete != null) {
                             futureToComplete.completeExceptionally(
                                     new Exception("Failed to get listings: " + message.getErrorMessage()));

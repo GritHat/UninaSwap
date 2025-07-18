@@ -49,65 +49,8 @@
                       <content>
                         <HBox fx:id="astePreferiteBox" alignment="CENTER_LEFT" minHeight="140.0" spacing="20.0">
                           <children>
-                            <!-- Laptop Auction Card -->
-                            <VBox alignment="TOP_CENTER" prefHeight="120.0" prefWidth="200.0" styleClass="card">
-                              <children>
-                                <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" styleClass="card-header">
-                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%item.laptop" wrappingWidth="122.13671875">
-                                      <HBox.margin>
-                                        <Insets left="10.0" />
-                                      </HBox.margin>
-                                    </Text>
-                                    <Text fill="#4a2b6b" strokeType="OUTSIDE" strokeWidth="0.0" text="%auction.expiry.days">
-                                      <HBox.margin>
-                                        <Insets right="2.0" />
-                                      </HBox.margin>
-                                    </Text>
-                                    <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
-                                      <image>
-                                        <Image url="@../images/icons/notification.png" />
-                                      </image>
-                                      <HBox.margin>
-                                        <Insets right="10.0" />
-                                      </HBox.margin>
-                                    </ImageView>
-                                  </children>
-                                </HBox>
-                                <HBox alignment="CENTER" prefHeight="90.0" prefWidth="200.0">
-                                  <children>
-                                    <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
-                                      <image>
-                                        <Image url="@../images/icons/immagine_generica.png" />
-                                      </image>
-                                      <HBox.margin>
-                                        <Insets right="10.0" />
-                                      </HBox.margin>
-                                    </ImageView>
-                                    <VBox alignment="CENTER_LEFT" prefHeight="89.0" prefWidth="109.0">
-                                      <children>
-                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Offerta attuale:" />
-                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%price.amount" />
-                                        <HBox alignment="CENTER_LEFT" spacing="5.0">
-                                          <children>
-                                            <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
-                                              <image>
-                                                <Image url="@../images/icons/notification.png" />
-                                              </image>
-                                            </ImageView>
-                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="%auction.your.bid" />
-                                          </children>
-                                        </HBox>
-                                      </children>
-                                    </VBox>
-                                  </children>
-                                </HBox>
-                              </children>
-                            </VBox>
-                            
                             <!-- Additional auction cards... -->
                             <!-- You can add more auction cards here following the same pattern -->
-                            
                           </children>
                           <padding>
                             <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
@@ -134,7 +77,7 @@
                       </HBox>
                       
                       <!-- Changed from horizontal ScrollPane to vertical ScrollPane with FlowPane -->
-                      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="section-scroll" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
+                      <ScrollPane fx:id="allListingsContainerWrapper" fitToWidth="true" hbarPolicy="NEVER" styleClass="section-scroll" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
                           <content>
                             <FlowPane fx:id="allListingsContainer" alignment="CENTER" columnHalignment="CENTER" hgap="15.0" prefWrapLength="1200.0" vgap="15.0">
                                 <children>

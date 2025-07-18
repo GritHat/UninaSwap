@@ -1,5 +1,6 @@
 package com.uninaswap.client.controller;
 
+import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.FavoritesService;
 import com.uninaswap.client.service.ListingService;
 import com.uninaswap.client.viewmodel.ListingViewModel;
@@ -11,23 +12,38 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class HomeController {
 
     // Containers from FXML
     @FXML
-    private HBox allListingsContainer;
+    private FlowPane allListingsContainer; // Changed from HBox to FlowPane
     @FXML
     private HBox favoriteListingsContainer;
     @FXML
     private HBox UserCardBox;
     @FXML
     private HBox astePreferiteBox;
+    @FXML
+    private ScrollPane allListingsScrollPane;
+    // Add pagination fields
+    private static final int LISTINGS_PER_PAGE = 50;
+    private int currentPage = 0;
+    private boolean isLoadingMore = false;
+    private boolean hasMoreListings = true;
 
     private final UserCardController userCard = new UserCardController();
     private final ListingService listingService = ListingService.getInstance();
@@ -51,6 +67,7 @@ public class HomeController {
         userCard.loadUserCardsIntoTab(UserCardBox);
 
         setupFavoritesListener();
+        setupAllListingsScrollListener(); // NEW METHOD
 
         // Load listings and set up data binding
         loadHomeData();
@@ -73,6 +90,29 @@ public class HomeController {
         });
     }
 
+    // NEW METHOD: Setup scroll listener for pagination
+    private void setupAllListingsScrollListener() {
+        Platform.runLater(() -> {
+            // Find the ScrollPane parent of allListingsContainer
+            Parent parent = allListingsContainer.getParent();
+            while (parent != null && !(parent instanceof ScrollPane)) {
+                parent = parent.getParent();
+            }
+
+            if (parent instanceof ScrollPane) {
+                allListingsScrollPane = (ScrollPane) parent;
+
+                // Add scroll listener for pagination
+                allListingsScrollPane.vvalueProperty().addListener((observable, oldValue, newValue) -> {
+                    // Check if we're near the bottom (95% scrolled)
+                    if (newValue.doubleValue() > 0.95 && !isLoadingMore && hasMoreListings) {
+                        loadMoreListings();
+                    }
+                });
+            }
+        });
+    }
+
     private void loadHomeData() {
         ObservableList<ListingViewModel> allListings = listingService.getAllListingsObservable();
 
@@ -83,6 +123,10 @@ public class HomeController {
             });
             listenerRegistered = true;
         }
+
+        // Reset pagination when loading initial data
+        currentPage = 0;
+        hasMoreListings = true;
 
         // Only refresh if the list is actually empty
         if (allListings.isEmpty()) {
@@ -99,6 +143,74 @@ public class HomeController {
             favoritesService.refreshUserFavorites();
         } else {
             updateFavoritesContainer();
+        }
+    }
+
+    // NEW METHOD: Load more listings for pagination
+    private void loadMoreListings() {
+        if (isLoadingMore || !hasMoreListings) {
+            return;
+        }
+
+        isLoadingMore = true;
+        showLoadingIndicator();
+        currentPage++;
+
+        System.out.println("Loading more listings - page: " + currentPage);
+
+        listingService.getListings(currentPage, LISTINGS_PER_PAGE)
+                .thenAccept(newListings -> Platform.runLater(() -> {
+                    hideLoadingIndicator();
+                    if (newListings == null || newListings.isEmpty()) {
+                        hasMoreListings = false;
+                        System.out.println("No more listings available");
+                    } else {
+                        // Convert DTOs to ViewModels and add to the observable list
+                        List<ListingViewModel> newViewModels = newListings.stream()
+                                .map(ViewModelMapper.getInstance()::toViewModel)
+                                .collect(Collectors.toList());
+
+                        // Add to the service's observable list (this will trigger UI update)
+                        listingService.getAllListingsObservable().addAll(newViewModels);
+
+                        System.out.println("Loaded " + newListings.size() + " more listings");
+
+                        // Check if we got less than requested (indicates last page)
+                        if (newListings.size() < LISTINGS_PER_PAGE) {
+                            hasMoreListings = false;
+                            System.out.println("Reached end of listings");
+                        }
+                    }
+                    isLoadingMore = false;
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        hideLoadingIndicator();
+                        System.err.println("Error loading more listings: " + ex.getMessage());
+                        isLoadingMore = false;
+                        currentPage--; // Reset page counter on error
+                    });
+                    return null;
+                });
+    }
+
+    private void showLoadingIndicator() {
+        if (allListingsContainer != null && !isLoadingMore) {
+            VBox loadingBox = new VBox();
+            loadingBox.setAlignment(Pos.CENTER);
+            loadingBox.getStyleClass().add("loading-indicator");
+
+            Text loadingText = new Text("Caricamento...");
+            loadingText.getStyleClass().add("loading-text");
+
+            loadingBox.getChildren().add(loadingText);
+            allListingsContainer.getChildren().add(loadingBox);
+        }
+    }
+
+    private void hideLoadingIndicator() {
+        if (allListingsContainer != null) {
+            allListingsContainer.getChildren().removeIf(node -> node.getStyleClass().contains("loading-indicator"));
         }
     }
 
@@ -143,35 +255,31 @@ public class HomeController {
         }
     }
 
+    // UPDATED: Change to support FlowPane layout instead of separating by type
     private void updateHomeViewWithListings(ObservableList<ListingViewModel> listings) {
         // Clear existing content
         clearAllContainers();
 
-        // Separate listings by type (but DON'T handle favorites here)
+        // Add all listings to the grid layout (no separation by type for main
+        // container)
         for (ListingViewModel listing : listings) {
             try {
                 Node listingCard = createListingCard(listing);
 
-                // Add to appropriate container based on listing type
+                // Add all non-auction listings to the main container
                 String listingType = listing.getListingTypeValue().toUpperCase();
 
-                switch (listingType) {
-                    case "AUCTION":
-                        if (astePreferiteBox != null) {
-                            astePreferiteBox.getChildren().add(listingCard);
-                        }
-                        break;
-
-                    default:
-                        // Add all non-auction listings to the main container
-                        if (allListingsContainer != null) {
-                            allListingsContainer.getChildren().add(listingCard);
-                        }
-                        break;
+                if ("AUCTION".equals(listingType)) {
+                    // Keep auctions in their separate horizontal container
+                    if (astePreferiteBox != null) {
+                        astePreferiteBox.getChildren().add(listingCard);
+                    }
+                } else {
+                    // Add all other listings to the main grid container
+                    if (allListingsContainer != null) {
+                        allListingsContainer.getChildren().add(listingCard);
+                    }
                 }
-
-                // DON'T add to favorites container here - it's handled by
-                // updateFavoritesContainer()
 
             } catch (Exception e) {
                 System.err.println("Error creating listing card for: " + listing.getTitle());
@@ -196,8 +304,8 @@ public class HomeController {
 
     private void clearAllContainers() {
         if (allListingsContainer != null) {
-            // Remove all children except the fx:include placeholder
-            allListingsContainer.getChildren().removeIf(node -> !node.getClass().getSimpleName().contains("Include"));
+            // For FlowPane, just clear all children
+            allListingsContainer.getChildren().clear();
         }
 
         if (favoriteListingsContainer != null) {
@@ -213,7 +321,7 @@ public class HomeController {
 
     private void addPlaceholdersIfEmpty() {
         // Add placeholder text if no listings found
-        if (allListingsContainer != null && allListingsContainer.getChildren().size() <= 1) {
+        if (allListingsContainer != null && allListingsContainer.getChildren().isEmpty() && !isLoadingMore) {
             javafx.scene.text.Text placeholder = new javafx.scene.text.Text("Nessuna inserzione disponibile");
             placeholder.getStyleClass().add("placeholder-text");
             allListingsContainer.getChildren().add(placeholder);

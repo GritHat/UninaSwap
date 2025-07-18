@@ -191,6 +191,7 @@ public class ListingService {
                 });
     }
 
+    // Update the refreshAllListings method to support initial loading only
     public void refreshAllListings() {
         getListings(0, 50) // First page with 50 items
                 .thenAccept(listings -> {
@@ -198,7 +199,7 @@ public class ListingService {
                         List<ListingViewModel> viewModels = listings.stream()
                                 .map(ViewModelMapper.getInstance()::toViewModel)
                                 .toList();
-                        allListings.clear();
+                        allListings.clear(); // Clear existing data
                         allListings.addAll(viewModels);
                     });
                 })
@@ -206,6 +207,16 @@ public class ListingService {
                     System.err.println("Error refreshing all listings: " + ex.getMessage());
                     return null;
                 });
+    }
+
+    // Add method to append listings (for pagination)
+    public void appendListings(List<ListingDTO> newListings) {
+        Platform.runLater(() -> {
+            List<ListingViewModel> viewModels = newListings.stream()
+                    .map(ViewModelMapper.getInstance()::toViewModel)
+                    .toList();
+            allListings.addAll(viewModels); // Append instead of replacing
+        });
     }
 
     // Handle incoming messages

@@ -566,7 +566,7 @@ public class ListingDetailsController {
     }
 
     private void updateFavoriteIcon() {
-        String iconPath = isFavorite ? "/images/icons/elenco_preferiti.png" : "/images/icons/preferiti.png";
+        String iconPath = isFavorite ? "/images/icons/favorites_add.png" : "/images/icons/favorites_remove.png";
         try {
             Image icon = new Image(getClass().getResourceAsStream(iconPath));
             favoriteIcon.setImage(icon);

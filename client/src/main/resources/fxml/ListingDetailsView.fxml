@@ -33,7 +33,7 @@
                   <graphic>
                      <ImageView fx:id="favoriteIcon" fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
                         <image>
-                           <Image url="@../images/preferiti.png" />
+                           <Image url="@../images/favorites_add.png" />
                         </image>
                      </ImageView>
                   </graphic>

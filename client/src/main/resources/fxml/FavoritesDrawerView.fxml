@@ -26,7 +26,7 @@
                <HBox alignment="CENTER_LEFT" spacing="5">
                   <ImageView fitHeight="16.0" fitWidth="16.0" preserveRatio="true">
                      <image>
-                        <Image url="@../images/icons/elenco_preferiti.png" />
+                        <Image url="@../images/icons/favorites_remove.png" />
                      </image>
                   </ImageView>
                   <Label text="Favorites" />

@@ -136,7 +136,7 @@
                       <!-- Changed from horizontal ScrollPane to vertical ScrollPane with FlowPane -->
                       <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="section-scroll" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
                           <content>
-                            <FlowPane fx:id="allListingsContainer" alignment="TOP_LEFT" hgap="15.0" prefWrapLength="1200.0" vgap="15.0">
+                            <FlowPane fx:id="allListingsContainer" alignment="CENTER" columnHalignment="CENTER" hgap="15.0" prefWrapLength="1200.0" vgap="15.0">
                                 <children>
                                 </children>
                                 <padding>

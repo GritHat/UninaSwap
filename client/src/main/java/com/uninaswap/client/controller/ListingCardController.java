@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
@@ -42,6 +43,10 @@ public class ListingCardController {
     private Text itemPrice;
     @FXML
     private ImageView favoriteIcon;
+    @FXML
+    private StackPane listingCardContainer;
+    @FXML
+    private StackPane imageContainer; // Add this field
 
     private ListingViewModel listing;
     private boolean isFavorite = false;
@@ -63,6 +68,8 @@ public class ListingCardController {
 
     @FXML
     public void initialize() {
+        Rectangle clip = new Rectangle(240, 360);
+        listingCardContainer.setClip(clip);
         if (listing != null) {
             setListing(listing);
             // Initialize favorite status from service
@@ -250,8 +257,8 @@ public class ListingCardController {
         // Update favorite icon appearance
         if (favoriteIcon != null) {
             // Use the same icon paths as ItemCardController
-            String iconPath = favorite ? "/images/icons/elenco_preferiti.png" : // Filled heart
-                    "/images/icons/preferiti.png"; // Empty heart
+            String iconPath = favorite ? "/images/icons/favorites_remove.png" : // Filled heart
+                    "/images/icons/favorites_add.png"; // Empty heart
             try {
                 Image icon = new Image(getClass().getResourceAsStream(iconPath));
                 favoriteIcon.setImage(icon);
@@ -324,17 +331,13 @@ public class ListingCardController {
     }
 
     private void addMultipleImageIndicator(int imageCount) {
-        if (itemImage != null && itemImage.getParent() instanceof StackPane) {
-            StackPane imageContainer = (StackPane) itemImage.getParent();
-
+        // No longer need to check or wrap - imageContainer is always a StackPane
+        if (imageContainer != null) {
             // Create image count indicator
             createImageCountIndicator(imageCount, imageContainer);
 
             // Add click handler for image cycling
             addImageCyclingHandler();
-        } else {
-            // If not in a StackPane, wrap the ImageView in one
-            wrapImageViewInStackPane(imageCount);
         }
     }
 
@@ -386,26 +389,6 @@ public class ListingCardController {
             StackPane.setMargin(dotsContainer, new Insets(0, 0, 15, 0));
 
             imageContainer.getChildren().add(dotsContainer);
-        }
-    }
-
-    private void wrapImageViewInStackPane(int imageCount) {
-        if (itemImage.getParent() instanceof VBox) {
-            VBox parent = (VBox) itemImage.getParent();
-            int imageIndex = parent.getChildren().indexOf(itemImage);
-
-            // Remove ImageView from parent
-            parent.getChildren().remove(itemImage);
-
-            // Create StackPane wrapper
-            StackPane imageWrapper = new StackPane();
-            imageWrapper.getChildren().add(itemImage);
-
-            // Add indicator
-            createImageCountIndicator(imageCount, imageWrapper);
-
-            // Add wrapper back to parent at same position
-            parent.getChildren().add(imageIndex, imageWrapper);
         }
     }
 
@@ -462,7 +445,7 @@ public class ListingCardController {
     }
 
     private void updateNavigationDots() {
-        if (itemImage.getParent() instanceof StackPane) {
+        /*if (itemImage.getParent() instanceof StackPane) {
             StackPane container = (StackPane) itemImage.getParent();
 
             // Find the dots container
@@ -483,6 +466,6 @@ public class ListingCardController {
                                             "-fx-font-size: 12px;");
                         }
                     });
-        }
+        }*/
     }
 }

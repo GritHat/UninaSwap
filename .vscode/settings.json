@@ -11,5 +11,6 @@
             "path": "/usr/lib/jvm/jdk-24-oracle-x64",
             "default": true
         }
-    ]
+    ],
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable"
 }

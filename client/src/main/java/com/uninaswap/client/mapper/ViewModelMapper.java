@@ -212,6 +212,8 @@ public class ViewModelMapper {
             ((TradeListingViewModel) viewModel).setAcceptMoneyOffers(((TradeListingDTO) dto).isAcceptMoneyOffers());
         } else if (dto instanceof SellListingDTO) {
             viewModel = new SellListingViewModel();
+            ((SellListingViewModel) viewModel).setPrice(((SellListingDTO) dto).getPrice());
+            ((SellListingViewModel) viewModel).setCurrency(((SellListingDTO) dto).getCurrency());
         } else if (dto instanceof AuctionListingDTO) {
             viewModel = new AuctionListingViewModel();
         } else {

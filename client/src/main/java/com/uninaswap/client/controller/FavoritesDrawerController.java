@@ -30,9 +30,6 @@ public class FavoritesDrawerController {
     private VBox drawerContainer;
 
     @FXML
-    private Button toggleButton;
-
-    @FXML
     private ImageView toggleIcon;
 
     // Favorites section
@@ -82,7 +79,6 @@ public class FavoritesDrawerController {
     }
 
     private void setupLabels() {
-        toggleButton.setTooltip(new Tooltip(localeService.getMessage("favorites.drawer.toggle", "Toggle Favorites")));
         favoritesPane.setText(localeService.getMessage("favorites.drawer.favorites", "Favorite Listings"));
         followingPane.setText(localeService.getMessage("favorites.drawer.following", "Following"));
     }

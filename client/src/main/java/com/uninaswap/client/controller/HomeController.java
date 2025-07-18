@@ -62,10 +62,6 @@ public class HomeController {
     @FXML
     public void initialize() {
         System.out.println("Home view initialized.");
-
-        // Load user cards
-        userCard.loadUserCardsIntoTab(UserCardBox);
-
         setupFavoritesListener();
         setupAllListingsScrollListener(); // NEW METHOD
 

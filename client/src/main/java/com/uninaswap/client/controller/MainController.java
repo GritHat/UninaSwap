@@ -86,6 +86,12 @@ public class MainController implements Refreshable {
     private HBox favoriteUsersContainer;
     @FXML
     private HBox favoriteAuctionsContainer;
+    @FXML
+    private HBox favoritesDrawerInclude;
+    @FXML
+    private FavoritesDrawerController favoritesDrawerIncludeController;
+    @FXML
+    private Button favoritesButton;
 
     private final NavigationService navigationService;
     private final LocaleService localeService;
@@ -334,6 +340,11 @@ public class MainController implements Refreshable {
         if (viewMarketsButton != null) {
             viewMarketsButton.setText(localeService.getMessage("button.view.markets"));
         }
+    }
+
+    public void toggleFavoritesDrawer(ActionEvent e) {
+        favoritesDrawerIncludeController.drawerVisibleProperty()
+                .set(!favoritesDrawerIncludeController.drawerVisibleProperty().get());
     }
 
     private void refreshCurrentContentView() {

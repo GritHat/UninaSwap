@@ -4,7 +4,11 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
 <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="main-content-background" stylesheets="@../css/styles.css, @../css/home.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.HomeController">
@@ -20,113 +24,10 @@
             <!-- Main content container -->
             <VBox alignment="TOP_CENTER" maxWidth="2000.0" minWidth="600.0" spacing="20.0" styleClass="home-content-container" HBox.hgrow="ALWAYS">
               <children>
-                <!-- All Listings Section -->
-                <VBox maxWidth="1400.0" minHeight="320.0" spacing="10.0" styleClass="home-section">
-                    <children>
-                      <HBox alignment="CENTER_LEFT" maxHeight="40.0" styleClass="section-header" VBox.vgrow="ALWAYS">
-                          <children>
-                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                <image>
-                                  <Image url="@../images/icons/all_listings.png" />
-                                </image>
-                                <HBox.margin>
-                                  <Insets left="15.0" />
-                                </HBox.margin>
-                            </ImageView>
-                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%home.all.listings">
-                                <HBox.margin>
-                                  <Insets left="5.0" />
-                                </HBox.margin>
-                            </Text>
-                          </children>
-                      </HBox>
-                      
-                      <!-- Changed from horizontal ScrollPane to vertical ScrollPane with FlowPane -->
-                      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="section-scroll" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
-                          <content>
-                            <FlowPane fx:id="allListingsContainer" alignment="TOP_LEFT" hgap="15.0" vgap="15.0" prefWrapLength="1200.0">
-                                <children>
-                                </children>
-                                <padding>
-                                  <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
-                                </padding>
-                            </FlowPane>
-                          </content>
-                      </ScrollPane>
-                    </children>
-                </VBox>
-                <!-- Favorite Items Section -->
-                <VBox maxWidth="1400.0" minHeight="320.0" spacing="10.0" styleClass="home-section">
-                  <children>
-                    <HBox alignment="CENTER_LEFT" maxHeight="40.0" styleClass="section-header" VBox.vgrow="ALWAYS">
-                      <children>
-                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                          <image>
-                            <Image url="@../images/icons/elenco_preferiti.png" />
-                          </image>
-                          <HBox.margin>
-                            <Insets left="15.0" />
-                          </HBox.margin>
-                        </ImageView>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%favorites.items">
-                          <HBox.margin>
-                            <Insets left="5.0" />
-                          </HBox.margin>
-                        </Text>
-                      </children>
-                    </HBox>
-                    
-                    <ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" styleClass="section-scroll" vbarPolicy="NEVER">
-                      <content>
-                        <HBox fx:id="favoriteListingsContainer" alignment="CENTER_LEFT" minHeight="180.0" spacing="15.0">
-                          <children>
-                          </children>
-                          <padding>
-                            <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
-                          </padding>
-                        </HBox>
-                      </content>
-                    </ScrollPane>
-                  </children>
-                </VBox>
-
-                <!-- Favorite Users Section -->
-                <VBox maxWidth="1400.0" minHeight="200.0" spacing="10.0" styleClass="home-section">
-                  <children>
-                    <HBox alignment="CENTER_LEFT" maxHeight="40.0" styleClass="section-header" VBox.vgrow="ALWAYS">
-                      <children>
-                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                          <image>
-                            <Image url="@../images/icons/utenti_preferiti.png" />
-                          </image>
-                          <HBox.margin>
-                            <Insets left="15.0" />
-                          </HBox.margin>
-                        </ImageView>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%favorites.users">
-                          <HBox.margin>
-                            <Insets left="5.0" />
-                          </HBox.margin>
-                        </Text>
-                      </children>
-                    </HBox>
-                    
-                    <ScrollPane fitToWidth="true" hbarPolicy="AS_NEEDED" styleClass="section-scroll" vbarPolicy="NEVER">
-                      <content>
-                        <HBox fx:id="UserCardBox" alignment="CENTER_LEFT" minHeight="180.0" spacing="20.0">
-                          <padding>
-                            <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
-                          </padding>
-                        </HBox>
-                      </content>
-                    </ScrollPane>
-                  </children>
-                </VBox>
-
-                <!-- Participating Auctions Section -->
+              <!-- Participating Auctions Section -->
                 <VBox maxWidth="1400.0" minHeight="220.0" spacing="10.0" styleClass="home-section">
                   <children>
-                    <HBox alignment="CENTER_LEFT" maxHeight="40.0" styleClass="section-header" VBox.vgrow="ALWAYS">
+                    <HBox alignment="CENTER_LEFT" maxHeight="25.0" minHeight="25.0" styleClass="section-header" VBox.vgrow="ALWAYS">
                       <children>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                           <image>
@@ -216,6 +117,37 @@
                     </ScrollPane>
                   </children>
                 </VBox>
+                <!-- All Listings Section -->
+                <VBox maxWidth="1400.0" minHeight="320.0" spacing="10.0" styleClass="home-section">
+                    <children>
+                      <HBox alignment="CENTER_LEFT" maxHeight="25.0" minHeight="25.0" styleClass="section-header" VBox.vgrow="ALWAYS">
+                          <children>
+                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                  <Image url="@../images/icons/all_listings.png" />
+                                </image>
+                                <HBox.margin>
+                                  <Insets left="15.0" />
+                                </HBox.margin>
+                            </ImageView>
+                          </children>
+                      </HBox>
+                      
+                      <!-- Changed from horizontal ScrollPane to vertical ScrollPane with FlowPane -->
+                      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="section-scroll" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
+                          <content>
+                            <FlowPane fx:id="allListingsContainer" alignment="TOP_LEFT" hgap="15.0" prefWrapLength="1200.0" vgap="15.0">
+                                <children>
+                                </children>
+                                <padding>
+                                  <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                                </padding>
+                            </FlowPane>
+                          </content>
+                      </ScrollPane>
+                    </children>
+                </VBox>
+                
               </children>
               <padding>
                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

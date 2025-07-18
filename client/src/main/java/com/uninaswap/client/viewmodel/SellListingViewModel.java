@@ -8,8 +8,6 @@ import com.uninaswap.common.enums.ListingStatus;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 public class SellListingViewModel extends ListingViewModel {
     private final ObjectProperty<BigDecimal> price = new SimpleObjectProperty<>();

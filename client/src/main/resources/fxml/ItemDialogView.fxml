@@ -38,8 +38,8 @@
             
             <!-- Category field -->
             <Label text="%item.category.label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-            <TextField fx:id="categoryField" promptText="%item.category.prompt" 
-                     GridPane.rowIndex="3" GridPane.columnIndex="1" />
+            <ComboBox fx:id="categoryComboBox" prefWidth="200" promptText="%item.category.prompt"
+                    GridPane.rowIndex="3" GridPane.columnIndex="1" />
             
             <!-- Brand field -->
             <Label text="%item.brand.label" GridPane.rowIndex="4" GridPane.columnIndex="0" />

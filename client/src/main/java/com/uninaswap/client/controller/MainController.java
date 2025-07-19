@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -19,6 +20,13 @@ import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
+import com.uninaswap.client.service.CategoryService;
+import com.uninaswap.common.enums.Category;
+import javafx.collections.FXCollections;
+import javafx.util.StringConverter;
+import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
+import javafx.fxml.FXMLLoader;
 
 public class MainController implements Refreshable {
     // Existing FXML fields
@@ -51,7 +59,11 @@ public class MainController implements Refreshable {
     @FXML
     private Button auctionsButton;
     @FXML
-    private Button tradeButton;
+    private Button tradesButton;
+    @FXML
+    private Button salesButton;
+    @FXML
+    private Button giftsButton;
 
     // Existing fields
     @FXML
@@ -93,13 +105,22 @@ public class MainController implements Refreshable {
     @FXML
     private Button favoritesButton;
 
+    // Add this field
+    @FXML
+    private ComboBox<Category> categoryComboBox;
+
     private final NavigationService navigationService;
     private final LocaleService localeService;
     private final UserSessionService sessionService;
     private final EventBusService eventBus = EventBusService.getInstance();
     private final ImageService imageService = ImageService.getInstance();
+    // Add the CategoryService
+    private final CategoryService categoryService = CategoryService.getInstance();
 
     private String currentFilter = "all";
+
+    private Popup notificationPopup;
+    private Popup userMenuPopup;
 
     public MainController() {
         this.navigationService = NavigationService.getInstance();
@@ -133,6 +154,10 @@ public class MainController implements Refreshable {
 
             // Set up sidebar
             sidebarIncludeController.setMainController(this);
+            favoritesDrawerIncludeController.setMainController(this);
+
+            // Initialize category combo box
+            setupCategoryComboBox();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,17 +166,7 @@ public class MainController implements Refreshable {
     }
 
     private void initializeHeader() {
-        // Set welcome message with username
-        if (sessionService.isLoggedIn()) {
-            String username = sessionService.getUser().getUsername();
-            // welcomeLabel.setText(localeService.getMessage("dashboard.welcome.user",
-            // username));
-            // usernameLabel.setText(localeService.getMessage("dashboard.welcome.user",
-            // username));
-
-            // Load user avatar
-            loadUserAvatar();
-        }
+        loadUserAvatar();
 
         // Subscribe to profile image changes
         eventBus.subscribe(EventTypes.PROFILE_IMAGE_CHANGED, data -> {
@@ -167,6 +182,42 @@ public class MainController implements Refreshable {
         updateFilterButtons();
     }
 
+    private void setupCategoryComboBox() {
+        if (categoryComboBox != null) {
+            // Set up the items
+            categoryComboBox.setItems(FXCollections.observableArrayList(categoryService.getCategories()));
+            
+            // Set default value
+            categoryComboBox.setValue(Category.ALL);
+            
+            // Set up string converter - this is crucial for display
+            categoryComboBox.setConverter(new StringConverter<Category>() {
+                @Override
+                public String toString(Category category) {
+                    if (category == null) {
+                        return "Tutte le categorie";
+                    }
+                    return categoryService.getLocalizedCategoryName(category);
+                }
+
+                @Override
+                public Category fromString(String string) {
+                    return categoryService.getCategoryByDisplayName(string);
+                }
+            });
+
+            // Optional: Add change listener
+            categoryComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != oldValue && newValue != null) {
+                    System.out.println("Category changed to: " + newValue);
+                    // Add your search trigger logic here
+                }
+            });
+        } else {
+            System.err.println("categoryComboBox is null - check FXML fx:id");
+        }
+    }
+
     // Header event handlers
     @FXML
     public void handleSearch(ActionEvent event) {
@@ -175,21 +226,79 @@ public class MainController implements Refreshable {
             System.out.println("Searching for: " + searchQuery);
 
             // Publish search event with current filter
-            SearchData searchData = new SearchData(searchQuery, currentFilter);
+            SearchData searchData = new SearchData(searchQuery, currentFilter, categoryComboBox.getValue());
             eventBus.publishEvent(EventTypes.SEARCH_REQUESTED, searchData);
         }
     }
 
     @FXML
     public void showNotifications(ActionEvent event) {
-        System.out.println("Show notifications clicked");
-        // TODO: Implement notifications view
-    }
+        // Hide user menu if open
+        if (userMenuPopup != null && userMenuPopup.isShowing()) {
+            userMenuPopup.hide();
+        }
+        
+        // Toggle notification popup
+        if (notificationPopup != null && notificationPopup.isShowing()) {
+            notificationPopup.hide();
+            return;
+        }
+        
+        try {
+            // Load the notification dropdown FXML
+            Parent notificationDropdown = navigationService.loadNotificationDropdownMenu(notificationPopup);
 
+            // Create and show popup
+            notificationPopup = new Popup();
+            notificationPopup.setAutoHide(true);
+            notificationPopup.setHideOnEscape(true);
+            notificationPopup.setAnchorLocation(PopupWindow.AnchorLocation.CONTENT_TOP_RIGHT);
+            notificationPopup.getContent().add(notificationDropdown);
+            
+            // Position popup relative to notification button
+            notificationPopup.show(notificationsButton, 
+                notificationsButton.localToScreen(notificationsButton.getBoundsInLocal()).getMaxX(),
+                notificationsButton.localToScreen(notificationsButton.getBoundsInLocal()).getMaxY() + 5);
+                
+        } catch (Exception e) {
+            System.err.println("Failed to show notifications dropdown: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
     @FXML
     public void showUserMenu(ActionEvent event) {
-        System.out.println("Show user menu clicked");
-        // TODO: Implement user menu dropdown
+        // Hide notification popup if open
+        if (notificationPopup != null && notificationPopup.isShowing()) {
+            notificationPopup.hide();
+        }
+        
+        // Toggle user menu popup
+        if (userMenuPopup != null && userMenuPopup.isShowing()) {
+            userMenuPopup.hide();
+            return;
+        }
+        
+        try {
+            // Load the user menu dropdown FXML
+            Parent userMenuDropdown = navigationService.loadUserDropdownMenu(userMenuPopup);
+            
+            // Create and show popup
+            userMenuPopup = new Popup();
+            userMenuPopup.setAutoHide(true);
+            userMenuPopup.setHideOnEscape(true);
+            userMenuPopup.setAnchorLocation(PopupWindow.AnchorLocation.CONTENT_TOP_RIGHT);
+            userMenuPopup.getContent().add(userMenuDropdown);
+            
+            // Position popup relative to user menu button
+            userMenuPopup.show(userMenuButton,
+                userMenuButton.localToScreen(userMenuButton.getBoundsInLocal()).getMaxX(),
+                userMenuButton.localToScreen(userMenuButton.getBoundsInLocal()).getMaxY() + 5);
+                
+        } catch (Exception e) {
+            System.err.println("Failed to show user menu dropdown: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -205,11 +314,23 @@ public class MainController implements Refreshable {
     }
 
     @FXML
-    public void filterTrade(ActionEvent event) {
-        setCurrentFilter("trade");
+    public void filterTrades(ActionEvent event) {
+        setCurrentFilter("trades");
         triggerSearch();
     }
 
+    @FXML
+    public void filterSales(ActionEvent event) {
+        setCurrentFilter("sales");
+        triggerSearch();
+    }
+
+    @FXML
+    public void filterGifts(ActionEvent event) {
+        setCurrentFilter("gifts");
+        triggerSearch();
+    }
+    
     private void setCurrentFilter(String filter) {
         currentFilter = filter;
         updateFilterButtons();
@@ -219,28 +340,33 @@ public class MainController implements Refreshable {
         // Remove active class from all buttons
         allItemsButton.getStyleClass().removeAll("active");
         auctionsButton.getStyleClass().removeAll("active");
-        tradeButton.getStyleClass().removeAll("active");
+        tradesButton.getStyleClass().removeAll("active");
+        giftsButton.getStyleClass().removeAll("active");
+        salesButton.getStyleClass().removeAll("active");
 
         // Add active class to current filter button
         switch (currentFilter) {
             case "all" -> allItemsButton.getStyleClass().add("active");
             case "auctions" -> auctionsButton.getStyleClass().add("active");
-            case "trade" -> tradeButton.getStyleClass().add("active");
+            case "trades" -> tradesButton.getStyleClass().add("active");
+            case "sales" -> salesButton.getStyleClass().add("active");
+            case "gifts" -> giftsButton.getStyleClass().add("active");
         }
     }
 
+    // Update the triggerSearch method to include category
     private void triggerSearch() {
         String searchQuery = searchField.getText().trim();
-        if (!searchQuery.isEmpty()) {
-            SearchData searchData = new SearchData(searchQuery, currentFilter);
-            eventBus.publishEvent(EventTypes.SEARCH_REQUESTED, searchData);
-        }
+        Category selectedCategory = categoryComboBox.getValue();
+
+        // Create enhanced search data
+        SearchData searchData = new SearchData(searchQuery, currentFilter, selectedCategory);
+        eventBus.publishEvent(EventTypes.SEARCH_REQUESTED, searchData);
     }
 
     private void handleSearchRequest(Object data) {
         if (data instanceof SearchData searchData) {
-            System.out
-                    .println("Search requested: " + searchData.getQuery() + " with filter: " + searchData.getFilter());
+            System.out.println("Search requested: " + searchData.getQuery() + " with filter: " + searchData.getFilter() + " in category: " + searchData.getCategory());
             // Handle search logic here or forward to appropriate view controller
         }
     }
@@ -301,7 +427,9 @@ public class MainController implements Refreshable {
         // Update filter button text
         allItemsButton.setText(localeService.getMessage("header.filter.all"));
         auctionsButton.setText(localeService.getMessage("header.filter.auctions"));
-        tradeButton.setText(localeService.getMessage("header.filter.trade"));
+        tradesButton.setText(localeService.getMessage("header.filter.trades"));
+        salesButton.setText(localeService.getMessage("header.filter.sales"));
+        giftsButton.setText(localeService.getMessage("header.filter.gifts"));
 
         // Update search placeholder
         searchField.setPromptText(localeService.getMessage("header.search.placeholder"));
@@ -382,10 +510,12 @@ public class MainController implements Refreshable {
     public static class SearchData {
         private final String query;
         private final String filter;
+        private final Category category;
 
-        public SearchData(String query, String filter) {
+        public SearchData(String query, String filter, Category category) {
             this.query = query;
             this.filter = filter;
+            this.category = category;
         }
 
         public String getQuery() {
@@ -394,6 +524,19 @@ public class MainController implements Refreshable {
 
         public String getFilter() {
             return filter;
+        }
+
+        public Category getCategory() {
+            return category;
+        }
+        
+        @Override
+        public String toString() {
+            return "SearchData{" +
+                    "query='" + query + '\'' +
+                    ", filter='" + filter + '\'' +
+                    ", category=" + category +
+                    '}';
         }
     }
 }

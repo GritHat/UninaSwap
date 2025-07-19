@@ -5,6 +5,8 @@ import com.uninaswap.client.viewmodel.AuctionListingViewModel;
 import com.uninaswap.client.viewmodel.ListingItemViewModel;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.viewmodel.SellListingViewModel;
+import com.uninaswap.common.enums.Category;
+import com.uninaswap.client.service.CategoryService;
 import com.uninaswap.client.service.FavoritesService;
 import com.uninaswap.client.service.ImageService;
 import javafx.fxml.FXML;
@@ -34,7 +36,7 @@ public class ListingCardController {
     @FXML
     private ImageView itemImage;
     @FXML
-    private Text itemName;
+    private Label itemName;
     @FXML
     private Text categoryText;
     @FXML
@@ -232,7 +234,9 @@ public class ListingCardController {
             // Get category from first item
             String itemCategory = listing.getItems().get(0).getItem().getItemCategory();
             if (itemCategory != null && !itemCategory.isEmpty()) {
-                return itemCategory;
+                // Try to map existing category strings to proper categories
+                Category category = Category.fromString(itemCategory);
+                return CategoryService.getInstance().getLocalizedCategoryName(category);
             }
         }
 

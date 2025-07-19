@@ -25,7 +25,7 @@
             <VBox alignment="TOP_CENTER" maxWidth="2000.0" minWidth="600.0" spacing="20.0" styleClass="home-content-container" HBox.hgrow="ALWAYS">
               <children>
               <!-- Participating Auctions Section -->
-                <VBox maxWidth="1400.0" minHeight="220.0" spacing="10.0" styleClass="home-section">
+                <VBox fx:id="auctionSection" managed="false" visible="false" maxWidth="1400.0" minHeight="220.0" spacing="10.0" styleClass="home-section">
                   <children>
                     <HBox alignment="CENTER_LEFT" maxHeight="25.0" minHeight="25.0" styleClass="section-header" VBox.vgrow="ALWAYS">
                       <children>
@@ -61,7 +61,7 @@
                   </children>
                 </VBox>
                 <!-- All Listings Section -->
-                <VBox maxWidth="1400.0" minHeight="320.0" spacing="10.0" styleClass="home-section">
+                <VBox fx:id="allListingsSection" maxWidth="1400.0" minHeight="320.0" spacing="10.0" styleClass="home-section" VBox.vgrow="ALWAYS">
                     <children>
                       <HBox alignment="CENTER_LEFT" maxHeight="25.0" minHeight="25.0" styleClass="section-header" VBox.vgrow="ALWAYS">
                           <children>
@@ -73,6 +73,11 @@
                                   <Insets left="15.0" />
                                 </HBox.margin>
                             </ImageView>
+                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%home.all.listings">
+                                <HBox.margin>
+                                  <Insets left="5.0" />
+                                </HBox.margin>
+                            </Text>
                           </children>
                       </HBox>
                       

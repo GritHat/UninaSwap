@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
@@ -33,15 +34,14 @@
                <children>
                   <HBox alignment="CENTER">
                      <children>
-                        <!-- Listing title -->
-                        <Text fx:id="itemName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="item-name" text="Listing Title">
+                        <Label fx:id="itemName" maxWidth="190.0" minWidth="190.0" prefWidth="190.0" styleClass="item-name" text="Listing Title">
                            <font>
                               <Font size="18.0" />
                            </font>
                            <HBox.margin>
                               <Insets left="5.0" />
                            </HBox.margin>
-                        </Text>
+                        </Label>
                         <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                         <ImageView fx:id="favoriteIcon" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#toggleFavorite" pickOnBounds="true" preserveRatio="true" styleClass="favorite-icon">
                            <image>

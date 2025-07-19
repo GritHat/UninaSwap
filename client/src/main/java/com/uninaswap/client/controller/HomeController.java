@@ -18,6 +18,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -30,17 +32,21 @@ public class HomeController {
 
     // Containers from FXML
     @FXML
-    private ScrollPane allListingsContainerWrapper;
-    @FXML
-    private FlowPane allListingsContainer; // Changed from HBox to FlowPane
+    private FlowPane allListingsContainer;
     @FXML
     private HBox favoriteListingsContainer;
     @FXML
     private HBox UserCardBox;
     @FXML
     private HBox astePreferiteBox;
+    
+    // Add these new FXML fields
     @FXML
-    private ScrollPane allListingsScrollPane;
+    private VBox auctionSection; // The entire auction section
+    @FXML
+    private VBox allListingsSection; // The entire all listings section
+    @FXML
+    private ScrollPane allListingsContainerWrapper;
     // Add pagination fields
     private static final int LISTINGS_PER_PAGE = 50;
     private int currentPage = 0;
@@ -219,6 +225,17 @@ public class HomeController {
         updateTimeline.play();
     }
 
+    private Node createListingCard(ListingViewModel listing) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListingCardView.fxml"));
+
+        // Create controller with the listing data
+        ListingCardController controller = new ListingCardController(listing);
+        loader.setController(controller);
+
+        // Load and return the card
+        return loader.load();
+    }
+
     // SIMPLIFIED: Use observable list directly instead of checking each listing
     private void updateFavoritesContainer() {
         if (favoriteListingsContainer != null) {
@@ -243,24 +260,26 @@ public class HomeController {
         }
     }
 
-    // UPDATED: Change to support FlowPane layout instead of separating by type
+    // UPDATED: Change to support FlowPane layout and auction visibility management
     private void updateHomeViewWithListings(ObservableList<ListingViewModel> listings) {
         // Clear existing content
         clearAllContainers();
 
-        // Add all listings to the grid layout (no separation by type for main
-        // container)
+        // Track if we have any auctions
+        boolean hasAuctions = false;
+        
+        // Add all listings to the appropriate containers
         for (ListingViewModel listing : listings) {
             try {
                 Node listingCard = createListingCard(listing);
 
-                // Add all non-auction listings to the main container
                 String listingType = listing.getListingTypeValue().toUpperCase();
-
+                
                 if ("AUCTION".equals(listingType)) {
-                    // Keep auctions in their separate horizontal container
+                    // Add auctions to their separate horizontal container
                     if (astePreferiteBox != null) {
                         astePreferiteBox.getChildren().add(listingCard);
+                        hasAuctions = true;
                     }
                 } else {
                     // Add all other listings to the main grid container
@@ -275,19 +294,31 @@ public class HomeController {
             }
         }
 
+        // Update auction section visibility and layout
+        updateAuctionSectionVisibility(hasAuctions);
+
         // Add placeholder messages if containers are empty
         addPlaceholdersIfEmpty();
     }
 
-    private Node createListingCard(ListingViewModel listing) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListingCardView.fxml"));
-
-        // Create controller with the listing data
-        ListingCardController controller = new ListingCardController(listing);
-        loader.setController(controller);
-
-        // Load and return the card
-        return loader.load();
+    private void updateAuctionSectionVisibility(boolean hasAuctions) {
+        if (auctionSection != null && allListingsSection != null) {
+            // Show/hide auction section based on whether we have auctions
+            auctionSection.setVisible(hasAuctions);
+            auctionSection.setManaged(hasAuctions); // This removes it from layout when hidden
+            
+            if (hasAuctions) {
+                // Reset all listings section to normal size
+                VBox.setVgrow(allListingsSection, Priority.SOMETIMES);
+                allListingsSection.setMaxHeight(Region.USE_COMPUTED_SIZE);
+            } else {
+                // Expand all listings section to fill the space
+                VBox.setVgrow(allListingsSection, Priority.ALWAYS);
+                allListingsSection.setMaxHeight(Double.MAX_VALUE);
+            }
+            
+            System.out.println("Auction section visibility: " + hasAuctions);
+        }
     }
 
     private void clearAllContainers() {
@@ -302,8 +333,8 @@ public class HomeController {
         }
 
         if (astePreferiteBox != null) {
-            // Keep the static auction card, remove dynamic ones
-            astePreferiteBox.getChildren().removeIf(node -> node.getStyleClass().contains("dynamic-listing-card"));
+            // Clear all auction cards (both static and dynamic)
+            astePreferiteBox.getChildren().clear();
         }
     }
 
@@ -320,6 +351,9 @@ public class HomeController {
             placeholder.getStyleClass().add("placeholder-text");
             favoriteListingsContainer.getChildren().add(placeholder);
         }
+
+        // Don't add placeholder to auction section when it's hidden
+        // The section will be completely hidden when there are no auctions
     }
 
     public void handleUserAction() {

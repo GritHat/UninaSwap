@@ -16,6 +16,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.stage.Window;
 import javafx.stage.Modality;
+import javafx.stage.Popup;
 
 import com.uninaswap.client.controller.ItemDialogController;
 import com.uninaswap.client.controller.ListingDetailsController;
@@ -30,12 +31,14 @@ import com.uninaswap.client.viewmodel.OfferViewModel;
 import com.uninaswap.client.viewmodel.UserViewModel;
 import com.uninaswap.common.dto.ItemDTO;
 import com.uninaswap.client.controller.MainController;
+import com.uninaswap.client.controller.NotificationDropdownController;
 import com.uninaswap.client.controller.PickupSchedulingController;
 import com.uninaswap.client.controller.PickupSelectionController;
 import com.uninaswap.common.dto.PickupDTO;
 import com.uninaswap.client.controller.ReviewCreateController;
 import com.uninaswap.client.controller.UserFavoritesController;
 import com.uninaswap.client.controller.UserFollowersController;
+import com.uninaswap.client.controller.UserMenuDropdownController;
 import com.uninaswap.client.controller.UserReviewsController;
 import com.uninaswap.client.controller.ReportDialogController;
 
@@ -392,6 +395,31 @@ public class NavigationService {
         ListingDetailsController controller = loaderBundle.getLoader().getController();
         controller.setListing(listing);
         return detailsView;
+    }
+
+    public Parent loadUserDropdownMenu(Popup userMenuPopup) throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/UserMenuDropdownView.fxml");
+        Parent userMenuDropdown = loaderBundle.getView();
+        UserMenuDropdownController controller = loaderBundle.getLoader().getController();
+        controller.setOnCloseCallback(_ -> {
+            if (userMenuPopup != null) {
+                userMenuPopup.hide();
+            }
+        });
+            
+        return userMenuDropdown;
+    }
+
+    public Parent loadNotificationDropdownMenu(Popup notificationPopup) throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/NotificationDropdownView.fxml");
+        Parent notificationDropdown = loaderBundle.getView();
+        NotificationDropdownController controller = loaderBundle.getLoader().getController();
+        controller.setOnCloseCallback(_ -> {
+            if (notificationPopup != null) {
+                notificationPopup.hide();
+            }
+        });
+        return notificationDropdown;
     }
 
     /**

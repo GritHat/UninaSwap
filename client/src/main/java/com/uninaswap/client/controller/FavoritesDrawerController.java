@@ -1,11 +1,13 @@
 package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.FavoritesService;
+import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.FavoriteViewModel;
+import com.uninaswap.client.viewmodel.ListingItemViewModel;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.viewmodel.UserViewModel;
 import javafx.application.Platform;
@@ -205,22 +207,14 @@ public class FavoritesDrawerController {
         thumbnail.setPreserveRatio(true);
         thumbnail.getStyleClass().add("drawer-thumbnail");
 
-        // Load listing image
-        if (listing.getItems() != null && !listing.getItems().isEmpty() &&
-                listing.getItems().get(0).getImagePath() != null) {
-            try {
-                Image image = new Image("file:" + listing.getItems().get(0).getImagePath());
-                thumbnail.setImage(image);
-            } catch (Exception e) {
-                setDefaultThumbnail(thumbnail);
-            }
-        } else {
-            setDefaultThumbnail(thumbnail);
-        }
+        // Load listing image using ImageService instead of direct file loading
+        loadThumbnailImage(thumbnail, listing);
 
         // Title and type
         VBox textContainer = new VBox(2);
-        Text title = new Text(listing.getTitle());
+        Label title = new Label(listing.getTitle());
+        title.setMaxWidth(170);
+        title.setTextOverrun(OverrunStyle.ELLIPSIS);
         title.getStyleClass().add("drawer-item-title");
 
         Text type = new Text(listing.getListingTypeValue());
@@ -231,10 +225,50 @@ public class FavoritesDrawerController {
         header.getChildren().addAll(thumbnail, textContainer);
 
         // Click handler
-        item.setOnMouseClicked(e -> handleListingClick(listing));
+        item.setOnMouseClicked(_ -> handleListingClick(listing));
 
         item.getChildren().add(header);
         return item;
+    }
+
+    // Add this new method to properly load thumbnail images
+    private void loadThumbnailImage(ImageView thumbnail, ListingViewModel listing) {
+        // Get the first available image path from the listing
+        String imagePath = getFirstImagePath(listing);
+
+        if (imagePath != null && !imagePath.isEmpty() && !imagePath.equals("default")) {
+            // Use ImageService to fetch the image
+            ImageService.getInstance().fetchImage(imagePath)
+                    .thenAccept(image -> {
+                        Platform.runLater(() -> {
+                            if (image != null && !image.isError()) {
+                                thumbnail.setImage(image);
+                            } else {
+                                setDefaultThumbnail(thumbnail);
+                            }
+                        });
+                    })
+                    .exceptionally(ex -> {
+                        System.err.println("Failed to load thumbnail image: " + ex.getMessage());
+                        Platform.runLater(() -> setDefaultThumbnail(thumbnail));
+                        return null;
+                    });
+        } else {
+            setDefaultThumbnail(thumbnail);
+        }
+    }
+
+    // Add helper method to get the first image path from listing items
+    private String getFirstImagePath(ListingViewModel listing) {
+        if (listing.getItems() != null && !listing.getItems().isEmpty()) {
+            for (ListingItemViewModel item : listing.getItems()) {
+                String imagePath = item.getItem().getImagePath();
+                if (imagePath != null && !imagePath.isEmpty() && !imagePath.equals("default")) {
+                    return imagePath;
+                }
+            }
+        }
+        return null;
     }
 
     private VBox createUserItem(UserViewModel user) {
@@ -251,17 +285,8 @@ public class FavoritesDrawerController {
         avatar.setPreserveRatio(true);
         avatar.getStyleClass().add("drawer-avatar");
 
-        // Load user image or use default
-        if (user.getProfileImagePath() != null && !user.getProfileImagePath().isEmpty()) {
-            try {
-                Image image = new Image("file:" + user.getProfileImagePath());
-                avatar.setImage(image);
-            } catch (Exception e) {
-                setDefaultAvatar(avatar);
-            }
-        } else {
-            setDefaultAvatar(avatar);
-        }
+        // Load user image using ImageService instead of direct file loading
+        loadAvatarImage(avatar, user);
 
         // User info
         VBox textContainer = new VBox(2);
@@ -280,6 +305,32 @@ public class FavoritesDrawerController {
 
         item.getChildren().add(header);
         return item;
+    }
+
+    // Add this method for loading user avatars
+    private void loadAvatarImage(ImageView avatar, UserViewModel user) {
+        String imagePath = user.getProfileImagePath();
+        
+        if (imagePath != null && !imagePath.isEmpty()) {
+            // Use ImageService to fetch the user's profile image
+            ImageService.getInstance().fetchImage(imagePath)
+                    .thenAccept(image -> {
+                        Platform.runLater(() -> {
+                            if (image != null && !image.isError()) {
+                                avatar.setImage(image);
+                            } else {
+                                setDefaultAvatar(avatar);
+                            }
+                        });
+                    })
+                    .exceptionally(ex -> {
+                        System.err.println("Failed to load avatar image: " + ex.getMessage());
+                        Platform.runLater(() -> setDefaultAvatar(avatar));
+                        return null;
+                    });
+        } else {
+            setDefaultAvatar(avatar);
+        }
     }
 
     private void setDefaultThumbnail(ImageView imageView) {

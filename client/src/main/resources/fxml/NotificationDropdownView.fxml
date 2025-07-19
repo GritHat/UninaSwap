@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      stylesheets="@../css/styles.css" fx:controller="com.uninaswap.client.controller.NotificationDropdownController"
+      styleClass="dropdown-menu, notification-dropdown" prefWidth="350" maxHeight="400" spacing="0">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="dropdown-header">
+        <padding>
+            <Insets top="15" right="15" bottom="10" left="15"/>
+        </padding>
+        
+        <!-- Notification icon -->
+        <ImageView fitWidth="20" fitHeight="20">
+            <image>
+                <Image url="@../images/icons/notification.png" />
+            </image>
+        </ImageView>
+        
+        <!-- Title -->
+        <Text fx:id="titleText" text="%notifications.title" styleClass="dropdown-title">
+            <font>
+                <Font name="System Bold" size="14"/>
+            </font>
+        </Text>
+        
+        <!-- Spacer -->
+        <Region HBox.hgrow="ALWAYS"/>
+        
+        <!-- Mark all as read button -->
+        <Button fx:id="markAllReadBtn" text="%notifications.mark.all.read" 
+                onAction="#handleMarkAllAsRead" styleClass="small-button, secondary-button"/>
+    </HBox>
+    
+    <!-- Notifications container -->
+    <ScrollPane fx:id="notificationsScrollPane" fitToWidth="true" fitToHeight="true" 
+                vbarPolicy="AS_NEEDED" hbarPolicy="NEVER" styleClass="notification-scroll-pane" 
+                prefViewportHeight="250" VBox.vgrow="ALWAYS">
+        <content>
+            <VBox fx:id="notificationsContainer" spacing="5">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                
+                <!-- Placeholder for no notifications -->
+                <Label fx:id="noNotificationsLabel" text="%notifications.empty" 
+                       styleClass="no-notifications-label" managed="false" visible="false"/>
+            </VBox>
+        </content>
+    </ScrollPane>
+    
+    <!-- Footer with "View All" button -->
+    <HBox alignment="CENTER" styleClass="dropdown-footer">
+        <padding>
+            <Insets top="10" right="15" bottom="15" left="15"/>
+        </padding>
+        
+        <Button fx:id="viewAllBtn" text="%notifications.view.all" 
+                onAction="#handleViewAll" styleClass="primary-button, dropdown-action-button"/>
+    </HBox>
+</VBox>

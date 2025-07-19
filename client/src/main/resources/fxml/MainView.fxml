@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -22,7 +23,7 @@
                     <VBox alignment="CENTER" styleClass="header-container" VBox.vgrow="NEVER">
                       <children>
                         <!-- Top header bar with logo and user info -->
-                        <HBox alignment="CENTER" spacing="20.0" styleClass="header-top-bar">
+                        <HBox alignment="CENTER" maxHeight="66.0" minHeight="66.0" prefHeight="66.0" spacing="20.0" styleClass="header-top-bar">
                           <children>
                             <!-- Logo and app name -->
                             <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -36,29 +37,43 @@
                             </HBox>
                             <!-- Flexible spacer -->
                             <Region HBox.hgrow="ALWAYS" />
-                            <!-- Search container -->
-                            <HBox alignment="CENTER" maxWidth="400.0" minWidth="200.0" spacing="5.0" styleClass="header-search-container" HBox.hgrow="SOMETIMES">
-                              <children>
-                                <TextField fx:id="searchField" alignment="CENTER" promptText="%header.search.placeholder" styleClass="header-search-field" HBox.hgrow="ALWAYS" />
-                                <Button fx:id="searchButton" onAction="#handleSearch" styleClass="header-search-button">
-                                  <graphic>
-                                    <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
-                                      <image>
-                                        <Image url="@../images/icons/search.png" />
-                                      </image>
-                                    </ImageView>
-                                  </graphic>
-                                </Button>
-                              </children>
-                            </HBox>
-                            <!-- Quick filter buttons -->
-                            <HBox alignment="CENTER" minWidth="150.0" spacing="5.0" styleClass="header-filters">
-                              <children>
-                                <Button fx:id="allItemsButton" onAction="#filterAll" styleClass="header-filter-button, active" text="%header.filter.all" />
-                                <Button fx:id="auctionsButton" onAction="#filterAuctions" styleClass="header-filter-button" text="%header.filter.auctions" />
-                                <Button fx:id="tradeButton" onAction="#filterTrade" styleClass="header-filter-button" text="%header.filter.trade" />
-                              </children>
-                            </HBox>
+                                    <VBox alignment="CENTER">
+                                       <children>
+                                  <!-- Search container with category filter -->
+                                  <HBox alignment="CENTER" maxHeight="30.0" maxWidth="500.0" minHeight="30.0" minWidth="300.0" prefHeight="30.0" spacing="5.0" styleClass="header-search-container">
+                                    <children>
+                                      <!-- Category selector -->
+                                      <ComboBox fx:id="categoryComboBox" maxHeight="28.0" minHeight="28.0" prefHeight="28.0" prefWidth="156.0" promptText="%header.category.all" styleClass="header-category-combo" translateX="-16.0" />
+                                      <TextField fx:id="searchField" promptText="%header.search.placeholder" styleClass="header-search-field" HBox.hgrow="ALWAYS" />
+                                      <Button fx:id="searchButton" maxHeight="28.0" minHeight="28.0" onAction="#handleSearch" prefHeight="28.0" styleClass="header-search-button" translateX="15.0">
+                                        <graphic>
+                                          <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                              <Image url="@../images/icons/search.png" />
+                                            </image>
+                                          </ImageView>
+                                        </graphic>
+                                      </Button>
+                                    </children>
+                                             <VBox.margin>
+                                                <Insets top="2.0" />
+                                             </VBox.margin>
+                                  </HBox>
+                                  <!-- Quick filter buttons -->
+                                  <HBox alignment="CENTER" minWidth="150.0" spacing="5.0" styleClass="header-filters">
+                                    <children>
+                                      <Button fx:id="allItemsButton" maxHeight="25.0" minHeight="25.0" onAction="#filterAll" prefHeight="25.0" styleClass="header-filter-button, active" text="%header.filter.all" />
+                                      <Button fx:id="salesButton" maxHeight="25.0" minHeight="25.0" onAction="#filterSales" prefHeight="25.0" styleClass="header-filter-button, active" text="%header.filter.sales" />
+                                      <Button fx:id="auctionsButton" maxHeight="25.0" minHeight="25.0" onAction="#filterAuctions" prefHeight="25.0" styleClass="header-filter-button" text="%header.filter.auctions" />
+                                      <Button fx:id="tradesButton" maxHeight="25.0" minHeight="25.0" onAction="#filterTrades" prefHeight="25.0" styleClass="header-filter-button" text="%header.filter.trades" />
+                                      <Button fx:id="giftsButton" maxHeight="25.0" minHeight="25.0" onAction="#filterGifts" prefHeight="25.0" styleClass="header-filter-button, active" text="%header.filter.gifts" />
+                                    </children>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                  </HBox>
+                                       </children>
+                                    </VBox>
                             <!-- Flexible spacer -->
                             <Region HBox.hgrow="ALWAYS" />
                             <!-- User info section -->
@@ -68,7 +83,7 @@
                                     <graphic>
                                       <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                                           <image>
-                                            <Image url="@../images/icons/notification.png" />
+                                            <Image url="@../images/icons/favorites_add.png" />
                                           </image>
                                       </ImageView>
                                     </graphic>
@@ -109,7 +124,7 @@
                                 <children>
                                   <!-- Content area that grows to fill remaining space -->
                                   <StackPane fx:id="contentArea" minWidth="400.0" />                                                <!-- Favorites Drawer on the right -->
-                                  <fx:include fx:id="favoritesDrawerInclude" mouseTransparent="true" source="FavoritesDrawerView.fxml" />
+                                  <fx:include fx:id="favoritesDrawerInclude" source="FavoritesDrawerView.fxml" StackPane.alignment="TOP_RIGHT" />
                                 </children>
                               </StackPane>
                       </children>

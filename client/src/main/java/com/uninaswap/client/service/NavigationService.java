@@ -20,6 +20,7 @@ import javafx.stage.Popup;
 
 import com.uninaswap.client.controller.ItemDialogController;
 import com.uninaswap.client.controller.ListingDetailsController;
+import com.uninaswap.client.controller.ListingsController;
 import com.uninaswap.client.controller.LoginController;
 import com.uninaswap.client.controller.ProfileController;
 import com.uninaswap.client.controller.RegisterController;
@@ -314,6 +315,12 @@ public class NavigationService {
         return inventoryView;
     }
 
+    public void navigateToInventoryView() throws IOException {
+        Parent inventoryView = loadInventoryView();
+        mainController.setContent(inventoryView);
+        mainController.updateSidebarButtonSelection("inventory");
+    }
+
     /**
      * Load the notifications view
      */
@@ -337,19 +344,60 @@ public class NavigationService {
     /**
      * Load the support view
      */
-    public Parent loadSupport() throws IOException {
+    public Parent loadSupportView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/SupportView.fxml");
         Parent supportView = loaderBundle.getView();
 
         return supportView;
     }
 
-    public Parent loadSettings() throws IOException {
+    public void navigateToSupportView() throws IOException {
+        Parent supportView = loadSupportView();
+        mainController.setContent(supportView);
+        mainController.updateSidebarButtonSelection("support");
+        mainController.sidebarClearAllSelection();
+    }
+
+    public Parent loadSettingsView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/SettingsView.fxml");
         Parent settingsView = loaderBundle.getView();
 
         return settingsView;
     }
+
+    public void navigateToSettingsView() throws IOException {
+        Parent settingsView = loadSettingsView();
+        mainController.setContent(settingsView);
+        mainController.updateSidebarButtonSelection("settings");
+        mainController.sidebarClearAllSelection();
+    }
+
+    public Parent loadUserFollowersView() throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/UserFollowersView.fxml");
+        Parent userFollowersView = loaderBundle.getView();
+
+        return userFollowersView;
+    }
+
+    public void navigateToUserFollowersView() throws IOException {
+        Parent userFollowersView = loadUserFollowersView();
+        mainController.setContent(userFollowersView);
+        mainController.sidebarClearAllSelection();
+    }
+
+    public Parent loadUserFavoritesView() throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/UserFavoritesView.fxml");
+        Parent userFavoritesView = loaderBundle.getView();
+
+        return userFavoritesView;
+    }
+
+    public void navigateToUserFavoritesView() throws IOException {
+        Parent userFavoritesView = loadUserFavoritesView();
+        mainController.setContent(userFavoritesView);
+        mainController.sidebarClearAllSelection();
+    }
+
 
     /**
      * Logout the current user and navigate to the login screen
@@ -378,6 +426,17 @@ public class NavigationService {
         return offersView;
     }
 
+    public void navigateToOffersView() throws IOException {
+        Parent offersView = loadOffersView();
+        mainController.setContent(offersView);
+        mainController.updateSidebarButtonSelection("offers");
+    }
+
+    public void navigateToProfileView() throws IOException {
+        mainController.setContent(loadProfileView());
+        mainController.updateSidebarButtonSelection("profile");
+    }
+
     public Parent loadListingDetails(ListingViewModel listing) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/ListingDetailsView.fxml");
         Parent detailsView = loaderBundle.getView();
@@ -385,6 +444,27 @@ public class NavigationService {
         ListingDetailsController controller = loaderBundle.getLoader().getController();
         controller.setListing(listing);
         return detailsView;
+    }
+
+    public void navigateToListingDetails(ListingViewModel listing) throws IOException {
+        mainController.setContent(loadListingDetails(listing));
+        mainController.sidebarClearAllSelection();
+    }
+
+    public Parent loadListingsView() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListingsView.fxml"));
+        Parent listingsView = loader.load();
+        
+        // Set the controller reference
+        ListingsController controller = loader.getController();
+        if (mainController != null) {
+            controller.setMainController(mainController);
+        }
+        
+        // Store controller reference in the view for later access
+        listingsView.getProperties().put("controller", controller);
+        
+        return listingsView;
     }
 
     public Parent loadUserDropdownMenu(Popup userMenuPopup) throws IOException {

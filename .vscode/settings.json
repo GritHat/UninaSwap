@@ -12,5 +12,8 @@
             "default": true
         }
     ],
-    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx32G -Xms8G -Xlog:disable"
+    "java.jdt.ls.vmargs": "-XX:+UseG1GC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+UseStringDeduplication -Dsun.zip.disableMemoryMapping=true -Xmx16G -Xms8G -Xlog:disable",
+    "java.indexes.enabled": true,
+    "java.completion.filteredTypes": ["java.awt.*", "com.sun.*"],
+    "java.referencesCodeLens.enabled": false,
 }

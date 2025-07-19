@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox alignment="CENTER_RIGHT" maxWidth="250.0" spacing="0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.FavoritesDrawerController">
+<HBox alignment="CENTER_RIGHT" stylesheets="@../css/styles.css" maxWidth="250.0" spacing="0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.FavoritesDrawerController">
 
    <!-- Drawer Container -->
    <VBox fx:id="drawerContainer" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" styleClass="favorites-drawer" VBox.vgrow="ALWAYS">
@@ -29,7 +29,7 @@
                         <Image url="@../images/icons/favorites_remove.png" />
                      </image>
                   </ImageView>
-                  <Label text="Favorites" />
+                  <Label text="Favorites" styleClass="drawer-section-title"/>
                   <Label fx:id="favoritesCountLabel" styleClass="drawer-count-label" />
                </HBox>
             </graphic>
@@ -55,7 +55,7 @@
                         <Image url="@../images/icons/utenti_preferiti.png" />
                      </image>
                   </ImageView>
-                  <Label text="Following" />
+                  <Label text="Following" styleClass="drawer-section-title"/>
                   <Label fx:id="followingCountLabel" styleClass="drawer-count-label" />
                </HBox>
             </graphic>

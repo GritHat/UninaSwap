@@ -3,17 +3,26 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="com.uninaswap.client.controller.UserFavoritesController"
-      spacing="15" prefWidth="700" prefHeight="600">
+      spacing="15" prefWidth="750" prefHeight="650" styleClass="favorites-summary-section">
    <padding>
       <Insets top="20" right="20" bottom="20" left="20" />
    </padding>
 
    <!-- Header -->
-   <VBox spacing="5">
-      <Label fx:id="titleLabel" styleClass="title-label" />
+   <VBox spacing="10">
+      <HBox alignment="CENTER_LEFT" spacing="10">
+         <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/favorites_remove.png" />
+            </image>
+         </ImageView>
+         <Label fx:id="titleLabel" styleClass="title-label" />
+      </HBox>
    </VBox>
 
    <Separator />
@@ -24,28 +33,45 @@
       
       <HBox spacing="20" alignment="CENTER_LEFT">
          <Label fx:id="totalFavoritesLabel" styleClass="total-count-label" />
-         <Button fx:id="refreshButton" onAction="#handleRefresh" />
+         <Region HBox.hgrow="ALWAYS" />
+         <Button fx:id="refreshButton" onAction="#handleRefresh" styleClass="primary-button">
+            <graphic>
+               <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                  <image>
+                     <Image url="@../images/icons/refresh.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+         </Button>
       </HBox>
    </VBox>
 
    <Separator />
 
    <!-- Favorites Table -->
-   <TableView fx:id="favoritesTable" VBox.vgrow="ALWAYS">
+   <TableView fx:id="favoritesTable" VBox.vgrow="ALWAYS" styleClass="table-view">
       <columns>
-         <TableColumn fx:id="listingTitleColumn" prefWidth="200" text="Title" />
+         <TableColumn fx:id="listingTitleColumn" prefWidth="220" text="Title" />
          <TableColumn fx:id="listingTypeColumn" prefWidth="100" text="Type" />
          <TableColumn fx:id="listingPriceColumn" prefWidth="100" text="Price" />
          <TableColumn fx:id="listingDateColumn" prefWidth="100" text="Date Added" />
-         <TableColumn fx:id="listingActionsColumn" prefWidth="150" text="Actions" />
+         <TableColumn fx:id="listingActionsColumn" prefWidth="160" text="Actions" />
       </columns>
       <placeholder>
-         <Label text="No favorite listings yet" />
+         <VBox alignment="CENTER" spacing="10">
+            <ImageView fitHeight="48" fitWidth="48" preserveRatio="true" opacity="0.5">
+               <image>
+                  <Image url="@../images/icons/favorites_add.png" />
+               </image>
+            </ImageView>
+            <Label text="No favorite listings yet" styleClass="placeholder-text" />
+            <Label text="Items you favorite will appear here" styleClass="suggestion-text" />
+         </VBox>
       </placeholder>
    </TableView>
 
    <!-- Actions -->
    <HBox spacing="10" alignment="CENTER_RIGHT">
-      <Button fx:id="closeButton" onAction="#handleClose" />
+      <Button fx:id="closeButton" onAction="#handleClose" styleClass="button" />
    </HBox>
 </VBox>

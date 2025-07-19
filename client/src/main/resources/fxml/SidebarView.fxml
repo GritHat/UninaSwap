@@ -14,19 +14,7 @@
       <Insets top="10" />
    </padding>
    <children>
-      <VBox styleClass="sidebar-button" alignment="CENTER"  onMouseClicked="#showProfile" pickOnBounds="true" spacing="0">
-         <ImageView fx:id="ProfileImageIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
-            <image>
-               <Image url="@../images/icons/default_profile.png" />
-            </image>
-            <viewport>
-               <Rectangle2D />
-            </viewport>
-         </ImageView>
-         <Text styleClass="button-caption" text="%user.caption"/>
-      </VBox>
-
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showHome" pickOnBounds="true" >
+      <VBox fx:id="homeButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showHome" pickOnBounds="true">
          <ImageView fx:id="homeIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/home.png" />
@@ -37,8 +25,20 @@
          </ImageView>
          <Text styleClass="button-caption" text="%home.caption"/>
       </VBox>
-      
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0"  onMouseClicked="#showInventory" pickOnBounds="true">
+
+      <VBox fx:id="offersButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showOffers" pickOnBounds="true">
+         <ImageView fx:id="offersIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/offers.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%offers.caption"/>
+      </VBox>
+
+      <VBox fx:id="inventoryButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showInventory" pickOnBounds="true">
          <ImageView fx:id="inventoryIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/inventory.png" />
@@ -49,8 +49,8 @@
          </ImageView>
          <Text styleClass="button-caption" text="%inventory.caption"/>
       </VBox>
-      
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showAllerts" pickOnBounds="true">
+
+      <VBox fx:id="alertsButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showAllerts" pickOnBounds="true">
          <ImageView fx:id="allertsIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/notification.png" />
@@ -62,64 +62,28 @@
          <Text styleClass="button-caption" text="%notification.caption"/>
       </VBox>
       
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0"  onMouseClicked="#addListing" pickOnBounds="true">
-         <ImageView fx:id="addListingIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true" >
+      <VBox fx:id="listingButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showListings" pickOnBounds="true">
+         <ImageView fx:id="addListingIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
-               <Image url="@../images/icons/add.png" />
+               <Image url="@../images/icons/listings.png" />
             </image>
             <viewport>
                <Rectangle2D />
             </viewport>
          </ImageView>
-         <Text styleClass="button-caption" text="%add_item.caption" wrappingWidth="50.0" textAlignment="CENTER"/>
-      </VBox>
-      
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showSettings" pickOnBounds="true" >
-         <ImageView fx:id="settingsIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
-            <image>
-               <Image url="@../images/icons/settings.png" />
-            </image>
-            <viewport>
-               <Rectangle2D />
-            </viewport>
-         </ImageView>
-         <Text styleClass="button-caption" text="%settings.caption"/>
-      </VBox>
-      
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showSupport" pickOnBounds="true" >
-         <ImageView fx:id="supportIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
-            <image>
-               <Image url="@../images/icons/support.png" />
-            </image>
-            <viewport>
-               <Rectangle2D />
-            </viewport>
-         </ImageView>
-         <Text styleClass="button-caption" text="%support.caption"/>
+         <Text styleClass="button-caption" text="%listings.caption" wrappingWidth="50.0" textAlignment="CENTER"/>
       </VBox>
 
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showOffers" pickOnBounds="true" >
-         <ImageView fx:id="offersIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+      <VBox fx:id="profileButton" styleClass="sidebar-button" alignment="CENTER" onMouseClicked="#showProfile" pickOnBounds="true" spacing="0">
+         <ImageView fx:id="ProfileImageIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
-               <Image url="@../images/icons/offers.png" />
+               <Image url="@../images/icons/default_profile.png" />
             </image>
             <viewport>
                <Rectangle2D />
             </viewport>
          </ImageView>
-         <Text styleClass="button-caption" text="%offers.caption"/>
-      </VBox>
-      
-      <VBox styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#logout" pickOnBounds="true" >
-         <ImageView fx:id="logoutIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
-            <image>
-               <Image url="@../images/icons/logout.png" />
-            </image>
-            <viewport>
-               <Rectangle2D />
-            </viewport>
-         </ImageView>
-         <Text styleClass="button-caption" text="%logout.caption"/>
+         <Text styleClass="button-caption" text="%user.caption"/>
       </VBox>
    </children>
 </VBox>

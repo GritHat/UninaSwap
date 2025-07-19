@@ -10,6 +10,7 @@ import com.uninaswap.client.viewmodel.FavoriteViewModel;
 import com.uninaswap.client.viewmodel.ListingItemViewModel;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.viewmodel.UserViewModel;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -23,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.util.List;
 
@@ -30,9 +32,6 @@ public class FavoritesDrawerController {
 
     @FXML
     private VBox drawerContainer;
-
-    @FXML
-    private ImageView toggleIcon;
 
     // Favorites section
     @FXML
@@ -67,38 +66,115 @@ public class FavoritesDrawerController {
     // Add reference to observable lists
     private ObservableList<FavoriteViewModel> userFavorites;
 
+    // Animation fields
+    private Timeline showAnimation;
+    private Timeline hideAnimation;
+
     @FXML
     public void initialize() {
-        setupLabels();
         setupDrawerToggle();
         setupExpandablePanes();
-        setupFavoritesObservableList(); // NEW METHOD
+        setupFavoritesObservableList();
         loadFollowing();
 
-        // Hide drawer initially
+        // Set initial state - drawer hidden
         drawerContainer.setVisible(false);
         drawerContainer.setManaged(false);
-    }
-
-    private void setupLabels() {
-        favoritesPane.setText(localeService.getMessage("favorites.drawer.favorites", "Favorite Listings"));
-        followingPane.setText(localeService.getMessage("favorites.drawer.following", "Following"));
+        drawerContainer.getStyleClass().add("drawer-hidden");
+        
+        // Add content animation class
+        drawerContainer.getStyleClass().add("drawer-content-animated");
     }
 
     private void setupDrawerToggle() {
         drawerVisible.addListener((obs, oldVal, newVal) -> {
-            drawerContainer.setVisible(newVal);
-            drawerContainer.setManaged(newVal);
-
-            // Update toggle icon
-            String iconPath = newVal ? "/images/icons/chevron-right.png" : "/images/icons/chevron-left.png";
-            try {
-                Image icon = new Image(getClass().getResourceAsStream(iconPath));
-                toggleIcon.setImage(icon);
-            } catch (Exception e) {
-                System.err.println("Could not load toggle icon: " + e.getMessage());
+            if (newVal) {
+                showDrawerAnimated();
+            } else {
+                hideDrawerAnimated();
+            }
+            
+            // Notify main controller of state change
+            if (mainController != null) {
+                mainController.onFavoritesDrawerStateChanged();
             }
         });
+    }
+
+    /**
+     * Show drawer with slide-in animation
+     */
+    private void showDrawerAnimated() {
+        // Stop any existing animation
+        if (hideAnimation != null) {
+            hideAnimation.stop();
+        }
+
+        // Make sure the drawer is visible and managed before animation
+        drawerContainer.setVisible(true);
+        drawerContainer.setManaged(true);
+        
+        // Update CSS classes
+        drawerContainer.getStyleClass().removeAll("drawer-hidden");
+        drawerContainer.getStyleClass().add("drawer-visible");
+
+        // Create slide-in animation
+        TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), drawerContainer);
+        slideIn.setFromX(280); // Start off-screen
+        slideIn.setToX(0);     // End at normal position
+        slideIn.setInterpolator(Interpolator.EASE_OUT);
+
+        // Create fade-in animation
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), drawerContainer);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+        fadeIn.setInterpolator(Interpolator.EASE_OUT);
+
+        // Combine animations - REMOVED the item animation callback
+        ParallelTransition showAnimationTransition = new ParallelTransition(slideIn, fadeIn);
+        // No longer calling animateDrawerItemsIn() here
+
+        showAnimation = new Timeline();
+        showAnimation.getKeyFrames().add(new KeyFrame(Duration.millis(1), e -> showAnimationTransition.play()));
+        showAnimation.play();
+    }
+
+    /**
+     * Hide drawer with slide-out animation
+     */
+    private void hideDrawerAnimated() {
+        // Stop any existing animation
+        if (showAnimation != null) {
+            showAnimation.stop();
+        }
+
+        // Create slide-out animation
+        TranslateTransition slideOut = new TranslateTransition(Duration.millis(250), drawerContainer);
+        slideOut.setFromX(0);    // Start at normal position
+        slideOut.setToX(280);    // End off-screen
+        slideOut.setInterpolator(Interpolator.EASE_IN);
+
+        // Create fade-out animation
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(250), drawerContainer);
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+        fadeOut.setInterpolator(Interpolator.EASE_IN);
+
+        // Combine animations
+        ParallelTransition hideAnimationTransition = new ParallelTransition(slideOut, fadeOut);
+        hideAnimationTransition.setOnFinished(e -> {
+            // Hide and unmanage after animation completes
+            drawerContainer.setVisible(false);
+            drawerContainer.setManaged(false);
+            
+            // Update style classes
+            drawerContainer.getStyleClass().removeAll("drawer-visible");
+            drawerContainer.getStyleClass().add("drawer-hidden");
+        });
+
+        hideAnimation = new Timeline();
+        hideAnimation.getKeyFrames().add(new KeyFrame(Duration.millis(1), e -> hideAnimationTransition.play()));
+        hideAnimation.play();
     }
 
     private void setupExpandablePanes() {
@@ -106,18 +182,35 @@ public class FavoritesDrawerController {
         favoritesPane.setExpanded(true);
         followingPane.setExpanded(false);
 
-        // Add accordion behavior
+        // Add accordion behavior with smooth transitions
         favoritesPane.expandedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal && followingPane.isExpanded()) {
-                followingPane.setExpanded(false);
+                // Create smooth collapse animation for following pane
+                createExpandCollapseAnimation(followingPane, false).play();
             }
         });
 
         followingPane.expandedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal && favoritesPane.isExpanded()) {
-                favoritesPane.setExpanded(false);
+                // Create smooth collapse animation for favorites pane
+                createExpandCollapseAnimation(favoritesPane, false).play();
             }
         });
+    }
+
+    /**
+     * Create smooth expand/collapse animation for titled panes
+     */
+    private Timeline createExpandCollapseAnimation(TitledPane pane, boolean expand) {
+        Timeline animation = new Timeline();
+        
+        if (expand) {
+            animation.getKeyFrames().add(new KeyFrame(Duration.millis(200), e -> pane.setExpanded(true)));
+        } else {
+            animation.getKeyFrames().add(new KeyFrame(Duration.millis(200), e -> pane.setExpanded(false)));
+        }
+        
+        return animation;
     }
 
     private void setupFavoritesObservableList() {
@@ -129,13 +222,11 @@ public class FavoritesDrawerController {
             Platform.runLater(() -> {
                 populateFavoritesList(userFavorites);
                 updateFavoritesCount(userFavorites.size());
+                
+                // REMOVED: Re-animate items if drawer is visible
+                // No longer calling animateDrawerItemsIn()
             });
         });
-    }
-
-    @FXML
-    private void handleToggleDrawer() {
-        drawerVisible.set(!drawerVisible.get());
     }
 
     private void loadFavorites() {
@@ -194,6 +285,7 @@ public class FavoritesDrawerController {
 
     private VBox createListingItem(ListingViewModel listing) {
         VBox item = new VBox(5);
+        // REMOVED: "animate-in" class - just use the basic drawer-item class
         item.getStyleClass().add("drawer-item");
 
         // Listing image and title
@@ -207,10 +299,10 @@ public class FavoritesDrawerController {
         thumbnail.setPreserveRatio(true);
         thumbnail.getStyleClass().add("drawer-thumbnail");
 
-        // Load listing image using ImageService instead of direct file loading
+        // Load listing image using ImageService
         loadThumbnailImage(thumbnail, listing);
 
-        // Title and type
+        // Title and type container
         VBox textContainer = new VBox(2);
         Label title = new Label(listing.getTitle());
         title.setMaxWidth(170);
@@ -224,14 +316,77 @@ public class FavoritesDrawerController {
 
         header.getChildren().addAll(thumbnail, textContainer);
 
-        // Click handler
-        item.setOnMouseClicked(_ -> handleListingClick(listing));
+        // Click handler with visual feedback - keep this simple scale animation
+        item.setOnMouseClicked(e -> {
+            // Keep only the simple click feedback animation
+            ScaleTransition scaleDown = new ScaleTransition(Duration.millis(100), item);
+            scaleDown.setToX(0.95);
+            scaleDown.setToY(0.95);
+            
+            ScaleTransition scaleUp = new ScaleTransition(Duration.millis(100), item);
+            scaleUp.setToX(1.0);
+            scaleUp.setToY(1.0);
+            
+            SequentialTransition clickAnimation = new SequentialTransition(scaleDown, scaleUp);
+            clickAnimation.setOnFinished(event -> handleListingClick(listing));
+            clickAnimation.play();
+        });
 
         item.getChildren().add(header);
         return item;
     }
 
-    // Add this new method to properly load thumbnail images
+    private VBox createUserItem(UserViewModel user) {
+        VBox item = new VBox(5);
+        // REMOVED: "animate-in" class - just use the basic drawer-item class
+        item.getStyleClass().add("drawer-item");
+
+        HBox header = new HBox(10);
+        header.getStyleClass().add("drawer-item-header");
+
+        // User avatar
+        ImageView avatar = new ImageView();
+        avatar.setFitWidth(40);
+        avatar.setFitHeight(40);
+        avatar.setPreserveRatio(true);
+        avatar.getStyleClass().add("drawer-avatar");
+
+        // Load user image using ImageService
+        loadAvatarImage(avatar, user);
+
+        // User info
+        VBox textContainer = new VBox(2);
+        Text displayName = new Text(user.getDisplayName());
+        displayName.getStyleClass().add("drawer-item-title");
+
+        Text username = new Text("@" + user.getUsername());
+        username.getStyleClass().add("drawer-item-subtitle");
+
+        textContainer.getChildren().addAll(displayName, username);
+
+        header.getChildren().addAll(avatar, textContainer);
+
+        // Click handler with visual feedback - keep this simple scale animation
+        item.setOnMouseClicked(e -> {
+            // Keep only the simple click feedback animation
+            ScaleTransition scaleDown = new ScaleTransition(Duration.millis(100), item);
+            scaleDown.setToX(0.95);
+            scaleDown.setToY(0.95);
+            
+            ScaleTransition scaleUp = new ScaleTransition(Duration.millis(100), item);
+            scaleUp.setToX(1.0);
+            scaleUp.setToY(1.0);
+            
+            SequentialTransition clickAnimation = new SequentialTransition(scaleDown, scaleUp);
+            clickAnimation.setOnFinished(event -> handleUserClick(user));
+            clickAnimation.play();
+        });
+
+        item.getChildren().add(header);
+        return item;
+    }
+
+    // Keep all existing methods for loading images, handling clicks, etc.
     private void loadThumbnailImage(ImageView thumbnail, ListingViewModel listing) {
         // Get the first available image path from the listing
         String imagePath = getFirstImagePath(listing);
@@ -258,7 +413,6 @@ public class FavoritesDrawerController {
         }
     }
 
-    // Add helper method to get the first image path from listing items
     private String getFirstImagePath(ListingViewModel listing) {
         if (listing.getItems() != null && !listing.getItems().isEmpty()) {
             for (ListingItemViewModel item : listing.getItems()) {
@@ -271,48 +425,10 @@ public class FavoritesDrawerController {
         return null;
     }
 
-    private VBox createUserItem(UserViewModel user) {
-        VBox item = new VBox(5);
-        item.getStyleClass().add("drawer-item");
-
-        HBox header = new HBox(10);
-        header.getStyleClass().add("drawer-item-header");
-
-        // User avatar
-        ImageView avatar = new ImageView();
-        avatar.setFitWidth(40);
-        avatar.setFitHeight(40);
-        avatar.setPreserveRatio(true);
-        avatar.getStyleClass().add("drawer-avatar");
-
-        // Load user image using ImageService instead of direct file loading
-        loadAvatarImage(avatar, user);
-
-        // User info
-        VBox textContainer = new VBox(2);
-        Text displayName = new Text(user.getDisplayName());
-        displayName.getStyleClass().add("drawer-item-title");
-
-        Text username = new Text("@" + user.getUsername());
-        username.getStyleClass().add("drawer-item-subtitle");
-
-        textContainer.getChildren().addAll(displayName, username);
-
-        header.getChildren().addAll(avatar, textContainer);
-
-        // Click handler
-        item.setOnMouseClicked(e -> handleUserClick(user));
-
-        item.getChildren().add(header);
-        return item;
-    }
-
-    // Add this method for loading user avatars
     private void loadAvatarImage(ImageView avatar, UserViewModel user) {
         String imagePath = user.getProfileImagePath();
         
         if (imagePath != null && !imagePath.isEmpty()) {
-            // Use ImageService to fetch the user's profile image
             ImageService.getInstance().fetchImage(imagePath)
                     .thenAccept(image -> {
                         Platform.runLater(() -> {
@@ -376,12 +492,12 @@ public class FavoritesDrawerController {
     }
 
     private void updateFavoritesCount(int count) {
-        String countText = localeService.getMessage("favorites.drawer.count", "({0})", count);
+        String countText = localeService.getMessage("favorites.drawer.count", count);
         favoritesCountLabel.setText(countText);
     }
 
     private void updateFollowingCount(int count) {
-        String countText = localeService.getMessage("following.drawer.count", "({0})", count);
+        String countText = localeService.getMessage("following.drawer.count", count);
         followingCountLabel.setText(countText);
     }
 
@@ -391,6 +507,27 @@ public class FavoritesDrawerController {
         loadFollowing();
     }
 
+    // Add method to instantly show/hide without animation (useful for initialization)
+    public void setDrawerVisibleInstantly(boolean visible) {
+        drawerContainer.setVisible(visible);
+        drawerContainer.setManaged(visible);
+        
+        if (visible) {
+            drawerContainer.getStyleClass().removeAll("drawer-hidden");
+            drawerContainer.getStyleClass().add("drawer-visible");
+            drawerContainer.setTranslateX(0);
+            drawerContainer.setOpacity(1.0);
+        } else {
+            drawerContainer.getStyleClass().removeAll("drawer-visible");
+            drawerContainer.getStyleClass().add("drawer-hidden");
+            drawerContainer.setTranslateX(280);
+            drawerContainer.setOpacity(0.0);
+        }
+        
+        drawerVisible.set(visible);
+    }
+
+    // Keep all existing public methods
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }

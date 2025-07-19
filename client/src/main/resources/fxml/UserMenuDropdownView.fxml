@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      stylesheets="@../css/styles.css" fx:controller="com.uninaswap.client.controller.UserMenuDropdownController"
-      styleClass="dropdown-menu, user-menu-dropdown" prefWidth="280" spacing="0">
+<VBox prefWidth="280" spacing="0" styleClass="dropdown-menu, user-menu-dropdown" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.UserMenuDropdownController">
 
     <!-- User profile section -->
-    <VBox spacing="8" styleClass="user-profile-section">
+    <VBox spacing="12" styleClass="user-profile-section">
         <padding>
-            <Insets top="15" right="15" bottom="10" left="15"/>
+            <Insets bottom="15" left="15" right="15" top="15" />
         </padding>
         
-        <HBox spacing="10" alignment="CENTER_LEFT">
+        <HBox alignment="CENTER_LEFT" spacing="12">
             <!-- User avatar -->
-            <ImageView fx:id="userAvatar" fitWidth="40" fitHeight="40" styleClass="user-avatar-large">
+            <ImageView fx:id="userAvatar" fitHeight="40" fitWidth="40" styleClass="user-avatar-large">
                 <image>
                     <Image url="@../images/icons/default_profile.png" />
                 </image>
@@ -28,148 +30,162 @@
             
             <!-- User info -->
             <VBox spacing="2">
-                <Text fx:id="displayNameText" text="User Name" styleClass="user-display-name">
+                <Text fx:id="displayNameText" styleClass="user-display-name" text="User Name">
                     <font>
-                        <Font name="System Bold" size="14"/>
+                        <Font name="System Bold" size="14" />
                     </font>
                 </Text>
-                <Text fx:id="usernameText" text="@username" styleClass="user-username"/>
+                <Text fx:id="usernameText" styleClass="user-username" text="@username" />
             </VBox>
+         <Pane HBox.hgrow="ALWAYS" />
+           
+           <!-- View Profile button - styled as primary button -->
+           <Button fx:id="viewProfileBtn" onAction="#handleViewProfile" styleClass="profile-button" text="%user.menu.view.profile" />
         </HBox>
-        
-        <!-- View Profile button -->
-        <Button fx:id="viewProfileBtn" text="%user.menu.view.profile" onAction="#handleViewProfile" styleClass="secondary-button, profile-button"/>
     </VBox>
     
     <!-- Separator -->
-    <Separator/>
+    <Separator />
     
-    <!-- Menu items -->
+    <!-- Menu items - Remove spacing and padding from VBox -->
     <VBox spacing="0">
-        <padding>
-            <Insets top="5" right="0" bottom="5" left="0"/>
-        </padding>
-        
         <!-- Inventory -->
-        <Button fx:id="inventoryBtn" onAction="#handleInventory" styleClass="dropdown-menu-item">
+        <Button fx:id="inventoryBtn" maxWidth="Infinity" onAction="#handleInventory" prefWidth="-1" styleClass="dropdown-menu-item">
             <graphic>
-                <HBox spacing="12" alignment="CENTER_LEFT">
-                    <ImageView fitWidth="18" fitHeight="18">
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="12">
+                    <ImageView fitHeight="18" fitWidth="18">
                         <image>
                             <Image url="@../images/icons/inventory.png" />
                         </image>
                     </ImageView>
-                    <Text text="%user.menu.inventory" styleClass="menu-item-text"/>
+                    <Text styleClass="menu-item-text" text="%user.menu.inventory" />
                 </HBox>
             </graphic>
         </Button>
         
         <!-- My Listings -->
-        <Button fx:id="listingsBtn" onAction="#handleMyListings" styleClass="dropdown-menu-item">
+        <Button fx:id="listingsBtn" maxWidth="Infinity" onAction="#handleMyListings" prefWidth="-1" styleClass="dropdown-menu-item">
             <graphic>
-                <HBox spacing="12" alignment="CENTER_LEFT">
-                    <ImageView fitWidth="18" fitHeight="18">
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="12">
+                    <ImageView fitHeight="18" fitWidth="18">
                         <image>
                             <Image url="@../images/icons/listings.png" />
                         </image>
                     </ImageView>
-                    <Text text="%user.menu.listings" styleClass="menu-item-text"/>
+                    <Text styleClass="menu-item-text" text="%user.menu.listings" />
                 </HBox>
             </graphic>
         </Button>
         
         <!-- My Favorites -->
-        <Button fx:id="favoritesBtn" onAction="#handleFavorites" styleClass="dropdown-menu-item">
+        <Button fx:id="favoritesBtn" maxWidth="Infinity" onAction="#handleFavorites" prefWidth="-1" styleClass="dropdown-menu-item">
             <graphic>
-                <HBox spacing="12" alignment="CENTER_LEFT">
-                    <ImageView fitWidth="18" fitHeight="18">
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="12">
+                    <ImageView fitHeight="18" fitWidth="18">
                         <image>
                             <Image url="@../images/icons/favorites_add.png" />
                         </image>
                     </ImageView>
-                    <Text text="%user.menu.favorites" styleClass="menu-item-text"/>
+                    <Text styleClass="menu-item-text" text="%user.menu.favorites" />
                 </HBox>
             </graphic>
         </Button>
         
         <!-- My Offers -->
-        <Button fx:id="offersBtn" onAction="#handleOffers" styleClass="dropdown-menu-item">
+        <Button fx:id="offersBtn" maxWidth="Infinity" onAction="#handleOffers" prefWidth="-1" styleClass="dropdown-menu-item">
             <graphic>
-                <HBox spacing="12" alignment="CENTER_LEFT">
-                    <ImageView fitWidth="18" fitHeight="18">
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="12">
+                    <ImageView fitHeight="18" fitWidth="18">
                         <image>
                             <Image url="@../images/icons/offers.png" />
                         </image>
                     </ImageView>
-                    <Text text="%user.menu.offers" styleClass="menu-item-text"/>
+                    <Text styleClass="menu-item-text" text="%user.menu.offers" />
                 </HBox>
             </graphic>
         </Button>
         
         <!-- Followers & Following -->
-        <Button fx:id="followersBtn" onAction="#handleFollowers" styleClass="dropdown-menu-item">
+        <Button fx:id="followersBtn" maxWidth="Infinity" onAction="#handleFollowers" prefWidth="-1" styleClass="dropdown-menu-item">
             <graphic>
-                <HBox spacing="12" alignment="CENTER_LEFT">
-                    <ImageView fitWidth="18" fitHeight="18">
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="12">
+                    <ImageView fitHeight="18" fitWidth="18">
                         <image>
                             <Image url="@../images/icons/followers.png" />
                         </image>
                     </ImageView>
-                    <Text text="%user.menu.followers" styleClass="menu-item-text"/>
-                </HBox>
-            </graphic>
-        </Button>
-        
-        <!-- Settings -->
-        <Button fx:id="settingsBtn" onAction="#handleSettings" styleClass="dropdown-menu-item">
-            <graphic>
-                <HBox spacing="12" alignment="CENTER_LEFT">
-                    <ImageView fitWidth="18" fitHeight="18">
-                        <image>
-                            <Image url="@../images/icons/settings.png" />
-                        </image>
-                    </ImageView>
-                    <Text text="%user.menu.settings" styleClass="menu-item-text"/>
+                    <Text styleClass="menu-item-text" text="%user.menu.followers" />
                 </HBox>
             </graphic>
         </Button>
     </VBox>
     
     <!-- Separator -->
-    <Separator/>
+    <Separator />
     
-    <!-- Theme selector -->
-    <VBox spacing="8">
-        <padding>
-            <Insets top="10" right="15" bottom="10" left="15"/>
-        </padding>
-        
-        <HBox spacing="8" alignment="CENTER_LEFT">
-            <ImageView fitWidth="18" fitHeight="18">
+    <!-- Theme selector section -->
+    <VBox spacing="8" styleClass="theme-section">
+        <HBox alignment="CENTER_LEFT" spacing="8">
+            <ImageView fitHeight="18" fitWidth="18">
                 <image>
                     <Image url="@../images/icons/theme.png" />
                 </image>
             </ImageView>
-            <Text text="%user.menu.theme" styleClass="theme-label">
+            <Text styleClass="theme-label" text="%user.menu.theme">
                 <font>
-                    <Font name="System Bold" size="12"/>
+                    <Font name="System Bold" size="12" />
                 </font>
             </Text>
         </HBox>
         
-        <ComboBox fx:id="themeCombo" prefWidth="250" styleClass="theme-combo"/>
+        <ComboBox fx:id="themeCombo" prefWidth="250" styleClass="theme-combo" />
     </VBox>
     
     <!-- Separator -->
-    <Separator/>
+    <Separator />
     
-    <!-- Logout section -->
-    <VBox>
-        <padding>
-            <Insets top="10" right="15" bottom="15" left="15"/>
-        </padding>
+    <!-- System actions section (Settings, Support, Logout) -->
+    <VBox spacing="0">
+        <!-- Settings -->
+        <Button fx:id="settingsBtn" maxWidth="Infinity" onAction="#handleSettings" prefWidth="-1" styleClass="dropdown-menu-item">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="12">
+                    <ImageView fitHeight="18" fitWidth="18">
+                        <image>
+                            <Image url="@../images/icons/settings.png" />
+                        </image>
+                    </ImageView>
+                    <Text styleClass="menu-item-text" text="%user.menu.settings" />
+                </HBox>
+            </graphic>
+        </Button>
         
-        <Button fx:id="logoutBtn" text="%user.menu.logout" 
-                onAction="#handleLogout" styleClass="danger-button, logout-button" prefWidth="250"/>
+        <!-- Support -->
+        <Button fx:id="supportBtn" maxWidth="Infinity" onAction="#handleSupport" prefWidth="-1" styleClass="dropdown-menu-item">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="12">
+                    <ImageView fitHeight="18" fitWidth="18">
+                        <image>
+                            <Image url="@../images/icons/support.png" />
+                        </image>
+                    </ImageView>
+                    <Text styleClass="menu-item-text" text="%user.menu.support" />
+                </HBox>
+            </graphic>
+        </Button>
+        
+        <!-- Logout -->
+        <Button fx:id="logoutBtn" maxWidth="Infinity" onAction="#handleLogout" prefWidth="-1" styleClass="logout-button">
+            <graphic>
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="12">
+                    <ImageView fitHeight="18" fitWidth="18">
+                        <image>
+                            <Image url="@../images/icons/logout.png" />
+                        </image>
+                    </ImageView>
+                    <Text style="-fx-fill: #dc3545;" styleClass="menu-item-text" text="%user.menu.logout" />
+                </HBox>
+            </graphic>
+        </Button>
     </VBox>
 </VBox>

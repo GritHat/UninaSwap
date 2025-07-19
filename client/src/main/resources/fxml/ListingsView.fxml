@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.uninaswap.client.controller.ListingsController"
+      spacing="20" prefWidth="900" prefHeight="700" styleClass="listings-container">
+   <padding>
+      <Insets top="30" right="30" bottom="30" left="30" />
+   </padding>
+
+   <!-- Header Section -->
+   <VBox spacing="15" styleClass="listings-header-section">
+      <HBox alignment="CENTER_LEFT" spacing="15">
+         <ImageView fitHeight="32" fitWidth="32" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/listings.png" />
+            </image>
+         </ImageView>
+         <Label fx:id="titleLabel" styleClass="page-title-label" />
+         <Region HBox.hgrow="ALWAYS" />
+         <Button fx:id="createNewButton" onAction="#handleCreateNew" styleClass="primary-button">
+            <graphic>
+               <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                  <image>
+                     <Image url="@../images/icons/add_w.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+         </Button>
+      </HBox>
+      
+      <HBox alignment="CENTER_LEFT" spacing="20">
+         <Label fx:id="userListingsCountLabel" styleClass="listings-count-label" />
+         <Region HBox.hgrow="ALWAYS" />
+         <Button fx:id="refreshButton" onAction="#handleRefresh" styleClass="secondary-button">
+            <graphic>
+               <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                  <image>
+                     <Image url="@../images/icons/refresh.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+         </Button>
+      </HBox>
+   </VBox>
+
+   <Separator />
+
+   <!-- Filters Section -->
+   <VBox spacing="15" styleClass="listings-filters-section">
+      <Label text="Filters" styleClass="section-subtitle-label" />
+      
+      <HBox spacing="15" alignment="CENTER_LEFT">
+         <!-- Search Field -->
+         <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Search" styleClass="filter-label" />
+            <TextField fx:id="searchField" styleClass="filter-search-field" />
+         </VBox>
+         
+         <!-- Status Filter -->
+         <VBox spacing="5" minWidth="150">
+            <Label text="Status" styleClass="filter-label" />
+            <ComboBox fx:id="statusFilterComboBox" styleClass="filter-combo-box" maxWidth="Infinity" />
+         </VBox>
+         
+         <!-- Type Filter -->
+         <VBox spacing="5" minWidth="150">
+            <Label text="Type" styleClass="filter-label" />
+            <ComboBox fx:id="typeFilterComboBox" styleClass="filter-combo-box" maxWidth="Infinity" />
+         </VBox>
+         
+         <!-- Clear Filters Button -->
+         <VBox spacing="5">
+            <Label text=" " /> <!-- Spacer for alignment -->
+            <Button onAction="#handleClearFilters" styleClass="clear-filters-button" text="Clear" />
+         </VBox>
+      </HBox>
+   </VBox>
+
+   <Separator />
+
+   <!-- Listings Table -->
+   <VBox VBox.vgrow="ALWAYS" spacing="10">
+      <Label text="Your Listings" styleClass="section-subtitle-label" />
+      
+      <TableView fx:id="listingsTable" VBox.vgrow="ALWAYS" styleClass="listings-table">
+         <columns>
+            <TableColumn fx:id="titleColumn" prefWidth="200" text="Title" />
+            <TableColumn fx:id="typeColumn" prefWidth="80" text="Type" />
+            <TableColumn fx:id="statusColumn" prefWidth="100" text="Status" />
+            <TableColumn fx:id="priceColumn" prefWidth="120" text="Price" />
+            <TableColumn fx:id="dateColumn" prefWidth="130" text="Created" />
+            <TableColumn fx:id="actionsColumn" prefWidth="200" text="Actions" sortable="false" />
+         </columns>
+         <placeholder>
+            <VBox alignment="CENTER" spacing="15" styleClass="table-placeholder">
+               <ImageView fitHeight="64" fitWidth="64" preserveRatio="true" opacity="0.5">
+                  <image>
+                     <Image url="@../images/icons/listings.png" />
+                  </image>
+               </ImageView>
+               <Label text="No listings found" styleClass="placeholder-title" />
+               <Label text="Create your first listing to get started" styleClass="placeholder-subtitle" />
+               <Button text="Create New Listing" onAction="#handleCreateNew" styleClass="primary-button" />
+            </VBox>
+         </placeholder>
+      </TableView>
+   </VBox>
+
+   <!-- Status Summary Footer -->
+   <HBox spacing="30" alignment="CENTER" styleClass="listings-summary-footer">
+      <VBox alignment="CENTER" spacing="5">
+         <Label text="Quick Stats" styleClass="summary-section-title" />
+         <HBox spacing="20">
+            <VBox alignment="CENTER" spacing="2">
+               <Label text="Active" styleClass="status-label-active" />
+               <Label text="0" styleClass="status-count" />
+            </VBox>
+            <VBox alignment="CENTER" spacing="2">
+               <Label text="Completed" styleClass="status-label-completed" />
+               <Label text="0" styleClass="status-count" />
+            </VBox>
+            <VBox alignment="CENTER" spacing="2">
+               <Label text="Total" styleClass="status-label-total" />
+               <Label text="0" styleClass="status-count" />
+            </VBox>
+         </HBox>
+      </VBox>
+   </HBox>
+</VBox>

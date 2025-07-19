@@ -4,18 +4,18 @@ import com.uninaswap.client.service.FavoritesService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.util.AlertHelper;
-import com.uninaswap.client.viewmodel.FavoriteViewModel;
-import com.uninaswap.client.viewmodel.UserViewModel;
-import com.uninaswap.common.dto.ListingDTO;
+import com.uninaswap.client.viewmodel.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 
 public class UserFavoritesController {
@@ -30,22 +30,22 @@ public class UserFavoritesController {
     private Label totalFavoritesLabel;
 
     @FXML
-    private TableView<ListingDTO> favoritesTable;
+    private TableView<ListingViewModel> favoritesTable;
 
     @FXML
-    private TableColumn<ListingDTO, String> listingTitleColumn;
+    private TableColumn<ListingViewModel, String> listingTitleColumn;
 
     @FXML
-    private TableColumn<ListingDTO, String> listingTypeColumn;
+    private TableColumn<ListingViewModel, String> listingTypeColumn;
 
     @FXML
-    private TableColumn<ListingDTO, String> listingPriceColumn;
+    private TableColumn<ListingViewModel, String> listingPriceColumn;
 
     @FXML
-    private TableColumn<ListingDTO, String> listingDateColumn;
+    private TableColumn<ListingViewModel, String> listingDateColumn;
 
     @FXML
-    private TableColumn<ListingDTO, Void> listingActionsColumn;
+    private TableColumn<ListingViewModel, Void> listingActionsColumn;
 
     @FXML
     private Button refreshButton;
@@ -58,13 +58,15 @@ public class UserFavoritesController {
     private final FavoritesService favoritesService = FavoritesService.getInstance();
     private final NavigationService navigationService = NavigationService.getInstance();
 
-    // Data
+    // Data - Use the same observable list as FavoritesService
     private UserViewModel currentUser;
-    private final ObservableList<ListingDTO> favoriteListings = FXCollections.observableArrayList();
+    private ObservableList<ListingViewModel> favoriteListings;
+    private ObservableList<FavoriteViewModel> userFavorites;
 
     @FXML
     public void initialize() {
         setupLabels();
+        setupObservableLists();
         setupTable();
         updateCounts();
     }
@@ -75,16 +77,41 @@ public class UserFavoritesController {
         closeButton.setText(localeService.getMessage("favorites.close", "Close"));
     }
 
+    private void setupObservableLists() {
+        // Get the observable lists from FavoritesService (same as FavoritesDrawer)
+        favoriteListings = favoritesService.getFavoriteListingViewModels();
+        userFavorites = favoritesService.getUserFavoritesList();
+
+        // Set up listener for automatic updates (like FavoritesDrawer)
+        favoriteListings.addListener((ListChangeListener<ListingViewModel>) change -> {
+            Platform.runLater(() -> {
+                updateCounts();
+                // Table is already bound to favoriteListings, so it will update automatically
+            });
+        });
+
+        // Additional listener for user favorites to catch any changes
+        userFavorites.addListener((ListChangeListener<FavoriteViewModel>) change -> {
+            Platform.runLater(() -> {
+                updateCounts();
+            });
+        });
+    }
+
     private void setupTable() {
         listingTitleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
 
-        listingTypeColumn
-                .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getListingTypeValue()));
+        listingTypeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getListingTypeValue()));
 
         listingPriceColumn.setCellValueFactory(cellData -> {
-            ListingDTO listing = cellData.getValue();
-            // You'll need to implement price display logic based on listing type
-            return new SimpleStringProperty("N/A"); // Placeholder
+            ListingViewModel listing = cellData.getValue();
+            if (listing instanceof SellListingViewModel) {
+                if (((SellListingViewModel)listing).getPrice() != null && (((SellListingViewModel)listing).getPrice().compareTo(BigDecimal.valueOf(0))) > 0) {
+                    return new SimpleStringProperty(String.format("%.2f %s", ((SellListingViewModel)listing).getPrice(), ((SellListingViewModel)listing).getCurrency()));
+                }
+            }
+            
+            return new SimpleStringProperty("N/A");
         });
 
         listingDateColumn.setCellValueFactory(cellData -> {
@@ -98,7 +125,7 @@ public class UserFavoritesController {
         // Setup actions column
         setupActionsColumn();
 
-        // Bind table to observable list
+        // Bind table directly to the FavoritesService observable list
         favoritesTable.setItems(favoriteListings);
     }
 
@@ -113,12 +140,12 @@ public class UserFavoritesController {
                 removeButton.getStyleClass().add("danger-button");
 
                 viewButton.setOnAction(e -> {
-                    ListingDTO listing = getTableView().getItems().get(getIndex());
+                    ListingViewModel listing = getTableView().getItems().get(getIndex());
                     handleViewListing(listing);
                 });
 
                 removeButton.setOnAction(e -> {
-                    ListingDTO listing = getTableView().getItems().get(getIndex());
+                    ListingViewModel listing = getTableView().getItems().get(getIndex());
                     handleRemoveFavorite(listing);
                 });
             }
@@ -137,7 +164,11 @@ public class UserFavoritesController {
         if (user != null) {
             Platform.runLater(() -> {
                 updateUserInfo();
-                loadFavorites();
+                // No need to call loadFavorites() since we're using observable lists
+                // If the list is empty, trigger a refresh
+                if (favoriteListings.isEmpty()) {
+                    favoritesService.refreshUserFavorites();
+                }
             });
         }
     }
@@ -155,36 +186,21 @@ public class UserFavoritesController {
                 favoriteListings.size()));
     }
 
-    private void loadFavorites() {
-        if (currentUser == null)
-            return;
+    // Remove the old loadFavorites method since we're using observable lists
 
-        favoritesService.getUserFavorites()
-                .thenAccept(favorites -> Platform.runLater(() -> {
-                    favoriteListings.clear();
-                    favorites.forEach(favoriteDTO -> {
-                        if (favoriteDTO.getListing() != null) {
-                            favoriteListings.add(favoriteDTO.getListing());
-                        }
-                    });
-                    updateCounts();
-                }))
-                .exceptionally(ex -> {
-                    Platform.runLater(() -> AlertHelper.showErrorAlert(
-                            localeService.getMessage("favorites.error.title", "Error"),
-                            localeService.getMessage("favorites.error.load", "Failed to load favorites"),
-                            ex.getMessage()));
-                    return null;
-                });
+    private void handleViewListing(ListingViewModel listing) {
+        try {
+            navigationService.navigateToListingDetails(listing);
+        } catch (Exception e) {
+            System.err.println("Failed to navigate to listing details: " + e.getMessage());
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("error.title", "Error"),
+                    localeService.getMessage("error.navigation", "Navigation Error"),
+                    "Failed to open listing details: " + e.getMessage());
+        }
     }
 
-    private void handleViewListing(ListingDTO listing) {
-        // Navigate to listing details
-        System.out.println("View listing: " + listing.getTitle());
-        // You can implement navigation to listing details here
-    }
-
-    private void handleRemoveFavorite(ListingDTO listing) {
+    private void handleRemoveFavorite(ListingViewModel listing) {
         Alert confirmation = AlertHelper.createConfirmationDialog(
                 localeService.getMessage("favorites.remove.title", "Remove Favorite"),
                 localeService.getMessage("favorites.remove.header", "Confirm Removal"),
@@ -193,10 +209,12 @@ public class UserFavoritesController {
 
         confirmation.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
+                // Use the FavoritesService to remove (same as other controllers)
                 favoritesService.removeFavoriteFromServer(listing.getId())
                         .thenAccept(success -> Platform.runLater(() -> {
-                            favoriteListings.removeIf(l -> l.getId().equals(listing.getId()));
-                            updateCounts();
+                            // No need to manually remove from list - the observable list will update automatically
+                            // via the FavoritesService message handler
+
                             AlertHelper.showInformationAlert(
                                     localeService.getMessage("favorites.remove.success.title", "Success"),
                                     localeService.getMessage("favorites.remove.success.header", "Favorite Removed"),
@@ -216,13 +234,29 @@ public class UserFavoritesController {
 
     @FXML
     private void handleRefresh() {
+        // Simply trigger refresh via FavoritesService - observable lists will update automatically
+        favoritesService.refreshUserFavorites();
         updateCounts();
-        loadFavorites();
     }
 
     @FXML
     private void handleClose() {
         Stage stage = (Stage) closeButton.getScene().getWindow();
         stage.close();
+    }
+
+    // Add method to check if favorites are loaded
+    public boolean hasFavorites() {
+        return !favoriteListings.isEmpty();
+    }
+
+    // Add method to get favorites count
+    public int getFavoritesCount() {
+        return favoriteListings.size();
+    }
+
+    // Add method to refresh data (can be called externally)
+    public void refreshData() {
+        favoritesService.refreshUserFavorites();
     }
 }

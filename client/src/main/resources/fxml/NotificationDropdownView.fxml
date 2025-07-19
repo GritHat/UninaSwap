@@ -64,6 +64,6 @@
         </padding>
         
         <Button fx:id="viewAllBtn" text="%notifications.view.all" 
-                onAction="#handleViewAll" styleClass="primary-button, dropdown-action-button"/>
+                onAction="#handleViewAll" styleClass="button, dropdown-action-button"/>
     </HBox>
 </VBox>

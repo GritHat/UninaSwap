@@ -25,6 +25,7 @@ public class UserMenuDropdownController {
     @FXML private Button offersBtn;
     @FXML private Button followersBtn;
     @FXML private Button settingsBtn;
+    @FXML private Button supportBtn; // Add this new field
     @FXML private ComboBox<String> themeCombo;
     @FXML private Button logoutBtn;
     
@@ -85,7 +86,7 @@ public class UserMenuDropdownController {
     private void handleViewProfile() {
         closeDropdown();
         try {
-            navigationService.loadProfileView();
+            navigationService.navigateToProfileView();
         } catch (Exception e) {
             System.err.println("Failed to navigate to profile: " + e.getMessage());
         }
@@ -95,7 +96,7 @@ public class UserMenuDropdownController {
     private void handleInventory() {
         closeDropdown();
         try {
-            navigationService.loadInventoryView();
+            navigationService.navigateToInventoryView();
         } catch (Exception e) {
             System.err.println("Failed to navigate to inventory: " + e.getMessage());
         }
@@ -117,9 +118,7 @@ public class UserMenuDropdownController {
     private void handleFavorites() {
         closeDropdown();
         try {
-            // TODO : implement navigation to Favorites
-            System.out.println("Navigating to Favorites");
-            //navigationService.loadFavoritesView();
+            navigationService.navigateToUserFavoritesView();
         } catch (Exception e) {
             System.err.println("Failed to navigate to favorites: " + e.getMessage());
         }
@@ -129,7 +128,7 @@ public class UserMenuDropdownController {
     private void handleOffers() {
         closeDropdown();
         try {
-            navigationService.loadOffersView();
+            navigationService.navigateToOffersView();
         } catch (Exception e) {
             System.err.println("Failed to navigate to offers: " + e.getMessage());
         }
@@ -139,9 +138,7 @@ public class UserMenuDropdownController {
     private void handleFollowers() {
         closeDropdown();
         try {
-            // TODO : implement navigation to Followers
-            System.out.println("Navigating to Followers");
-            // navigationService.loadFollowersView();
+            navigationService.navigateToUserFollowersView();
         } catch (Exception e) {
             System.err.println("Failed to navigate to followers: " + e.getMessage());
         }
@@ -151,11 +148,19 @@ public class UserMenuDropdownController {
     private void handleSettings() {
         closeDropdown();
         try {
-            // TODO : implement navigation to Settings
-            System.out.println("Navigating to Settings");
-            // navigationService.loadSettings();
+            navigationService.navigateToSettingsView();
         } catch (Exception e) {
             System.err.println("Failed to navigate to settings: " + e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void handleSupport() {
+        closeDropdown();
+        try {
+            navigationService.navigateToSupportView();
+        } catch (Exception e) {
+            System.err.println("Failed to navigate to support: " + e.getMessage());
         }
     }
     

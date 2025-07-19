@@ -21,6 +21,7 @@ import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.service.CategoryService;
+import com.uninaswap.client.service.SearchService;
 import com.uninaswap.common.enums.Category;
 import javafx.collections.FXCollections;
 import javafx.util.StringConverter;
@@ -116,8 +117,10 @@ public class MainController implements Refreshable {
     private final ImageService imageService = ImageService.getInstance();
     // Add the CategoryService
     private final CategoryService categoryService = CategoryService.getInstance();
+    private final SearchService searchService = SearchService.getInstance();
 
     private String currentFilter = "all";
+    private boolean isInSearchMode = false;
 
     private Popup notificationPopup;
     private Popup userMenuPopup;
@@ -206,11 +209,15 @@ public class MainController implements Refreshable {
                 }
             });
 
-            // Optional: Add change listener
+            // Add change listener to trigger search
             categoryComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != oldValue && newValue != null) {
                     System.out.println("Category changed to: " + newValue);
-                    // Add your search trigger logic here
+                    if (isInSearchMode) {
+                        performCurrentSearch();
+                    } else {
+                        triggerSearch();
+                    }
                 }
             });
         } else {
@@ -222,13 +229,10 @@ public class MainController implements Refreshable {
     @FXML
     public void handleSearch(ActionEvent event) {
         String searchQuery = searchField.getText().trim();
-        if (!searchQuery.isEmpty()) {
-            System.out.println("Searching for: " + searchQuery);
-
-            // Publish search event with current filter
-            SearchData searchData = new SearchData(searchQuery, currentFilter, categoryComboBox.getValue());
-            eventBus.publishEvent(EventTypes.SEARCH_REQUESTED, searchData);
-        }
+        Category selectedCategory = categoryComboBox.getValue();
+        
+        // Perform search
+        performSearch(searchQuery, currentFilter, selectedCategory);
     }
 
     @FXML
@@ -304,31 +308,51 @@ public class MainController implements Refreshable {
     @FXML
     public void filterAll(ActionEvent event) {
         setCurrentFilter("all");
-        triggerSearch();
+        if (isInSearchMode) {
+            performCurrentSearch();
+        } else {
+            triggerSearch();
+        }
     }
 
     @FXML
     public void filterAuctions(ActionEvent event) {
         setCurrentFilter("auctions");
-        triggerSearch();
+        if (isInSearchMode) {
+            performCurrentSearch();
+        } else {
+            triggerSearch();
+        }
     }
 
     @FXML
     public void filterTrades(ActionEvent event) {
         setCurrentFilter("trades");
-        triggerSearch();
+        if (isInSearchMode) {
+            performCurrentSearch();
+        } else {
+            triggerSearch();
+        }
     }
 
     @FXML
     public void filterSales(ActionEvent event) {
         setCurrentFilter("sales");
-        triggerSearch();
+        if (isInSearchMode) {
+            performCurrentSearch();
+        } else {
+            triggerSearch();
+        }
     }
 
     @FXML
     public void filterGifts(ActionEvent event) {
         setCurrentFilter("gifts");
-        triggerSearch();
+        if (isInSearchMode) {
+            performCurrentSearch();
+        } else {
+            triggerSearch();
+        }
     }
     
     private void setCurrentFilter(String filter) {
@@ -364,13 +388,97 @@ public class MainController implements Refreshable {
         eventBus.publishEvent(EventTypes.SEARCH_REQUESTED, searchData);
     }
 
-    private void handleSearchRequest(Object data) {
-        if (data instanceof SearchData searchData) {
-            System.out.println("Search requested: " + searchData.getQuery() + " with filter: " + searchData.getFilter() + " in category: " + searchData.getCategory());
-            // Handle search logic here or forward to appropriate view controller
+    private void performSearch(String query, String listingType, Category category) {
+        System.out.println("Performing search: query='" + query + "', type='" + listingType + "', category=" + category);
+        
+        searchService.search(query, listingType, category)
+            .thenAccept(searchResult -> Platform.runLater(() -> {
+                isInSearchMode = true;
+                updateContentWithSearchResults(searchResult);
+                showSearchResultsMessage(searchResult);
+            }))
+            .exceptionally(ex -> {
+                Platform.runLater(() -> {
+                    System.err.println("Search failed: " + ex.getMessage());
+                    showSearchError(ex.getMessage());
+                });
+                return null;
+            });
+    }
+    
+    // Perform search with current parameters
+    private void performCurrentSearch() {
+        String query = searchField.getText().trim();
+        Category selectedCategory = categoryComboBox.getValue();
+        performSearch(query, currentFilter, selectedCategory);
+    }
+    
+    // Add method to clear search and return to normal view
+    public void clearSearch() {
+        searchService.clearSearch();
+        isInSearchMode = false;
+        searchField.clear();
+        categoryComboBox.setValue(Category.ALL);
+        setCurrentFilter("all");
+        
+        // Load normal listings
+        try {
+            Parent homeView = navigationService.loadHomeView();
+            setContent(homeView);
+        } catch (Exception e) {
+            System.err.println("Error returning to home view: " + e.getMessage());
         }
     }
-
+    
+    private void updateContentWithSearchResults(SearchService.SearchResult searchResult) {
+        try {
+            // Load the home view to get access to its containers
+            Parent homeView = navigationService.loadHomeView();
+            setContent(homeView);
+            
+            // Get the HomeController and update it with search results
+            Object controller = homeView.getProperties().get("controller");
+            if (controller instanceof HomeController) {
+                HomeController homeController = (HomeController) controller;
+                homeController.displaySearchResults(searchResult.getResults());
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error updating search results: " + e.getMessage());
+        }
+    }
+    
+    private void showSearchResultsMessage(SearchService.SearchResult searchResult) {
+        String query = searchService.getLastQuery();
+        String message;
+        
+        if (query.isEmpty()) {
+            message = "Filtri applicati: " + searchResult.getTotalResults() + " risultati trovati";
+        } else {
+            message = "Risultati per '" + query + "': " + searchResult.getTotalResults() + " inserzioni trovate";
+        }
+        
+        // You can update a status label or show a temporary message
+        System.out.println(message);
+    }
+    
+    private void showSearchError(String error) {
+        // Handle search error - could show an alert or update UI
+        System.err.println("Search error: " + error);
+    }
+    
+    // Update the existing handleSearchRequest method
+    private void handleSearchRequest(Object data) {
+        if (data instanceof SearchData searchData) {
+            performSearch(searchData.getQuery(), searchData.getFilter(), searchData.getCategory());
+        }
+    }
+    
+    // Add method to check if in search mode
+    public boolean isInSearchMode() {
+        return isInSearchMode;
+    }
+    
     private void loadUserAvatar() {
         String profileImagePath = sessionService.getUser().getProfileImagePath();
         loadUserAvatar(profileImagePath);

@@ -67,6 +67,9 @@ public class HomeController {
     // Add reference to favorite listings observable list
     private ObservableList<ListingViewModel> favoriteListingViewModels;
 
+    // Add this field to track search state
+    private boolean isDisplayingSearchResults = false;
+
     @FXML
     public void initialize() {
         System.out.println("Home view initialized.");
@@ -260,8 +263,94 @@ public class HomeController {
         }
     }
 
+    /**
+     * Display search results instead of normal listings
+     */
+    public void displaySearchResults(ObservableList<ListingViewModel> searchResults) {
+        isDisplayingSearchResults = true;
+        
+        // Clear all containers
+        clearAllContainers();
+        
+        // Hide auction section when showing search results
+        if (auctionSection != null) {
+            auctionSection.setVisible(false);
+            auctionSection.setManaged(false);
+        }
+        
+        // Ensure all listings section takes full space
+        if (allListingsSection != null) {
+            VBox.setVgrow(allListingsSection, Priority.ALWAYS);
+            allListingsSection.setMaxHeight(Double.MAX_VALUE);
+        }
+        
+        // Populate search results
+        populateSearchResults(searchResults);
+    }
+    
+    private void populateSearchResults(ObservableList<ListingViewModel> searchResults) {
+        if (allListingsContainer != null) {
+            allListingsContainer.getChildren().clear();
+            
+            if (searchResults.isEmpty()) {
+                // Show "no results" message
+                addNoResultsPlaceholder();
+            } else {
+                // Add search result cards
+                for (ListingViewModel listing : searchResults) {
+                    try {
+                        Node listingCard = createListingCard(listing);
+                        allListingsContainer.getChildren().add(listingCard);
+                    } catch (Exception e) {
+                        System.err.println("Error creating search result card for: " + listing.getTitle());
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+    
+    private void addNoResultsPlaceholder() {
+        VBox noResultsContainer = new VBox(10);
+        noResultsContainer.setAlignment(Pos.CENTER);
+        noResultsContainer.getStyleClass().add("no-results-container");
+        
+        Text noResultsText = new Text("Nessun risultato trovato");
+        noResultsText.getStyleClass().add("no-results-text");
+        noResultsText.setStyle("-fx-font-size: 18px; -fx-fill: #666666; -fx-font-weight: bold;");
+        
+        Text suggestionText = new Text("Prova a modificare i filtri o la ricerca");
+        suggestionText.getStyleClass().add("suggestion-text");
+        suggestionText.setStyle("-fx-font-size: 14px; -fx-fill: #888888;");
+        
+        noResultsContainer.getChildren().addAll(noResultsText, suggestionText);
+        allListingsContainer.getChildren().add(noResultsContainer);
+    }
+    
+    /**
+     * Return to normal view (called when search is cleared)
+     */
+    public void returnToNormalView() {
+        isDisplayingSearchResults = false;
+        
+        // Reload normal data
+        loadHomeData();
+    }
+    
+    /**
+     * Check if currently displaying search results
+     */
+    public boolean isDisplayingSearchResults() {
+        return isDisplayingSearchResults;
+    }
+    
     // UPDATED: Change to support FlowPane layout and auction visibility management
     private void updateHomeViewWithListings(ObservableList<ListingViewModel> listings) {
+        // Don't update if we're showing search results
+        if (isDisplayingSearchResults) {
+            return;
+        }
+        
         // Clear existing content
         clearAllContainers();
 

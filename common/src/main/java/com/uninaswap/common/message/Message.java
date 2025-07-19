@@ -13,7 +13,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = OfferMessage.class, name = "offer"),
         @JsonSubTypes.Type(value = FavoriteMessage.class, name = "favorite"),
         @JsonSubTypes.Type(value = FollowerMessage.class, name = "follower"),
-        @JsonSubTypes.Type(value = PickupMessage.class, name = "pickup")
+        @JsonSubTypes.Type(value = PickupMessage.class, name = "pickup"),
+        @JsonSubTypes.Type(value = SearchMessage.class, name = "search")
 })
 public abstract class Message {
     private String messageId;

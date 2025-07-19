@@ -1,6 +1,7 @@
 package com.uninaswap.server.service;
 
 import com.uninaswap.common.dto.*;
+import com.uninaswap.common.enums.Category;
 import com.uninaswap.common.enums.Currency;
 import com.uninaswap.common.enums.ListingStatus;
 import com.uninaswap.server.entity.*;
@@ -474,5 +475,185 @@ public class ListingService {
         }
 
         return listingOpt.get().getCreator().getId().equals(userId);
+    }
+
+    /**
+     * Search listings by text query
+     */
+    @Transactional(readOnly = true)  // Add this annotation
+    public Page<ListingDTO> searchListingsByText(String query, Pageable pageable) {
+        try {
+            Page<ListingEntity> entities = listingRepository.findByTitleContainingIgnoreCaseAndStatus(
+                    query, ListingStatus.ACTIVE, pageable);
+            return entities.map(listingMapper::toDto);
+        } catch (Exception e) {
+            logger.error("Error searching listings by text: {}", e.getMessage());
+            throw new RuntimeException("Failed to search listings by text", e);
+        }
+    }
+
+    /**
+     * Get listings by type
+     */
+    @Transactional(readOnly = true)  // Add this annotation
+    public Page<ListingDTO> getListingsByType(String listingType, Pageable pageable) {
+        try {
+            Page<ListingEntity> entities;
+            
+            Class<?> entityClass = mapListingTypeToClass(listingType);
+            entities = listingRepository.findByListingTypeAndStatus(entityClass, ListingStatus.ACTIVE, pageable);
+            
+            return entities.map(listingMapper::toDto);
+        } catch (Exception e) {
+            logger.error("Error getting listings by type: {}", e.getMessage());
+            throw new RuntimeException("Failed to get listings by type", e);
+        }
+    }
+
+    /**
+     * Search listings by text and type
+     */
+    @Transactional(readOnly = true)  // Add this annotation
+    public Page<ListingDTO> searchListingsByTextAndType(String query, String listingType, Pageable pageable) {
+        try {
+            Page<ListingEntity> entities;
+            
+            Class<?> entityClass = mapListingTypeToClass(listingType);
+            if (entityClass != null) {
+                entities = listingRepository.findByTitleContainingIgnoreCaseAndListingTypeAndStatus(
+                        query, entityClass, ListingStatus.ACTIVE, pageable);
+            } else {
+                entities = listingRepository.findByTitleContainingIgnoreCaseAndStatus(
+                        query, ListingStatus.ACTIVE, pageable);
+            }
+            
+            return entities.map(listingMapper::toDto);
+        } catch (Exception e) {
+            logger.error("Error searching listings by text and type: {}", e.getMessage());
+            throw new RuntimeException("Failed to search listings by text and type", e);
+        }
+    }
+
+    /**
+     * Get listings by category
+     */
+    @Transactional(readOnly = true)  // Add this annotation
+    public Page<ListingDTO> getListingsByCategory(Category category, Pageable pageable) {
+        try {
+            Page<ListingEntity> entities = listingRepository.findByItemsCategoryAndStatus(
+                    category.name(), ListingStatus.ACTIVE, pageable);
+            return entities.map(listingMapper::toDto);
+        } catch (Exception e) {
+            logger.error("Error getting listings by category: {}", e.getMessage());
+            throw new RuntimeException("Failed to get listings by category", e);
+        }
+    }
+
+    /**
+     * Get listings by type and category
+     */
+    @Transactional(readOnly = true)  // Add this annotation
+    public Page<ListingDTO> getListingsByTypeAndCategory(String listingType, Category category, Pageable pageable) {
+        try {
+            Class<?> entityClass = mapListingTypeToClass(listingType);
+            Page<ListingEntity> entities;
+            
+            if (entityClass != null) {
+                entities = listingRepository.findByListingTypeAndItemsCategoryAndStatus(
+                        entityClass, category.name(), ListingStatus.ACTIVE, pageable);
+            } else {
+                entities = listingRepository.findByItemsCategoryAndStatus(
+                        category.name(), ListingStatus.ACTIVE, pageable);
+            }
+            
+            return entities.map(listingMapper::toDto);
+        } catch (Exception e) {
+            logger.error("Error getting listings by type and category: {}", e.getMessage());
+            throw new RuntimeException("Failed to get listings by type and category", e);
+        }
+    }
+
+    @Transactional(readOnly = true)  // Add this annotation
+    public Page<ListingDTO> searchListingsByTextAndCategory(String query, Category category, Pageable pageable) {
+        try {
+            Page<ListingEntity> entities = listingRepository.findByTitleContainingIgnoreCaseAndItemsCategoryAndStatus(
+                    query, category.name(), ListingStatus.ACTIVE, pageable);
+            return entities.map(listingMapper::toDto);
+        } catch (Exception e) {
+            logger.error("Error searching listings by text and category: {}", e.getMessage());
+            throw new RuntimeException("Failed to search listings by text and category", e);
+        }
+    }
+
+    /**
+     * Search listings by text, type, and category
+     */
+    @Transactional(readOnly = true)  // Add this annotation
+    public Page<ListingDTO> searchListingsByTextTypeAndCategory(String query, String listingType, Category category, Pageable pageable) {
+        try {
+            Class<?> entityClass = mapListingTypeToClass(listingType);
+            Page<ListingEntity> entities;
+            
+            if (entityClass != null) {
+                entities = listingRepository.findByTitleContainingIgnoreCaseAndListingTypeAndItemsCategoryAndStatus(
+                        query, entityClass, category.name(), ListingStatus.ACTIVE, pageable);
+            } else {
+                entities = listingRepository.findByTitleContainingIgnoreCaseAndItemsCategoryAndStatus(
+                        query, category.name(), ListingStatus.ACTIVE, pageable);
+            }
+            
+            return entities.map(listingMapper::toDto);
+        } catch (Exception e) {
+            logger.error("Error searching listings by text, type and category: {}", e.getMessage());
+            throw new RuntimeException("Failed to search listings by text, type and category", e);
+        }
+    }
+
+    /**
+     * Helper method to map listing type strings to entity classes
+     */
+    private Class<?> mapListingTypeToClass(String listingType) {
+        if (listingType == null) return null;
+        
+        switch (listingType.toLowerCase()) {
+            case "auctions":
+            case "auction":
+                return com.uninaswap.server.entity.AuctionListingEntity.class;
+            case "sales":
+            case "sell":
+                return com.uninaswap.server.entity.SellListingEntity.class;
+            case "trades":
+            case "trade":
+                return com.uninaswap.server.entity.TradeListingEntity.class;
+            case "gifts":
+            case "gift":
+                return com.uninaswap.server.entity.GiftListingEntity.class;
+            default:
+                return null; // Will use fallback methods
+        }
+    }
+
+    /**
+     * Helper method to map listing type strings to proper enum values
+     */
+    private String mapListingType(String listingType) {
+        if (listingType == null) return null;
+        
+        switch (listingType.toLowerCase()) {
+            case "auctions":
+            case "auction":
+                return "AUCTION";
+            case "sales":
+            case "sell":
+                return "SELL";
+            case "trades":
+            case "trade":
+                return "TRADE";
+            case "gifts":
+            case "gift":
+                return "GIFT";
+            default:
+                return listingType.toUpperCase();
+        }
     }
 }

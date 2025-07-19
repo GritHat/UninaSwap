@@ -1,14 +1,9 @@
 package com.uninaswap.server.mapper;
 
-import com.uninaswap.common.dto.ListingDTO;
-import com.uninaswap.common.dto.ListingItemDTO;
+import com.uninaswap.common.dto.*;
 import com.uninaswap.server.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class ListingMapper {

@@ -325,16 +325,6 @@ public class NavigationService {
     }
 
     /**
-     * Load the prefered view
-     **/
-    public Parent loadSavedView() throws IOException {
-        LoaderBundle loaderBundle = loadView("/fxml/SavedView.fxml");
-        Parent savedView = loaderBundle.getView();
-
-        return savedView;
-    }
-
-    /**
      * Load the listing creation view
      */
     public Parent loadListingCreationView() throws IOException {

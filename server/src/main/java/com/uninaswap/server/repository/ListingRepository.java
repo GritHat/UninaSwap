@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface ListingRepository extends JpaRepository<ListingEntity, String> 
 
     // Find all listings by creator
     List<ListingEntity> findByCreator(UserEntity creator);
-
+    
     // Find featured listings
     List<ListingEntity> findByFeaturedTrue();
 
@@ -57,4 +58,59 @@ public interface ListingRepository extends JpaRepository<ListingEntity, String> 
             "WHERE l.creator.id = :userId " +
             "ORDER BY l.createdAt DESC")
     List<ListingEntity> findByCreatorIdWithItems(Long userId);
+
+    // Text search methods
+    Page<ListingEntity> findByTitleContainingIgnoreCaseAndStatus(String title, ListingStatus status, Pageable pageable);
+
+    // Type filtering methods
+    @Query("SELECT DISTINCT l FROM ListingEntity l WHERE TYPE(l) = :listingType AND l.status = :status")
+    Page<ListingEntity> findByListingTypeAndStatus(@Param("listingType") Class<?> listingType, @Param("status") ListingStatus status, Pageable pageable);
+
+    // Category filtering methods
+    @Query("SELECT DISTINCT l FROM ListingEntity l " +
+           "LEFT JOIN FETCH l.listingItems li " +
+           "LEFT JOIN FETCH li.item i " +
+           "WHERE i.category = :category AND l.status = :status")
+    Page<ListingEntity> findByItemsCategoryAndStatus(@Param("category") String category, 
+                                                     @Param("status") ListingStatus status, 
+                                                     Pageable pageable);
+    // Combined search methods
+        @Query("SELECT DISTINCT l FROM ListingEntity l " +
+           "LEFT JOIN FETCH l.listingItems li " +
+           "LEFT JOIN FETCH li.item i " +
+           "WHERE l.title ILIKE %:title% AND i.category = :category AND l.status = :status")
+    Page<ListingEntity> findByTitleContainingIgnoreCaseAndItemsCategoryAndStatus(
+            @Param("title") String title, 
+            @Param("category") String category, 
+            @Param("status") ListingStatus status, 
+            Pageable pageable);
+
+     @Query("SELECT l FROM ListingEntity l " +
+           "WHERE l.title ILIKE %:title% AND TYPE(l) = :listingType AND l.status = :status")
+    Page<ListingEntity> findByTitleContainingIgnoreCaseAndListingTypeAndStatus(
+            @Param("title") String title, 
+            @Param("listingType") Class<?> listingType, 
+            @Param("status") ListingStatus status, 
+            Pageable pageable);
+    
+    @Query("SELECT DISTINCT l FROM ListingEntity l " +
+           "LEFT JOIN FETCH l.listingItems li " +
+           "LEFT JOIN FETCH li.item i " +
+           "WHERE TYPE(l) = :listingType AND i.category = :category AND l.status = :status")
+    Page<ListingEntity> findByListingTypeAndItemsCategoryAndStatus(
+            @Param("listingType") Class<?> listingType, 
+            @Param("category") String category, 
+            @Param("status") ListingStatus status, 
+            Pageable pageable);
+
+    @Query("SELECT DISTINCT l FROM ListingEntity l " +
+           "LEFT JOIN FETCH l.listingItems li " +
+           "LEFT JOIN FETCH li.item i " +
+           "WHERE l.title ILIKE %:title% AND TYPE(l) = :listingType AND i.category = :category AND l.status = :status")
+    Page<ListingEntity> findByTitleContainingIgnoreCaseAndListingTypeAndItemsCategoryAndStatus(
+            @Param("title") String title, 
+            @Param("listingType") Class<?> listingType, 
+            @Param("category") String category, 
+            @Param("status") ListingStatus status, 
+            Pageable pageable);
 }

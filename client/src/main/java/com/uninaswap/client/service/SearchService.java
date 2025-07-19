@@ -1,0 +1,189 @@
+package com.uninaswap.client.service;
+
+import com.uninaswap.client.mapper.ViewModelMapper;
+import com.uninaswap.client.util.WebSocketManager;
+import com.uninaswap.client.viewmodel.ListingViewModel;
+import com.uninaswap.client.websocket.WebSocketClient;
+import com.uninaswap.common.dto.ListingDTO;
+import com.uninaswap.common.enums.Category;
+import com.uninaswap.common.message.SearchMessage;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
+import java.util.concurrent.CompletableFuture;
+
+public class SearchService {
+    
+    private static SearchService instance;
+    private final WebSocketClient webSocketClient;
+    private final ObservableList<ListingViewModel> searchResults = FXCollections.observableArrayList();
+    
+    // State management
+    private CompletableFuture<SearchResult> currentSearchFuture;
+    private boolean isSearching = false;
+    private String lastQuery = "";
+    private String lastListingType = "all";
+    private Category lastCategory = Category.ALL;
+    
+    // Search result wrapper
+    public static class SearchResult {
+        private final ObservableList<ListingViewModel> results;
+        private final long totalResults;
+        private final boolean hasMore;
+        
+        public SearchResult(ObservableList<ListingViewModel> results, long totalResults, boolean hasMore) {
+            this.results = results;
+            this.totalResults = totalResults;
+            this.hasMore = hasMore;
+        }
+        
+        public ObservableList<ListingViewModel> getResults() { return results; }
+        public long getTotalResults() { return totalResults; }
+        public boolean hasMore() { return hasMore; }
+    }
+    
+    public static SearchService getInstance() {
+        if (instance == null) {
+            instance = new SearchService();
+        }
+        return instance;
+    }
+    
+    private SearchService() {
+        this.webSocketClient = WebSocketManager.getClient();
+        this.webSocketClient.registerMessageHandler(SearchMessage.class, this::handleSearchResponse);
+    }
+    
+    /**
+     * Perform search with given parameters
+     */
+    public CompletableFuture<SearchResult> search(String query, String listingType, Category category) {
+        return search(query, listingType, category, 0, 50); // Default pagination
+    }
+    
+    /**
+     * Perform search with pagination
+     */
+    public CompletableFuture<SearchResult> search(String query, String listingType, Category category, int page, int size) {
+        // Cancel any existing search
+        if (currentSearchFuture != null && !currentSearchFuture.isDone()) {
+            currentSearchFuture.cancel(true);
+        }
+        
+        // Create new search future
+        currentSearchFuture = new CompletableFuture<>();
+        isSearching = true;
+        
+        // Store search parameters
+        lastQuery = query != null ? query.trim() : "";
+        lastListingType = listingType != null ? listingType : "all";
+        lastCategory = category != null ? category : Category.ALL;
+        
+        try {
+            SearchMessage searchMessage = new SearchMessage();
+            searchMessage.setType(SearchMessage.Type.SEARCH_REQUEST);
+            searchMessage.setQuery(lastQuery);
+            searchMessage.setListingType(lastListingType);
+            searchMessage.setCategory(lastCategory);
+            searchMessage.setPage(page);
+            searchMessage.setSize(size);
+            
+            System.out.println("Sending search request: " + searchMessage);
+            
+            webSocketClient.sendMessage(searchMessage)
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        isSearching = false;
+                        if (currentSearchFuture != null && !currentSearchFuture.isDone()) {
+                            currentSearchFuture.completeExceptionally(ex);
+                        }
+                    });
+                    return null;
+                });
+                
+        } catch (Exception e) {
+            isSearching = false;
+            currentSearchFuture.completeExceptionally(e);
+        }
+        
+        return currentSearchFuture;
+    }
+    
+    /**
+     * Clear search results and return to normal view
+     */
+    public void clearSearch() {
+        Platform.runLater(() -> {
+            searchResults.clear();
+            lastQuery = "";
+            lastListingType = "all";
+            lastCategory = Category.ALL;
+            isSearching = false;
+        });
+    }
+    
+    /**
+     * Check if currently in search mode
+     */
+    public boolean isInSearchMode() {
+        return !lastQuery.isEmpty() || !lastListingType.equals("all") || lastCategory != Category.ALL;
+    }
+    
+    /**
+     * Get current search results
+     */
+    public ObservableList<ListingViewModel> getSearchResults() {
+        return searchResults;
+    }
+    
+    /**
+     * Get last search parameters for reference
+     */
+    public String getLastQuery() { return lastQuery; }
+    public String getLastListingType() { return lastListingType; }
+    public Category getLastCategory() { return lastCategory; }
+    public boolean isSearching() { return isSearching; }
+    
+    private void handleSearchResponse(SearchMessage message) {
+        if (message.getType() == SearchMessage.Type.SEARCH_RESPONSE) {
+            Platform.runLater(() -> {
+                isSearching = false;
+                
+                if (message.isSuccess()) {
+                    // Convert DTOs to ViewModels
+                    ObservableList<ListingViewModel> results = FXCollections.observableArrayList();
+                    if (message.getResults() != null) {
+                        for (ListingDTO dto : message.getResults()) {
+                            results.add(ViewModelMapper.getInstance().toViewModel(dto));
+                        }
+                    }
+                    
+                    // Update search results
+                    searchResults.setAll(results);
+                    
+                    // Create search result wrapper
+                    SearchResult searchResult = new SearchResult(results, message.getTotalElements(), message.isHasMore());
+                    
+                    // Complete the future
+                    if (currentSearchFuture != null && !currentSearchFuture.isDone()) {
+                        currentSearchFuture.complete(searchResult);
+                    }
+                    
+                    System.out.println("Search completed: " + results.size() + " results, total: " + message.getTotalElements());
+                    
+                } else {
+                    // Handle search error
+                    String errorMessage = message.getErrorMessage() != null ? message.getErrorMessage() : "Search failed";
+                    Exception searchException = new Exception(errorMessage);
+                    
+                    if (currentSearchFuture != null && !currentSearchFuture.isDone()) {
+                        currentSearchFuture.completeExceptionally(searchException);
+                    }
+                    
+                    System.err.println("Search failed: " + errorMessage);
+                }
+            });
+        }
+    }
+}

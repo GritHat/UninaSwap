@@ -3,6 +3,7 @@ package com.uninaswap.client.controller;
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.FavoritesService;
 import com.uninaswap.client.service.ListingService;
+import com.uninaswap.client.service.NotificationService;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 
 import javafx.animation.KeyFrame;
@@ -56,6 +57,7 @@ public class HomeController {
     private final UserCardController userCard = new UserCardController();
     private final ListingService listingService = ListingService.getInstance();
     private final FavoritesService favoritesService = FavoritesService.getInstance();
+    private final NotificationService notificationService = NotificationService.getInstance();
 
     // Add flag to track listener registration
     private boolean listenerRegistered = false;

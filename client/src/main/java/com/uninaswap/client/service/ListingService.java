@@ -28,7 +28,7 @@ public class ListingService {
     private boolean isLoadingMore = false;
 
     private ListingService() {
-        this.webSocketClient = WebSocketManager.getClient();
+        this.webSocketClient = WebSocketClient.getInstance();
         this.webSocketClient.registerMessageHandler(ListingMessage.class, this::handleListingMessage);
     }
 

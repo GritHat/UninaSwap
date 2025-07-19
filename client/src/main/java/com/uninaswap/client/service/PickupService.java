@@ -31,7 +31,7 @@ public class PickupService {
     private Consumer<PickupMessage> updatePickupHandler;
 
     private PickupService() {
-        this.webSocketClient = WebSocketManager.getClient();
+        this.webSocketClient = WebSocketClient.getInstance();
         this.sessionService = UserSessionService.getInstance();
 
         // Register message handler

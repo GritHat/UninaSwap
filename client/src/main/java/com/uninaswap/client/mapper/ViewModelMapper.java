@@ -332,6 +332,40 @@ public class ViewModelMapper {
         return dto;
     }
 
+    public NotificationViewModel toViewModel(NotificationDTO dto) {
+        if (dto == null) return null;
+        
+        NotificationViewModel viewModel = new NotificationViewModel();
+        viewModel.setId(dto.getId());
+        viewModel.setRecipient(toViewModel(dto.getRecipient()));
+        viewModel.setType(dto.getType());
+        viewModel.setTitle(dto.getTitle());
+        viewModel.setMessage(dto.getMessage());
+        viewModel.setData(dto.getData());
+        viewModel.setRead(dto.isRead());
+        viewModel.setCreatedAt(dto.getCreatedAt());
+        viewModel.setReadAt(dto.getReadAt());
+        
+        return viewModel;
+    }
+
+    public NotificationDTO toDTO(NotificationViewModel viewModel) {
+        if (viewModel == null) return null;
+        
+        NotificationDTO dto = new NotificationDTO();
+        dto.setId(viewModel.getId());
+        dto.setRecipient(toDTO(viewModel.getRecipient()));
+        dto.setType(viewModel.getType());
+        dto.setTitle(viewModel.getTitle());
+        dto.setMessage(viewModel.getMessage());
+        dto.setData(viewModel.getData());
+        dto.setRead(viewModel.isRead());
+        dto.setCreatedAt(viewModel.getCreatedAt());
+        dto.setReadAt(viewModel.getReadAt());
+        
+        return dto;
+    }
+
     // User Report mappings
     public UserReportViewModel toViewModel(UserReportDTO dto) {
         if (dto == null)

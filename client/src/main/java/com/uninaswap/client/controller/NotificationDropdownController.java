@@ -2,7 +2,10 @@ package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
+import com.uninaswap.client.service.NotificationService;
+import com.uninaswap.client.viewmodel.NotificationViewModel;
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,7 +22,6 @@ import javafx.scene.text.Text;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class NotificationDropdownController {
@@ -33,12 +35,29 @@ public class NotificationDropdownController {
     
     private final LocaleService localeService = LocaleService.getInstance();
     private final NavigationService navigationService = NavigationService.getInstance();
+    private final NotificationService notificationService = NotificationService.getInstance();
     
     private Consumer<Void> onCloseCallback;
     
     @FXML
     public void initialize() {
+        setupRealtimeUpdates();
         loadNotifications();
+    }
+    
+    private void setupRealtimeUpdates() {
+        // Listen for changes to recent notifications
+        notificationService.getRecentNotifications().addListener((ListChangeListener<NotificationViewModel>) change -> {
+            Platform.runLater(this::updateNotificationsDisplay);
+        });
+        
+        // Set up callback for new notifications
+        notificationService.setNewNotificationCallback(notification -> {
+            Platform.runLater(() -> {
+                // Show brief highlight or animation for new notification
+                updateNotificationsDisplay();
+            });
+        });
     }
     
     public void setOnCloseCallback(Consumer<Void> callback) {
@@ -47,10 +66,18 @@ public class NotificationDropdownController {
     
     @FXML
     private void handleMarkAllAsRead() {
-        // TODO: Implement mark all as read
-        System.out.println("Marking all notifications as read");
-        // Refresh after marking as read
-        loadNotifications();
+        notificationService.markAllAsRead()
+            .thenAccept(success -> Platform.runLater(() -> {
+                if (success) {
+                    updateNotificationsDisplay();
+                }
+            }))
+            .exceptionally(ex -> {
+                Platform.runLater(() -> {
+                    System.err.println("Failed to mark all as read: " + ex.getMessage());
+                });
+                return null;
+            });
     }
     
     @FXML
@@ -60,17 +87,16 @@ public class NotificationDropdownController {
     }
     
     private void loadNotifications() {
-        // TODO: Replace with actual notification service call
-        Platform.runLater(() -> {
-            List<NotificationItem> notifications = getMockNotifications();
-            updateNotifications(notifications);
-        });
+        notificationService.refreshRecentNotifications();
+        updateNotificationsDisplay();
     }
     
-    private void updateNotifications(List<NotificationItem> notifications) {
+    private void updateNotificationsDisplay() {
         notificationsContainer.getChildren().clear();
         
-        if (notifications.isEmpty()) {
+        var recentNotifications = notificationService.getRecentNotifications();
+        
+        if (recentNotifications.isEmpty()) {
             noNotificationsLabel.setVisible(true);
             noNotificationsLabel.setManaged(true);
             notificationsContainer.getChildren().add(noNotificationsLabel);
@@ -78,14 +104,14 @@ public class NotificationDropdownController {
             noNotificationsLabel.setVisible(false);
             noNotificationsLabel.setManaged(false);
             
-            for (NotificationItem notification : notifications) {
+            for (NotificationViewModel notification : recentNotifications) {
                 VBox notificationItem = createNotificationItem(notification);
                 notificationsContainer.getChildren().add(notificationItem);
             }
         }
     }
     
-    private VBox createNotificationItem(NotificationItem notification) {
+    private VBox createNotificationItem(NotificationViewModel notification) {
         VBox item = new VBox(5);
         item.getStyleClass().addAll("notification-item", notification.isRead() ? "read" : "unread");
         item.setPadding(new Insets(10));
@@ -110,7 +136,7 @@ public class NotificationDropdownController {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
         
-        Text time = new Text(formatTime(notification.getTimestamp()));
+        Text time = new Text(formatTime(notification.getCreatedAt()));
         time.getStyleClass().add("notification-time");
         
         // Unread indicator
@@ -135,10 +161,11 @@ public class NotificationDropdownController {
     
     private Image getNotificationIcon(String type) {
         String iconPath = switch (type) {
-            case "OFFER" -> "/images/icons/offer.png";
-            case "AUCTION" -> "/images/icons/auction.png";
-            case "MESSAGE" -> "/images/icons/message.png";
-            case "SYSTEM" -> "/images/icons/system.png";
+            case "OFFER_RECEIVED", "OFFER_ACCEPTED", "OFFER_REJECTED", "OFFER_WITHDRAWN" -> "/images/icons/offer.png";
+            case "AUCTION_ENDING_SOON", "AUCTION_WON", "AUCTION_OUTBID" -> "/images/icons/auction.png";
+            case "MESSAGE_RECEIVED" -> "/images/icons/message.png";
+            case "PICKUP_SCHEDULED", "PICKUP_REMINDER" -> "/images/icons/pickup.png";
+            case "SYSTEM_ANNOUNCEMENT", "PROFILE_UPDATED" -> "/images/icons/system.png";
             default -> "/images/icons/notification.png";
         };
         
@@ -150,6 +177,8 @@ public class NotificationDropdownController {
     }
     
     private String formatTime(LocalDateTime timestamp) {
+        if (timestamp == null) return "";
+        
         LocalDateTime now = LocalDateTime.now();
         if (timestamp.toLocalDate().equals(now.toLocalDate())) {
             return timestamp.format(DateTimeFormatter.ofPattern("HH:mm"));
@@ -158,21 +187,47 @@ public class NotificationDropdownController {
         }
     }
     
-    private void markAsRead(NotificationItem notification) {
-        notification.setRead(true);
-        // TODO: Update notification status on server
+    private void markAsRead(NotificationViewModel notification) {
+        if (!notification.isRead()) {
+            notificationService.markAsRead(notification.getId())
+                .thenAccept(success -> Platform.runLater(() -> {
+                    if (success) {
+                        notification.setRead(true);
+                    }
+                }));
+        }
     }
     
-    private void handleNotificationClick(NotificationItem notification) {
+    private void handleNotificationClick(NotificationViewModel notification) {
         closeDropdown();
-        // TODO: Navigate to relevant content based on notification type
-        System.out.println("Clicked notification: " + notification.getTitle());
+        
+        // Navigate based on notification type
+        switch (notification.getType()) {
+            case "OFFER_RECEIVED", "OFFER_ACCEPTED", "OFFER_REJECTED", "OFFER_WITHDRAWN" -> {
+                try {
+                    navigationService.navigateToOffersView();
+                } catch (Exception e) {
+                    System.err.println("Failed to navigate to offers: " + e.getMessage());
+                }
+            }
+            case "AUCTION_ENDING_SOON", "AUCTION_WON", "AUCTION_OUTBID" -> {
+                // Navigate to specific auction or user's auction history
+                System.out.println("Navigate to auction: " + notification.getTitle());
+            }
+            case "PICKUP_SCHEDULED", "PICKUP_REMINDER" -> {
+                // Navigate to pickup management
+                System.out.println("Navigate to pickup: " + notification.getTitle());
+            }
+            default -> {
+                // For system notifications, just mark as read
+                System.out.println("Clicked notification: " + notification.getTitle());
+            }
+        }
     }
     
     private void navigateToNotificationCenter() {
         try {
-            // TODO: Implement navigation to notification center
-            System.out.println("Navigating to notification center");
+            navigationService.navigateToNotificationsView();
         } catch (Exception e) {
             System.err.println("Failed to navigate to notification center: " + e.getMessage());
         }
@@ -182,40 +237,5 @@ public class NotificationDropdownController {
         if (onCloseCallback != null) {
             onCloseCallback.accept(null);
         }
-    }
-    
-    // Mock data - replace with actual service
-    private List<NotificationItem> getMockNotifications() {
-        return List.of(
-            new NotificationItem("OFFER", "New Offer Received", "You received a new offer for 'Vintage Camera'", LocalDateTime.now().minusMinutes(5), false),
-            new NotificationItem("AUCTION", "Auction Ending Soon", "Your auction for 'Antique Watch' ends in 2 hours", LocalDateTime.now().minusHours(1), false),
-            new NotificationItem("MESSAGE", "New Message", "You have a new message from @johndoe", LocalDateTime.now().minusHours(3), true),
-            new NotificationItem("SYSTEM", "Profile Updated", "Your profile information has been successfully updated", LocalDateTime.now().minusDays(1), true)
-        );
-    }
-    
-    // Notification data class
-    public static class NotificationItem {
-        private final String type;
-        private final String title;
-        private final String message;
-        private final LocalDateTime timestamp;
-        private boolean read;
-        
-        public NotificationItem(String type, String title, String message, LocalDateTime timestamp, boolean read) {
-            this.type = type;
-            this.title = title;
-            this.message = message;
-            this.timestamp = timestamp;
-            this.read = read;
-        }
-        
-        // Getters and setters
-        public String getType() { return type; }
-        public String getTitle() { return title; }
-        public String getMessage() { return message; }
-        public LocalDateTime getTimestamp() { return timestamp; }
-        public boolean isRead() { return read; }
-        public void setRead(boolean read) { this.read = read; }
     }
 }

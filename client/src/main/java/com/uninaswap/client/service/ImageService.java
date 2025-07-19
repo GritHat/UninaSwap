@@ -42,7 +42,7 @@ public class ImageService {
     }
     
     private ImageService() {
-        this.webSocketClient = WebSocketManager.getClient();
+        this.webSocketClient = WebSocketClient.getInstance();
         this.webSocketClient.registerMessageHandler(ImageMessage.class, this::handleImageResponse);
     }
     

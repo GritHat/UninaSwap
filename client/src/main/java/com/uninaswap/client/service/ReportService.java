@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ReportService {
     private static ReportService instance;
 
-    private final WebSocketClient webSocketClient = WebSocketManager.getClient();
+    private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
     private final UserSessionService sessionService = UserSessionService.getInstance();
 

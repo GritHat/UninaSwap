@@ -25,7 +25,7 @@ public class AuthenticationService {
     private final WebSocketClient webSocketClient;
 
     private AuthenticationService() {
-        this.webSocketClient = WebSocketManager.getClient();
+        this.webSocketClient = WebSocketClient.getInstance();
     }
 
     private boolean connectToAuthEndpoint() {

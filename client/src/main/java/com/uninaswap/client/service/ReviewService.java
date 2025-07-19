@@ -1,7 +1,6 @@
 package com.uninaswap.client.service;
 
 import com.uninaswap.client.mapper.ViewModelMapper;
-import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.client.viewmodel.ReviewViewModel;
 import com.uninaswap.client.websocket.WebSocketClient;
 import com.uninaswap.common.dto.ReviewDTO;
@@ -18,10 +17,8 @@ import java.util.stream.Collectors;
 
 public class ReviewService {
     private static ReviewService instance;
-    private final WebSocketClient webSocketClient = WebSocketManager.getClient();
+    private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
-    private final UserSessionService sessionService = UserSessionService.getInstance();
-
     private CompletableFuture<?> futureToComplete;
     private Consumer<ReviewMessage> messageCallback;
 

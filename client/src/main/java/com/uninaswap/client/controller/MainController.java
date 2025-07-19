@@ -23,6 +23,7 @@ import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.service.CategoryService;
 import com.uninaswap.client.service.SearchService;
+import com.uninaswap.client.service.NotificationService;
 import com.uninaswap.common.enums.Category;
 import javafx.collections.FXCollections;
 import javafx.util.StringConverter;
@@ -114,7 +115,6 @@ public class MainController implements Refreshable {
     private Button addListingButton;
     @FXML
     private Button favoritesButton;
-    private Button currentlySelectedHeaderButton;
 
 
     // Add this field
@@ -129,6 +129,7 @@ public class MainController implements Refreshable {
     // Add the CategoryService
     private final CategoryService categoryService = CategoryService.getInstance();
     private final SearchService searchService = SearchService.getInstance();
+    private final NotificationService notificationService = NotificationService.getInstance();
 
     private String currentFilter = "all";
     private boolean isInSearchMode = false;
@@ -176,10 +177,73 @@ public class MainController implements Refreshable {
             // Initialize header button states
             initializeHeaderButtonStates();
 
+            // Subscribe to login/logout events
+            eventBus.subscribe(EventTypes.USER_LOGGED_IN, _ -> {
+                Platform.runLater(() -> {
+                    refreshAllViews();
+                    initializeNotifications();
+                });
+            });
+
+            eventBus.subscribe(EventTypes.USER_LOGGED_OUT, _ -> {
+                Platform.runLater(() -> {
+                    notificationService.clearNotifications();
+                    // Update notification button to remove any badge
+                    updateNotificationButtonBadge(0);
+                });
+            });
+
         } catch (Exception e) {
+            System.err.println("Error initializing MainController: " + e.getMessage());
             e.printStackTrace();
-            System.err.println("Error during controller initialization: " + e.getMessage());
         }
+
+        updateNotificationButtonBadge(10);
+    }
+
+    private void initializeNotifications() {
+        System.out.println("Initializing notifications in MainController...");
+
+        // Initialize the notification service
+        notificationService.initializeNotifications();
+
+        // Set up unread count callback to update UI badge
+        notificationService.setUnreadCountCallback(this::updateNotificationButtonBadge);
+        
+        // Set up callback for new notification alerts
+        notificationService.setNewNotificationCallback(notification -> {
+            Platform.runLater(() -> {
+                // You could show a brief toast/alert here for new notifications
+                System.out.println("New notification received: " + notification.getTitle());
+                // Optionally show a brief visual indicator
+                showNewNotificationAlert(notification);
+            });
+        });
+    }
+
+    private void updateNotificationButtonBadge(int unreadCount) {
+        Platform.runLater(() -> {
+            // Here you can update a badge on the notification button
+            // For now, just log it - you could add a Badge overlay to the button
+            System.out.println("Updating notification badge: " + unreadCount + " unread");
+
+            // Example: Add a red dot or number badge to the notification button
+            if (unreadCount > 0) {
+                // Add visual indicator (you might want to add a badge overlay)
+                notificationsButton.getStyleClass().add("has-notifications");
+                // You could also set the button text to show count
+                // notificationsButton.setText(String.valueOf(unreadCount));
+            } else {
+                notificationsButton.getStyleClass().remove("has-notifications");
+                // notificationsButton.setText("");
+            }
+        });
+    }
+
+    private void showNewNotificationAlert(com.uninaswap.client.viewmodel.NotificationViewModel notification) {
+        // Optional: Show a brief toast or visual alert for new notifications
+        // This could be a small popup that appears briefly and disappears
+        System.out.println("📢 " + notification.getTitle() + ": " + notification.getMessage());
     }
 
     private void initializeHeaderButtonStates() {
@@ -424,7 +488,7 @@ public class MainController implements Refreshable {
             });
 
             // Add change listener to trigger search
-            categoryComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            categoryComboBox.valueProperty().addListener((_, oldValue, newValue) -> {
                 if (newValue != oldValue && newValue != null) {
                     System.out.println("Category changed to: " + newValue);
                     if (isInSearchMode) {
@@ -873,10 +937,10 @@ public class MainController implements Refreshable {
                 case "home" -> sidebarIncludeController.selectHomeButton();
                 case "offers" -> sidebarIncludeController.selectOffersButton();
                 case "inventory" -> sidebarIncludeController.selectInventoryButton();
-                case "alerts", "notifications" -> sidebarIncludeController.selectAlertsButton();
+                case "alerts", "notifications" -> sidebarIncludeController.selectNotificationsButton();
                 case "addlisting", "create" -> sidebarIncludeController.selectAddListingButton();
+                case "listings" -> sidebarIncludeController.selectListingsButton();
                 case "profile" -> sidebarIncludeController.selectProfileButton();
-                // For views that don't have sidebar buttons, do nothing
             }
         }
     }
@@ -892,21 +956,6 @@ public class MainController implements Refreshable {
     // Add method to be called when drawer state changes
     public void onFavoritesDrawerStateChanged() {
         updateFavoritesButtonState();
-    }
-
-    // Add this method to your existing MainController class
-    public void updateSidebarSelection(String viewName) {
-        if (sidebarIncludeController != null) {
-            switch (viewName.toLowerCase()) {
-                case "home" -> sidebarIncludeController.selectHomeButton();
-                case "offers" -> sidebarIncludeController.selectOffersButton();
-                case "inventory" -> sidebarIncludeController.selectInventoryButton();
-                case "alerts", "notifications" -> sidebarIncludeController.selectAlertsButton();
-                case "addlisting", "create" -> sidebarIncludeController.selectAddListingButton();
-                case "profile" -> sidebarIncludeController.selectProfileButton();
-                // For views that don't have sidebar buttons (like settings), don't update selection
-            }
-        }
     }
 
     // Helper class for search data

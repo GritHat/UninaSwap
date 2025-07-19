@@ -74,7 +74,6 @@ public class ListingsController implements Refreshable {
     // Data
     private ObservableList<ListingViewModel> userListings;
     private FilteredList<ListingViewModel> filteredListings;
-    private MainController mainController;
 
     @FXML
     public void initialize() {
@@ -312,10 +311,7 @@ public class ListingsController implements Refreshable {
 
     private void handleViewListing(ListingViewModel listing) {
         try {
-            Parent listingDetailsView = navigationService.loadListingDetails(listing);
-            if (mainController != null) {
-                mainController.setContent(listingDetailsView);
-            }
+            navigationService.navigateToListingDetails(listing);
         } catch (Exception e) {
             System.err.println("Failed to navigate to listing details: " + e.getMessage());
             AlertHelper.showErrorAlert(
@@ -400,10 +396,7 @@ public class ListingsController implements Refreshable {
     @FXML
     private void handleCreateNew() {
         try {
-            Parent createListingView = navigationService.loadListingCreationView();
-            if (mainController != null) {
-                mainController.setContent(createListingView);
-            }
+            navigationService.navigateToListingCreationView();
         } catch (Exception e) {
             System.err.println("Failed to navigate to listing creation: " + e.getMessage());
             AlertHelper.showErrorAlert(
@@ -418,11 +411,6 @@ public class ListingsController implements Refreshable {
         statusFilterComboBox.setValue("All Statuses");
         typeFilterComboBox.setValue("All Types");
         searchField.clear();
-    }
-
-    // Public methods for external access
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
     }
 
     public boolean hasListings() {

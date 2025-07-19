@@ -2,6 +2,7 @@ package com.uninaswap.server.service;
 
 import com.uninaswap.common.dto.OfferDTO;
 import com.uninaswap.common.dto.OfferItemDTO;
+import com.uninaswap.common.enums.NotificationType;
 import com.uninaswap.common.enums.OfferStatus;
 import com.uninaswap.server.entity.*;
 import com.uninaswap.server.mapper.OfferMapper;
@@ -42,6 +43,9 @@ public class OfferService {
 
     @Autowired
     private ItemService itemService;
+
+    @Autowired 
+    private NotificationService notificationService;
 
     /**
      * Create a new offer
@@ -121,7 +125,13 @@ public class OfferService {
             // Reserve the items
             itemService.reserveItems(itemIds, quantities);
         }
-
+        notificationService.createNotification(
+                listing.getCreator().getId(),
+                NotificationType.OFFER_RECEIVED,
+                "New Offer Received",
+                "You have received a new offer on your listing: " + listing.getTitle(),
+                savedOffer.getId()
+        );
         logger.info("Successfully created offer with ID: {}", savedOffer.getId());
         return offerMapper.toDto(savedOffer);
     }

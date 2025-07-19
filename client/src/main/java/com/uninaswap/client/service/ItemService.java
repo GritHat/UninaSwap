@@ -26,7 +26,7 @@ public class ItemService {
     private boolean needsRefresh = false;
 
     private ItemService() {
-        this.webSocketClient = WebSocketManager.getClient();
+        this.webSocketClient = WebSocketClient.getInstance();
         this.webSocketClient.registerMessageHandler(ItemMessage.class, this::handleItemMessage);
         eventBus.subscribe(EventTypes.USER_LOGGED_OUT, _ -> {
             System.out.println("ItemService: Received USER_LOGGED_OUT event");

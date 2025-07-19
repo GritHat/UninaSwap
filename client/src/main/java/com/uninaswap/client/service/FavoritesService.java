@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class FavoritesService {
     private static FavoritesService instance;
 
-    private final WebSocketClient webSocketClient = WebSocketManager.getClient();
+    private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
 
     // Local favorites tracking (for quick UI updates)

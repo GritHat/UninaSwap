@@ -42,6 +42,8 @@ public class UserSessionService {
         if (response.getToken() != null) {
             this.sessionData.put("token", response.getToken());
         }
+
+        EventBusService.getInstance().publishEvent(EventTypes.USER_LOGGED_IN, user);
         
         System.out.println("Session started for user: " + user.getUsername());
     }

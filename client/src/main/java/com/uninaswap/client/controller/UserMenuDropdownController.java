@@ -10,7 +10,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import javafx.util.StringConverter;
 
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class UserMenuDropdownController {
@@ -25,8 +28,9 @@ public class UserMenuDropdownController {
     @FXML private Button offersBtn;
     @FXML private Button followersBtn;
     @FXML private Button settingsBtn;
-    @FXML private Button supportBtn; // Add this new field
+    @FXML private Button supportBtn;
     @FXML private ComboBox<String> themeCombo;
+    @FXML private ComboBox<Locale> languageCombo; // Add language ComboBox
     @FXML private Button logoutBtn;
     
     private final LocaleService localeService = LocaleService.getInstance();
@@ -36,10 +40,17 @@ public class UserMenuDropdownController {
     
     private Consumer<Void> onCloseCallback;
     
+    // Supported languages (same as FooterController)
+    private static final Map<String, Locale> SUPPORTED_LANGUAGES = Map.of(
+        "English", Locale.ENGLISH,
+        "Italiano", Locale.ITALIAN
+    );
+    
     @FXML
     public void initialize() {
         setupUserInfo();
         setupThemeComboBox();
+        setupLanguageComboBox(); // Add language setup
     }
     
     public void setOnCloseCallback(Consumer<Void> callback) {
@@ -82,6 +93,61 @@ public class UserMenuDropdownController {
         });
     }
     
+    private void setupLanguageComboBox() {
+        // Populate ComboBox with language options
+        languageCombo.setItems(FXCollections.observableArrayList(SUPPORTED_LANGUAGES.values()));
+        
+        // Set a custom string converter to display language names
+        languageCombo.setConverter(new StringConverter<Locale>() {
+            @Override
+            public String toString(Locale locale) {
+                if (locale == null) return null;
+                return locale.getDisplayLanguage(locale);
+            }
+            
+            @Override
+            public Locale fromString(String string) {
+                return null; // Not needed for ComboBox
+            }
+        });
+        
+        // Set current locale
+        languageCombo.setValue(localeService.getCurrentLocale());
+        
+        // Add listener to change language when selection changes
+        languageCombo.valueProperty().addListener((_, oldValue, newValue) -> {
+            if (newValue != null && !newValue.equals(oldValue)) {
+                localeService.setLocale(newValue);
+                
+                // Refresh the dropdown labels after language change
+                Platform.runLater(() -> {
+                    refreshLocalizedLabels();
+                });
+            }
+        });
+    }
+    
+    private void refreshLocalizedLabels() {
+        // Refresh theme ComboBox items
+        String currentTheme = themeCombo.getValue();
+        themeCombo.setItems(FXCollections.observableArrayList(
+            localeService.getMessage("theme.light", "Light"),
+            localeService.getMessage("theme.dark", "Dark"),
+            localeService.getMessage("theme.system", "System")
+        ));
+        
+        // Restore theme selection (find equivalent in new language)
+        if (currentTheme != null) {
+            if (currentTheme.contains("Light") || currentTheme.contains("Chiaro")) {
+                themeCombo.setValue(localeService.getMessage("theme.light", "Light"));
+            } else if (currentTheme.contains("Dark") || currentTheme.contains("Scuro")) {
+                themeCombo.setValue(localeService.getMessage("theme.dark", "Dark"));
+            } else {
+                themeCombo.setValue(localeService.getMessage("theme.system", "System"));
+            }
+        }
+    }
+    
     @FXML
     private void handleViewProfile() {
         closeDropdown();
@@ -106,9 +172,7 @@ public class UserMenuDropdownController {
     private void handleMyListings() {
         closeDropdown();
         try {
-            // TODO : implement navigation to My Listings
-            System.out.println("Navigating to My Listings");
-            //navigationService.loadMyListingsView();
+            navigationService.navigateToListingsView();
         } catch (Exception e) {
             System.err.println("Failed to navigate to listings: " + e.getMessage());
         }

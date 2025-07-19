@@ -31,6 +31,9 @@ import java.util.List;
 public class FavoritesDrawerController {
 
     @FXML
+    private HBox externalDrawerContainer;
+
+    @FXML
     private VBox drawerContainer;
 
     // Favorites section
@@ -82,6 +85,9 @@ public class FavoritesDrawerController {
         drawerContainer.setManaged(false);
         drawerContainer.getStyleClass().add("drawer-hidden");
         
+        // IMPORTANT: Initially disable mouse events since drawer starts hidden
+        externalDrawerContainer.setMouseTransparent(true);
+        
         // Add content animation class
         drawerContainer.getStyleClass().add("drawer-content-animated");
     }
@@ -114,6 +120,9 @@ public class FavoritesDrawerController {
         drawerContainer.setVisible(true);
         drawerContainer.setManaged(true);
         
+        // IMPORTANT: Re-enable mouse events when showing
+        externalDrawerContainer.setMouseTransparent(false);
+        
         // Update CSS classes
         drawerContainer.getStyleClass().removeAll("drawer-hidden");
         drawerContainer.getStyleClass().add("drawer-visible");
@@ -130,9 +139,8 @@ public class FavoritesDrawerController {
         fadeIn.setToValue(1.0);
         fadeIn.setInterpolator(Interpolator.EASE_OUT);
 
-        // Combine animations - REMOVED the item animation callback
+        // Combine animations
         ParallelTransition showAnimationTransition = new ParallelTransition(slideIn, fadeIn);
-        // No longer calling animateDrawerItemsIn() here
 
         showAnimation = new Timeline();
         showAnimation.getKeyFrames().add(new KeyFrame(Duration.millis(1), e -> showAnimationTransition.play()));
@@ -166,6 +174,9 @@ public class FavoritesDrawerController {
             // Hide and unmanage after animation completes
             drawerContainer.setVisible(false);
             drawerContainer.setManaged(false);
+            
+            // IMPORTANT: Disable mouse events when hidden
+            externalDrawerContainer.setMouseTransparent(true);
             
             // Update style classes
             drawerContainer.getStyleClass().removeAll("drawer-visible");
@@ -511,6 +522,9 @@ public class FavoritesDrawerController {
     public void setDrawerVisibleInstantly(boolean visible) {
         drawerContainer.setVisible(visible);
         drawerContainer.setManaged(visible);
+        
+        // IMPORTANT: Set mouse transparency based on visibility
+        externalDrawerContainer.setMouseTransparent(!visible);
         
         if (visible) {
             drawerContainer.getStyleClass().removeAll("drawer-hidden");

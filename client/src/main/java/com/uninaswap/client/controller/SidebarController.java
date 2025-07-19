@@ -18,7 +18,7 @@ public class SidebarController {
     @FXML
     private ImageView inventoryIcon;
     @FXML
-    private ImageView allertsIcon;
+    private ImageView notificationsIcon;
     @FXML
     private ImageView listingIcon;
 
@@ -30,7 +30,7 @@ public class SidebarController {
     @FXML
     private VBox inventoryButton;
     @FXML
-    private VBox alertsButton;
+    private VBox notificationsButton;
     @FXML
     private VBox listingButton;
     @FXML
@@ -73,31 +73,6 @@ public class SidebarController {
         }
     }
 
-    /*public void updateSidebarButtonSelection(String buttonName) {
-        switch (buttonName) {
-            case "home":
-                setSelectedButton(homeButton);
-                break;
-            case "offers":
-                setSelectedButton(offersButton);
-                break;
-            case "inventory":
-                setSelectedButton(inventoryButton);
-                break;
-            case "alerts":
-                setSelectedButton(alertsButton);
-                break;
-            case "listings":
-                setSelectedButton(listingButton);
-                break;
-            case "profile":
-                setSelectedButton(profileButton);
-                break;
-            default:
-                clearAllSelections();
-        }
-    }*/
-
     public void clearAllSelections() {
         // Remove selected class from all sidebar buttons and reset to normal icons
         if (homeButton != null) {
@@ -112,9 +87,9 @@ public class SidebarController {
             inventoryButton.getStyleClass().remove("selected");
             setNormalIcon(inventoryButton, inventoryIcon, "/images/icons/inventory.png");
         }
-        if (alertsButton != null) {
-            alertsButton.getStyleClass().remove("selected");
-            setNormalIcon(alertsButton, allertsIcon, "/images/icons/notification.png");
+        if (notificationsButton != null) {
+            notificationsButton.getStyleClass().remove("selected");
+            setNormalIcon(notificationsButton, notificationsIcon, "/images/icons/notification.png");
         }
         if (listingButton != null) {
             listingButton.getStyleClass().remove("selected");
@@ -158,7 +133,7 @@ public class SidebarController {
         if (button == homeButton) return homeIcon;
         if (button == offersButton) return offersIcon;
         if (button == inventoryButton) return inventoryIcon;
-        if (button == alertsButton) return allertsIcon;
+        if (button == notificationsButton) return notificationsIcon;
         if (button == listingButton) return listingIcon;
         if (button == profileButton) return ProfileImageIcon;
         return null;
@@ -168,7 +143,7 @@ public class SidebarController {
         if (button == homeButton) return "/images/icons/home_w.png";
         if (button == offersButton) return "/images/icons/offers_w.png";
         if (button == inventoryButton) return "/images/icons/inventory_w.png";
-        if (button == alertsButton) return "/images/icons/notification_w.png";
+        if (button == notificationsButton) return "/images/icons/notification_w.png";
         if (button == listingButton) return "/images/icons/listings_w.png";
         if (button == profileButton) return "/images/icons/default_profile_w.png";
         return null;
@@ -228,12 +203,10 @@ public class SidebarController {
     }
 
     @FXML
-    public void showAllerts(MouseEvent event) {
-        setSelectedButton(alertsButton);
+    public void showNotifications(MouseEvent event) {
+        setSelectedButton(notificationsButton);
         try {
-            Parent allertsView = navigationService.loadAllertsView();
-            mainController.setContent(allertsView);
-            
+            navigationService.navigateToNotificationsView();
             // Update header buttons when leaving listing creation
             mainController.updateHeaderButtonSelection("refresh");
         } catch (java.io.IOException e) {
@@ -300,8 +273,8 @@ public class SidebarController {
         setSelectedButton(inventoryButton);
     }
 
-    public void selectAlertsButton() {
-        setSelectedButton(alertsButton);
+    public void selectNotificationsButton() {
+        setSelectedButton(notificationsButton);
     }
 
     public void selectAddListingButton() {
@@ -310,6 +283,10 @@ public class SidebarController {
 
     public void selectProfileButton() {
         setSelectedButton(profileButton);
+    }
+
+    public void selectListingsButton() {
+        setSelectedButton(listingButton);
     }
 
     public void setMainController(MainController mainController) {

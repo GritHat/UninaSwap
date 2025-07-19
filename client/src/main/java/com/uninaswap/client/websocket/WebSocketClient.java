@@ -16,6 +16,14 @@ import com.uninaswap.client.service.UserSessionService;
 
 @ClientEndpoint
 public class WebSocketClient {
+    private static WebSocketClient instance;
+    public static WebSocketClient getInstance() {
+        if (instance == null) {
+            instance = new WebSocketClient();
+        }
+        return instance;
+    }
+    private WebSocketClient() {}
 
     private Session session;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule())
@@ -53,8 +61,8 @@ public class WebSocketClient {
 
             // Deserialize to the base Message type
             Message baseMessage = objectMapper.readValue(message, Message.class);
-            if (!baseMessage.getMessageType().equals("image"))
-                System.out.println("CLIENT RECEIVED: " + message);
+            //if (!baseMessage.getMessageType().equals("image"))
+            //    System.out.println("CLIENT RECEIVED: " + message);
             System.out.println(baseMessage.getMessageType());
             // Find the appropriate handler based on the actual message type
             Consumer<Message> handler = messageHandlers.get(baseMessage.getClass());

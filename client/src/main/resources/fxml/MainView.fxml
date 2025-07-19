@@ -40,7 +40,7 @@
                                     <VBox alignment="CENTER" maxWidth="700.0" minWidth="450.0" HBox.hgrow="ALWAYS">
                                        <children>
                                   <!-- Search container with category filter -->
-                                  <HBox alignment="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" spacing="5.0" styleClass="header-search-container">
+                                  <HBox alignment="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" spacing="5.0" styleClass="header-search-container" VBox.vgrow="NEVER">
                                     <children>
                                       <!-- Category selector -->
                                       <ComboBox fx:id="categoryComboBox" maxHeight="28.0" maxWidth="156.0" minHeight="28.0" minWidth="156.0" prefHeight="28.0" prefWidth="156.0" promptText="%header.category.all" styleClass="header-category-combo" translateX="-16.0" />
@@ -60,7 +60,7 @@
                                              </VBox.margin>
                                   </HBox>
                                   <!-- Quick filter buttons -->
-                                  <HBox alignment="CENTER" minWidth="150.0" spacing="5.0" styleClass="header-filters">
+                                  <HBox alignment="CENTER" minWidth="150.0" spacing="5.0" styleClass="header-filters" VBox.vgrow="NEVER">
                                     <children>
                                       <Button fx:id="allItemsButton" maxHeight="25.0" minHeight="25.0" onAction="#filterAll" prefHeight="25.0" styleClass="header-filter-button, active" text="%header.filter.all" />
                                       <Button fx:id="salesButton" maxHeight="25.0" minHeight="25.0" onAction="#filterSales" prefHeight="25.0" styleClass="header-filter-button, active" text="%header.filter.sales" />

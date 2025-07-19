@@ -3099,3 +3099,287 @@
         -fx-font-size: 10px;
     }
 }
+
+/* Fix for drawer visibility animation */
+.favorites-drawer.drawer-hidden {
+    -fx-translate-x: 280px;
+    -fx-transition-duration: 0.3s;
+    -fx-mouse-transparent: true; /* This is the key addition */
+}
+
+.favorites-drawer.drawer-visible {
+    -fx-translate-x: 0;
+    -fx-transition-duration: 0.3s;
+    -fx-mouse-transparent: false; /* Ensure clicks work when visible */
+}
+
+/* Integration with main layout */
+.favorites-drawer-container {
+    -fx-background-color: transparent;
+}
+
+/* Ensure the drawer doesn't interfere when hidden */
+.favorites-drawer.drawer-hidden {
+    -fx-mouse-transparent: true;
+    -fx-pick-on-bounds: false; /* Additional property to prevent bounds detection */
+}
+
+.favorites-drawer.drawer-visible {
+    -fx-mouse-transparent: false;
+    -fx-pick-on-bounds: true;
+}
+
+/* Add these new styles for the preferences section */
+
+/* Preferences section styling */
+.preferences-section {
+    -fx-background-color: #F8F9FA;
+    -fx-background-radius: 0;
+}
+
+.preferences-section-title {
+    -fx-fill: -fx-primary;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.preference-label {
+    -fx-fill: -fx-text-mid;
+    -fx-font-size: 11px;
+    -fx-font-weight: normal;
+}
+
+.preference-combo {
+    -fx-background-color: -fx-primary;
+    -fx-border-color: -fx-primary;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-font-size: 11px;
+}
+
+.preference-combo:focused {
+    -fx-border-color: -fx-primary-light;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.2), 3, 0, 0, 0);
+}
+
+.preference-combo .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 4px;
+}
+
+.preference-combo .arrow-button .arrow {
+    -fx-background-color: -fx-background-light;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+    -fx-scale-shape: true;
+    -fx-pref-width: 6px;
+    -fx-pref-height: 4px;
+}
+
+.preference-combo:hover .arrow-button .arrow {
+    -fx-background-color: -fx-primary-ultralight;
+}
+
+/* Dropdown styling for preference combos */
+.preference-combo .list-view {
+    -fx-background-color: -fx-background-light;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 8, 0, 0, 2);
+    -fx-max-height: 150px;
+}
+
+.preference-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-dark;
+    -fx-font-size: 11px;
+    -fx-padding: 6px 10px;
+    -fx-background-radius: 12px;
+}
+
+.preference-combo .list-cell:hover {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-text-fill: -fx-primary;
+}
+
+.preference-combo .list-cell:selected {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+}
+
+/* Update the theme section to match new preferences styling */
+.theme-section {
+    -fx-padding: 12px 16px;
+    -fx-spacing: 8px;
+    -fx-background-color: #F8F9FA;
+}
+
+.theme-label {
+    -fx-fill: -fx-text-mid;
+    -fx-font-size: 11px;
+    -fx-font-weight: normal;
+}
+
+.theme-combo {
+    -fx-background-color: white;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-padding: 6px 8px;
+    -fx-font-size: 11px;
+}
+
+/* Add these notification center specific styles */
+
+/* Notification Center Styling */
+.notification-item {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+.notification-item:hover {
+    -fx-background-color: #F8F9FA;
+    -fx-border-color: -fx-primary-light;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.1), 4, 0, 0, 1);
+}
+
+.notification-item.unread {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-border-color: -fx-primary-light;
+}
+
+.notification-item.unread:hover {
+    -fx-background-color: -fx-primary-light;
+    -fx-border-color: -fx-primary;
+}
+
+.notification-item.read {
+    -fx-opacity: 0.8;
+}
+
+.notification-title {
+    -fx-fill: -fx-text-dark;
+    -fx-font-weight: bold;
+}
+
+.notification-item.unread .notification-title {
+    -fx-fill: -fx-primary;
+}
+
+.notification-message {
+    -fx-fill: -fx-text-mid;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 2px;
+}
+
+.notification-time {
+    -fx-fill: -fx-text-subtle;
+    -fx-font-size: 11px;
+}
+
+.unread-dot {
+    -fx-background-color: -fx-primary;
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+}
+
+/* Notification action buttons */
+.notification-item .primary-button {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-padding: 5px 12px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.notification-item .primary-button:hover {
+    -fx-background-color: -fx-primary-light;
+}
+
+.notification-item .secondary-button {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-primary;
+    -fx-border-width: 1px;
+    -fx-text-fill: -fx-primary;
+    -fx-background-radius: 15px;
+    -fx-border-radius: 15px;
+    -fx-padding: 5px 12px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.notification-item .secondary-button:hover {
+    -fx-background-color: -fx-primary-ultralight;
+}
+
+/* Placeholder styling */
+.placeholder-text {
+    -fx-fill: #888888;
+    -fx-font-size: 16px;
+    -fx-font-weight: normal;
+}
+
+.error-text {
+    -fx-fill: #E74C3C;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Tab content styling */
+.tab-pane .tab-content-area {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab-content-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab-content-area .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Notification badge indicator */
+.header-icon-button.has-notifications::after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 10px;
+    height: 10px;
+    background-color: #E74C3C;
+    border-radius: 50%;
+    border: 2px solid white;
+    z-index: 10;
+}
+
+.header-icon-button {
+    position: relative; /* Needed for ::after positioning */
+}
+
+/* Alternative: Number badge */
+.header-icon-button.has-notifications.with-count::after {
+    content: attr(data-count);
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 16px;
+    height: 16px;
+    background-color: #E74C3C;
+    color: white;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 16px;
+    border: 2px solid white;
+    z-index: 10;
+}

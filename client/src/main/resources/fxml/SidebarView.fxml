@@ -50,8 +50,8 @@
          <Text styleClass="button-caption" text="%inventory.caption"/>
       </VBox>
 
-      <VBox fx:id="alertsButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showAllerts" pickOnBounds="true">
-         <ImageView fx:id="allertsIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+      <VBox fx:id="notificationsButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showNotifications" pickOnBounds="true">
+         <ImageView fx:id="notificationsIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/notification.png" />
             </image>
@@ -63,7 +63,7 @@
       </VBox>
       
       <VBox fx:id="listingButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showListings" pickOnBounds="true">
-         <ImageView fx:id="addListingIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+         <ImageView fx:id="listingIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
                <Image url="@../images/icons/listings.png" />
             </image>

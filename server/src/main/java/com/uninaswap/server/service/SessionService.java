@@ -18,7 +18,7 @@ public class SessionService {
     private static final Logger logger = LoggerFactory.getLogger(SessionService.class);
     
     // Map WebSocketSession IDs to UserEntities for authenticated users
-    private final Map<String, UserEntity> authenticatedSessions = new ConcurrentHashMap<>();
+    private final Map<WebSocketSession, UserEntity> authenticatedSessions = new ConcurrentHashMap<>();
     
     // Map tokens to UserEntities for token-based authentication
     private final Map<String, UserEntity> tokenToUserMap = new ConcurrentHashMap<>();
@@ -31,7 +31,7 @@ public class SessionService {
      */
     public UserEntity validateSession(WebSocketSession session) {
         String sessionId = session.getId();
-        UserEntity user = authenticatedSessions.get(sessionId);
+        UserEntity user = authenticatedSessions.get(session);
         
         if (user == null) {
             logger.debug("Session not authenticated: {}", sessionId);
@@ -50,8 +50,7 @@ public class SessionService {
      * @return A new authentication token
      */
     public String createAuthenticatedSession(WebSocketSession session, UserEntity user) {
-        String sessionId = session.getId();
-        authenticatedSessions.put(sessionId, user);
+        authenticatedSessions.put(session, user);
         
         // Generate a token that can be used for authentication in other contexts (like HTTP requests)
         String token = UUID.randomUUID().toString();
@@ -98,5 +97,15 @@ public class SessionService {
         if (user != null) {
             logger.info("Invalidated token for user: {}", user.getUsername());
         }
+    }
+
+    public WebSocketSession getSessionByUserId(long userId) {
+        for (Map.Entry<WebSocketSession, UserEntity> entry : authenticatedSessions.entrySet()) {
+            if (entry.getValue().getId() == userId) {
+                // Assuming you have a way to get the WebSocketSession by session ID
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }

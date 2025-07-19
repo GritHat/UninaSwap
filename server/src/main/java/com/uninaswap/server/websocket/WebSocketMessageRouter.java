@@ -33,7 +33,8 @@ public class WebSocketMessageRouter extends TextWebSocketHandler {
             PickupWebSocketHandler pickupHandler,
             ReviewWebSocketHandler reviewHandler,
             FavoriteWebSocketHandler favoriteHandler,
-            SearchWebSocketHandler searchHandler, // Add this parameter
+            SearchWebSocketHandler searchHandler,
+            NotificationWebSocketHandler notificationHandler,
             SessionService sessionService) {
         this.objectMapper = objectMapper;
         this.sessionService = sessionService;
@@ -48,7 +49,8 @@ public class WebSocketMessageRouter extends TextWebSocketHandler {
         handlerMap.put("offer", offerHandler);
         handlerMap.put("pickup", pickupHandler);
         handlerMap.put("review", reviewHandler);
-        handlerMap.put("search", searchHandler); // Add this line
+        handlerMap.put("search", searchHandler);
+        handlerMap.put("notification", notificationHandler);
     }
 
     @Override

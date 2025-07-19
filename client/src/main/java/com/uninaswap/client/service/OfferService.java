@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class OfferService {
     private static OfferService instance;
-    private final WebSocketClient webSocketClient = WebSocketManager.getClient();
+    private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
 
     private CompletableFuture<?> futureToComplete;

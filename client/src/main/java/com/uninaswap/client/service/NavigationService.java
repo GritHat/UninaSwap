@@ -50,7 +50,6 @@ import com.uninaswap.client.controller.ReportDialogController;
 public class NavigationService {
     private static NavigationService instance;
     private final LocaleService localeService = LocaleService.getInstance();
-    private final ListingService listingService = ListingService.getInstance();
     private final ImageService imageService = ImageService.getInstance();
     private final ItemService itemService = ItemService.getInstance();
     private final UserSessionService sessionService = UserSessionService.getInstance();
@@ -324,11 +323,16 @@ public class NavigationService {
     /**
      * Load the notifications view
      */
-    public Parent loadAllertsView() throws IOException {
-        LoaderBundle loaderBundle = loadView("/fxml/AllertsView.fxml");
-        Parent allertsView = loaderBundle.getView();
+    public Parent loadNotificationsView() throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/NotificationsView.fxml");
+        Parent notificationsView = loaderBundle.getView();
 
-        return allertsView;
+        return notificationsView;
+    }
+
+    public void navigateToNotificationsView() throws IOException {
+        mainController.setContent(loadNotificationsView());
+        mainController.updateSidebarButtonSelection("notifications");
     }
 
     /**
@@ -339,6 +343,11 @@ public class NavigationService {
         Parent listingCreationView = loaderBundle.getView();
 
         return listingCreationView;
+    }
+
+    public void navigateToListingCreationView() throws IOException {
+        mainController.setContent(loadListingCreationView());
+        mainController.sidebarClearAllSelection();
     }
 
     /**
@@ -455,16 +464,13 @@ public class NavigationService {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListingsView.fxml"));
         Parent listingsView = loader.load();
         
-        // Set the controller reference
-        ListingsController controller = loader.getController();
-        if (mainController != null) {
-            controller.setMainController(mainController);
-        }
-        
-        // Store controller reference in the view for later access
-        listingsView.getProperties().put("controller", controller);
-        
         return listingsView;
+    }
+
+    public void navigateToListingsView() throws IOException {
+        Parent listingsView = loadListingsView();
+        mainController.setContent(listingsView);
+        mainController.updateSidebarButtonSelection("listings");
     }
 
     public Parent loadUserDropdownMenu(Popup userMenuPopup) throws IOException {
@@ -491,7 +497,7 @@ public class NavigationService {
         });
         return notificationDropdown;
     }
-
+    
     /**
      * Set the main controller reference for navigation
      */

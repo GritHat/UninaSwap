@@ -1,7 +1,6 @@
 package com.uninaswap.client.service;
 
 import com.uninaswap.client.mapper.ViewModelMapper;
-import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.websocket.WebSocketClient;
 import com.uninaswap.common.dto.ListingDTO;
@@ -51,7 +50,7 @@ public class SearchService {
     }
     
     private SearchService() {
-        this.webSocketClient = WebSocketManager.getClient();
+        this.webSocketClient = WebSocketClient.getInstance();
         this.webSocketClient.registerMessageHandler(SearchMessage.class, this::handleSearchResponse);
     }
     

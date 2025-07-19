@@ -13,7 +13,7 @@ public class ProfileService {
     private final WebSocketClient webSocketClient;
     
     public ProfileService() {
-        this.webSocketClient = WebSocketManager.getClient();
+        this.webSocketClient = WebSocketClient.getInstance();
     }
     
     /**

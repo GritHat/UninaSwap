@@ -123,22 +123,31 @@
     <!-- Separator -->
     <Separator />
     
-    <!-- Theme selector section -->
-    <VBox spacing="8" styleClass="theme-section">
-        <HBox alignment="CENTER_LEFT" spacing="8">
-            <ImageView fitHeight="18" fitWidth="18">
-                <image>
-                    <Image url="@../images/icons/theme.png" />
-                </image>
-            </ImageView>
-            <Text styleClass="theme-label" text="%user.menu.theme">
+    <!-- Preferences section with Theme and Language -->
+    <VBox spacing="8" styleClass="preferences-section">
+        <padding>
+            <Insets bottom="12" left="16" right="16" top="12" />
+        </padding>
+        
+        <!-- Theme selector -->
+        <VBox spacing="5">
+            <Text styleClass="preference-label" text="%user.menu.theme">
                 <font>
-                    <Font name="System Bold" size="12" />
+                    <Font size="11" />
                 </font>
             </Text>
-        </HBox>
+            <ComboBox fx:id="themeCombo" prefWidth="250" styleClass="preference-combo" />
+        </VBox>
         
-        <ComboBox fx:id="themeCombo" prefWidth="250" styleClass="theme-combo" />
+        <!-- Language selector -->
+        <VBox spacing="5">
+            <Text styleClass="preference-label" text="%user.menu.language">
+                <font>
+                    <Font size="11" />
+                </font>
+            </Text>
+            <ComboBox fx:id="languageCombo" prefWidth="250" styleClass="preference-combo" />
+        </VBox>
     </VBox>
     
     <!-- Separator -->

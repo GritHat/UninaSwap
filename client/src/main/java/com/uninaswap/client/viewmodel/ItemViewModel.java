@@ -12,6 +12,8 @@ public class ItemViewModel {
     private final StringProperty itemCategory = new SimpleStringProperty();
     private final ObjectProperty<ItemCondition> condition = new SimpleObjectProperty<>();
     private final IntegerProperty year = new SimpleIntegerProperty();
+    private final StringProperty model = new SimpleStringProperty();
+    private final StringProperty brand = new SimpleStringProperty();
     private final IntegerProperty totalQuantity = new SimpleIntegerProperty();
     private final IntegerProperty availableQuantity = new SimpleIntegerProperty();
     private final StringProperty imagePath = new SimpleStringProperty();
@@ -101,6 +103,14 @@ public class ItemViewModel {
 
     public IntegerProperty selectedQuantityProperty() {
         return selectedQuantity;
+    }
+
+    public StringProperty modelProperty() {
+        return model;
+    }
+
+    public StringProperty brandProperty() {
+        return brand;
     }
 
     // Getters and setters
@@ -230,6 +240,22 @@ public class ItemViewModel {
 
     public void setSelectedQuantity(int selectedQuantity) {
         this.selectedQuantity.set(selectedQuantity);
+    }
+
+    public void setModel(String model) {
+        this.model.set(model);
+    }
+
+    public String getModel() {
+        return model.get();
+    }
+
+    public void setBrand(String brand) {
+        this.brand.set(brand);
+    }
+
+    public String getBrand() {
+        return brand.get();
     }
 
     // Utility methods

@@ -6,18 +6,18 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" styleClass="main-content-background" stylesheets="@../css/styles.css, @../css/listing-details.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.ListingDetailsController">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxWidth="1200.0" styleClass="main-content-background" stylesheets="@../css/styles.css, @../css/listing-details.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.ListingDetailsController">
    <content>
       <VBox alignment="TOP_CENTER" spacing="20.0" styleClass="listing-details-container">
          <padding>
@@ -25,33 +25,25 @@
          </padding>
          
          <!-- Header Section -->
-         <HBox alignment="CENTER_LEFT" spacing="15.0">
+         <HBox alignment="CENTER_LEFT">
             <children>
                <Button fx:id="backButton" onAction="#handleBack" styleClass="back-button" text="← Indietro" />
                <Region HBox.hgrow="ALWAYS" />
-               <Button fx:id="favoriteButton" onAction="#toggleFavorite" styleClass="favorite-button">
-                  <graphic>
-                     <ImageView fx:id="favoriteIcon" fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
-                        <image>
-                           <Image url="@../images/favorites_add.png" />
-                        </image>
-                     </ImageView>
-                  </graphic>
-               </Button>
+               <Button fx:id="reportListingButton" onAction="#handleReportListing" styleClass="report-button" text="Segnala inserzione" />
             </children>
          </HBox>
 
          <!-- Main Content Area -->
-         <HBox alignment="CENTER" spacing="30.0" VBox.vgrow="ALWAYS">
+         <HBox alignment="CENTER" spacing="5.0" styleClass="details-left-panel" VBox.vgrow="ALWAYS">
             <children>
                <!-- Left Side - Images and Details -->
-               <VBox maxWidth="450.0" spacing="20.0" styleClass="details-left-panel" HBox.hgrow="ALWAYS">
+               <VBox maxWidth="400.0" spacing="5.0" HBox.hgrow="ALWAYS">
                   <children>
                      <!-- Image Gallery -->
                      <VBox spacing="10.0" styleClass="image-gallery-section">
                         <children>
                            <!-- Main Image Display -->
-                           <StackPane styleClass="main-image-container">
+                           <StackPane>
                               <children>
                                  <ImageView fx:id="mainImage" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" styleClass="main-image">
                                     <image>
@@ -59,10 +51,10 @@
                                     </image>
                                  </ImageView>
                                  
-                                 <!-- Image Navigation Controls -->
-                                 <HBox fx:id="imageNavigation" alignment="CENTER" spacing="10.0" styleClass="image-navigation" visible="false">
+                                       <!-- Image Navigation Controls - positioned in bottom-right -->
+                                 <HBox fx:id="imageNavigation" alignment="CENTER" managed="false" maxHeight="20.0" maxWidth="100.0" spacing="5.0" styleClass="image-navigation" visible="false" StackPane.alignment="BOTTOM_RIGHT">
                                     <StackPane.margin>
-                                       <Insets bottom="20.0" />
+                                       <Insets bottom="10.0" right="10.0" />
                                     </StackPane.margin>
                                     <Button fx:id="prevImageButton" onAction="#showPreviousImage" styleClass="nav-button" text="◀" />
                                     <Label fx:id="imageCounter" styleClass="image-counter" text="1 / 1" />
@@ -71,8 +63,8 @@
                               </children>
                            </StackPane>
                            
-                           <!-- Image Thumbnails -->
-                           <ScrollPane fx:id="thumbnailScrollPane" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" visible="false">
+                                 <!-- Image Thumbnails -->
+                           <ScrollPane fx:id="thumbnailScrollPane" fitToHeight="true" hbarPolicy="AS_NEEDED" managed="false" vbarPolicy="NEVER" visible="false">
                               <content>
                                  <HBox fx:id="thumbnailContainer" spacing="10.0" styleClass="thumbnail-container">
                                     <padding>
@@ -84,13 +76,155 @@
                         </children>
                      </VBox>
 
-                     <!-- Listing Details -->
+                           <!-- Listing Details -->
                      <VBox spacing="15.0" styleClass="listing-details-section">
                         <children>
-                           <!-- Title and Category -->
-                           <VBox spacing="5.0">
+                           <HBox alignment="CENTER_RIGHT">
                               <children>
-                                 <Text fx:id="listingTitle" styleClass="listing-title" text="Listing Title" />
+                                 <VBox HBox.hgrow="ALWAYS">
+                                    <children>
+                                       <Text fx:id="priceValue" styleClass="price-value" text="€ 25.00" />
+                                       <Text fx:id="priceDetails" styleClass="price-details" text="Price details" />
+                                    </children>
+                                 </VBox>
+                                 <Pane HBox.hgrow="ALWAYS" />
+            
+                                             <!-- Action Buttons Section -->
+                                 <VBox fx:id="actionButtonsSection" alignment="CENTER_RIGHT" styleClass="action-buttons-section" HBox.hgrow="ALWAYS">
+                                    
+                                                <!-- Sell Listing Actions -->
+                                    <VBox fx:id="sellActions" alignment="CENTER_RIGHT" managed="false" spacing="5.0" visible="false">
+                                       <children>
+                                          <Button fx:id="buyNowButton" onAction="#handleBuyNow" text="Acquista ora" />
+                                          <Button fx:id="makeOfferButton" onAction="#handleMakeOffer" text="Fai un'offerta" />
+                                       </children>
+                                    </VBox>
+            
+                                                <!-- Trade Listing Actions -->
+                                    <VBox fx:id="tradeActions" alignment="CENTER_RIGHT" managed="false" spacing="5.0" visible="false">
+                                       <children>
+                                          <Button fx:id="proposeTradeButton" onAction="#handleProposeTrade" text="Proponi scambio" />
+                                          <VBox fx:id="tradeOptionsSection" managed="false" spacing="5.0" visible="false">
+                                             <children>
+                                                <CheckBox fx:id="includeMoneyCheckBox" text="Includi denaro nell'offerta" />
+                                                <HBox fx:id="moneyOfferSection" managed="false" spacing="10.0" visible="false">
+                                                   <children>
+                                                      <TextField fx:id="moneyAmountField" promptText="Importo" styleClass="money-input" />
+                                                      <ComboBox fx:id="currencyComboBox" styleClass="currency-combo" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+            
+                                                <!-- Gift Listing Actions -->
+                                    <VBox fx:id="giftActions" alignment="CENTER_RIGHT" managed="false" spacing="5.0" visible="false">
+                                       <children>
+                                          <Button fx:id="requestGiftButton" onAction="#handleRequestGift" text="Richiedi regalo" />
+                                          <VBox fx:id="thankYouSection" spacing="5.0">
+                                             <children>
+                                                <CheckBox fx:id="offerThankYouCheckBox" text="Offri un ringraziamento" />
+                                                <TextArea fx:id="thankYouMessageArea" managed="false" promptText="Messaggio di ringraziamento (opzionale)" styleClass="thank-you-message" visible="false" wrapText="true" />
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+            
+                                                <!-- Auction Listing Actions -->
+                                    <VBox fx:id="auctionActions" alignment="CENTER_RIGHT" managed="false" spacing="5.0" visible="false">
+                                       <children>
+                                          <!-- Current Bid Info -->
+                                          <VBox styleClass="bid-info-section">
+                                             <children>
+                                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                                   <children>
+                                                      <Text styleClass="bid-label" text="Offerta attuale:" />
+                                                      <Text fx:id="currentBidValue" styleClass="current-bid-value" text="€ 0.00" />
+                                                   </children>
+                                                </HBox>
+                                                <Text fx:id="timeRemainingLabel" styleClass="time-remaining" />
+                                             </children>
+                                          </VBox>
+            
+                                                      <!-- Bid Input -->
+                                          <VBox>
+                                             <children>
+                                                <HBox spacing="10.0">
+                                                   <children>
+                                                      <TextField fx:id="bidAmountField" promptText="Inserisci offerta" styleClass="bid-input" HBox.hgrow="ALWAYS" />
+                                                      <ComboBox fx:id="bidCurrencyComboBox" styleClass="currency-combo" />
+                                                   </children>
+                                                </HBox>
+                                                <Text fx:id="minimumBidLabel" styleClass="minimum-bid-label" text="Offerta minima: € 26.00" />
+                                             </children>
+                                          </VBox>
+            
+                                                      <Button fx:id="placeBidButton" onAction="#handlePlaceBid" text="Fai un'offerta" />
+                                       </children>
+                                    </VBox>
+                                    <HBox.margin>
+                                       <Insets left="5.0" top="5.0" />
+                                    </HBox.margin>
+                                 </VBox>
+                              </children>
+                           </HBox>
+                           <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
+                              <children>
+                                 <!-- Seller Avatar -->
+                                 <ImageView fx:id="sellerAvatar" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="seller-avatar">
+                                    <image>
+                                       <Image url="@../images/icons/default_profile.png" />
+                                    </image>
+                                 </ImageView>
+                                 
+                                 <!-- Seller Info -->
+                                 <VBox alignment="CENTER_LEFT" spacing="2.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                       <Text fx:id="sellerName" styleClass="seller-name" text="Seller Name" />
+                                       <Text fx:id="sellerRating" styleClass="seller-rating" text="⭐ 4.8 (127 recensioni)" />
+                                    </children>
+                                    <HBox.margin>
+                                       <Insets left="10.0" />
+                                    </HBox.margin>
+                                 </VBox>
+                                 
+                                 <Pane />
+                                 <Button fx:id="contactSellerButton" onAction="#handleContactSeller" styleClass="contact-button" text="Contatta venditore" HBox.hgrow="ALWAYS">
+                                    <HBox.margin>
+                                       <Insets left="5.0" />
+                                    </HBox.margin></Button>
+                              </children>
+                           </HBox>
+                        </children>
+                     </VBox>
+                  </children>
+               </VBox>
+               <Pane maxWidth="20.0" HBox.hgrow="ALWAYS" />
+               <VBox maxWidth="500.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                  <children>
+      
+                                       <!-- Description -->
+                     <VBox minWidth="300.0" spacing="5.0">
+                        <children>
+                           <!-- Title and Category -->
+                           <VBox spacing="5.0" VBox.vgrow="NEVER">
+                              <children>
+                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                    <children>
+                                       <Text fx:id="listingTitle" styleClass="listing-title" text="Listing Title" />
+                                       <Pane HBox.hgrow="SOMETIMES" />
+                                       <Button fx:id="favoriteButton" onAction="#toggleFavorite" styleClass="favorite-button">
+                                          <graphic>
+                                             <ImageView fx:id="favoriteIcon" fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                                <image>
+                                                   <Image url="@../images/favorites_add.png" />
+                                                </image>
+                                             </ImageView>
+                                          </graphic>
+                                       </Button>
+                                    </children>
+                                 </HBox>
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <children>
                                        <Label fx:id="categoryLabel" styleClass="category-label" text="Category" />
@@ -99,144 +233,17 @@
                                  </HBox>
                               </children>
                            </VBox>
-
-                           <!-- Description -->
-                           <VBox spacing="5.0">
-                              <children>
-                                 <Text styleClass="section-header" text="Descrizione" />
-                                 <TextArea fx:id="descriptionArea" editable="false" styleClass="description-area" text="Listing description will appear here..." wrapText="true" />
-                              </children>
-                           </VBox>
-
-                           <!-- Items in Listing -->
-                           <VBox fx:id="itemsSection" spacing="10.0">
-                              <children>
-                                 <Text styleClass="section-header" text="Oggetti inclusi" />
-                                 <VBox fx:id="itemsList" spacing="5.0" styleClass="items-list" />
-                              </children>
-                           </VBox>
-
-                           <!-- Seller Information -->
-                           <VBox spacing="10.0" styleClass="seller-section">
-                              <children>
-                                 <Text styleClass="section-header" text="Venditore" />
-                                 <HBox alignment="CENTER_LEFT" spacing="15.0">
-                                    <children>
-                                       <ImageView fx:id="sellerAvatar" fitHeight="50.0" fitWidth="50.0" preserveRatio="true" styleClass="seller-avatar">
-                                          <image>
-                                             <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Single-Neutral-Circle--Streamline-Ultimate.png" />
-                                          </image>
-                                       </ImageView>
-                                       <VBox spacing="3.0">
-                                          <children>
-                                             <Text fx:id="sellerName" styleClass="seller-name" text="Seller Name" />
-                                             <Text fx:id="sellerRating" styleClass="seller-rating" text="⭐ 4.8 (127 recensioni)" />
-                                          </children>
-                                       </VBox>
-                                    </children>
-                                 </HBox>
-                              </children>
-                           </VBox>
+                           <Text styleClass="section-header" text="Descrizione" />
+                           <TextArea fx:id="descriptionArea" editable="false" styleClass="description-area" text="Listing description will appear here..." wrapText="true" />
                         </children>
                      </VBox>
-                  </children>
-               </VBox>
-
-               <!-- Right Side - Action Panel -->
-               <VBox maxWidth="350.0" minWidth="300.0" spacing="20.0" styleClass="action-panel" HBox.hgrow="ALWAYS">
-                  <children>
-                     <!-- Price/Bid Information -->
-                     <VBox spacing="10.0" styleClass="price-section">
+      
+                                       <!-- Items in Listing -->
+                     <VBox fx:id="itemsSection" spacing="10.0">
                         <children>
-                           <Text fx:id="priceLabel" styleClass="price-label" text="Prezzo" />
-                           <Text fx:id="priceValue" styleClass="price-value" text="€ 25.00" />
-                           <Text fx:id="priceDetails" styleClass="price-details" text="Price details" />
+                           <Text styleClass="section-header" text="Oggetti inclusi" />
+                           <VBox fx:id="itemsList" styleClass="items-list" />
                         </children>
-                     </VBox>
-
-                     <!-- Action Buttons Section -->
-                     <VBox fx:id="actionButtonsSection" spacing="15.0" styleClass="action-buttons-section">
-                        
-                        <!-- Sell Listing Actions -->
-                        <VBox fx:id="sellActions" spacing="10.0" visible="false">
-                           <children>
-                              <Button fx:id="buyNowButton" onAction="#handleBuyNow" styleClass="primary-action-button" text="Acquista ora" />
-                              <Button fx:id="makeOfferButton" onAction="#handleMakeOffer" styleClass="secondary-action-button" text="Fai un'offerta" />
-                           </children>
-                        </VBox>
-
-                        <!-- Trade Listing Actions -->
-                        <VBox fx:id="tradeActions" spacing="10.0" visible="false">
-                           <children>
-                              <Button fx:id="proposeTradeButton" onAction="#handleProposeTrade" styleClass="primary-action-button" text="Proponi scambio" />
-                              <VBox fx:id="tradeOptionsSection" spacing="5.0" visible="false">
-                                 <children>
-                                    <CheckBox fx:id="includeMoneyCheckBox" text="Includi denaro nell'offerta" />
-                                    <HBox fx:id="moneyOfferSection" spacing="10.0" visible="false">
-                                       <children>
-                                          <TextField fx:id="moneyAmountField" promptText="Importo" styleClass="money-input" />
-                                          <ComboBox fx:id="currencyComboBox" styleClass="currency-combo" />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </VBox>
-
-                        <!-- Gift Listing Actions -->
-                        <VBox fx:id="giftActions" spacing="10.0" visible="false">
-                           <children>
-                              <Button fx:id="requestGiftButton" onAction="#handleRequestGift" styleClass="primary-action-button" text="Richiedi regalo" />
-                              <VBox fx:id="thankYouSection" spacing="5.0">
-                                 <children>
-                                    <CheckBox fx:id="offerThankYouCheckBox" text="Offri un ringraziamento" />
-                                    <TextArea fx:id="thankYouMessageArea" promptText="Messaggio di ringraziamento (opzionale)" styleClass="thank-you-message" visible="false" wrapText="true" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </VBox>
-
-                        <!-- Auction Listing Actions -->
-                        <VBox fx:id="auctionActions" spacing="15.0" visible="false">
-                           <children>
-                              <!-- Current Bid Info -->
-                              <VBox spacing="5.0" styleClass="bid-info-section">
-                                 <children>
-                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                       <children>
-                                          <Text styleClass="bid-label" text="Offerta attuale:" />
-                                          <Text fx:id="currentBidValue" styleClass="current-bid-value" text="€ 0.00" />
-                                       </children>
-                                    </HBox>
-                                    <Text fx:id="timeRemainingLabel" styleClass="time-remaining" text="Tempo rimanente: 2 giorni 5 ore" />
-                                 </children>
-                              </VBox>
-
-                              <!-- Bid Input -->
-                              <VBox spacing="10.0">
-                                 <children>
-                                    <HBox spacing="10.0">
-                                       <children>
-                                          <TextField fx:id="bidAmountField" promptText="Inserisci offerta" styleClass="bid-input" HBox.hgrow="ALWAYS" />
-                                          <ComboBox fx:id="bidCurrencyComboBox" styleClass="currency-combo" />
-                                       </children>
-                                    </HBox>
-                                    <Text fx:id="minimumBidLabel" styleClass="minimum-bid-label" text="Offerta minima: € 26.00" />
-                                 </children>
-                              </VBox>
-
-                              <Button fx:id="placeBidButton" onAction="#handlePlaceBid" styleClass="primary-action-button" text="Fai un'offerta" />
-                           </children>
-                        </VBox>
-
-                        <!-- Common Actions -->
-                        <Separator />
-                        <VBox spacing="10.0">
-                           <children>
-                              <Button fx:id="contactSellerButton" onAction="#handleContactSeller" styleClass="contact-button" text="Contatta venditore" />
-                              <Button fx:id="reportListingButton" onAction="#handleReportListing" styleClass="report-button" text="Segnala inserzione" />
-                           </children>
-                        </VBox>
                      </VBox>
                   </children>
                </VBox>

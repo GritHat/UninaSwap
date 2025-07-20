@@ -1,10 +1,9 @@
 package com.uninaswap.client.controller;
-
-import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.*;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.AuctionListingViewModel;
 import com.uninaswap.client.viewmodel.GiftListingViewModel;
+import com.uninaswap.client.viewmodel.ItemViewModel;
 import com.uninaswap.client.viewmodel.ListingItemViewModel;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.viewmodel.SellListingViewModel;
@@ -15,6 +14,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -80,8 +80,6 @@ public class ListingDetailsController {
     private Text sellerRating;
 
     // Price/Action section
-    @FXML
-    private Text priceLabel;
     @FXML
     private Text priceValue;
     @FXML
@@ -151,7 +149,6 @@ public class ListingDetailsController {
     private final NavigationService navigationService = NavigationService.getInstance();
     private final FavoritesService favoritesService = FavoritesService.getInstance();
     private final ImageService imageService = ImageService.getInstance();
-    private final ListingService listingService = ListingService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
     private final UserSessionService sessionService = UserSessionService.getInstance();
 
@@ -180,13 +177,13 @@ public class ListingDetailsController {
 
     private void setupEventHandlers() {
         // Money offer checkbox handler
-        includeMoneyCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            moneyOfferSection.setVisible(newVal);
+        includeMoneyCheckBox.selectedProperty().addListener((_, _, newVal) -> {
+            setVisibleAndManaged(moneyOfferSection, newVal);
         });
 
         // Thank you offer checkbox handler
-        offerThankYouCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            thankYouMessageArea.setVisible(newVal);
+        offerThankYouCheckBox.selectedProperty().addListener((_, _, newVal) -> {
+            setVisibleAndManaged(thankYouMessageArea, newVal);
         });
     }
 
@@ -215,8 +212,17 @@ public class ListingDetailsController {
         // Seller information
         if (currentListing.getUser() != null) {
             sellerName.setText(currentListing.getUser().getUsername());
-            // TODO: Load seller rating and avatar
-            sellerRating.setText("⭐ 4.8 (127 recensioni)"); // Placeholder
+            
+            // Load seller rating (use actual rating from UserViewModel)
+            UserViewModel seller = currentListing.getUser();
+            if (seller.getReviewCount() > 0) {
+                sellerRating.setText(seller.getFormattedRating());
+            } else {
+                sellerRating.setText("Nuovo venditore");
+            }
+            
+            // Load seller profile image
+            loadSellerAvatar(seller);
         }
 
         // Price information
@@ -224,6 +230,40 @@ public class ListingDetailsController {
 
         // Items list
         populateItemsList();
+    }
+
+    private void loadSellerAvatar(UserViewModel seller) {
+        String profileImagePath = seller.getProfileImagePath();
+        
+        if (profileImagePath != null && !profileImagePath.isEmpty()) {
+            imageService.fetchImage(profileImagePath)
+                    .thenAccept(image -> Platform.runLater(() -> {
+                        if (image != null && !image.isError()) {
+                            sellerAvatar.setImage(image);
+                        } else {
+                            setDefaultSellerAvatar();
+                        }
+                    }))
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> {
+                            setDefaultSellerAvatar();
+                            System.err.println("Failed to load seller avatar: " + ex.getMessage());
+                        });
+                        return null;
+                    });
+        } else {
+            setDefaultSellerAvatar();
+        }
+    }
+ 
+    private void setDefaultSellerAvatar() {
+        try {
+            Image defaultAvatar = new Image(getClass()
+                    .getResourceAsStream("/images/icons/default_profile.png"));
+            sellerAvatar.setImage(defaultAvatar);
+        } catch (Exception e) {
+            System.err.println("Could not load default seller avatar: " + e.getMessage());
+        }
     }
 
     private String getListingCategory() {
@@ -256,14 +296,12 @@ public class ListingDetailsController {
     }
 
     private void setupSellPricing(SellListingViewModel sellListing) {
-        priceLabel.setText("Prezzo");
         String currency = sellListing.getCurrency() != null ? sellListing.getCurrency().getSymbol() : "€";
         priceValue.setText(currency + " " + sellListing.getPrice());
         priceDetails.setText("Prezzo fisso");
     }
 
     private void setupTradePricing(TradeListingViewModel tradeListing) {
-        priceLabel.setText("Tipo di scambio");
         priceValue.setText("Scambio");
 
         StringBuilder details = new StringBuilder();
@@ -280,7 +318,6 @@ public class ListingDetailsController {
     }
 
     private void setupGiftPricing(GiftListingViewModel giftListing) {
-        priceLabel.setText("Tipo");
         priceValue.setText("Regalo");
 
         StringBuilder details = new StringBuilder("Gratuito");
@@ -294,8 +331,6 @@ public class ListingDetailsController {
     }
 
     private void setupAuctionPricing(AuctionListingViewModel auctionListing) {
-        priceLabel.setText("Asta");
-
         BigDecimal currentBid = auctionListing.getHighestBid();
         String currency = auctionListing.getCurrency() != null ? auctionListing.getCurrency().getSymbol() : "€";
 
@@ -344,23 +379,28 @@ public class ListingDetailsController {
 
         if (currentListing.getItems() != null) {
             for (ListingItemViewModel item : currentListing.getItems()) {
-                HBox itemRow = createItemRow(item);
+                VBox itemRow = createExpandableItemRow(item);
                 itemsList.getChildren().add(itemRow);
             }
         }
     }
 
-    private HBox createItemRow(ListingItemViewModel item) {
-        HBox itemRow = new HBox(10);
-        itemRow.getStyleClass().add("item-row");
-
+    private VBox createItemRow(ListingItemViewModel item) {
+        VBox itemContainer = new VBox(8);
+        itemContainer.getStyleClass().add("item-row");
+        
+        // Main item header row
+        HBox headerRow = new HBox(10);
+        headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        headerRow.getStyleClass().add("item-header-row");
+        
         // Item image thumbnail
         ImageView itemImage = new ImageView();
-        itemImage.setFitHeight(40);
-        itemImage.setFitWidth(40);
+        itemImage.setFitHeight(50);
+        itemImage.setFitWidth(50);
         itemImage.setPreserveRatio(true);
         itemImage.getStyleClass().add("item-thumbnail");
-
+        
         // Load item image
         if (item.getItem().getImagePath() != null && !item.getItem().getImagePath().isEmpty()) {
             imageService.fetchImage(item.getItem().getImagePath())
@@ -374,18 +414,143 @@ public class ListingDetailsController {
         } else {
             setDefaultItemImage(itemImage);
         }
-
-        // Item details
-        VBox itemDetails = new VBox(2);
+        
+        // Main item info
+        VBox itemMainInfo = new VBox(3);
+        itemMainInfo.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        HBox.setHgrow(itemMainInfo, javafx.scene.layout.Priority.ALWAYS);
+        
+        // Item name and quantity row
+        HBox nameQuantityRow = new HBox(10);
+        nameQuantityRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        
         Text itemName = new Text(item.getName());
         itemName.getStyleClass().add("item-name");
-        Text itemQuantity = new Text("Quantità: " + item.getQuantity());
-        itemQuantity.getStyleClass().add("item-quantity");
+        
+        // Quantity badge
+        Label quantityBadge = new Label("x" + item.getQuantity());
+        quantityBadge.getStyleClass().add("quantity-badge");
+        
+        nameQuantityRow.getChildren().addAll(itemName, quantityBadge);
+        
+        // Category and condition row (if available)
+        HBox categoryConditionRow = new HBox(10);
+        categoryConditionRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        
+        if (item.getItem().getItemCategory() != null && !item.getItem().getItemCategory().isEmpty()) {
+            Label categoryLabel = new Label(item.getItem().getItemCategory());
+            categoryLabel.getStyleClass().add("item-category");
+            categoryConditionRow.getChildren().add(categoryLabel);
+        }
+        
+        if (item.getItem().getCondition() != null) {
+            Label conditionLabel = new Label(item.getItem().getConditionDisplayName());
+            conditionLabel.getStyleClass().add("item-condition");
+            categoryConditionRow.getChildren().add(conditionLabel);
+        }
+        
+        itemMainInfo.getChildren().addAll(nameQuantityRow);
+        if (!categoryConditionRow.getChildren().isEmpty()) {
+            itemMainInfo.getChildren().add(categoryConditionRow);
+        }
+        
+        headerRow.getChildren().addAll(itemImage, itemMainInfo);
+        itemContainer.getChildren().add(headerRow);
+        
+        // Additional details section (expandable)
+        VBox detailsSection = createItemDetailsSection(item);
+        if (detailsSection != null) {
+            itemContainer.getChildren().add(detailsSection);
+        }
+        
+        return itemContainer;
+    }
 
-        itemDetails.getChildren().addAll(itemName, itemQuantity);
-
-        itemRow.getChildren().addAll(itemImage, itemDetails);
-        return itemRow;
+    private VBox createItemDetailsSection(ListingItemViewModel item) {
+        ItemViewModel itemData = item.getItem();
+        
+        // Check if we have any additional details to show
+        boolean hasDescription = itemData.getDescription() != null && !itemData.getDescription().trim().isEmpty();
+        boolean hasBrand = itemData.getBrand() != null && !itemData.getBrand().trim().isEmpty();
+        boolean hasModel = itemData.getModel() != null && !itemData.getModel().trim().isEmpty();
+        boolean hasYear = itemData.getYear() > 0;
+        
+        if (!hasDescription && !hasBrand && !hasModel && !hasYear) {
+            return null; // No additional details to show
+        }
+        
+        VBox detailsContainer = new VBox(5);
+        detailsContainer.getStyleClass().add("item-details-section");
+        
+        // Product information grid
+        VBox productInfo = new VBox(3);
+        productInfo.getStyleClass().add("product-info-grid");
+        
+        // Brand and Model row
+        if (hasBrand || hasModel) {
+            HBox brandModelRow = new HBox(15);
+            brandModelRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            
+            if (hasBrand) {
+                VBox brandBox = new VBox(2);
+                Label brandLabel = new Label("Marca:");
+                brandLabel.getStyleClass().add("detail-label");
+                Text brandValue = new Text(itemData.getBrand());
+                brandValue.getStyleClass().add("detail-value");
+                brandBox.getChildren().addAll(brandLabel, brandValue);
+                brandModelRow.getChildren().add(brandBox);
+            }
+            
+            if (hasModel) {
+                VBox modelBox = new VBox(2);
+                Label modelLabel = new Label("Modello:");
+                modelLabel.getStyleClass().add("detail-label");
+                Text modelValue = new Text(itemData.getModel());
+                modelValue.getStyleClass().add("detail-value");
+                modelBox.getChildren().addAll(modelLabel, modelValue);
+                brandModelRow.getChildren().add(modelBox);
+            }
+            
+            productInfo.getChildren().add(brandModelRow);
+        }
+        
+        // Year row
+        if (hasYear) {
+            HBox yearRow = new HBox(10);
+            yearRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            
+            VBox yearBox = new VBox(2);
+            Label yearLabel = new Label("Anno:");
+            yearLabel.getStyleClass().add("detail-label");
+            Text yearValue = new Text(String.valueOf(itemData.getYear()));
+            yearValue.getStyleClass().add("detail-value");
+            yearBox.getChildren().addAll(yearLabel, yearValue);
+            yearRow.getChildren().add(yearBox);
+            
+            productInfo.getChildren().add(yearRow);
+        }
+        
+        if (!productInfo.getChildren().isEmpty()) {
+            detailsContainer.getChildren().add(productInfo);
+        }
+        
+        // Description section
+        if (hasDescription) {
+            VBox descriptionBox = new VBox(5);
+            descriptionBox.getStyleClass().add("item-description-section");
+            
+            Label descLabel = new Label("Descrizione:");
+            descLabel.getStyleClass().add("detail-label");
+            
+            Text descriptionText = new Text(itemData.getDescription());
+            descriptionText.getStyleClass().add("item-description-text");
+            descriptionText.setWrappingWidth(250); // Adjust based on your layout
+            
+            descriptionBox.getChildren().addAll(descLabel, descriptionText);
+            detailsContainer.getChildren().add(descriptionBox);
+        }
+        
+        return detailsContainer;
     }
 
     private void setDefaultItemImage(ImageView imageView) {
@@ -417,9 +582,16 @@ public class ListingDetailsController {
             if (imageUrls.size() > 1) {
                 setupImageNavigation();
                 createThumbnails();
+            } else {
+                // Hide navigation and thumbnails for single images
+                setVisibleAndManaged(imageNavigation, false);
+                setVisibleAndManaged(thumbnailScrollPane, false);
             }
         } else {
             setDefaultMainImage();
+            // Hide navigation and thumbnails when no images
+            setVisibleAndManaged(imageNavigation, false);
+            setVisibleAndManaged(thumbnailScrollPane, false);
         }
 
         updateImageNavigation();
@@ -446,9 +618,31 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * Helper method to set both visible and managed properties together
+     */
+    private void setVisibleAndManaged(Node node, boolean visible) {
+        node.setVisible(visible);
+        node.setManaged(visible);
+    }
+
+    /**
+     * Helper method to set multiple nodes visible and managed together
+     */
+    private void setVisibleAndManaged(boolean visible, Node... nodes) {
+        for (Node node : nodes) {
+            setVisibleAndManaged(node, visible);
+        }
+    }
+
+    // Update setupImageNavigation method
     private void setupImageNavigation() {
-        imageNavigation.setVisible(imageUrls.size() > 1);
-        updateImageCounter();
+        boolean hasMultipleImages = imageUrls.size() > 1;
+        setVisibleAndManaged(imageNavigation, hasMultipleImages);
+
+        if (hasMultipleImages) {
+            updateImageCounter();
+        }
     }
 
     private void updateImageNavigation() {
@@ -465,8 +659,16 @@ public class ListingDetailsController {
         }
     }
 
+    // Update createThumbnails method
     private void createThumbnails() {
         thumbnailContainer.getChildren().clear();
+
+        boolean hasMultipleImages = imageUrls.size() > 1;
+        setVisibleAndManaged(thumbnailScrollPane, hasMultipleImages);
+
+        if (!hasMultipleImages) {
+            return; // Don't create thumbnails if we don't have multiple images
+        }
 
         for (int i = 0; i < imageUrls.size(); i++) {
             final int index = i;
@@ -495,7 +697,6 @@ public class ListingDetailsController {
             thumbnailContainer.getChildren().add(thumbnail);
         }
 
-        thumbnailScrollPane.setVisible(true);
         updateThumbnailSelection();
     }
 
@@ -511,50 +712,71 @@ public class ListingDetailsController {
     }
 
     private void setupActionButtons() {
-        // Hide all action sections first
-        sellActions.setVisible(false);
-        tradeActions.setVisible(false);
-        giftActions.setVisible(false);
-        auctionActions.setVisible(false);
+        // Hide all action sections first (both visible and managed)
+        setVisibleAndManaged(false, sellActions, tradeActions, giftActions, auctionActions);
+        
+        // Also hide sub-sections
+        setVisibleAndManaged(tradeOptionsSection, false);
+        setVisibleAndManaged(moneyOfferSection, false);
+        setVisibleAndManaged(thankYouMessageArea, false);
+
+        // Check if user is the owner
+        boolean isOwner = currentListing.getUser() != null &&
+                sessionService.getUser() != null &&
+                currentListing.getUser().getId().equals(sessionService.getUser().getId());
 
         // Show appropriate actions based on listing type
         String listingType = currentListing.getListingTypeValue();
         switch (listingType.toUpperCase()) {
             case "SELL":
-                sellActions.setVisible(true);
+                setVisibleAndManaged(sellActions, true);
+                // For sell listings owned by current user, hide the make offer button
+                if (isOwner) {
+                    setVisibleAndManaged(makeOfferButton, false);
+                    // Keep buy now button visible but disabled with different text
+                    buyNowButton.setDisable(true);
+                    buyNowButton.setText("La tua inserzione");
+                } else {
+                    // For listings not owned by user, show both buttons
+                    setVisibleAndManaged(makeOfferButton, true);
+                    buyNowButton.setDisable(false);
+                    buyNowButton.setText("Acquista ora");
+                }
                 break;
             case "TRADE":
-                tradeActions.setVisible(true);
+                setVisibleAndManaged(tradeActions, true);
+                if (isOwner) {
+                    disableTradeActions();
+                }
                 break;
             case "GIFT":
-                giftActions.setVisible(true);
+                setVisibleAndManaged(giftActions, true);
+                if (isOwner) {
+                    disableGiftActions();
+                }
                 break;
             case "AUCTION":
-                auctionActions.setVisible(true);
+                setVisibleAndManaged(auctionActions, true);
+                if (isOwner) {
+                    disableAuctionActions();
+                }
                 break;
-        }
-
-        // Disable actions if user is the owner
-        boolean isOwner = currentListing.getUser() != null &&
-                sessionService.getUser() != null &&
-                currentListing.getUser().getId().equals(sessionService.getUser().getId());
-
-        if (isOwner) {
-            disableAllActionButtons();
         }
     }
 
-    private void disableAllActionButtons() {
-        buyNowButton.setDisable(true);
-        makeOfferButton.setDisable(true);
+    // Remove the old disableAllActionButtons method and replace with specific methods
+    private void disableTradeActions() {
         proposeTradeButton.setDisable(true);
-        requestGiftButton.setDisable(true);
-        placeBidButton.setDisable(true);
-
-        buyNowButton.setText("La tua inserzione");
-        makeOfferButton.setText("La tua inserzione");
         proposeTradeButton.setText("La tua inserzione");
+    }
+
+    private void disableGiftActions() {
+        requestGiftButton.setDisable(true);
         requestGiftButton.setText("La tua inserzione");
+    }
+
+    private void disableAuctionActions() {
+        placeBidButton.setDisable(true);
         placeBidButton.setText("La tua inserzione");
     }
 
@@ -592,7 +814,7 @@ public class ListingDetailsController {
             // Sync with server
             if (newFavoriteState) {
                 favoritesService.addFavoriteToServer(currentListing.getId())
-                        .thenAccept(favoriteViewModel -> Platform.runLater(() -> {
+                        .thenAccept(_ -> Platform.runLater(() -> {
                             // Server sync successful - observable lists updated via message handler
                             System.out.println("Successfully added listing to favorites: " + currentListing.getId());
                         }))
@@ -605,10 +827,9 @@ public class ListingDetailsController {
                         });
             } else {
                 favoritesService.removeFavoriteFromServer(currentListing.getId())
-                        .thenAccept(success -> Platform.runLater(() -> {
+                        .thenAccept(_ -> Platform.runLater(() -> {
                             // Server sync successful - observable lists updated via message handler
-                            System.out
-                                    .println("Successfully removed listing from favorites: " + currentListing.getId());
+                            System.out.println("Successfully removed listing from favorites: " + currentListing.getId());
                         }))
                         .exceptionally(ex -> {
                             // Revert UI on failure
@@ -916,5 +1137,116 @@ public class ListingDetailsController {
             UserViewModel userViewModel = currentListing.getUser();
             navigationService.openReportDialog(userViewModel, (Stage) backButton.getScene().getWindow());
         }
+    }
+
+    // Add this method to ListingDetailsController for expandable items
+
+    private VBox createExpandableItemRow(ListingItemViewModel item) {
+        VBox itemContainer = new VBox(0);
+        itemContainer.getStyleClass().add("item-row");
+        
+        // Create the main item row (always visible)
+        HBox mainRow = createMainItemRow(item);
+        
+        // Create the details section (expandable)
+        VBox detailsSection = createItemDetailsSection(item);
+        
+        if (detailsSection != null) {
+            // Make details initially hidden
+            detailsSection.setVisible(false);
+            detailsSection.setManaged(false);
+            
+            // Add expand/collapse functionality
+            Button expandButton = new Button("▼");
+            expandButton.getStyleClass().add("expand-button");
+            expandButton.setOnAction(e -> {
+                boolean isExpanded = detailsSection.isVisible();
+                detailsSection.setVisible(!isExpanded);
+                detailsSection.setManaged(!isExpanded);
+                expandButton.setText(isExpanded ? "▼" : "▲");
+            });
+            
+            // Add expand button to main row
+            mainRow.getChildren().add(expandButton);
+            
+            itemContainer.getChildren().addAll(mainRow, detailsSection);
+        } else {
+            itemContainer.getChildren().add(mainRow);
+        }
+        
+        return itemContainer;
+    }
+
+    private HBox createMainItemRow(ListingItemViewModel item) {
+        // Extract the main row creation logic from createItemRow
+        // This would be the header row code from the previous implementation
+        
+        HBox headerRow = new HBox(10);
+        headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        headerRow.getStyleClass().add("item-header-row");
+        
+        // Item image thumbnail
+        ImageView itemImage = new ImageView();
+        itemImage.setFitHeight(50);
+        itemImage.setFitWidth(50);
+        itemImage.setPreserveRatio(true);
+        itemImage.getStyleClass().add("item-thumbnail");
+        
+        // Load item image
+        if (item.getItem().getImagePath() != null && !item.getItem().getImagePath().isEmpty()) {
+            imageService.fetchImage(item.getItem().getImagePath())
+                    .thenAccept(image -> Platform.runLater(() -> {
+                        if (image != null && !image.isError()) {
+                            itemImage.setImage(image);
+                        } else {
+                            setDefaultItemImage(itemImage);
+                        }
+                    }));
+        } else {
+            setDefaultItemImage(itemImage);
+        }
+        
+        // Main item info
+        VBox itemMainInfo = new VBox(3);
+        itemMainInfo.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        HBox.setHgrow(itemMainInfo, javafx.scene.layout.Priority.ALWAYS);
+        
+        // Item name and quantity row
+        HBox nameQuantityRow = new HBox(10);
+        nameQuantityRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        
+        Label itemName = new Label(item.getName());
+        itemName.getStyleClass().add("item-name");
+        
+        // Quantity badge
+        Label quantityBadge = new Label("x" + item.getQuantity());
+        quantityBadge.getStyleClass().add("quantity-badge");
+        
+        nameQuantityRow.getChildren().addAll(itemName, quantityBadge);
+        
+        // Category and condition row (if available)
+        HBox categoryConditionRow = new HBox(10);
+        categoryConditionRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        
+        if (item.getItem().getItemCategory() != null && !item.getItem().getItemCategory().isEmpty()) {
+            Label categoryLabel = new Label(item.getItem().getItemCategory());
+            categoryLabel.getStyleClass().add("item-category");
+            categoryConditionRow.getChildren().add(categoryLabel);
+        }
+        
+        if (item.getItem().getCondition() != null) {
+            Label conditionLabel = new Label(item.getItem().getConditionDisplayName());
+            conditionLabel.getStyleClass().add("item-condition");
+            categoryConditionRow.getChildren().add(conditionLabel);
+        }
+        
+        itemMainInfo.getChildren().addAll(nameQuantityRow);
+        if (!categoryConditionRow.getChildren().isEmpty()) {
+            itemMainInfo.getChildren().add(categoryConditionRow);
+        }
+        
+        headerRow.getChildren().addAll(itemImage, itemMainInfo);
+        
+        return headerRow;
     }
 }

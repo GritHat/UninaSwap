@@ -48,12 +48,6 @@
     -fx-spacing: 15px;
 }
 
-.main-image-container {
-    -fx-background-color: #f8f9fa;
-    -fx-background-radius: 12px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 1);
-}
-
 .main-image {
     -fx-background-radius: 12px;
 }
@@ -61,7 +55,6 @@
 .image-navigation {
     -fx-background-color: rgba(0, 0, 0, 0.7);
     -fx-background-radius: 20px;
-    -fx-padding: 8 12 8 12;
 }
 
 .nav-button {
@@ -111,7 +104,7 @@
 .listing-title {
     -fx-font-size: 28px;
     -fx-font-weight: bold;
-    -fx-fill: #212529;
+    -fx-fill: -fx-primary;
 }
 
 .category-label {
@@ -139,18 +132,9 @@
 }
 
 .description-area {
-    -fx-background-color: #f8f9fa;
     -fx-background-radius: 8px;
-    -fx-padding: 12px;
     -fx-font-size: 14px;
     -fx-border-color: transparent;
-}
-
-/* Items List */
-.items-list {
-    -fx-background-color: #f8f9fa;
-    -fx-background-radius: 8px;
-    -fx-padding: 12px;
 }
 
 .item-row {
@@ -196,13 +180,6 @@
     -fx-fill: #ffc107;
 }
 
-/* Price Section */
-.price-section {
-    -fx-background-color: #f8f9fa;
-    -fx-background-radius: 12px;
-    -fx-padding: 20px;
-}
-
 .price-label {
     -fx-font-size: 16px;
     -fx-fill: #6c757d;
@@ -211,7 +188,7 @@
 .price-value {
     -fx-font-size: 32px;
     -fx-font-weight: bold;
-    -fx-fill: #28a745;
+    -fx-fill: -fx-primary-light;
 }
 
 .price-details {
@@ -224,54 +201,25 @@
     -fx-spacing: 15px;
 }
 
-.primary-action-button {
-    -fx-background-color: #007bff;
-    -fx-text-fill: white;
-    -fx-background-radius: 8px;
-    -fx-padding: 12 24 12 24;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-cursor: hand;
-}
-
-.primary-action-button:hover {
-    -fx-background-color: #0056b3;
-}
-
 .primary-action-button:disabled {
     -fx-background-color: #6c757d;
     -fx-cursor: default;
 }
 
-.secondary-action-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #007bff;
-    -fx-border-color: #007bff;
-    -fx-border-width: 2px;
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-padding: 12 24 12 24;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-cursor: hand;
-}
-
-.secondary-action-button:hover {
-    -fx-background-color: #007bff;
-    -fx-text-fill: white;
-}
-
 .contact-button {
-    -fx-background-color: #28a745;
-    -fx-text-fill: white;
-    -fx-background-radius: 8px;
+    -fx-background-color: -fx-background-light;
+    -fx-text-fill: -fx-primary-light;
+    -fx-border-color: -fx-primary-light !important;
+    -fx-border-width: 2px !important;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
     -fx-padding: 10 20 10 20;
     -fx-font-weight: bold;
     -fx-cursor: hand;
 }
 
 .contact-button:hover {
-    -fx-background-color: #218838;
+    -fx-background-color: -fx-primary-ultralight;
 }
 
 .report-button {
@@ -290,7 +238,6 @@
 .bid-info-section {
     -fx-background-color: #fff3cd;
     -fx-background-radius: 8px;
-    -fx-padding: 12px;
 }
 
 .bid-label {
@@ -337,4 +284,420 @@
     -fx-background-radius: 6px;
     -fx-padding: 8px;
     -fx-max-height: 80px;
+}
+
+/* Ensure proper spacing adjustments when elements are hidden */
+.image-gallery-section {
+    -fx-spacing: 15px;
+}
+
+.image-gallery-section > * {
+    -fx-spacing: inherit;
+}
+
+/* Action buttons section with proper spacing */
+.action-buttons-section {
+    -fx-spacing: 5px;
+    -fx-alignment: TOP_CENTER;
+}
+
+.action-buttons-section > * {
+    -fx-spacing: inherit;
+}
+
+/* Ensure VBox containers don't leave gaps when children are hidden */
+.action-buttons-section .vbox {
+    -fx-spacing: 5px;
+}
+
+/* Primary and secondary action buttons */
+.primary-action-button {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 20px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+    -fx-min-width: 150px;
+}
+
+.primary-action-button:hover {
+    -fx-background-color: -fx-primary-light;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
+
+.secondary-action-button {
+    -fx-background-color: white;
+    -fx-border-color: -fx-primary;
+    -fx-border-width: 1px;
+    -fx-text-fill: -fx-primary;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-padding: 10px 20px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+    -fx-min-width: 150px;
+}
+
+.secondary-action-button:hover {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.3), 5, 0, 0, 2);
+}
+
+/* Money input and currency combo styling */
+.money-input {
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-color: -fx-light-grey;
+    -fx-padding: 6px 10px;
+    -fx-pref-width: 100px;
+}
+
+.currency-combo {
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-color: -fx-light-grey;
+    -fx-padding: 6px 8px;
+    -fx-pref-width: 80px;
+}
+
+/* Thank you message area */
+.thank-you-message {
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-color: -fx-light-grey;
+    -fx-padding: 8px;
+    -fx-pref-height: 60px;
+    -fx-max-height: 60px;
+}
+
+/* Bid input styling */
+.bid-input {
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-border-color: -fx-light-grey;
+    -fx-padding: 8px 10px;
+}
+
+.bid-info-section {
+    -fx-background-color: #F8F9FA;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px;
+    -fx-spacing: 5px;
+}
+
+.bid-label {
+    -fx-font-weight: bold;
+    -fx-fill: -fx-text-mid;
+}
+
+.current-bid-value {
+    -fx-font-weight: bold;
+    -fx-fill: -fx-primary;
+    -fx-font-size: 16px;
+}
+
+.time-remaining {
+    -fx-fill: -fx-text-subtle;
+    -fx-font-size: 12px;
+}
+
+.minimum-bid-label {
+    -fx-fill: -fx-text-subtle;
+    -fx-font-size: 11px;
+    -fx-font-style: italic;
+}
+
+/* Enhanced Items List Styling */
+.items-list {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px;
+    -fx-spacing: 12px;
+}
+
+.item-row {
+    -fx-padding: 12px;
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-spacing: 8px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 3, 0, 0, 1);
+}
+
+.item-row:hover {
+    -fx-border-color: -fx-primary-light;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.15), 6, 0, 0, 2);
+}
+
+/* Item header row */
+.item-header-row {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 12px;
+}
+
+.item-thumbnail {
+    -fx-background-radius: 6px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
+}
+
+.item-name {
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-fill: -fx-text-dark;
+}
+
+.quantity-badge {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 3px 8px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.item-category {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1976d2;
+    -fx-background-radius: 10px;
+    -fx-padding: 2px 8px;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+.item-condition {
+    -fx-background-color: #e8f5e8;
+    -fx-text-fill: #2e7d32;
+    -fx-background-radius: 10px;
+    -fx-padding: 2px 8px;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+/* Item details section */
+.item-details-section {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-spacing: 8px;
+}
+
+.product-info-grid {
+    -fx-spacing: 6px;
+}
+
+.detail-label {
+    -fx-text-fill: -fx-text-subtle;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.detail-value {
+    -fx-font-size: 13px;
+    -fx-font-weight: normal;
+    -fx-fill: -fx-text-dark;
+}
+
+.item-description-section {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-spacing: 4px;
+}
+
+.item-description-text {
+    -fx-font-size: 12px;
+    -fx-fill: -fx-text-mid;
+    -fx-line-spacing: 2px;
+}
+
+/* Responsive adjustments for item details */
+@media (max-width: 800px) {
+    .item-row {
+        -fx-padding: 10px;
+    }
+    
+    .item-thumbnail {
+        -fx-fit-height: 40px;
+        -fx-fit-width: 40px;
+    }
+    
+    .item-name {
+        -fx-font-size: 14px;
+    }
+    
+    .item-description-text {
+        -fx-wrapping-width: 200px;
+    }
+}
+
+@media (max-width: 600px) {
+    .item-header-row {
+        -fx-spacing: 8px;
+    }
+    
+    .item-details-section {
+        -fx-padding: 8px;
+    }
+    
+    .product-info-grid HBox {
+        -fx-spacing: 10px;
+    }
+    
+    .item-description-text {
+        -fx-wrapping-width: 180px;
+    }
+}
+
+/* Special styling for different conditions */
+.item-condition.new {
+    -fx-background-color: #e8f5e8;
+    -fx-text-fill: #2e7d32;
+}
+
+.item-condition.like-new {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1565c0;
+}
+
+.item-condition.very-good {
+    -fx-background-color: #f3e5f5;
+    -fx-text-fill: #7b1fa2;
+}
+
+.item-condition.good {
+    -fx-background-color: #fff3e0;
+    -fx-text-fill: #ef6c00;
+}
+
+.item-condition.acceptable {
+    -fx-background-color: #fff8e1;
+    -fx-text-fill: #f57f17;
+}
+
+.item-condition.for-parts {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #c62828;
+}
+
+/* Empty items list styling */
+.items-list:empty::after {
+    content: "Nessun oggetto incluso";
+    -fx-text-fill: -fx-text-subtle;
+    -fx-font-style: italic;
+    -fx-font-size: 14px;
+    -fx-alignment: center;
+    -fx-padding: 20px;
+}
+
+/* Hover effects */
+.item-row .item-thumbnail:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+    -fx-cursor: hand;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Animation for item rows */
+.item-row {
+    -fx-transition-duration: 0.2s;
+}
+
+.item-thumbnail {
+    -fx-transition-duration: 0.2s;
+}
+
+/* Add these styles to the existing CSS file */
+
+/* Seller Section Styling */
+.seller-avatar {
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 4, 0, 0, 2);
+    -fx-cursor: hand;
+}
+
+.seller-avatar:hover {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.3), 6, 0, 0, 3);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.seller-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: -fx-text-dark;
+}
+
+.seller-rating {
+    -fx-font-size: 13px;
+    -fx-fill: -fx-text-mid;
+}
+
+/* Contact button styling enhancement */
+.contact-button {
+    -fx-background-color: -fx-background-light;
+    -fx-text-fill: -fx-primary-light;
+    -fx-border-color: -fx-primary-light !important;
+    -fx-border-width: 2px !important;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-padding: 10 20 10 20;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.contact-button:hover {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.2), 5, 0, 0, 2);
+}
+
+.contact-button:pressed {
+    -fx-background-color: -fx-primary-light;
+    -fx-text-fill: white;
+    -fx-translate-y: 1px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    .seller-avatar {
+        -fx-fit-height: 35px;
+        -fx-fit-width: 35px;
+    }
+    
+    .seller-name {
+        -fx-font-size: 14px;
+    }
+    
+    .seller-rating {
+        -fx-font-size: 11px;
+    }
+}
+
+@media (max-width: 600px) {
+    .seller-avatar {
+        -fx-fit-height: 30px;
+        -fx-fit-width: 30px;
+    }
+    
+    .contact-button {
+        -fx-padding: 8 15 8 15;
+        -fx-font-size: 12px;
+    }
 }

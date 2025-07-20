@@ -3,8 +3,6 @@ package com.uninaswap.client.mapper;
 import com.uninaswap.client.viewmodel.*;
 import com.uninaswap.common.dto.*;
 
-import javafx.collections.ObservableList;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -162,6 +160,8 @@ public class ViewModelMapper {
         viewModel.setItemCategory(dto.getCategory());
         viewModel.setCondition(dto.getCondition());
         viewModel.setYear(dto.getYearOfProduction());
+        viewModel.setBrand(dto.getBrand());
+        viewModel.setModel(dto.getModel());
         viewModel.setTotalQuantity(dto.getStockQuantity());
         viewModel.setAvailableQuantity(dto.getAvailableQuantity());
         viewModel.setImagePath(dto.getImagePath());
@@ -185,6 +185,8 @@ public class ViewModelMapper {
         dto.setCategory(viewModel.getItemCategory());
         dto.setCondition(viewModel.getCondition());
         dto.setYearOfProduction(viewModel.getYear());
+        dto.setBrand(viewModel.getBrand());
+        dto.setModel(viewModel.getModel());
         dto.setStockQuantity(viewModel.getTotalQuantity());
         dto.setAvailableQuantity(viewModel.getAvailableQuantity());
         dto.setImagePath(viewModel.getImagePath());

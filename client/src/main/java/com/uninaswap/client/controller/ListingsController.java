@@ -15,7 +15,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
@@ -28,7 +27,13 @@ public class ListingsController implements Refreshable {
     private Label titleLabel;
 
     @FXML
-    private Label userListingsCountLabel;
+    private Label userListingsActiveCountLabel;
+
+    @FXML
+    private Label userListingsCompletedCountLabel;
+
+    @FXML
+    private Label userListingsTotalCountLabel;
 
     @FXML
     private ComboBox<String> statusFilterComboBox;
@@ -301,12 +306,12 @@ public class ListingsController implements Refreshable {
     }
 
     private void updateListingsCount() {
-        int total = userListings.size();
-        int active = (int) userListings.stream().filter(l -> l.getStatus() == ListingStatus.ACTIVE).count();
-        
-        userListingsCountLabel.setText(String.format(
-                localeService.getMessage("listings.count.summary", "%d total (%d active)"),
-                total, active));
+        long total = userListings.size();
+        long active = userListings.stream().filter(l -> l.getStatus() == ListingStatus.ACTIVE).count();
+        long completed = userListings.stream().filter(l -> l.getStatus() == ListingStatus.COMPLETED).count();
+        userListingsActiveCountLabel.setText(String.valueOf(active));
+        userListingsCompletedCountLabel.setText(String.valueOf(completed));
+        userListingsTotalCountLabel.setText(String.valueOf(total));
     }
 
     private void handleViewListing(ListingViewModel listing) {

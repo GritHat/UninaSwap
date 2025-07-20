@@ -2913,17 +2913,75 @@
 }
 
 .filter-combo-box {
-    -fx-background-radius: 15px;
-    -fx-border-radius: 15px;
-    -fx-border-color: -fx-light-grey;
-    -fx-padding: 8px 12px;
-    -fx-font-size: 14px;
+    -fx-background-color: -fx-primary;
+    -fx-border-color: -fx-primary;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-border-width: 0px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
 }
 
 .filter-combo-box:focused {
     -fx-border-color: -fx-primary-light;
-    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.2), 3, 0, 0, 0);
 }
+
+.filter-combo-box .label {
+    -fx-text-fill: -fx-text-dark;
+    -fx-font-size: 12px;
+    -fx-padding: 8px 12px;
+}
+
+.filter-combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 8px;
+}
+
+.filter-combo-box .arrow-button .arrow {
+    -fx-background-color: -fx-primary;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+    -fx-scale-shape: true;
+    -fx-pref-width: 6px;
+    -fx-pref-height: 4px;
+}
+
+.filter-combo-box:hover .arrow-button .arrow {
+    -fx-background-color: -fx-primary-light;
+}
+
+/* Category combo box dropdown styling */
+.filter-combo-box .list-view {
+    -fx-background-color: white;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 8, 0, 0, 2);
+    -fx-max-height: 250px;
+}
+
+.filter-combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-dark;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 12px;
+}
+
+.filter-combo-box .list-cell:hover {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-text-fill: -fx-primary;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+.filter-combo-box .list-cell:selected {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
 
 .clear-filters-button {
     -fx-background-color: transparent;
@@ -3373,4 +3431,417 @@
 
 .header-icon-button {
     position: relative; /* Needed for ::after positioning */
+}
+
+/* =========================
+   OFFERS VIEW STYLING
+   ========================= */
+
+/* Offers filters section */
+.offers-filters-section {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 4, 0, 0, 1);
+}
+
+/* Reuse existing filter label styling */
+.offers-filters-section .filter-label {
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+/* Reuse existing filter search field styling */
+.offers-filters-section .filter-search-field {
+    -fx-background-color: white;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 12px;
+    -fx-prompt-text-fill: -fx-text-subtle;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.offers-filters-section .filter-search-field:focused {
+    -fx-border-color: -fx-primary-light;
+    -fx-background-color: -fx-primary-ultralight, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 15px, 13px;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.3), 4, 0, 0, 0);
+}
+
+/* Reuse existing filter combo box styling */
+.offers-filters-section .filter-combo-box {
+    -fx-background-color: white;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-padding: 6px 8px;
+    -fx-font-size: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.offers-filters-section .filter-combo-box:focused {
+    -fx-border-color: -fx-primary-light;
+    -fx-background-color: -fx-primary-ultralight, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 15px, 13px;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.3), 4, 0, 0, 0);
+}
+
+.offers-filters-section .filter-combo-box .label {
+    -fx-text-fill: -fx-text-dark;
+    -fx-font-size: 12px;
+}
+
+.offers-filters-section .filter-combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0 13px 13px 0;
+    -fx-border-radius: 0 13px 13px 0;
+    -fx-padding: 4px 6px;
+}
+
+.offers-filters-section .filter-combo-box .arrow-button .arrow {
+    -fx-background-color: -fx-primary;
+    -fx-shape: "M 0 3 L 4 0 L 8 3 Z";
+    -fx-scale-shape: true;
+}
+
+.offers-filters-section .filter-combo-box:hover .arrow-button .arrow {
+    -fx-background-color: -fx-primary-light;
+}
+
+/* Clear filters button styling */
+.offers-filters-section .clear-filters-button {
+    -fx-background-color: transparent;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-padding: 6px 12px;
+    -fx-font-size: 11px;
+    -fx-text-fill: -fx-primary;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.offers-filters-section .clear-filters-button:hover {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.2), 4, 0, 0, 2);
+}
+
+.offers-filters-section .clear-filters-button:pressed {
+    -fx-background-color: -fx-primary-light;
+    -fx-text-fill: white;
+    -fx-translate-y: 1px;
+}
+
+/* Ensure proper dropdown styling for offer filters */
+.offers-filters-section .filter-combo-box .list-view {
+    -fx-background-color: white;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 8, 0, 0, 4);
+}
+
+.offers-filters-section .filter-combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-dark;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 12px;
+}
+
+.offers-filters-section .filter-combo-box .list-cell:hover {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-text-fill: -fx-primary;
+}
+
+.offers-filters-section .filter-combo-box .list-cell:selected {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Responsive adjustments for offers filters */
+@media (max-width: 1000px) {
+    .offers-filters-section .filter-combo-box {
+        -fx-pref-width: 130px;
+    }
+    
+    .offers-filters-section .filter-search-field {
+        -fx-pref-width: 200px;
+    }
+}
+
+@media (max-width: 800px) {
+    .offers-filters-section {
+        -fx-padding: 10px;
+    }
+    
+    .offers-filters-section .filter-combo-box {
+        -fx-pref-width: 110px;
+        -fx-font-size: 11px;
+    }
+    
+    .offers-filters-section .filter-search-field {
+        -fx-pref-width: 180px;
+        -fx-font-size: 11px;
+    }
+    
+    .offers-filters-section .clear-filters-button {
+        -fx-font-size: 10px;
+        -fx-padding: 5px 10px;
+    }
+}
+
+/* Integration with existing offers styling */
+.offers-tab-pane {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 10, 0, 0, 2);
+}
+
+/* Ensure proper spacing in the offers view */
+.offers-filters-section + .offers-tab-pane {
+    -fx-margin: 10px 0 0 0;
+}
+
+/* Add these styles to your CSS file */
+
+/* =========================
+   OFFERED ITEMS STYLING  
+   ========================= */
+
+/* Offered items list container */
+.offered-items-list {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-spacing: 12px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+/* Individual offer item row */
+.offer-item-row {
+    -fx-padding: 12px;
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-spacing: 8px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 3, 0, 0, 1);
+}
+
+.offer-item-row:hover {
+    -fx-border-color: -fx-primary-light;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.15), 6, 0, 0, 2);
+}
+
+/* Offer item header row */
+.offer-item-header-row {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 12px;
+}
+
+/* Offer item thumbnail */
+.offer-item-thumbnail {
+    -fx-background-radius: 6px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
+}
+
+/* Offer item name */
+.offer-item-name {
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-fill: -fx-text-dark;
+}
+
+/* Offer quantity badge */
+.offer-quantity-badge {
+    -fx-background-color: -fx-info;
+    -fx-text-fill: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 3px 8px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+/* Offer item condition */
+.offer-item-condition {
+    -fx-background-color: #e8f5e8;
+    -fx-text-fill: #2e7d32;
+    -fx-background-radius: 10px;
+    -fx-padding: 2px 8px;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+/* Offer expand button */
+.offer-expand-button {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-text-fill: -fx-primary;
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-padding: 4px 8px;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
+}
+
+.offer-expand-button:hover {
+    -fx-background-color: -fx-primary-light;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.3), 4, 0, 0, 2);
+}
+
+/* Offer item details section */
+.offer-item-details-section {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 6px;
+    -fx-padding: 10px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-spacing: 8px;
+}
+
+/* Offer item info grid */
+.offer-item-info-grid {
+    -fx-spacing: 6px;
+}
+
+/* Offer detail labels and values */
+.offer-detail-label {
+    -fx-text-fill: -fx-text-subtle;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.offer-detail-value {
+    -fx-font-size: 13px;
+    -fx-font-weight: normal;
+    -fx-fill: -fx-text-dark;
+}
+
+/* Specific condition styling for offer items */
+.offer-item-condition.new {
+    -fx-background-color: #e8f5e8;
+    -fx-text-fill: #2e7d32;
+}
+
+.offer-item-condition.like-new {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1565c0;
+}
+
+.offer-item-condition.very-good {
+    -fx-background-color: #f3e5f5;
+    -fx-text-fill: #7b1fa2;
+}
+
+.offer-item-condition.good {
+    -fx-background-color: #fff3e0;
+    -fx-text-fill: #ef6c00;
+}
+
+.offer-item-condition.acceptable {
+    -fx-background-color: #fff8e1;
+    -fx-text-fill: #f57f17;
+}
+
+.offer-item-condition.for-parts {
+    -fx-background-color: #ffebee;
+    -fx-text-fill: #c62828;
+}
+
+/* Empty offered items list styling */
+.offered-items-list:empty::after {
+    content: "Nessun oggetto offerto";
+    -fx-text-fill: -fx-text-subtle;
+    -fx-font-style: italic;
+    -fx-font-size: 14px;
+    -fx-alignment: center;
+    -fx-padding: 20px;
+}
+
+/* Hover effects for offer item thumbnails */
+.offer-item-row .offer-item-thumbnail:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+    -fx-cursor: hand;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Animation for offer item rows */
+.offer-item-row {
+    -fx-transition-duration: 0.2s;
+}
+
+.offer-item-thumbnail {
+    -fx-transition-duration: 0.2s;
+}
+
+/* Responsive adjustments for offer items */
+@media (max-width: 800px) {
+    .offer-item-row {
+        -fx-padding: 10px;
+    }
+    
+    .offer-item-thumbnail {
+        -fx-fit-height: 40px;
+        -fx-fit-width: 40px;
+    }
+    
+    .offer-item-name {
+        -fx-font-size: 14px;
+    }
+    
+    .offer-item-details-section {
+        -fx-padding: 8px;
+    }
+}
+
+@media (max-width: 600px) {
+    .offer-item-header-row {
+        -fx-spacing: 8px;
+    }
+    
+    .offer-item-details-section {
+        -fx-padding: 6px;
+    }
+    
+    .offer-item-info-grid HBox {
+        -fx-spacing: 8px;
+    }
+}
+
+/* Integration with main offers styling */
+.offeredItemsSection {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+/* Subsection title for offered items */
+.offeredItemsSection .subsection-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: -fx-primary;
+    -fx-padding: 0 0 10px 0;
 }

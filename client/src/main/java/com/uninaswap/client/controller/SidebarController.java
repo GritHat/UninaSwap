@@ -2,6 +2,8 @@ package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
+import com.uninaswap.client.service.UserSessionService;
+
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import java.io.IOException;
@@ -41,6 +43,7 @@ public class SidebarController {
 
     private final NavigationService navigationService;
     private final LocaleService localeService = LocaleService.getInstance();
+    private final UserSessionService userSessionService = UserSessionService.getInstance();
 
     private MainController mainController;
 
@@ -153,7 +156,7 @@ public class SidebarController {
     public void showProfile(MouseEvent event) {
         setSelectedButton(profileButton);
         try {
-            Parent profileView = navigationService.loadProfileView();
+            Parent profileView = navigationService.loadProfileView(userSessionService.getUserViewModel());
             mainController.setContent(profileView);
         } catch (IOException e) {
             e.printStackTrace();

@@ -223,6 +223,7 @@ public class ListingDetailsController {
             
             // Load seller profile image
             loadSellerAvatar(seller);
+            setupSellerAvatarClickHandler();
         }
 
         // Price information
@@ -794,6 +795,37 @@ public class ListingDetailsController {
             favoriteIcon.setImage(icon);
         } catch (Exception e) {
             System.err.println("Could not load favorite icon: " + e.getMessage());
+        }
+    }
+
+    // Add this to the initialize() method or create a separate setup method
+    private void setupSellerAvatarClickHandler() {
+        if (sellerAvatar != null) {
+            sellerAvatar.setOnMouseClicked(event -> {
+                if (currentListing != null && currentListing.getUser() != null) {
+                    handleViewSellerProfile();
+                }
+            });
+        }
+    }
+
+    // Add this new method
+    private void handleViewSellerProfile() {
+        if (currentListing != null && currentListing.getUser() != null) {
+            UserViewModel seller = currentListing.getUser();
+            try {
+                // Navigate to seller's profile or show seller info dialog
+                navigationService.navigateToProfileView(seller);
+            } catch (Exception e) {
+                System.err.println("Failed to open seller profile: " + e.getMessage());
+                // Fallback: show seller info in an alert
+                AlertHelper.showInformationAlert(
+                    "Profilo Venditore",
+                    seller.getDisplayName(),
+                    "Rating: " + seller.getFormattedRating() + "\n" +
+                    "Membro dal: " + (seller.getCreatedAt() != null ? seller.getCreatedAt().toLocalDate() : "N/A")
+                );
+            }
         }
     }
 

@@ -42,23 +42,55 @@
               </padding>
             </HBox>
             
-            <!-- Refresh button -->
-            <HBox alignment="CENTER_RIGHT">
-              <children>
-                <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#handleRefreshOffers" text="%button.refresh">
-                  <graphic>
-                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                      <image>
-                        <Image url="@../images/icons/refresh.png"/>
-                      </image>
-                    </ImageView>
-                  </graphic>
-                </Button>
-              </children>
+            <!-- Filters Section -->
+            <VBox spacing="10.0" styleClass="offers-filters-section">
               <VBox.margin>
-                <Insets right="15.0"/>
+                <Insets bottom="10.0" left="15.0" right="15.0" />
               </VBox.margin>
-            </HBox>
+              
+              <!-- First row: Search and Status filter -->
+              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <children>
+                  <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                    <children>
+                      <Label styleClass="filter-label" text="Cerca nelle offerte:" />
+                      <TextField fx:id="searchField" promptText="Cerca per titolo, utente..." styleClass="filter-search-field" />
+                    </children>
+                  </VBox>
+                  
+                  <VBox spacing="5.0">
+                    <children>
+                      <Label styleClass="filter-label" text="Stato:" />
+                      <ComboBox fx:id="statusFilterComboBox" prefWidth="150.0" promptText="Tutti gli stati" styleClass="filter-combo-box" />
+                    </children>
+                  </VBox>
+                  
+                  <VBox spacing="5.0">
+                    <children>
+                      <Label styleClass="filter-label" text="Tipo:" />
+                      <ComboBox fx:id="typeFilterComboBox" prefWidth="120.0" promptText="Tutti i tipi" styleClass="filter-combo-box" />
+                    </children>
+                  </VBox>
+                </children>
+              </HBox>
+              
+              <!-- Second row: Action buttons -->
+              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                <children>
+                  <Button fx:id="clearFiltersButton" onAction="#handleClearFilters" styleClass="clear-filters-button" text="Pulisci filtri" />
+                  <Region HBox.hgrow="ALWAYS" />
+                  <Button fx:id="refreshButton" mnemonicParsing="false" onAction="#handleRefreshOffers" text="%button.refresh">
+                    <graphic>
+                      <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                          <Image url="@../images/icons/refresh.png"/>
+                        </image>
+                      </ImageView>
+                    </graphic>
+                  </Button>
+                </children>
+              </HBox>
+            </VBox>
             
             <!-- Tab pane for different offer states -->
             <TabPane styleClass="offers-tab-pane" prefHeight="380.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
@@ -120,16 +152,8 @@
                             <VBox fx:id="offeredItemsSection" spacing="10.0" visible="false">
                               <children>
                                 <Text styleClass="subsection-title" text="%offers.details.items.offered" />
-                                <TableView fx:id="offeredItemsTable" prefHeight="150.0">
-                                  <columns>
-                                    <TableColumn fx:id="itemNameColumn" prefWidth="150.0" text="%offers.items.name"/>
-                                    <TableColumn fx:id="itemConditionColumn" prefWidth="100.0" text="%offers.items.condition"/>
-                                    <TableColumn fx:id="itemQuantityColumn" prefWidth="80.0" text="%offers.items.quantity"/>
-                                  </columns>
-                                  <placeholder>
-                                    <Label text="%offers.items.empty" />
-                                  </placeholder>
-                                </TableView>
+                                <!-- Replace TableView with VBox for item cards -->
+                                <VBox fx:id="offeredItemsList" spacing="8.0" styleClass="offered-items-list" />
                               </children>
                             </VBox>
                             

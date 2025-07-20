@@ -152,7 +152,7 @@ public class UserMenuDropdownController {
     private void handleViewProfile() {
         closeDropdown();
         try {
-            navigationService.navigateToProfileView();
+            navigationService.navigateToProfileView(userSessionService.getUserViewModel());
         } catch (Exception e) {
             System.err.println("Failed to navigate to profile: " + e.getMessage());
         }

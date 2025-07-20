@@ -294,11 +294,12 @@ public class NavigationService {
     /**
      * Load the profile view
      */
-    public Parent loadProfileView() throws IOException {
+    public Parent loadProfileView(UserViewModel user) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/ProfileView.fxml");
         Parent profileView = loaderBundle.getView();
 
         ProfileController controller = loaderBundle.getLoader().getController();
+        controller.loadProfile(user);
         controller.registerMessageHandler();
 
         return profileView;
@@ -458,8 +459,8 @@ public class NavigationService {
         mainController.updateSidebarButtonSelection("offers");
     }
 
-    public void navigateToProfileView() throws IOException {
-        mainController.setContent(loadProfileView());
+    public void navigateToProfileView(UserViewModel user) throws IOException {
+        mainController.setContent(loadProfileView(user));
         mainController.updateSidebarButtonSelection("profile");
     }
 

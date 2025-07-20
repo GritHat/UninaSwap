@@ -60,7 +60,7 @@ public class FavoritesDrawerController {
     private final FavoritesService favoritesService = FavoritesService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
     private final NavigationService navigationService = NavigationService.getInstance();
-    private final UserSessionService sessionService = UserSessionService.getInstance();
+    private final UserSessionService userSessionService = UserSessionService.getInstance();
 
     // State
     private final BooleanProperty drawerVisible = new SimpleBooleanProperty(false);
@@ -492,7 +492,7 @@ public class FavoritesDrawerController {
 
     private void handleUserClick(UserViewModel user) {
         try {
-            Parent profileView = navigationService.loadProfileView();
+            Parent profileView = navigationService.loadProfileView(userSessionService.getUserViewModel());
             mainController.setContent(profileView);
         } catch (Exception e) {
             AlertHelper.showErrorAlert(

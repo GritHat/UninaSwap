@@ -12,7 +12,7 @@
             "default": true
         }
     ],
-    "java.jdt.ls.vmargs": "-Xms4G -Xmx12G -XX:+UseZGC -XX:+UseStringDeduplication -Dsun.zip.disableMemoryMapping=true",
+    "java.jdt.ls.vmargs": "-Xms4G -Xmx24G -XX:+UseZGC -XX:+UseStringDeduplication -Dsun.zip.disableMemoryMapping=true",
     "java.completion.filteredTypes": ["java.awt.*", "com.sun.*"],
     "java.referencesCodeLens.enabled": false,
     "java.format.enabled": false,

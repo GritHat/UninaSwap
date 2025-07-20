@@ -3,7 +3,11 @@ package com.uninaswap.client.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.text.View;
+
 import com.uninaswap.client.constants.EventTypes;
+import com.uninaswap.client.mapper.ViewModelMapper;
+import com.uninaswap.client.viewmodel.UserViewModel;
 import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.AuthMessage;
 
@@ -68,6 +72,10 @@ public class UserSessionService {
      */
     public UserDTO getUser() {
         return user;
+    }
+
+    public UserViewModel getUserViewModel() {
+        return ViewModelMapper.getInstance().toViewModel(user);
     }
 
     /**

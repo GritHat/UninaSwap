@@ -3,6 +3,7 @@ package com.uninaswap.client.controller;
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.EventBusService;
+import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.OfferService;
@@ -13,16 +14,33 @@ import com.uninaswap.common.enums.OfferStatus;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class OffersController {
+
+    // Filter controls
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<String> statusFilterComboBox;
+    @FXML
+    private ComboBox<String> typeFilterComboBox;
+    @FXML
+    private Button clearFiltersButton;
 
     // Received offers tab
     @FXML
@@ -92,13 +110,7 @@ public class OffersController {
     @FXML
     private VBox offeredItemsSection;
     @FXML
-    private TableView<OfferItemViewModel> offeredItemsTable;
-    @FXML
-    private TableColumn<OfferItemViewModel, String> itemNameColumn;
-    @FXML
-    private TableColumn<OfferItemViewModel, String> itemConditionColumn;
-    @FXML
-    private TableColumn<OfferItemViewModel, Integer> itemQuantityColumn;
+    private VBox offeredItemsList;
 
     // Action buttons
     @FXML
@@ -116,24 +128,24 @@ public class OffersController {
     private final EventBusService eventBus = EventBusService.getInstance();
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
     private final NavigationService navigationService = NavigationService.getInstance();
+    private final ImageService imageService = ImageService.getInstance();
 
     // Current selected offer
     private OfferViewModel selectedOffer;
+    
+    // Filtered lists for tables
+    private FilteredList<OfferViewModel> filteredReceivedOffers;
+    private FilteredList<OfferViewModel> filteredSentOffers;
+    private FilteredList<OfferViewModel> filteredHistoryOffers;
 
     @FXML
     public void initialize() {
+        setupFilters();
         setupReceivedOffersTable();
         setupSentOffersTable();
         setupHistoryTable();
-        setupOfferedItemsTable();
         setupSelectionHandlers();
-
-        // Bind tables directly to service observable lists
-        receivedOffersTable.setItems(offerService.getReceivedOffersList());
-        sentOffersTable.setItems(offerService.getUserOffersList());
-
-        // Load offers
-        refreshOffers();
+        setupFilteredLists();
 
         // Subscribe to events
         eventBus.subscribe(EventTypes.OFFER_UPDATED, _ -> refreshOffers());
@@ -144,6 +156,122 @@ public class OffersController {
                 System.out.println("OffersController: Cleared view on logout");
             });
         });
+
+        // Load offers
+        refreshOffers();
+    }
+
+    private void setupFilters() {
+        // Status filter
+        statusFilterComboBox.setItems(FXCollections.observableArrayList(
+                "Tutti gli stati",
+                "In attesa",
+                "Accettata",
+                "Rifiutata",
+                "Ritirata",
+                "Completata"
+        ));
+        statusFilterComboBox.setValue("Tutti gli stati");
+
+        // Type filter
+        typeFilterComboBox.setItems(FXCollections.observableArrayList(
+                "Tutti i tipi",
+                "Denaro",
+                "Scambio",
+                "Misto"
+        ));
+        typeFilterComboBox.setValue("Tutti i tipi");
+
+        // Add listeners for filter changes
+        statusFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
+        typeFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
+        searchField.textProperty().addListener((_, _, _) -> updateFilters());
+    }
+
+    private void setupFilteredLists() {
+        // Create filtered lists
+        filteredReceivedOffers = new FilteredList<>(offerService.getReceivedOffersList());
+        filteredSentOffers = new FilteredList<>(offerService.getUserOffersList());
+        
+        // For history, we'll manage it separately since it's not an observable list from service
+        // We'll update the filter when we load history data
+
+        // Bind filtered lists to tables
+        receivedOffersTable.setItems(filteredReceivedOffers);
+        sentOffersTable.setItems(filteredSentOffers);
+    }
+
+    private void updateFilters() {
+        String searchText = searchField.getText().toLowerCase().trim();
+        String statusFilter = statusFilterComboBox.getValue();
+        String typeFilter = typeFilterComboBox.getValue();
+
+        // Create predicate for filtering
+        javafx.util.Callback<OfferViewModel, Boolean> predicate = offer -> {
+            // Search filter
+            if (!searchText.isEmpty()) {
+                boolean matchesSearch = 
+                    (offer.getListingTitle() != null && offer.getListingTitle().toLowerCase().contains(searchText)) ||
+                    (offer.getOfferingUserUsername() != null && offer.getOfferingUserUsername().toLowerCase().contains(searchText)) ||
+                    (offer.getMessage() != null && offer.getMessage().toLowerCase().contains(searchText));
+                if (!matchesSearch) return false;
+            }
+
+            // Status filter
+            if (!"Tutti gli stati".equals(statusFilter)) {
+                OfferStatus selectedStatus = mapStatusFilterToEnum(statusFilter);
+                if (selectedStatus != null && offer.getStatus() != selectedStatus) {
+                    return false;
+                }
+            }
+
+            // Type filter
+            if (!"Tutti i tipi".equals(typeFilter)) {
+                String offerType = getOfferTypeDisplayName(offer);
+                if (!typeFilter.equals(offerType)) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        // Apply filter to received offers
+        filteredReceivedOffers.setPredicate(predicate::call);
+        
+        // Apply filter to sent offers
+        filteredSentOffers.setPredicate(predicate::call);
+        
+        // Apply filter to history table manually since it's not using a filtered list
+        filterHistoryTable(predicate);
+    }
+
+    private void filterHistoryTable(javafx.util.Callback<OfferViewModel, Boolean> predicate) {
+        // Get all items and filter them
+        var allHistoryOffers = FXCollections.observableArrayList(offerHistoryTable.getItems());
+        var filteredHistory = allHistoryOffers.filtered(predicate::call);
+        
+        // Update table with filtered items
+        offerHistoryTable.getItems().setAll(filteredHistory);
+    }
+
+    private OfferStatus mapStatusFilterToEnum(String statusFilter) {
+        return switch (statusFilter) {
+            case "In attesa" -> OfferStatus.PENDING;
+            case "Accettata" -> OfferStatus.ACCEPTED;
+            case "Rifiutata" -> OfferStatus.REJECTED;
+            case "Ritirata" -> OfferStatus.WITHDRAWN;
+            case "Completata" -> OfferStatus.COMPLETED;
+            default -> null;
+        };
+    }
+
+    @FXML
+    private void handleClearFilters() {
+        searchField.clear();
+        statusFilterComboBox.setValue("Tutti gli stati");
+        typeFilterComboBox.setValue("Tutti i tipi");
+        updateFilters();
     }
 
     private void setupReceivedOffersTable() {
@@ -210,13 +338,6 @@ public class OffersController {
 
         historyOfferDateColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(formatDate(cellData.getValue())));
-    }
-
-    private void setupOfferedItemsTable() {
-        itemNameColumn.setCellValueFactory(new PropertyValueFactory<>("itemName"));
-        itemConditionColumn.setCellValueFactory(
-                cellData -> new SimpleStringProperty(cellData.getValue().getCondition().getDisplayName()));
-        itemQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
     }
 
     private void setupActionButtons(TableColumn<OfferViewModel, Void> column, boolean isReceived) {
@@ -430,12 +551,15 @@ public class OffersController {
                 .thenCompose(_ -> offerService.getSentOffers())
                 .thenCompose(_ -> offerService.getOfferHistory())
                 .thenAccept(historyOffers -> Platform.runLater(() -> {
-                    // Handle history offers manually
+                    // Handle history offers manually and apply current filters
                     offerHistoryTable.getItems().clear();
-                    historyOffers.forEach(offer -> {
-                        OfferViewModel offerViewModel = viewModelMapper.toViewModel(offer);
-                        offerHistoryTable.getItems().add(offerViewModel);
-                    });
+                    var historyViewModels = historyOffers.stream()
+                            .map(viewModelMapper::toViewModel)
+                            .toList();
+                    offerHistoryTable.getItems().addAll(historyViewModels);
+                    
+                    // Reapply filters after loading data
+                    updateFilters();
                 }))
                 .exceptionally(ex -> {
                     System.err.println("Error loading offers: " + ex.getMessage());
@@ -456,8 +580,7 @@ public class OffersController {
         // Show offered items if trade offer
         if (offer.getOfferItems() != null && !offer.getOfferItems().isEmpty()) {
             offeredItemsSection.setVisible(true);
-            offeredItemsTable.getItems().clear();
-            offeredItemsTable.getItems().addAll(offer.getOfferItems());
+            populateOfferedItemsList(offer.getOfferItems());
         } else {
             offeredItemsSection.setVisible(false);
         }
@@ -472,6 +595,169 @@ public class OffersController {
         offerDetailsSection.setVisible(true);
     }
 
+    private void populateOfferedItemsList(ObservableList<OfferItemViewModel> offerItems) {
+        offeredItemsList.getChildren().clear();
+        
+        for (OfferItemViewModel item : offerItems) {
+            VBox itemRow = createOfferItemRow(item);
+            offeredItemsList.getChildren().add(itemRow);
+        }
+    }
+
+    private VBox createOfferItemRow(OfferItemViewModel item) {
+        VBox itemContainer = new VBox(8);
+        itemContainer.getStyleClass().add("offer-item-row");
+        
+        // Main item header row
+        HBox headerRow = new HBox(10);
+        headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        headerRow.getStyleClass().add("offer-item-header-row");
+        
+        // Item image thumbnail
+        ImageView itemImage = new ImageView();
+        itemImage.setFitHeight(50);
+        itemImage.setFitWidth(50);
+        itemImage.setPreserveRatio(true);
+        itemImage.getStyleClass().add("offer-item-thumbnail");
+        
+        // Load item image
+        if (item.getItemImagePath() != null && !item.getItemImagePath().isEmpty()) {
+            imageService.fetchImage(item.getItemImagePath())
+                    .thenAccept(image -> Platform.runLater(() -> {
+                        if (image != null && !image.isError()) {
+                            itemImage.setImage(image);
+                        } else {
+                            setDefaultOfferItemImage(itemImage);
+                        }
+                    }));
+        } else {
+            setDefaultOfferItemImage(itemImage);
+        }
+        
+        // Main item info
+        VBox itemMainInfo = new VBox(3);
+        itemMainInfo.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        HBox.setHgrow(itemMainInfo, javafx.scene.layout.Priority.ALWAYS);
+        
+        // Item name and quantity row
+        HBox nameQuantityRow = new HBox(10);
+        nameQuantityRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        
+        Text itemName = new Text(item.getItemName());
+        itemName.getStyleClass().add("offer-item-name");
+        
+        // Quantity badge
+        Label quantityBadge = new Label("x" + item.getQuantity());
+        quantityBadge.getStyleClass().add("offer-quantity-badge");
+        
+        nameQuantityRow.getChildren().addAll(itemName, quantityBadge);
+        
+        // Condition row (if available)
+        HBox conditionRow = new HBox(10);
+        conditionRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        
+        if (item.getCondition() != null) {
+            Label conditionLabel = new Label(item.getCondition().getDisplayName());
+            conditionLabel.getStyleClass().add("offer-item-condition");
+            conditionRow.getChildren().add(conditionLabel);
+        }
+        
+        itemMainInfo.getChildren().addAll(nameQuantityRow);
+        if (!conditionRow.getChildren().isEmpty()) {
+            itemMainInfo.getChildren().add(conditionRow);
+        }
+        
+        headerRow.getChildren().addAll(itemImage, itemMainInfo);
+        itemContainer.getChildren().add(headerRow);
+        
+        // Additional details section (expandable)
+        VBox detailsSection = createOfferItemDetailsSection(item);
+        if (detailsSection != null) {
+            // Make details initially hidden
+            detailsSection.setVisible(false);
+            detailsSection.setManaged(false);
+            
+            // Add expand/collapse functionality
+            Button expandButton = new Button("▼");
+            expandButton.getStyleClass().add("offer-expand-button");
+            expandButton.setOnAction(e -> {
+                boolean isExpanded = detailsSection.isVisible();
+                detailsSection.setVisible(!isExpanded);
+                detailsSection.setManaged(!isExpanded);
+                expandButton.setText(isExpanded ? "▼" : "▲");
+            });
+            
+            // Add expand button to main row
+            headerRow.getChildren().add(expandButton);
+            
+            itemContainer.getChildren().add(detailsSection);
+        }
+        
+        return itemContainer;
+    }
+
+    private VBox createOfferItemDetailsSection(OfferItemViewModel item) {
+        // For now, we'll create a simple details section
+        // In a real implementation, you might want to fetch additional item details
+        // from the server or include more information in OfferItemViewModel
+    
+        VBox detailsContainer = new VBox(5);
+        detailsContainer.getStyleClass().add("offer-item-details-section");
+    
+        // Basic item information
+        VBox itemInfo = new VBox(3);
+        itemInfo.getStyleClass().add("offer-item-info-grid");
+    
+        // Item ID info
+        if (item.getItemId() != null && !item.getItemId().trim().isEmpty()) {
+            HBox itemIdRow = new HBox(10);
+            itemIdRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+    
+            VBox itemIdBox = new VBox(2);
+            Label itemIdLabel = new Label("ID Oggetto:");
+            itemIdLabel.getStyleClass().add("offer-detail-label");
+            Text itemIdValue = new Text(item.getItemId());
+            itemIdValue.getStyleClass().add("offer-detail-value");
+            itemIdBox.getChildren().addAll(itemIdLabel, itemIdValue);
+            itemIdRow.getChildren().add(itemIdBox);
+    
+            itemInfo.getChildren().add(itemIdRow);
+        }
+    
+        // Condition details
+        if (item.getCondition() != null) {
+            HBox conditionRow = new HBox(10);
+            conditionRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+    
+            VBox conditionBox = new VBox(2);
+            Label conditionLabel = new Label("Condizione:");
+            conditionLabel.getStyleClass().add("offer-detail-label");
+            Text conditionValue = new Text(item.getCondition().getDisplayName());
+            conditionValue.getStyleClass().add("offer-detail-value");
+            conditionBox.getChildren().addAll(conditionLabel, conditionValue);
+            conditionRow.getChildren().add(conditionBox);
+    
+            itemInfo.getChildren().add(conditionRow);
+        }
+    
+        if (!itemInfo.getChildren().isEmpty()) {
+            detailsContainer.getChildren().add(itemInfo);
+            return detailsContainer;
+        }
+    
+        return null; // No details to show
+    }
+
+    private void setDefaultOfferItemImage(ImageView imageView) {
+        try {
+            Image defaultImage = new Image(getClass()
+                    .getResourceAsStream("/images/icons/immagine_generica.png"));
+            imageView.setImage(defaultImage);
+        } catch (Exception e) {
+            System.err.println("Could not load default offer item image: " + e.getMessage());
+        }
+    }
+
     private void clearOfferDetails() {
         selectedOffer = null;
         offerDetailsSection.setVisible(false);
@@ -483,18 +769,24 @@ public class OffersController {
         offerService.getReceivedOffersList().clear();
         offerService.getUserOffersList().clear();
         offerHistoryTable.getItems().clear();
-        offeredItemsTable.getItems().clear();
+        
+        // Clear offered items list instead of table
+        if (offeredItemsList != null) {
+            offeredItemsList.getChildren().clear();
+        }
+        
+        clearOfferDetails();
     }
 
     private String getOfferTypeDisplayName(OfferViewModel offer) {
         if (offer.getAmount() != null && offer.getAmount().compareTo(BigDecimal.valueOf(0)) > 0) {
             if (offer.getOfferItems() != null && !offer.getOfferItems().isEmpty()) {
-                return localeService.getMessage("offers.type.mixed", "Mixed");
+                return "Misto";
             } else {
-                return localeService.getMessage("offers.type.money", "Money");
+                return "Denaro";
             }
         } else if (offer.getOfferItems() != null && !offer.getOfferItems().isEmpty()) {
-            return localeService.getMessage("offers.type.trade", "Trade");
+            return "Scambio";
         } else {
             return localeService.getMessage("offers.type.unknown", "Unknown");
         }

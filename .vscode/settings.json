@@ -12,8 +12,15 @@
             "default": true
         }
     ],
-    "java.jdt.ls.vmargs": "-XX:+UseG1GC -XX:+UseStringDeduplication -Dsun.zip.disableMemoryMapping=true -Xmx32G -Xms4G -Xlog:disable",
-    "java.indexes.enabled": true,
+    "java.jdt.ls.vmargs": "-Xms4G -Xmx12G -XX:+UseZGC -XX:+UseStringDeduplication -Dsun.zip.disableMemoryMapping=true",
     "java.completion.filteredTypes": ["java.awt.*", "com.sun.*"],
     "java.referencesCodeLens.enabled": false,
+    "java.format.enabled": false,
+    "java.completion.enabled": true,
+    "java.symbols.includeSourceMethodDeclarations": false,
+    "java.import.gradle.enabled": false,
+    "java.import.maven.enabled": true, // assuming you use Maven, disable if not needed
+    "java.project.importHint.enabled": false,
+    "java.contentProvider.preferred": "standard",
+    "java.autobuild.enabled": false
 }

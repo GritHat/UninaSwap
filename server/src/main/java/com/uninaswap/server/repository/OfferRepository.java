@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -56,6 +57,11 @@ public interface OfferRepository extends JpaRepository<OfferEntity, String> {
      * Find user offers with pagination
      */
     Page<OfferEntity> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
+
+    // Add to OfferRepository  
+    List<OfferEntity> findByUserIdAndCreatedAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
+    List<OfferEntity> findByListingCreatorIdAndCreatedAtBetween(Long creatorId, LocalDateTime start, LocalDateTime end);
+    long countByUserIdAndCreatedAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
 
     /**
      * Find received offers with pagination

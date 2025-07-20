@@ -101,6 +101,14 @@ public class LoginController {
 
     private void handleAuthResponse(AuthMessage response) {
         Platform.runLater(() -> {
+            if (response.getType() == AuthMessage.Type.AUTH_ERROR_RESPONSE && !response.isSuccess()) {
+                try {
+                    navigationService.logout();
+                    return;
+                } catch (Exception e) {
+                    System.err.println("Error during logout: " + e.getMessage());
+                }
+            }
             if (response.getType() == AuthMessage.Type.LOGIN_RESPONSE) {
                 if (response.isSuccess()) {
                     showMessage("login.success", "message-success");

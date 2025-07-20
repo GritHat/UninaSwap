@@ -94,7 +94,7 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
 
         if (userOpt.isPresent()) {
             UserEntity user = userOpt.get();
-
+            sessionService.InvalidateTokenAndSessionForUser(user);
             // Create authenticated session and get token
             String token = sessionService.createAuthenticatedSession(session, user);
 

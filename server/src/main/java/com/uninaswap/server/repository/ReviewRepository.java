@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,4 +101,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
             "ORDER BY o.updatedAt DESC")
     List<Object> findReviewableOffersBetweenUsers(@Param("user1Id") Long user1Id, @Param("user2Id") Long user2Id,
             @Param("reviewerId") Long reviewerId);
+
+    // Add to ReviewRepository
+    List<ReviewEntity> findByReviewedUserIdAndCreatedAtBetween(Long reviewedUserId, LocalDateTime start, LocalDateTime end);
 }

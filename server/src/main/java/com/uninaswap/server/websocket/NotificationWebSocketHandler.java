@@ -7,6 +7,9 @@ import com.uninaswap.server.entity.UserEntity;
 import com.uninaswap.server.service.NotificationService;
 import com.uninaswap.server.service.SessionService;
 import com.uninaswap.common.enums.NotificationType;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
@@ -18,6 +21,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 @Component
 public class NotificationWebSocketHandler extends TextWebSocketHandler {
+    private static final Logger logger = LoggerFactory.getLogger(ListingWebSocketHandler.class);
+    
     @Autowired
     private NotificationService notificationService;
     
@@ -140,7 +145,9 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
      */
     private void sendNotificationToUser(long userId, NotificationDTO notification) {
         WebSocketSession userSession = sessionService.getSessionByUserId(userId);
+        logger.info("Sending notification to user {}", userId);
         if (userSession != null && userSession.isOpen()) {
+            logger.info("User session is open for user {}", userId);
             try {
                 NotificationMessage message = new NotificationMessage();
                 message.setType(NotificationMessage.NotificationMessageType.NOTIFICATION_RECEIVED);
@@ -149,6 +156,7 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
                 
                 String jsonMessage = objectMapper.writeValueAsString(message);
                 userSession.sendMessage(new TextMessage(jsonMessage));
+                logger.info("Notification sent to user {}", userId);
             } catch (Exception e) {
                 System.err.println("Failed to send real-time notification to user " + userId + ": " + e.getMessage());
             }

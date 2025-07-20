@@ -2,6 +2,8 @@ package com.uninaswap.server.repository;
 
 import com.uninaswap.common.enums.ListingStatus;
 import com.uninaswap.server.entity.ListingEntity;
+import com.uninaswap.server.entity.OfferEntity;
+import com.uninaswap.server.entity.ReviewEntity;
 import com.uninaswap.server.entity.UserEntity;
 
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -40,6 +43,9 @@ public interface ListingRepository extends JpaRepository<ListingEntity, String> 
 
     // Find all active listings with pagination
     Page<ListingEntity> findByStatus(ListingStatus status, Pageable pageable);
+
+    List<ListingEntity> findByCreatorIdAndCreatedAtBetween(Long creatorId, LocalDateTime start, LocalDateTime end);
+    long countByCreatorIdAndCreatedAtBetween(Long creatorId, LocalDateTime start, LocalDateTime end);
 
     // New method with JOIN FETCH to avoid lazy loading issues
     @Query("SELECT DISTINCT l FROM ListingEntity l " +

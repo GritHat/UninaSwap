@@ -42,6 +42,16 @@ public class SessionService {
         return user;
     }
     
+    public void InvalidateTokenAndSessionForUser(UserEntity user) {
+        // Remove the user from the authenticated sessions
+        authenticatedSessions.entrySet().removeIf(entry -> entry.getValue().getId().equals(user.getId()));
+        
+        // Invalidate all tokens associated with this user
+        tokenToUserMap.entrySet().removeIf(entry -> entry.getValue().getId().equals(user.getId()));
+        
+        logger.info("Invalidated session and tokens for user: {}", user.getUsername());
+    }
+
     /**
      * Creates an authenticated session for a user
      * 

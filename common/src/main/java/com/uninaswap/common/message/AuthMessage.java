@@ -7,7 +7,8 @@ public class AuthMessage extends Message {
         LOGIN_REQUEST,
         LOGIN_RESPONSE,
         REGISTER_REQUEST,
-        REGISTER_RESPONSE
+        REGISTER_RESPONSE,
+        AUTH_ERROR_RESPONSE
     }
 
     private Type type;

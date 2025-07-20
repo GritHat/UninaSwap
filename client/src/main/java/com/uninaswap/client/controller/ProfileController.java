@@ -197,6 +197,17 @@ public class ProfileController implements Refreshable {
         }
     }
 
+    @FXML
+    private void showAnalytics(ActionEvent event) {
+        try {
+            // Navigate to the analytics view
+            navigationService.navigateToAnalyticsView();
+        } catch (IOException e) {
+            System.err.println("Error navigating to analytics: " + e.getMessage());
+            showStatus("navigation.error.load.analytics", true);
+        }
+    }
+
     /**
      * Shows the image cropper dialog
      */

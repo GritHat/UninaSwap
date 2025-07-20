@@ -53,22 +53,22 @@
                 <children>
                   <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                     <children>
-                      <Label styleClass="filter-label" text="Cerca nelle offerte:" />
-                      <TextField fx:id="searchField" promptText="Cerca per titolo, utente..." styleClass="filter-search-field" />
+                      <Label styleClass="filter-label" text="%offers.filter.search" />
+                      <TextField fx:id="searchField" promptText="%offers.filter.search.placeholder" styleClass="filter-search-field" />
                     </children>
                   </VBox>
                   
                   <VBox spacing="5.0">
                     <children>
-                      <Label styleClass="filter-label" text="Stato:" />
-                      <ComboBox fx:id="statusFilterComboBox" prefWidth="150.0" promptText="Tutti gli stati" styleClass="filter-combo-box" />
+                      <Label styleClass="filter-label" text="%offers.filter.status" />
+                      <ComboBox fx:id="statusFilterComboBox" prefWidth="150.0" promptText="%offers.filter.all.statuses" styleClass="filter-combo-box" />
                     </children>
                   </VBox>
                   
                   <VBox spacing="5.0">
                     <children>
-                      <Label styleClass="filter-label" text="Tipo:" />
-                      <ComboBox fx:id="typeFilterComboBox" prefWidth="120.0" promptText="Tutti i tipi" styleClass="filter-combo-box" />
+                      <Label styleClass="filter-label" text="%offers.filter.type" />
+                      <ComboBox fx:id="typeFilterComboBox" prefWidth="120.0" promptText="%offers.filter.all.types" styleClass="filter-combo-box" />
                     </children>
                   </VBox>
                 </children>

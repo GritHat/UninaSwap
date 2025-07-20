@@ -17,6 +17,8 @@ public class OfferMapper {
     private UserMapper userMapper;
     @Autowired
     private ListingMapper listingMapper;
+    @Autowired
+    private ItemMapper itemMapper;
 
     public OfferDTO toDto(OfferEntity entity) {
         if (entity == null) {
@@ -56,6 +58,7 @@ public class OfferMapper {
                 entity.getItem().getName(),
                 entity.getItem().getImagePath(),
                 entity.getItem().getCondition(),
-                entity.getQuantity());
+                entity.getQuantity(),
+                itemMapper.toDto(entity.getItem()));
     }
 }

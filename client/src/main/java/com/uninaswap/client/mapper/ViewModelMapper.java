@@ -83,7 +83,8 @@ public class ViewModelMapper {
                 dto.getItemName(),
                 dto.getItemImagePath(),
                 dto.getCondition(),
-                dto.getQuantity());
+                dto.getQuantity(),
+                toViewModel(dto.getItem()));
     }
 
     public OfferItemDTO toDTO(OfferItemViewModel viewModel) {
@@ -95,7 +96,8 @@ public class ViewModelMapper {
                 viewModel.getItemName(),
                 viewModel.getItemImagePath(),
                 viewModel.getCondition(),
-                viewModel.getQuantity());
+                viewModel.getQuantity(),
+                toDTO(viewModel.getItem()));
     }
 
     // User mappings

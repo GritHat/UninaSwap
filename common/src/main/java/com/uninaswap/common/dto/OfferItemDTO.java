@@ -8,17 +8,19 @@ public class OfferItemDTO {
     private String itemImagePath;
     private ItemCondition condition;
     private int quantity;
+    private ItemDTO item;
 
     public OfferItemDTO() {
     }
 
     public OfferItemDTO(String itemId, String itemName, String itemImagePath, ItemCondition condition,
-            int quantity) {
+            int quantity, ItemDTO item) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.itemImagePath = itemImagePath;
         this.condition = condition;
         this.quantity = quantity;
+        this.item = item;
     }
 
     // Getters and setters
@@ -60,5 +62,13 @@ public class OfferItemDTO {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public ItemDTO getItem() {
+        return item;
+    }
+
+    public void setItem(ItemDTO item) {
+        this.item = item;
     }
 }

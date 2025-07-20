@@ -401,7 +401,8 @@ public class OfferDialogController {
                         item.getName(),
                         item.getImagePath(),
                         item.getCondition(),
-                        quantity);
+                        quantity,
+                        item);
                 selectedItems.add(offerItem);
                 tempReservedQuantities.put(item.getId(),
                         tempReservedQuantities.getOrDefault(item.getId(), 0) + quantity);

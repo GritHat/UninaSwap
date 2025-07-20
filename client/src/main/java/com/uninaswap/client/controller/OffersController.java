@@ -8,6 +8,7 @@ import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.OfferService;
 import com.uninaswap.client.util.AlertHelper;
+import com.uninaswap.client.viewmodel.ItemViewModel;
 import com.uninaswap.client.viewmodel.OfferItemViewModel;
 import com.uninaswap.client.viewmodel.OfferViewModel;
 import com.uninaswap.common.enums.OfferStatus;
@@ -162,25 +163,25 @@ public class OffersController {
     }
 
     private void setupFilters() {
-        // Status filter
+        // Status filter with localized values
         statusFilterComboBox.setItems(FXCollections.observableArrayList(
-                "Tutti gli stati",
-                "In attesa",
-                "Accettata",
-                "Rifiutata",
-                "Ritirata",
-                "Completata"
+                localeService.getMessage("offers.filter.all.statuses", "All Statuses"),
+                localeService.getMessage("offers.status.pending", "Pending"),
+                localeService.getMessage("offers.status.accepted", "Accepted"),
+                localeService.getMessage("offers.status.rejected", "Rejected"),
+                localeService.getMessage("offers.status.withdrawn", "Withdrawn"),
+                localeService.getMessage("offers.status.completed", "Completed")
         ));
-        statusFilterComboBox.setValue("Tutti gli stati");
+        statusFilterComboBox.setValue(localeService.getMessage("offers.filter.all.statuses", "All Statuses"));
 
-        // Type filter
+        // Type filter with localized values
         typeFilterComboBox.setItems(FXCollections.observableArrayList(
-                "Tutti i tipi",
-                "Denaro",
-                "Scambio",
-                "Misto"
+                localeService.getMessage("offers.filter.all.types", "All Types"),
+                localeService.getMessage("offers.type.money", "Money"),
+                localeService.getMessage("offers.type.trade", "Trade"),
+                localeService.getMessage("offers.type.mixed", "Mixed")
         ));
-        typeFilterComboBox.setValue("Tutti i tipi");
+        typeFilterComboBox.setValue(localeService.getMessage("offers.filter.all.types", "All Types"));
 
         // Add listeners for filter changes
         statusFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
@@ -256,14 +257,20 @@ public class OffersController {
     }
 
     private OfferStatus mapStatusFilterToEnum(String statusFilter) {
-        return switch (statusFilter) {
-            case "In attesa" -> OfferStatus.PENDING;
-            case "Accettata" -> OfferStatus.ACCEPTED;
-            case "Rifiutata" -> OfferStatus.REJECTED;
-            case "Ritirata" -> OfferStatus.WITHDRAWN;
-            case "Completata" -> OfferStatus.COMPLETED;
-            default -> null;
-        };
+        // Get localized strings for comparison
+        String pendingText = localeService.getMessage("offers.status.pending", "Pending");
+        String acceptedText = localeService.getMessage("offers.status.accepted", "Accepted");
+        String rejectedText = localeService.getMessage("offers.status.rejected", "Rejected");
+        String withdrawnText = localeService.getMessage("offers.status.withdrawn", "Withdrawn");
+        String completedText = localeService.getMessage("offers.status.completed", "Completed");
+        
+        if (statusFilter.equals(pendingText)) return OfferStatus.PENDING;
+        if (statusFilter.equals(acceptedText)) return OfferStatus.ACCEPTED;
+        if (statusFilter.equals(rejectedText)) return OfferStatus.REJECTED;
+        if (statusFilter.equals(withdrawnText)) return OfferStatus.WITHDRAWN;
+        if (statusFilter.equals(completedText)) return OfferStatus.COMPLETED;
+        
+        return null; // "All Statuses" or unknown
     }
 
     @FXML
@@ -604,6 +611,127 @@ public class OffersController {
         }
     }
 
+    private VBox createOfferItemDetailsSection(OfferItemViewModel item) {
+        // Check if we have any additional details to show from the referenced ItemViewModel
+        ItemViewModel itemData = item.getItem();
+        if (itemData == null) {
+            return null; // No item data available
+        }
+        
+        boolean hasDescription = itemData.getDescription() != null && !itemData.getDescription().trim().isEmpty();
+        boolean hasBrand = itemData.getBrand() != null && !itemData.getBrand().trim().isEmpty();
+        boolean hasModel = itemData.getModel() != null && !itemData.getModel().trim().isEmpty();
+        boolean hasYear = itemData.getYear() > 0;
+        boolean hasCategory = itemData.getItemCategory() != null && !itemData.getItemCategory().trim().isEmpty();
+        boolean hasCondition = item.getCondition() != null;
+        
+        if (!hasDescription && !hasBrand && !hasModel && !hasYear && !hasCategory && !hasCondition) {
+            return null; // No additional details to show
+        }
+        
+        VBox detailsContainer = new VBox(5);
+        detailsContainer.getStyleClass().add("offer-item-details-section");
+        
+        // Product information grid
+        VBox productInfo = new VBox(3);
+        productInfo.getStyleClass().add("offer-item-info-grid");
+        
+        // Brand and Model row
+        if (hasBrand || hasModel) {
+            HBox brandModelRow = new HBox(15);
+            brandModelRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            
+            if (hasBrand) {
+                VBox brandBox = new VBox(2);
+                Label brandLabel = new Label(localeService.getMessage("offers.details.brand", "Brand:"));
+                brandLabel.getStyleClass().add("offer-detail-label");
+                Text brandValue = new Text(itemData.getBrand());
+                brandValue.getStyleClass().add("offer-detail-value");
+                brandBox.getChildren().addAll(brandLabel, brandValue);
+                brandModelRow.getChildren().add(brandBox);
+            }
+            
+            if (hasModel) {
+                VBox modelBox = new VBox(2);
+                Label modelLabel = new Label(localeService.getMessage("offers.details.model", "Model:"));
+                modelLabel.getStyleClass().add("offer-detail-label");
+                Text modelValue = new Text(itemData.getModel());
+                modelValue.getStyleClass().add("offer-detail-value");
+                modelBox.getChildren().addAll(modelLabel, modelValue);
+                brandModelRow.getChildren().add(modelBox);
+            }
+            
+            productInfo.getChildren().add(brandModelRow);
+        }
+        
+        // Category and Year row
+        if (hasCategory || hasYear) {
+            HBox categoryYearRow = new HBox(15);
+            categoryYearRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            
+            if (hasCategory) {
+                VBox categoryBox = new VBox(2);
+                Label categoryLabel = new Label(localeService.getMessage("offers.details.category", "Category:"));
+                categoryLabel.getStyleClass().add("offer-detail-label");
+                Text categoryValue = new Text(itemData.getItemCategory());
+                categoryValue.getStyleClass().add("offer-detail-value");
+                categoryBox.getChildren().addAll(categoryLabel, categoryValue);
+                categoryYearRow.getChildren().add(categoryBox);
+            }
+            
+            if (hasYear) {
+                VBox yearBox = new VBox(2);
+                Label yearLabel = new Label(localeService.getMessage("offers.details.year", "Year:"));
+                yearLabel.getStyleClass().add("offer-detail-label");
+                Text yearValue = new Text(String.valueOf(itemData.getYear()));
+                yearValue.getStyleClass().add("offer-detail-value");
+                yearBox.getChildren().addAll(yearLabel, yearValue);
+                categoryYearRow.getChildren().add(yearBox);
+            }
+            
+            productInfo.getChildren().add(categoryYearRow);
+        }
+        
+        // Condition row
+        if (hasCondition) {
+            HBox conditionRow = new HBox(10);
+            conditionRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            
+            VBox conditionBox = new VBox(2);
+            Label conditionLabel = new Label(localeService.getMessage("offers.details.condition", "Condition:"));
+            conditionLabel.getStyleClass().add("offer-detail-label");
+            Text conditionValue = new Text(item.getCondition().getDisplayName());
+            conditionValue.getStyleClass().add("offer-detail-value");
+            conditionBox.getChildren().addAll(conditionLabel, conditionValue);
+            conditionRow.getChildren().add(conditionBox);
+            
+            productInfo.getChildren().add(conditionRow);
+        }
+        
+        if (!productInfo.getChildren().isEmpty()) {
+            detailsContainer.getChildren().add(productInfo);
+        }
+        
+        // Description section
+        if (hasDescription) {
+            VBox descriptionBox = new VBox(5);
+            descriptionBox.getStyleClass().add("item-description-section");
+            
+            Label descLabel = new Label(localeService.getMessage("offers.details.description", "Description:"));
+            descLabel.getStyleClass().add("offer-detail-label");
+            
+            Text descriptionText = new Text(itemData.getDescription());
+            descriptionText.getStyleClass().add("item-description-text");
+            descriptionText.setWrappingWidth(300); // Adjust based on your layout
+            
+            descriptionBox.getChildren().addAll(descLabel, descriptionText);
+            detailsContainer.getChildren().add(descriptionBox);
+        }
+        
+        return detailsContainer;
+    }
+
+    // Update the createOfferItemRow method to use condition CSS class
     private VBox createOfferItemRow(OfferItemViewModel item) {
         VBox itemContainer = new VBox(8);
         itemContainer.getStyleClass().add("offer-item-row");
@@ -620,9 +748,16 @@ public class OffersController {
         itemImage.setPreserveRatio(true);
         itemImage.getStyleClass().add("offer-item-thumbnail");
         
-        // Load item image
-        if (item.getItemImagePath() != null && !item.getItemImagePath().isEmpty()) {
-            imageService.fetchImage(item.getItemImagePath())
+        // Load item image - prioritize item's image from ItemViewModel
+        String imagePath = null;
+        if (item.getItem() != null && item.getItem().getImagePath() != null && !item.getItem().getImagePath().isEmpty()) {
+            imagePath = item.getItem().getImagePath();
+        } else if (item.getItemImagePath() != null && !item.getItemImagePath().isEmpty()) {
+            imagePath = item.getItemImagePath();
+        }
+        
+        if (imagePath != null && !imagePath.isEmpty()) {
+            imageService.fetchImage(imagePath)
                     .thenAccept(image -> Platform.runLater(() -> {
                         if (image != null && !image.isError()) {
                             itemImage.setImage(image);
@@ -652,19 +787,27 @@ public class OffersController {
         
         nameQuantityRow.getChildren().addAll(itemName, quantityBadge);
         
-        // Condition row (if available)
-        HBox conditionRow = new HBox(10);
-        conditionRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        // Category and condition row
+        HBox categoryConditionRow = new HBox(10);
+        categoryConditionRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         
+        // Add category if available from ItemViewModel
+        if (item.getItem() != null && item.getItem().getItemCategory() != null && !item.getItem().getItemCategory().trim().isEmpty()) {
+            Label categoryLabel = new Label(item.getItem().getItemCategory());
+            categoryLabel.getStyleClass().add("offer-item-category");
+            categoryConditionRow.getChildren().add(categoryLabel);
+        }
+        
+        // Add condition with proper CSS class
         if (item.getCondition() != null) {
             Label conditionLabel = new Label(item.getCondition().getDisplayName());
-            conditionLabel.getStyleClass().add("offer-item-condition");
-            conditionRow.getChildren().add(conditionLabel);
+            conditionLabel.getStyleClass().addAll("offer-item-condition", getConditionCssClass(item.getCondition()));
+            categoryConditionRow.getChildren().add(conditionLabel);
         }
         
         itemMainInfo.getChildren().addAll(nameQuantityRow);
-        if (!conditionRow.getChildren().isEmpty()) {
-            itemMainInfo.getChildren().add(conditionRow);
+        if (!categoryConditionRow.getChildren().isEmpty()) {
+            itemMainInfo.getChildren().add(categoryConditionRow);
         }
         
         headerRow.getChildren().addAll(itemImage, itemMainInfo);
@@ -696,56 +839,18 @@ public class OffersController {
         return itemContainer;
     }
 
-    private VBox createOfferItemDetailsSection(OfferItemViewModel item) {
-        // For now, we'll create a simple details section
-        // In a real implementation, you might want to fetch additional item details
-        // from the server or include more information in OfferItemViewModel
-    
-        VBox detailsContainer = new VBox(5);
-        detailsContainer.getStyleClass().add("offer-item-details-section");
-    
-        // Basic item information
-        VBox itemInfo = new VBox(3);
-        itemInfo.getStyleClass().add("offer-item-info-grid");
-    
-        // Item ID info
-        if (item.getItemId() != null && !item.getItemId().trim().isEmpty()) {
-            HBox itemIdRow = new HBox(10);
-            itemIdRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-    
-            VBox itemIdBox = new VBox(2);
-            Label itemIdLabel = new Label("ID Oggetto:");
-            itemIdLabel.getStyleClass().add("offer-detail-label");
-            Text itemIdValue = new Text(item.getItemId());
-            itemIdValue.getStyleClass().add("offer-detail-value");
-            itemIdBox.getChildren().addAll(itemIdLabel, itemIdValue);
-            itemIdRow.getChildren().add(itemIdBox);
-    
-            itemInfo.getChildren().add(itemIdRow);
-        }
-    
-        // Condition details
-        if (item.getCondition() != null) {
-            HBox conditionRow = new HBox(10);
-            conditionRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-    
-            VBox conditionBox = new VBox(2);
-            Label conditionLabel = new Label("Condizione:");
-            conditionLabel.getStyleClass().add("offer-detail-label");
-            Text conditionValue = new Text(item.getCondition().getDisplayName());
-            conditionValue.getStyleClass().add("offer-detail-value");
-            conditionBox.getChildren().addAll(conditionLabel, conditionValue);
-            conditionRow.getChildren().add(conditionBox);
-    
-            itemInfo.getChildren().add(conditionRow);
-        }
-    
-        if (!itemInfo.getChildren().isEmpty()) {
-            detailsContainer.getChildren().add(itemInfo);
-            return detailsContainer;
-        }
-    
-        return null; // No details to show
+    // Add helper method for condition CSS classes
+    private String getConditionCssClass(com.uninaswap.common.enums.ItemCondition condition) {
+        if (condition == null) return "";
+        
+        return switch (condition) {
+            case NEW -> "new";
+            case LIKE_NEW -> "like-new";
+            case VERY_GOOD -> "very-good";
+            case GOOD -> "good";
+            case ACCEPTABLE -> "acceptable";
+            case FOR_PARTS -> "for-parts";
+        };
     }
 
     private void setDefaultOfferItemImage(ImageView imageView) {
@@ -781,12 +886,12 @@ public class OffersController {
     private String getOfferTypeDisplayName(OfferViewModel offer) {
         if (offer.getAmount() != null && offer.getAmount().compareTo(BigDecimal.valueOf(0)) > 0) {
             if (offer.getOfferItems() != null && !offer.getOfferItems().isEmpty()) {
-                return "Misto";
+                return localeService.getMessage("offers.type.mixed", "Mixed");
             } else {
-                return "Denaro";
+                return localeService.getMessage("offers.type.money", "Money");
             }
         } else if (offer.getOfferItems() != null && !offer.getOfferItems().isEmpty()) {
-            return "Scambio";
+            return localeService.getMessage("offers.type.trade", "Trade");
         } else {
             return localeService.getMessage("offers.type.unknown", "Unknown");
         }
@@ -806,5 +911,18 @@ public class OffersController {
             return offer.getCreatedAt().format(formatter);
         }
         return "-";
+    }
+
+    // Update the refreshFilters method
+    public void refreshFilters() {
+        String currentStatusValue = statusFilterComboBox.getValue();
+        String currentTypeValue = typeFilterComboBox.getValue();
+        
+        // Refresh items
+        setupFilters();
+        
+        // Try to maintain selection if possible, otherwise default to "All"
+        statusFilterComboBox.setValue(localeService.getMessage("offers.filter.all.statuses", "All Statuses"));
+        typeFilterComboBox.setValue(localeService.getMessage("offers.filter.all.types", "All Types"));
     }
 }

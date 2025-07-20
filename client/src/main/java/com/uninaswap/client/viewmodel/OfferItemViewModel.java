@@ -9,18 +9,20 @@ public class OfferItemViewModel {
     private final StringProperty itemImagePath = new SimpleStringProperty();
     private final ObjectProperty<ItemCondition> condition = new SimpleObjectProperty<>();
     private final IntegerProperty quantity = new SimpleIntegerProperty();
+    private final ObjectProperty<ItemViewModel> item = new SimpleObjectProperty<>();
 
     // Constructors
     public OfferItemViewModel() {
     }
 
     public OfferItemViewModel(String itemId, String itemName, String itemImagePath,
-            ItemCondition condition, int quantity) {
+            ItemCondition condition, int quantity, ItemViewModel item) {
         setItemId(itemId);
         setItemName(itemName);
         setItemImagePath(itemImagePath);
         setCondition(condition);
         setQuantity(quantity);
+        setItem(item);
     }
 
     // Property getters
@@ -42,6 +44,10 @@ public class OfferItemViewModel {
 
     public IntegerProperty quantityProperty() {
         return quantity;
+    }
+
+    public ObjectProperty<ItemViewModel> itemProperty() {
+        return item;
     }
 
     // Getters and setters
@@ -83,5 +89,13 @@ public class OfferItemViewModel {
 
     public void setQuantity(int quantity) {
         this.quantity.set(quantity);
+    }
+
+    public ItemViewModel getItem() {
+        return item.get();
+    }
+
+    public void setItem(ItemViewModel item) {
+        this.item.set(item);
     }
 }

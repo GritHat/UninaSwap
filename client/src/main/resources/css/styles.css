@@ -3845,3 +3845,92 @@
     -fx-fill: -fx-primary;
     -fx-padding: 0 0 10px 0;
 }
+
+/* Add to your styles.css file */
+
+/* Item category styling for offers */
+.offer-item-category {
+    -fx-background-color: #E3F2FD;
+    -fx-text-fill: #1976D2;
+    -fx-background-radius: 8px;
+    -fx-padding: 1px 6px;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+
+/* Item description text styling for offers */
+.item-description-text {
+    -fx-font-size: 12px;
+    -fx-font-weight: normal;
+    -fx-fill: -fx-text-dark;
+    -fx-line-spacing: 2px;
+}
+
+.item-description-section {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.item-description-section .offer-detail-label {
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+}
+
+/* Enhanced styling for offer detail grid */
+.offer-item-info-grid HBox {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.offer-item-info-grid VBox {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 2px;
+}
+
+/* Responsive text wrapping for descriptions */
+.item-description-text {
+    -fx-text-alignment: LEFT;
+    -fx-wrap-text: true;
+}
+
+/* Category styling variations */
+.offer-item-category.electronics {
+    -fx-background-color: #E8F5E8;
+    -fx-text-fill: #2E7D32;
+}
+
+.offer-item-category.clothing {
+    -fx-background-color: #FFF3E0;
+    -fx-text-fill: #EF6C00;
+}
+
+.offer-item-category.books {
+    -fx-background-color: #F3E5F5;
+    -fx-text-fill: #7B1FA2;
+}
+
+.offer-item-category.home {
+    -fx-background-color: #E0F2F1;
+    -fx-text-fill: #00695C;
+}
+
+.offer-item-category.sports {
+    -fx-background-color: #FFEBEE;
+    -fx-text-fill: #C62828;
+}
+
+/* Ensure proper spacing in detail sections */
+.offer-item-details-section {
+    -fx-spacing: 10px;
+}
+
+.offer-item-details-section VBox {
+    -fx-spacing: 5px;
+}
+
+.offer-item-details-section HBox {
+    -fx-spacing: 15px;
+}

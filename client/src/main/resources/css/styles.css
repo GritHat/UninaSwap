@@ -3934,3 +3934,408 @@
 .offer-item-details-section HBox {
     -fx-spacing: 15px;
 }
+
+/* Add these styles to your styles.css file */
+
+/* =========================
+   ITEM DIALOG STYLING
+   ========================= */
+
+/* Main dialog container */
+.item-dialog {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 15, 0, 0, 3);
+}
+
+.item-dialog-content {
+    -fx-max-width: 600px;
+    -fx-min-width: 500px;
+}
+
+/* Section styling */
+.item-dialog .section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-fill: -fx-primary;
+}
+
+.item-dialog .section-subtitle {
+    -fx-font-size: 12px;
+    -fx-fill: -fx-text-subtle;
+    -fx-font-style: italic;
+}
+
+.item-dialog .section-separator {
+    -fx-background-color: -fx-light-grey;
+    -fx-pref-height: 1px;
+    -fx-max-height: 1px;
+}
+
+/* Image Section Styling */
+.item-image-section {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 12px;
+    -fx-padding: 20px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+}
+
+.image-upload-area {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 20px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-border-style: dashed;
+}
+
+.image-preview-container {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.image-preview {
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.upload-placeholder {
+    -fx-background-color: #f8f9fa;
+}
+
+.upload-icon {
+    -fx-font-size: 32px;
+    -fx-fill: -fx-text-subtle;
+}
+
+.upload-text {
+    -fx-font-size: 12px;
+    -fx-fill: -fx-text-subtle;
+    -fx-text-alignment: center;
+}
+
+.image-upload-button {
+    -fx-min-width: 140px;
+    -fx-font-weight: bold;
+}
+
+/* Field styling */
+.item-dialog .field-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-dark;
+}
+
+.item-dialog .help-text {
+    -fx-font-size: 11px;
+    -fx-fill: -fx-text-subtle;
+    -fx-text-alignment: center;
+    -fx-wrap-text: true;
+}
+
+.item-dialog .help-text-inline {
+    -fx-font-size: 11px;
+    -fx-fill: -fx-text-subtle;
+    -fx-text-alignment: left;
+}
+
+/* Text field styling */
+.item-text-field {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-padding: 12px 15px;
+    -fx-font-size: 13px;
+}
+
+.item-text-field:focused {
+    -fx-border-color: -fx-primary-light;
+    -fx-background-color: -fx-primary-ultralight, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 8px, 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.2), 4, 0, 0, 0);
+}
+
+/* Text area styling */
+.item-text-area {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-padding: 12px 15px;
+    -fx-font-size: 13px;
+}
+
+.item-text-area:focused {
+    -fx-border-color: -fx-primary-light;
+    -fx-background-color: -fx-primary-ultralight, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 8px, 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.2), 4, 0, 0, 0);
+}
+
+.item-text-area .content {
+    -fx-background-color: transparent;
+}
+
+/* Combo box styling */
+.item-combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.item-combo-box:focused {
+    -fx-border-color: -fx-primary-light;
+    -fx-background-color: -fx-primary-ultralight, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 8px, 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.2), 4, 0, 0, 0);
+}
+
+.item-combo-box .label {
+    -fx-text-fill: -fx-text-dark;
+    -fx-font-size: 13px;
+    -fx-padding: 12px 15px;
+}
+
+.item-combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 12px 15px;
+}
+
+.item-combo-box .arrow-button .arrow {
+    -fx-background-color: -fx-primary;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+    -fx-scale-shape: true;
+    -fx-pref-width: 8px;
+    -fx-pref-height: 5px;
+}
+
+.item-combo-box:hover .arrow-button .arrow {
+    -fx-background-color: -fx-primary-light;
+}
+
+/* Combo box dropdown styling */
+.item-combo-box .list-view {
+    -fx-background-color: white;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 8, 0, 0, 3);
+    -fx-max-height: 200px;
+}
+
+.item-combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-dark;
+    -fx-padding: 10px 15px;
+    -fx-font-size: 13px;
+}
+
+.item-combo-box .list-cell:hover {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-text-fill: -fx-primary;
+}
+
+.item-combo-box .list-cell:selected {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+}
+
+/* Spinner styling */
+.item-spinner {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-width: 1px;
+}
+
+.item-spinner:focused {
+    -fx-border-color: -fx-primary-light;
+    -fx-background-color: -fx-primary-ultralight, white;
+    -fx-background-insets: 0, 2;
+    -fx-background-radius: 8px, 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.2), 4, 0, 0, 0);
+}
+
+.item-spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 12px 15px;
+    -fx-font-size: 13px;
+    -fx-background-radius: 8px 0 0 8px;
+}
+
+.item-spinner .increment-arrow-button,
+.item-spinner .decrement-arrow-button {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: transparent;
+    -fx-padding: 8px;
+}
+
+.item-spinner .increment-arrow-button {
+    -fx-background-radius: 0 8px 0 0;
+}
+
+.item-spinner .decrement-arrow-button {
+    -fx-background-radius: 0 0 8px 0;
+}
+
+.item-spinner .increment-arrow-button:hover,
+.item-spinner .decrement-arrow-button:hover {
+    -fx-background-color: -fx-primary-ultralight;
+}
+
+.item-spinner .increment-arrow,
+.item-spinner .decrement-arrow {
+    -fx-background-color: -fx-primary;
+}
+
+/* Section-specific styling */
+.basic-info-section {
+    -fx-background-color: white;
+}
+
+.product-details-section {
+    -fx-background-color: #fafbfc;
+    -fx-background-radius: 12px;
+    -fx-padding: 20px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+}
+
+.inventory-section {
+    -fx-background-color: #fff8f0;
+    -fx-background-radius: 12px;
+    -fx-padding: 20px;
+    -fx-border-color: #ffecdb;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+}
+
+/* Quantity information styling */
+.quantity-info-section {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.quantity-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-fill: -fx-text-subtle;
+}
+
+.quantity-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary;
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+    .item-dialog-content {
+        -fx-min-width: 400px;
+        -fx-max-width: 450px;
+    }
+    
+    .item-dialog-content .section-title {
+        -fx-font-size: 16px;
+    }
+    
+    .item-dialog-content .field-label {
+        -fx-font-size: 12px;
+    }
+    
+    .item-text-field,
+    .item-text-area,
+    .item-combo-box .label {
+        -fx-font-size: 12px;
+        -fx-padding: 10px 12px;
+    }
+    
+    .image-preview-container {
+        -fx-max-width: 150px;
+        -fx-max-height: 150px;
+    }
+    
+    .image-preview {
+        -fx-fit-width: 130px;
+        -fx-fit-height: 130px;
+    }
+}
+
+/* Integration with existing dialog styling */
+.item-dialog .dialog-pane {
+    -fx-background-color: white;
+}
+
+.item-dialog .dialog-pane > .header-panel {
+    -fx-background-color: -fx-primary-ultralight;
+}
+
+.item-dialog .dialog-pane > .header-panel > .graphic-container {
+    -fx-padding: 15px;
+}
+
+.item-dialog .dialog-pane > .content {
+    -fx-padding: 0;
+}
+
+.item-dialog .dialog-pane > .button-bar {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 15px 25px;
+    -fx-spacing: 10px;
+}
+
+.item-dialog .dialog-pane > .button-bar > .container {
+    -fx-spacing: 10px;
+}
+
+/* Dialog buttons */
+.item-dialog .dialog-pane .button {
+    -fx-min-width: 100px;
+    -fx-font-weight: bold;
+}
+
+/* Animation for image upload */
+.image-upload-area {
+    -fx-transition-duration: 0.2s;
+}
+
+.image-upload-area:hover {
+    -fx-border-color: -fx-primary-light;
+    -fx-background-color: #f0f8ff;
+}
+
+/* Upload placeholder visibility management */
+.upload-placeholder.has-image {
+    -fx-opacity: 0;
+    -fx-mouse-transparent: true;
+}
+
+.upload-placeholder:not(.has-image) {
+    -fx-opacity: 1;
+    -fx-mouse-transparent: false;
+}

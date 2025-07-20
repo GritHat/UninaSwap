@@ -11,6 +11,7 @@ import com.uninaswap.common.enums.Category;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -174,12 +175,30 @@ public class ItemDialogController {
                 .thenAccept(image -> {
                     Platform.runLater(() -> {
                         imagePreview.setImage(image);
+                        updateImagePreviewVisibility();
                     });
                 })
                 .exceptionally(ex -> { 
                     System.err.println("Failed to load item image: " + ex.getMessage());
                     return null;
                 });
+        } else {
+            // Ensure placeholder is visible for new items
+            updateImagePreviewVisibility();
+        }
+    }
+    
+    private void updateImagePreviewVisibility() {
+        boolean hasImage = imagePreview.getImage() != null;
+        
+        // Find the upload placeholder and update its visibility
+        Node uploadPlaceholder = imagePreview.getParent().lookup(".upload-placeholder");
+        if (uploadPlaceholder != null) {
+            if (hasImage) {
+                uploadPlaceholder.getStyleClass().add("has-image");
+            } else {
+                uploadPlaceholder.getStyleClass().remove("has-image");
+            }
         }
     }
     
@@ -200,6 +219,10 @@ public class ItemDialogController {
                 // Show preview
                 Image image = new Image(file.toURI().toString());
                 imagePreview.setImage(image);
+                
+                // Update visibility
+                updateImagePreviewVisibility();
+                
             } catch (Exception ex) {
                 AlertHelper.showErrorAlert(
                     localeService.getMessage("item.image.error.title"),

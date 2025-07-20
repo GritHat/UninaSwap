@@ -5,85 +5,217 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<DialogPane stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.ItemDialogController">
+<DialogPane styleClass="item-dialog" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.ItemDialogController">
     <content>
-        <GridPane hgap="10" vgap="10">
-            <padding>
-                <Insets bottom="20" left="20" right="20" top="20" />
-            </padding>
-            <columnConstraints>
-                <ColumnConstraints hgrow="NEVER" minWidth="100" prefWidth="120" />
-                <ColumnConstraints hgrow="ALWAYS" minWidth="200" prefWidth="300" />
-            </columnConstraints>
-            
-            <!-- Name field -->
-            <Label text="%item.name.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <TextField fx:id="nameField" promptText="%item.name.prompt" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-            
-            <!-- Description field -->
-            <Label text="%item.description.label" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-            <TextArea fx:id="descriptionField" prefRowCount="3" promptText="%item.description.prompt" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            
-            <!-- Condition field -->
-            <Label text="%item.condition.label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <ComboBox fx:id="conditionComboBox" prefWidth="200" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            
-            <!-- Category field -->
-            <Label text="%item.category.label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <ComboBox fx:id="categoryComboBox" prefWidth="200" promptText="%item.category.prompt" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            
-            <!-- Brand field -->
-            <Label text="%item.brand.label" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-            <TextField fx:id="brandField" promptText="%item.brand.prompt" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            
-            <!-- Model field -->
-            <Label text="%item.model.label" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-            <TextField fx:id="modelField" promptText="%item.model.prompt" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            
-            <!-- Year field -->
-            <Label text="%item.year.label" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-            <Spinner fx:id="yearSpinner" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            
-            <!-- Stock field -->
-            <Label text="%item.stock.label" GridPane.columnIndex="0" GridPane.rowIndex="7" />
-            <Spinner fx:id="stockSpinner" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            
-            <!-- Available quantity -->
-            <Label text="%item.available.label" GridPane.columnIndex="0" GridPane.rowIndex="8" />
-            <Label fx:id="availableValueLabel" styleClass="quantity-value" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            
-            <!-- Reserved quantity -->
-            <Label text="%item.reserved.label" GridPane.rowIndex="9" />
-            <Label fx:id="reservedValueLabel" styleClass="quantity-value" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            
-            <!-- Image selection -->
-            <Label text="%item.image.label" GridPane.columnIndex="0" GridPane.rowIndex="10" />
-            <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="10">
-                <Button fx:id="imageButton" onAction="#handleSelectImage" text="%item.image.select" />
-                <ImageView fx:id="imagePreview" fitHeight="100" fitWidth="100" preserveRatio="true" />
-            </HBox>
-         <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-            <RowConstraints />
-         </rowConstraints>
-        </GridPane>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="500.0" minHeight="500.0" prefHeight="500.0" vbarPolicy="AS_NEEDED">
+            <content>
+                <VBox spacing="25.0" styleClass="item-dialog-content">
+                    <padding>
+                        <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                    </padding>
+                    
+                    <!-- Image Selection Section - First Thing -->
+                    <VBox spacing="15.0" styleClass="item-image-section">
+                        <children>
+                            <Text styleClass="section-title" text="%item.image.section.title" />
+                            <Text styleClass="section-subtitle" text="%item.image.section.subtitle" />
+                            
+                            <!-- Image Upload Area -->
+                            <VBox alignment="CENTER" spacing="15.0" styleClass="image-upload-area">
+                                <children>
+                                    <!-- Image Preview Container -->
+                                    <StackPane maxHeight="200.0" maxWidth="200.0" minHeight="150.0" minWidth="150.0" styleClass="image-preview-container">
+                                        <children>
+                                            <ImageView fx:id="imagePreview" fitHeight="180.0" fitWidth="180.0" pickOnBounds="true" preserveRatio="true" styleClass="image-preview" />
+                                            <!-- Upload Icon Overlay (when no image) -->
+                                            <VBox alignment="CENTER" spacing="10.0" styleClass="upload-placeholder">
+                                                <children>
+                                                    <Text styleClass="upload-icon" text="📷" />
+                                                    <Text styleClass="upload-text" text="%item.image.upload.placeholder" />
+                                                </children>
+                                            </VBox>
+                                        </children>
+                                    </StackPane>
+                                    
+                                    <!-- Upload Button -->
+                                    <Button fx:id="imageButton" onAction="#handleSelectImage" styleClass="primary-button, image-upload-button" text="%item.image.select" />
+                                    
+                                    <!-- Help Text -->
+                                    <Text styleClass="help-text" text="%item.image.help.text" />
+                                </children>
+                            </VBox>
+                        </children>
+                    </VBox>
+                    
+                    <Separator styleClass="section-separator" />
+                    
+                    <!-- Basic Information Section -->
+                    <VBox spacing="20.0" styleClass="basic-info-section">
+                        <children>
+                            <Text styleClass="section-title" text="%item.basic.info.title" />
+                            
+                            <VBox spacing="15.0">
+                                <children>
+                                    <!-- Item Name -->
+                                    <VBox spacing="8.0">
+                                        <children>
+                                            <Label styleClass="field-label" text="%item.name.label" />
+                                            <TextField fx:id="nameField" promptText="%item.name.prompt" styleClass="item-text-field" />
+                                        </children>
+                                    </VBox>
+                                    
+                                    <!-- Description -->
+                                    <VBox spacing="8.0">
+                                        <children>
+                                            <Label styleClass="field-label" text="%item.description.label" />
+                                            <TextArea fx:id="descriptionField" prefRowCount="4" promptText="%item.description.prompt" styleClass="item-text-area" wrapText="true" />
+                                        </children>
+                                    </VBox>
+                                    
+                                    <!-- Category and Condition Row -->
+                                    <HBox spacing="15.0">
+                                        <children>
+                                            <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                                <children>
+                                                    <Label styleClass="field-label" text="%item.category.label" />
+                                                    <ComboBox fx:id="categoryComboBox" maxWidth="Infinity" promptText="%item.category.prompt" styleClass="item-combo-box" />
+                                                </children>
+                                            </VBox>
+                                            
+                                            <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                                <children>
+                                                    <Label styleClass="field-label" text="%item.condition.label" />
+                                                    <ComboBox fx:id="conditionComboBox" maxWidth="Infinity" styleClass="item-combo-box" />
+                                                </children>
+                                            </VBox>
+                                        </children>
+                                    </HBox>
+                                </children>
+                            </VBox>
+                        </children>
+                    </VBox>
+                    
+                    <Separator styleClass="section-separator" />
+                    
+                    <!-- Product Details Section -->
+                    <VBox spacing="20.0" styleClass="product-details-section">
+                        <children>
+                            <VBox spacing="5.0">
+                                <children>
+                                    <Text styleClass="section-title" text="%item.product.details.title" />
+                                    <Text styleClass="section-subtitle" text="%item.product.details.subtitle" />
+                                </children>
+                            </VBox>
+                            
+                            <VBox spacing="15.0">
+                                <children>
+                                    <!-- Brand and Model Row -->
+                                    <HBox spacing="15.0">
+                                        <children>
+                                            <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                                <children>
+                                                    <Label styleClass="field-label" text="%item.brand.label" />
+                                                    <TextField fx:id="brandField" promptText="%item.brand.prompt" styleClass="item-text-field" />
+                                                </children>
+                                            </VBox>
+                                            
+                                            <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                                <children>
+                                                    <Label styleClass="field-label" text="%item.model.label" />
+                                                    <TextField fx:id="modelField" promptText="%item.model.prompt" styleClass="item-text-field" />
+                                                </children>
+                                            </VBox>
+                                        </children>
+                                    </HBox>
+                                    
+                                    <!-- Year -->
+                                    <HBox spacing="15.0">
+                                        <children>
+                                            <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                                <children>
+                                                    <Label styleClass="field-label" text="%item.year.label" />
+                                                    <Spinner fx:id="yearSpinner" editable="true" maxWidth="Infinity" styleClass="item-spinner" />
+                                                </children>
+                                            </VBox>
+                                            
+                                            <!-- Spacer to maintain layout balance -->
+                                            <Region HBox.hgrow="ALWAYS" />
+                                        </children>
+                                    </HBox>
+                                </children>
+                            </VBox>
+                        </children>
+                    </VBox>
+                    
+                    <Separator styleClass="section-separator" />
+                    
+                    <!-- Inventory Section -->
+                    <VBox spacing="20.0" styleClass="inventory-section">
+                        <children>
+                            <VBox spacing="5.0">
+                                <children>
+                                    <Text styleClass="section-title" text="%item.inventory.title" />
+                                    <Text styleClass="section-subtitle" text="%item.inventory.subtitle" />
+                                </children>
+                            </VBox>
+                            
+                            <VBox spacing="15.0">
+                                <children>
+                                    <!-- Stock Quantity -->
+                                    <VBox spacing="8.0">
+                                        <children>
+                                            <Label styleClass="field-label" text="%item.stock.label" />
+                                            <HBox spacing="10.0">
+                                                <children>
+                                                    <Spinner fx:id="stockSpinner" editable="true" maxWidth="150.0" styleClass="item-spinner" />
+                                                    <Text styleClass="help-text-inline" text="%item.stock.help" />
+                                                </children>
+                                            </HBox>
+                                        </children>
+                                    </VBox>
+                                    
+                                    <!-- Quantity Information -->
+                                    <VBox spacing="12.0" styleClass="quantity-info-section">
+                                        <children>
+                                            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                                <children>
+                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                        <children>
+                                                            <Text styleClass="quantity-label" text="%item.available.label" />
+                                                            <Label fx:id="availableValueLabel" styleClass="quantity-value" text="0" />
+                                                        </children>
+                                                    </VBox>
+                                                    
+                                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                        <children>
+                                                            <Text styleClass="quantity-label" text="%item.reserved.label" />
+                                                            <Label fx:id="reservedValueLabel" styleClass="quantity-value" text="0" />
+                                                        </children>
+                                                    </VBox>
+                                                </children>
+                                            </HBox>
+                                            
+                                            <Text styleClass="help-text" text="%item.quantity.explanation" />
+                                        </children>
+                                    </VBox>
+                                </children>
+                            </VBox>
+                        </children>
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
     </content>
 </DialogPane>

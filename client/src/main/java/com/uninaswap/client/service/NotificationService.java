@@ -217,8 +217,16 @@ public class NotificationService {
                 }
                 
                 if (message.isSuccess()) {
-                    // Update local notification state
-                    Platform.runLater(() -> updateNotificationReadState(message.getNotificationId(), true));
+                    Platform.runLater(() -> {
+                        // Update local notification state
+                        updateNotificationReadState(message.getNotificationId(), true);
+                        
+                        // Update unread count if provided in response
+                        if (message.getUnreadCount() >= 0) {
+                            updateUnreadCount(message.getUnreadCount());
+                            System.out.println("Updated unread count after marking as read: " + message.getUnreadCount());
+                        }
+                    });
                 }
             }
             
@@ -248,6 +256,7 @@ public class NotificationService {
                     future.complete(message.getUnreadCount());
                 }
                 
+                // Always update the unread count when we receive this response
                 Platform.runLater(() -> updateUnreadCount(message.getUnreadCount()));
             }
             
@@ -260,6 +269,13 @@ public class NotificationService {
                     recentNotifications.add(0, newNotification);
                     if (recentNotifications.size() > 10) {
                         recentNotifications.remove(10);
+                    }
+                    
+                    // Add to all notifications if not already present
+                    boolean alreadyExists = allNotifications.stream()
+                        .anyMatch(n -> n.getId().equals(newNotification.getId()));
+                    if (!alreadyExists) {
+                        allNotifications.add(0, newNotification);
                     }
                     
                     // Update unread count

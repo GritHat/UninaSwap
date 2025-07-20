@@ -1,6 +1,4 @@
 package com.uninaswap.client.service;
-
-import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.client.websocket.WebSocketClient;
 import com.uninaswap.common.message.ImageMessage;
 

@@ -61,8 +61,8 @@ public class WebSocketClient {
 
             // Deserialize to the base Message type
             Message baseMessage = objectMapper.readValue(message, Message.class);
-            //if (!baseMessage.getMessageType().equals("image"))
-            //    System.out.println("CLIENT RECEIVED: " + message);
+            if (!baseMessage.getMessageType().equals("image"))
+                System.out.println("CLIENT RECEIVED: " + message);
             System.out.println(baseMessage.getMessageType());
             // Find the appropriate handler based on the actual message type
             Consumer<Message> handler = messageHandlers.get(baseMessage.getClass());
@@ -103,8 +103,8 @@ public class WebSocketClient {
                     }
                 });
             } else {
-                System.out.println("WebSocket session is not open");
-                future.completeExceptionally(new IllegalStateException("WebSocket session is not open"));
+                System.out.println("WebSocket session is not open " + (session == null ? "null" : "closed"));
+                future.completeExceptionally(new IllegalStateException("WebSocket session is not open" + (session == null ? "null" : "closed")));
             }
         } catch (Exception e) {
             System.out.println("Exception sending message: " + e.getMessage());

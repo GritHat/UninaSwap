@@ -137,6 +137,9 @@ public class MainController implements Refreshable {
     private Popup notificationPopup;
     private Popup userMenuPopup;
 
+    // Add a field to track the badge
+    private Label notificationBadge;
+
     public MainController() {
         this.navigationService = NavigationService.getInstance();
         this.localeService = LocaleService.getInstance();
@@ -193,12 +196,11 @@ public class MainController implements Refreshable {
                 });
             });
 
+            initializeNotifications();
         } catch (Exception e) {
             System.err.println("Error initializing MainController: " + e.getMessage());
             e.printStackTrace();
         }
-
-        updateNotificationButtonBadge(10);
     }
 
     private void initializeNotifications() {
@@ -222,24 +224,78 @@ public class MainController implements Refreshable {
     }
 
     private void updateNotificationButtonBadge(int unreadCount) {
+        System.out.println("updating badge " + unreadCount);
         Platform.runLater(() -> {
-            // Here you can update a badge on the notification button
-            // For now, just log it - you could add a Badge overlay to the button
-            System.out.println("Updating notification badge: " + unreadCount + " unread");
-
-            // Example: Add a red dot or number badge to the notification button
-            if (unreadCount > 0) {
-                // Add visual indicator (you might want to add a badge overlay)
-                notificationsButton.getStyleClass().add("has-notifications");
-                // You could also set the button text to show count
-                // notificationsButton.setText(String.valueOf(unreadCount));
-            } else {
-                notificationsButton.getStyleClass().remove("has-notifications");
-                // notificationsButton.setText("");
+            // Remove existing badge if present
+            if (notificationBadge != null && notificationsButton.getParent() instanceof StackPane) {
+                StackPane parent = (StackPane) notificationsButton.getParent();
+                parent.getChildren().remove(notificationBadge);
+                notificationBadge = null;
             }
+            
+            // Add badge if there are unread notifications
+            if (unreadCount > 0) {
+                createNotificationBadge(unreadCount);
+            }
+            
+            System.out.println("Notification badge updated: " + unreadCount + " unread");
         });
     }
+    
+    private void createNotificationBadge(int unreadCount) {
+        // Make sure the button is wrapped in a StackPane for proper positioning
+        if (!(notificationsButton.getParent() instanceof StackPane)) {
+            // We need to wrap the button in a StackPane
+            wrapNotificationButtonInStackPane();
+        }
+        
+        StackPane buttonContainer = (StackPane) notificationsButton.getParent();
+        
+        // Create the badge
+        notificationBadge = new Label();
+        
+        if (unreadCount > 99) {
+            notificationBadge.setText("99+");
+        } else if (unreadCount > 0) {
+            notificationBadge.setText(String.valueOf(unreadCount));
+        }
+        
+        // Apply CSS styling
+        notificationBadge.getStyleClass().add("notification-badge");
+        
+        // Position the badge in the top-right corner
+        StackPane.setAlignment(notificationBadge, javafx.geometry.Pos.TOP_RIGHT);
+        //notificationBadge.setTranslateX(-10);  // Move slightly left from right edge
+        notificationBadge.setTranslateY(5);   // Move slightly down from top edge
+        
+        // Add to the container
+        buttonContainer.getChildren().add(notificationBadge);
+        
+        // Make sure badge is on top
+        notificationBadge.toFront();
+        notificationBadge.setMouseTransparent(true);
 
+    }
+    
+    private void wrapNotificationButtonInStackPane() {
+        // Get the current parent and index
+        javafx.scene.Parent currentParent = notificationsButton.getParent();
+        if (currentParent instanceof javafx.scene.layout.HBox) {
+            HBox hbox = (HBox) currentParent;
+            int buttonIndex = hbox.getChildren().indexOf(notificationsButton);
+            
+            // Remove button from current parent
+            hbox.getChildren().remove(notificationsButton);
+            
+            // Create StackPane wrapper
+            StackPane wrapper = new StackPane();
+            wrapper.getChildren().add(notificationsButton);
+            
+            // Add wrapper back to original position
+            hbox.getChildren().add(buttonIndex, wrapper);
+        }
+    }
+    
     private void showNewNotificationAlert(com.uninaswap.client.viewmodel.NotificationViewModel notification) {
         // Optional: Show a brief toast or visual alert for new notifications
         // This could be a small popup that appears briefly and disappears

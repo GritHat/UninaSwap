@@ -26,6 +26,18 @@
          <Text styleClass="button-caption" text="%home.caption"/>
       </VBox>
 
+      <VBox fx:id="listingButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showListings" pickOnBounds="true">
+         <ImageView fx:id="listingIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/listings.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%listings.caption" wrappingWidth="50.0" textAlignment="CENTER"/>
+      </VBox>
+
       <VBox fx:id="offersButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showOffers" pickOnBounds="true">
          <ImageView fx:id="offersIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
             <image>
@@ -60,18 +72,6 @@
             </viewport>
          </ImageView>
          <Text styleClass="button-caption" text="%notification.caption"/>
-      </VBox>
-      
-      <VBox fx:id="listingButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showListings" pickOnBounds="true">
-         <ImageView fx:id="listingIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
-            <image>
-               <Image url="@../images/icons/listings.png" />
-            </image>
-            <viewport>
-               <Rectangle2D />
-            </viewport>
-         </ImageView>
-         <Text styleClass="button-caption" text="%listings.caption" wrappingWidth="50.0" textAlignment="CENTER"/>
       </VBox>
 
       <VBox fx:id="profileButton" styleClass="sidebar-button" alignment="CENTER" onMouseClicked="#showProfile" pickOnBounds="true" spacing="0">

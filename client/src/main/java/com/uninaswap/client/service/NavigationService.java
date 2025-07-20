@@ -350,6 +350,23 @@ public class NavigationService {
         mainController.sidebarClearAllSelection();
     }
 
+    public Parent loadAnalyticsView() throws IOException {
+        LoaderBundle loaderBundle = loadView("/fxml/AnalyticsView.fxml");
+        Parent analyticsView = loaderBundle.getView();
+
+        return analyticsView;
+    }
+
+    public void navigateToAnalyticsView() throws IOException {
+    if (mainController != null) {
+        Parent analyticsView = loadAnalyticsView();
+        mainController.setContent(analyticsView);
+        mainController.sidebarClearAllSelection();
+        
+        System.out.println("Navigated to Analytics view");
+    }
+}
+
     /**
      * Load the support view
      */
@@ -497,7 +514,7 @@ public class NavigationService {
         });
         return notificationDropdown;
     }
-    
+
     /**
      * Set the main controller reference for navigation
      */

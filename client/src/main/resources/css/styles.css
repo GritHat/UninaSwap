@@ -3347,39 +3347,30 @@
     -fx-background-color: transparent;
 }
 
-/* Notification badge indicator */
-.header-icon-button.has-notifications::after {
-    content: "";
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 10px;
-    height: 10px;
-    background-color: #E74C3C;
-    border-radius: 50%;
-    border: 2px solid white;
-    z-index: 10;
+.notification-badge {
+    -fx-background-color: #E74C3C;
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 2px 6px;
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-alignment: center;
+}
+
+/* Simple red dot for non-numeric badge */
+.notification-dot {
+    -fx-background-color: #E74C3C;
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-min-width: 10px;
+    -fx-min-height: 10px;
+    -fx-max-width: 10px;
+    -fx-max-height: 10px;
 }
 
 .header-icon-button {
     position: relative; /* Needed for ::after positioning */
-}
-
-/* Alternative: Number badge */
-.header-icon-button.has-notifications.with-count::after {
-    content: attr(data-count);
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    min-width: 16px;
-    height: 16px;
-    background-color: #E74C3C;
-    color: white;
-    border-radius: 8px;
-    font-size: 10px;
-    font-weight: bold;
-    text-align: center;
-    line-height: 16px;
-    border: 2px solid white;
-    z-index: 10;
 }

@@ -1,7 +1,6 @@
 package com.uninaswap.client.service;
 
 import com.uninaswap.client.mapper.ViewModelMapper;
-import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.client.viewmodel.ListingReportViewModel;
 import com.uninaswap.client.viewmodel.UserReportViewModel;
 import com.uninaswap.client.websocket.WebSocketClient;

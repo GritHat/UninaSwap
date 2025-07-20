@@ -1,7 +1,6 @@
 package com.uninaswap.client.service;
 
 import com.uninaswap.client.websocket.WebSocketClient;
-import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.common.dto.PickupDTO;
 import com.uninaswap.common.enums.PickupStatus;
 import com.uninaswap.common.message.PickupMessage;

@@ -193,6 +193,7 @@ public class NotificationDropdownController {
                 .thenAccept(success -> Platform.runLater(() -> {
                     if (success) {
                         notification.setRead(true);
+                        updateNotificationsDisplay();
                     }
                 }));
         }

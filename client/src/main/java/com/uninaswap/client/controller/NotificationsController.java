@@ -1,6 +1,7 @@
 package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.LocaleService;
+import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.NotificationService;
 import com.uninaswap.client.viewmodel.NotificationViewModel;
 import javafx.application.Platform;
@@ -58,6 +59,7 @@ public class NotificationsController implements Initializable, Refreshable {
     // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final NotificationService notificationService = NotificationService.getInstance();
+    private final NavigationService navigationService = NavigationService.getInstance();
 
     // Data
     private ObservableList<NotificationViewModel> allNotifications;
@@ -242,7 +244,7 @@ public class NotificationsController implements Initializable, Refreshable {
             case "OFFER_RECEIVED" -> {
                 Button viewOfferBtn = new Button(localeService.getMessage("notification.action.view.offer", "View Offer"));
                 viewOfferBtn.getStyleClass().add("primary-button");
-                viewOfferBtn.setOnAction(e -> handleViewOffer(notification));
+                viewOfferBtn.setOnAction(_ -> handleViewOffer(notification));
                 buttonContainer.getChildren().add(viewOfferBtn);
             }
             case "AUCTION_ENDING_SOON" -> {
@@ -343,13 +345,34 @@ public class NotificationsController implements Initializable, Refreshable {
         allNotificationsContainer.getChildren().add(errorPlaceholder);
     }
 
+    private void markAsRead(NotificationViewModel notification) {
+        if (!notification.isRead()) {
+            notificationService.markAsRead(notification.getId())
+                .thenAccept(success -> Platform.runLater(() -> {
+                    if (success) {
+                        notification.setRead(true);
+                        updateNotificationDisplays();
+                        // The unread count is automatically updated via the server response
+                        System.out.println("Notification marked as read: " + notification.getTitle());
+                    }
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        System.err.println("Failed to mark notification as read: " + ex.getMessage());
+                    });
+                    return null;
+                });
+        }
+    }
+
     @FXML
     private void handleMarkAllAsRead() {
         notificationService.markAllAsRead()
             .thenAccept(success -> Platform.runLater(() -> {
                 if (success) {
-                    // The observable list will automatically update
+                    // The observable list will automatically update via the server response
                     updateNotificationDisplays();
+                    System.out.println("All notifications marked as read");
                 }
             }))
             .exceptionally(ex -> {
@@ -373,7 +396,11 @@ public class NotificationsController implements Initializable, Refreshable {
     }
 
     private void handleViewOffer(NotificationViewModel notification) {
-        // Extract offer ID from notification data if available
+        try {
+            navigationService.navigateToOffersView();
+        } catch (Exception e) {
+            System.err.println("Failed to navigate to offers: " + e.getMessage());
+        }
         System.out.println("Navigate to offer from notification: " + notification.getTitle());
         // TODO: Implement navigation to specific offer
     }
@@ -388,24 +415,6 @@ public class NotificationsController implements Initializable, Refreshable {
         // Extract pickup ID from notification data if available
         System.out.println("Navigate to pickup from notification: " + notification.getTitle());
         // TODO: Implement navigation to specific pickup
-    }
-
-    private void markAsRead(NotificationViewModel notification) {
-        if (!notification.isRead()) {
-            notificationService.markAsRead(notification.getId())
-                .thenAccept(success -> Platform.runLater(() -> {
-                    if (success) {
-                        notification.setRead(true);
-                        updateNotificationDisplays();
-                    }
-                }))
-                .exceptionally(ex -> {
-                    Platform.runLater(() -> {
-                        System.err.println("Failed to mark notification as read: " + ex.getMessage());
-                    });
-                    return null;
-                });
-        }
     }
 
     @Override

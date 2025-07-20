@@ -4,7 +4,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import com.uninaswap.client.websocket.WebSocketClient;
-import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.common.message.AuthMessage;
 
 /**

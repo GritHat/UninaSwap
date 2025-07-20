@@ -20,4 +20,5 @@ public final class EventTypes {
     public static final String SEARCH_REQUESTED = "search.requested";
     public static final String ITEM_UPDATED = "item.updated";
     public static final String OFFER_UPDATED = "offer.updated";
+    public static final String ANALYTICS_VIEW_REQUESTED = "analytics_view_requested";
 }

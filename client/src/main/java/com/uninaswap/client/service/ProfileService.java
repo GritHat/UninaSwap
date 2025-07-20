@@ -2,7 +2,6 @@ package com.uninaswap.client.service;
 
 import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.ProfileUpdateMessage;
-import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.client.websocket.WebSocketClient;
 
 import java.util.concurrent.CompletableFuture;

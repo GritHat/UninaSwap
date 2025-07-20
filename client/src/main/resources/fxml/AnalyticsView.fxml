@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane styleClass="standard-window" stylesheets="@../css/styles.css, @../css/analytics.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.AnalyticsController">
+   <children>
+      <BorderPane prefHeight="700.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <!-- Header with Controls -->
+            <VBox spacing="15" styleClass="analytics-header" BorderPane.alignment="CENTER">
+               <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+               </padding>
+               
+               <!-- Title and Export Section -->
+               <HBox alignment="CENTER_LEFT" spacing="15">
+                  <children>
+                     <ImageView fitHeight="24.0" fitWidth="24.0" preserveRatio="true">
+                        <image>
+                           <Image url="@../images/icons/analytics.png" />
+                        </image>
+                     </ImageView>
+                     <Text styleClass="title-text" text="%analytics.title">
+                        <font>
+                           <Font size="24.0" />
+                        </font>
+                     </Text>
+                     
+                     <Region HBox.hgrow="ALWAYS" />
+                     
+                     <!-- Export Controls -->
+                     <HBox spacing="10" alignment="CENTER_RIGHT">
+                        <ComboBox fx:id="exportFormatComboBox" prefWidth="100" />
+                        <Button fx:id="exportButton" text="%analytics.export" styleClass="secondary-button" />
+                        <Button fx:id="refreshButton" text="%analytics.refresh" styleClass="primary-button" />
+                     </HBox>
+                  </children>
+               </HBox>
+               
+               <!-- Filter Controls -->
+               <HBox spacing="15" alignment="CENTER_LEFT">
+                  <children>
+                     <VBox spacing="5">
+                        <Label text="%analytics.period" styleClass="filter-label" />
+                        <ComboBox fx:id="periodComboBox" prefWidth="150" />
+                     </VBox>
+                     
+                     <VBox spacing="5">
+                        <Label text="%analytics.category" styleClass="filter-label" />
+                        <ComboBox fx:id="categoryComboBox" prefWidth="150" />
+                     </VBox>
+                     
+                     <VBox spacing="5">
+                        <Label text="%analytics.date.start" styleClass="filter-label" />
+                        <DatePicker fx:id="startDatePicker" prefWidth="130" />
+                     </VBox>
+                     
+                     <VBox spacing="5">
+                        <Label text="%analytics.date.end" styleClass="filter-label" />
+                        <DatePicker fx:id="endDatePicker" prefWidth="130" />
+                     </VBox>
+                  </children>
+               </HBox>
+            </VBox>
+         </top>
+         
+         <center>
+            <!-- Main Content with Loading Overlay -->
+            <StackPane BorderPane.alignment="CENTER">
+               <children>
+                  <!-- Main Content Area -->
+                  <VBox fx:id="contentArea" spacing="0">
+                     <children>
+                        <!-- Tab Pane for Different Views -->
+                        <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                           <tabs>
+                              <!-- Overview Tab -->
+                              <Tab fx:id="overviewTab" text="%analytics.tab.overview">
+                                 <content>
+                                    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+                                       <content>
+                                          <VBox spacing="20">
+                                             <padding>
+                                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                             </padding>
+                                             
+                                             <!-- Summary Cards -->
+                                             <VBox spacing="15">
+                                                <Text text="%analytics.overview.summary" styleClass="section-title" />
+                                                
+                                                <!-- First Row of Cards -->
+                                                <HBox spacing="15" alignment="CENTER">
+                                                   <children>
+                                                      <!-- Total Listings Card -->
+                                                      <VBox styleClass="analytics-card" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                                               <ImageView fitHeight="20" fitWidth="20">
+                                                                  <image>
+                                                                     <Image url="@../images/icons/listings.png" />
+                                                                  </image>
+                                                               </ImageView>
+                                                               <Text text="%analytics.total.listings" styleClass="card-label" />
+                                                            </HBox>
+                                                            <Text fx:id="totalListingsValue" text="0" styleClass="card-value" />
+                                                         </children>
+                                                      </VBox>
+                                                      
+                                                      <!-- Active Listings Card -->
+                                                      <VBox styleClass="analytics-card" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                                               <ImageView fitHeight="20" fitWidth="20">
+                                                                  <image>
+                                                                     <Image url="@../images/icons/active.png" />
+                                                                  </image>
+                                                               </ImageView>
+                                                               <Text text="%analytics.active.listings" styleClass="card-label" />
+                                                            </HBox>
+                                                            <Text fx:id="activeListingsValue" text="0" styleClass="card-value" />
+                                                         </children>
+                                                      </VBox>
+                                                      
+                                                      <!-- Completed Listings Card -->
+                                                      <VBox styleClass="analytics-card" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                                               <ImageView fitHeight="20" fitWidth="20">
+                                                                  <image>
+                                                                     <Image url="@../images/icons/completed.png" />
+                                                                  </image>
+                                                               </ImageView>
+                                                               <Text text="%analytics.completed.listings" styleClass="card-label" />
+                                                            </HBox>
+                                                            <Text fx:id="completedListingsValue" text="0" styleClass="card-value" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
+                                                
+                                                <!-- Second Row of Cards -->
+                                                <HBox spacing="15" alignment="CENTER">
+                                                   <children>
+                                                      <!-- Total Earnings Card -->
+                                                      <VBox styleClass="analytics-card, earnings-card" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                                               <ImageView fitHeight="20" fitWidth="20">
+                                                                  <image>
+                                                                     <Image url="@../images/icons/earnings.png" />
+                                                                  </image>
+                                                               </ImageView>
+                                                               <Text text="%analytics.total.earnings" styleClass="card-label" />
+                                                            </HBox>
+                                                            <Text fx:id="totalEarningsValue" text="€0.00" styleClass="card-value, earnings-value" />
+                                                         </children>
+                                                      </VBox>
+                                                      
+                                                      <!-- Average Rating Card -->
+                                                      <VBox styleClass="analytics-card, rating-card" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                                               <ImageView fitHeight="20" fitWidth="20">
+                                                                  <image>
+                                                                     <Image url="@../images/icons/star.png" />
+                                                                  </image>
+                                                               </ImageView>
+                                                               <Text text="%analytics.average.rating" styleClass="card-label" />
+                                                            </HBox>
+                                                            <Text fx:id="averageRatingValue" text="0.0/5.0" styleClass="card-value, rating-value" />
+                                                         </children>
+                                                      </VBox>
+                                                      
+                                                      <!-- Total Reviews Card -->
+                                                      <VBox styleClass="analytics-card" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                                               <ImageView fitHeight="20" fitWidth="20">
+                                                                  <image>
+                                                                     <Image url="@../images/icons/reviews.png" />
+                                                                  </image>
+                                                               </ImageView>
+                                                               <Text text="%analytics.total.reviews" styleClass="card-label" />
+                                                            </HBox>
+                                                            <Text fx:id="totalReviewsValue" text="0" styleClass="card-value" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
+                                                
+                                                <!-- Third Row of Cards -->
+                                                <HBox spacing="15" alignment="CENTER">
+                                                   <children>
+                                                      <!-- Total Views Card -->
+                                                      <VBox styleClass="analytics-card" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                                               <ImageView fitHeight="20" fitWidth="20">
+                                                                  <image>
+                                                                     <Image url="@../images/icons/views.png" />
+                                                                  </image>
+                                                               </ImageView>
+                                                               <Text text="%analytics.total.views" styleClass="card-label" />
+                                                            </HBox>
+                                                            <Text fx:id="totalViewsValue" text="0" styleClass="card-value" />
+                                                         </children>
+                                                      </VBox>
+                                                      
+                                                      <!-- Total Favorites Card -->
+                                                      <VBox styleClass="analytics-card" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                                               <ImageView fitHeight="20" fitWidth="20">
+                                                                  <image>
+                                                                     <Image url="@../images/icons/favorites.png" />
+                                                                  </image>
+                                                               </ImageView>
+                                                               <Text text="%analytics.total.favorites" styleClass="card-label" />
+                                                            </HBox>
+                                                            <Text fx:id="totalFavoritesValue" text="0" styleClass="card-value" />
+                                                         </children>
+                                                      </VBox>
+                                                      
+                                                      <!-- Member Since Card -->
+                                                      <VBox styleClass="analytics-card" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                                               <ImageView fitHeight="20" fitWidth="20">
+                                                                  <image>
+                                                                     <Image url="@../images/icons/calendar.png" />
+                                                                  </image>
+                                                               </ImageView>
+                                                               <Text text="%analytics.member.since" styleClass="card-label" />
+                                                            </HBox>
+                                                            <Text fx:id="memberSinceValue" text="-" styleClass="card-value" />
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
+                                             </VBox>
+                                             
+                                             <!-- Performance Metrics -->
+                                             <VBox spacing="15">
+                                                <Text text="%analytics.performance.metrics" styleClass="section-title" />
+                                                
+                                                <GridPane hgap="20" vgap="15">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="ALWAYS" />
+                                                      <ColumnConstraints hgrow="ALWAYS" />
+                                                   </columnConstraints>
+                                                   
+                                                   <!-- Success Rate -->
+                                                   <VBox spacing="8" styleClass="metric-container" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                                      <children>
+                                                         <HBox alignment="CENTER_LEFT" spacing="10">
+                                                            <Text text="%analytics.success.rate" styleClass="metric-label" />
+                                                            <Region HBox.hgrow="ALWAYS" />
+                                                            <Text fx:id="successRateValue" text="0%" styleClass="metric-value" />
+                                                         </HBox>
+                                                         <ProgressBar fx:id="successRateProgress" prefWidth="300" progress="0" styleClass="metric-progress" />
+                                                      </children>
+                                                   </VBox>
+                                                   
+                                                   <!-- Acceptance Rate -->
+                                                   <VBox spacing="8" styleClass="metric-container" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                                      <children>
+                                                         <HBox alignment="CENTER_LEFT" spacing="10">
+                                                            <Text text="%analytics.acceptance.rate" styleClass="metric-label" />
+                                                            <Region HBox.hgrow="ALWAYS" />
+                                                            <Text fx:id="acceptanceRateValue" text="0%" styleClass="metric-value" />
+                                                         </HBox>
+                                                         <ProgressBar fx:id="acceptanceRateProgress" prefWidth="300" progress="0" styleClass="metric-progress" />
+                                                      </children>
+                                                   </VBox>
+                                                   
+                                                   <!-- Average Time to Sell -->
+                                                   <VBox spacing="8" styleClass="metric-container" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                                      <children>
+                                                         <HBox alignment="CENTER_LEFT" spacing="10">
+                                                            <Text text="%analytics.avg.time.sell" styleClass="metric-label" />
+                                                            <Region HBox.hgrow="ALWAYS" />
+                                                            <Text fx:id="averageTimeToSellValue" text="0 days" styleClass="metric-value" />
+                                                         </HBox>
+                                                      </children>
+                                                   </VBox>
+                                                   
+                                                   <!-- Satisfaction Rate -->
+                                                   <VBox spacing="8" styleClass="metric-container" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                      <children>
+                                                         <HBox alignment="CENTER_LEFT" spacing="10">
+                                                            <Text text="%analytics.satisfaction.rate" styleClass="metric-label" />
+                                                            <Region HBox.hgrow="ALWAYS" />
+                                                            <Text fx:id="satisfactionRateValue" text="0%" styleClass="metric-value" />
+                                                         </HBox>
+                                                         <ProgressBar fx:id="satisfactionRateProgress" prefWidth="300" progress="0" styleClass="metric-progress" />
+                                                      </children>
+                                                   </VBox>
+                                                   
+                                                   <!-- Rating Trend -->
+                                                   <VBox spacing="8" styleClass="metric-container" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+                                                      <children>
+                                                         <HBox alignment="CENTER_LEFT" spacing="10">
+                                                            <Text text="%analytics.rating.trend" styleClass="metric-label" />
+                                                            <Region HBox.hgrow="ALWAYS" />
+                                                            <Text fx:id="ratingTrendValue" text="0.00" styleClass="metric-value, trend-value" />
+                                                         </HBox>
+                                                      </children>
+                                                   </VBox>
+                                                </GridPane>
+                                             </VBox>
+                                          </VBox>
+                                       </content>
+                                    </ScrollPane>
+                                 </content>
+                              </Tab>
+                              
+                              <!-- Charts Tab -->
+                              <Tab fx:id="chartsTab" text="%analytics.tab.charts">
+                                 <content>
+                                    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+                                       <content>
+                                          <VBox spacing="20">
+                                             <padding>
+                                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                             </padding>
+                                             
+                                             <!-- Charts Grid -->
+                                             <GridPane hgap="20" vgap="20">
+                                                <columnConstraints>
+                                                   <ColumnConstraints hgrow="ALWAYS" />
+                                                   <ColumnConstraints hgrow="ALWAYS" />
+                                                </columnConstraints>
+                                                
+                                                <!-- Activity Chart -->
+                                                <VBox styleClass="chart-container" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                                   <children>
+                                                      <LineChart fx:id="activityChart" prefHeight="300" animated="true" createSymbols="true" VBox.vgrow="ALWAYS">
+                                                         <xAxis>
+                                                            <CategoryAxis side="BOTTOM" />
+                                                         </xAxis>
+                                                         <yAxis>
+                                                            <NumberAxis side="LEFT" />
+                                                         </yAxis>
+                                                      </LineChart>
+                                                   </children>
+                                                </VBox>
+                                                
+                                                <!-- Earnings Chart -->
+                                                <VBox styleClass="chart-container" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                                   <children>
+                                                      <BarChart fx:id="earningsChart" prefHeight="300" animated="true" VBox.vgrow="ALWAYS">
+                                                         <xAxis>
+                                                            <CategoryAxis side="BOTTOM" />
+                                                         </xAxis>
+                                                         <yAxis>
+                                                            <NumberAxis side="LEFT" />
+                                                         </yAxis>
+                                                      </BarChart>
+                                                   </children>
+                                                </VBox>
+                                                
+                                                <!-- Category Distribution -->
+                                                <VBox styleClass="chart-container" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                                   <children>
+                                                      <PieChart fx:id="categoryPieChart" prefHeight="300" animated="true" />
+                                                   </children>
+                                                </VBox>
+                                                
+                                                <!-- Rating Trend Chart -->
+                                                <VBox styleClass="chart-container" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                   <children>
+                                                      <AreaChart fx:id="ratingTrendChart" prefHeight="300" animated="true" VBox.vgrow="ALWAYS">
+                                                         <xAxis>
+                                                            <CategoryAxis side="BOTTOM" />
+                                                         </xAxis>
+                                                         <yAxis>
+                                                            <NumberAxis side="LEFT" />
+                                                         </yAxis>
+                                                      </AreaChart>
+                                                   </children>
+                                                </VBox>
+                                             </GridPane>
+                                          </VBox>
+                                       </content>
+                                    </ScrollPane>
+                                 </content>
+                              </Tab>
+                              
+                              <!-- Details Tab -->
+                              <Tab fx:id="detailsTab" text="%analytics.tab.details">
+                                 <content>
+                                    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+                                       <content>
+                                          <VBox spacing="20">
+                                             <padding>
+                                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                             </padding>
+                                             
+                                             <!-- Category Breakdown Table -->
+                                             <VBox spacing="10">
+                                                <Text text="%analytics.category.breakdown" styleClass="section-title" />
+                                                <TableView fx:id="categoryTable" prefHeight="250">
+                                                   <columns>
+                                                      <TableColumn fx:id="categoryNameColumn" text="%analytics.table.category" prefWidth="150" />
+                                                      <TableColumn fx:id="categoryListingsColumn" text="%analytics.table.listings" prefWidth="100" />
+                                                      <TableColumn fx:id="categoryEarningsColumn" text="%analytics.table.earnings" prefWidth="120" />
+                                                      <TableColumn fx:id="categoryRatingColumn" text="%analytics.table.rating" prefWidth="100" />
+                                                   </columns>
+                                                </TableView>
+                                             </VBox>
+                                             
+                                             <!-- Monthly Breakdown Table -->
+                                             <VBox spacing="10">
+                                                <Text text="%analytics.monthly.breakdown" styleClass="section-title" />
+                                                <TableView fx:id="monthlyTable" prefHeight="300">
+                                                   <columns>
+                                                      <TableColumn fx:id="monthColumn" text="%analytics.table.month" prefWidth="100" />
+                                                      <TableColumn fx:id="monthlyListingsColumn" text="%analytics.table.listings" prefWidth="100" />
+                                                      <TableColumn fx:id="monthlyEarningsColumn" text="%analytics.table.earnings" prefWidth="120" />
+                                                      <TableColumn fx:id="monthlyRatingColumn" text="%analytics.table.rating" prefWidth="100" />
+                                                   </columns>
+                                                </TableView>
+                                             </VBox>
+                                          </VBox>
+                                       </content>
+                                    </ScrollPane>
+                                 </content>
+                              </Tab>
+                           </tabs>
+                        </TabPane>
+                     </children>
+                  </VBox>
+                  
+                  <!-- Loading Overlay -->
+                  <VBox fx:id="loadingOverlay" alignment="CENTER" spacing="20" visible="false" styleClass="loading-overlay">
+                     <children>
+                        <ProgressIndicator fx:id="loadingIndicator" prefHeight="60" prefWidth="60" />
+                        <Text text="%analytics.loading" styleClass="loading-text" />
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

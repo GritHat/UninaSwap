@@ -4,7 +4,6 @@ import com.uninaswap.client.websocket.WebSocketClient;
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.util.AlertHelper;
-import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.client.viewmodel.ItemViewModel;
 import com.uninaswap.common.dto.ItemDTO;
 import com.uninaswap.common.message.ItemMessage;

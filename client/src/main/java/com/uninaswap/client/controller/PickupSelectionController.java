@@ -11,6 +11,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -115,6 +116,12 @@ public class PickupSelectionController {
 
     @FXML
     private Button cancelCounterProposalButton;
+    
+    @FXML
+    private HBox mainActionButtons;
+
+    @FXML
+    private HBox counterProposalButtons;
 
     // Services
     private final LocaleService localeService = LocaleService.getInstance();
@@ -300,6 +307,8 @@ public class PickupSelectionController {
                                         String.format("Pickup confirmed for %s at %s. The offer status has been updated to 'Confirmed'.",
                                                 selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                                 selectedTime.format(DateTimeFormatter.ofPattern("HH:mm")))));
+                        
+                        // Close the popup window
                         closeWindow();
                     } else {
                         AlertHelper.showErrorAlert(
@@ -365,6 +374,7 @@ public class PickupSelectionController {
                                     // If "Decide Later", just close the dialog
                                 });
 
+                                // Close the popup window
                                 closeWindow();
                             } else {
                                 AlertHelper.showErrorAlert(
@@ -372,7 +382,6 @@ public class PickupSelectionController {
                                         localeService.getMessage("pickup.reject.error.header", "Failed to reject pickup"),
                                         localeService.getMessage("pickup.reject.error.message",
                                                 "Could not reject the pickup proposal"));
-                                rejectButton.setDisable(false);
                             }
                         }))
                         .exceptionally(ex -> {
@@ -381,7 +390,6 @@ public class PickupSelectionController {
                                         localeService.getMessage("pickup.error.title", "Error"),
                                         localeService.getMessage("pickup.error.header", "Connection Error"),
                                         ex.getMessage());
-                                rejectButton.setDisable(false);
                             });
                             return null;
                         });
@@ -390,9 +398,14 @@ public class PickupSelectionController {
     }
 
     private void handleReschedulePickup() {
-        // Open pickup scheduling dialog for rescheduling
-        Stage stage = (Stage) acceptButton.getScene().getWindow();
-        navigationService.openPickupRescheduling(currentPickup.getOfferId(), stage);
+        // Close current window and open pickup scheduling dialog for rescheduling
+        closeWindow();
+        
+        AlertHelper.showInformationAlert(
+                localeService.getMessage("pickup.reschedule.info.title", "Rescheduling"),
+                localeService.getMessage("pickup.reschedule.info.header", "Navigate to Rescheduling"),
+                localeService.getMessage("pickup.reschedule.info.message", 
+                        "Please navigate to the pickup scheduling section to propose new times."));
     }
 
     private void handleCancelOffer() {
@@ -413,6 +426,9 @@ public class PickupSelectionController {
                                         localeService.getMessage("offer.cancel.success.header", "Success"),
                                         localeService.getMessage("offer.cancel.success.message",
                                                 "The offer has been cancelled successfully."));
+                                
+                                // Close the popup after successful cancellation
+                                closeWindow();
                             } else {
                                 AlertHelper.showErrorAlert(
                                         localeService.getMessage("offer.cancel.error.title", "Error"),
@@ -566,6 +582,8 @@ public class PickupSelectionController {
                                 localeService.getMessage("pickup.counter.success.header", "Success"),
                                 localeService.getMessage("pickup.counter.success.message",
                                         "Your counter proposal has been sent. The other party can now review your availability."));
+                        
+                        // Close the popup window
                         closeWindow();
                     } else {
                         AlertHelper.showErrorAlert(
@@ -603,22 +621,39 @@ public class PickupSelectionController {
         counterProposalSection.setVisible(false);
         counterProposalSection.setManaged(false);
 
+        // Show/hide button sections
+        mainActionButtons.setVisible(true);
+        mainActionButtons.setManaged(true);
+        counterProposalButtons.setVisible(false);
+        counterProposalButtons.setManaged(false);
+
         // Restore original instructions
         instructionsLabel.setText(localeService.getMessage("pickup.selection.instructions",
                 "Choose a convenient date and time from the available options, or propose an alternative"));
 
-        // Show original buttons
-        acceptButton.setVisible(true);
-        rejectButton.setVisible(true);
-        counterProposeButton.setVisible(true);
-
         // Clear counter proposal data
         counterSelectedDates.clear();
         updateCounterSelectedDatesDisplay();
+        
+        // Clear counter proposal form fields
+        counterLocationField.clear();
+        counterDetailsArea.clear();
+        
+        // Reset time spinners to default values
+        counterStartHourSpinner.getValueFactory().setValue(9);
+        counterStartMinuteSpinner.getValueFactory().setValue(0);
+        counterEndHourSpinner.getValueFactory().setValue(18);
+        counterEndMinuteSpinner.getValueFactory().setValue(0);
+        
+        // Reset date pickers to default values
+        LocalDate today = LocalDate.now();
+        counterStartDatePicker.setValue(today);
+        counterEndDatePicker.setValue(today.plusDays(7));
     }
 
     @FXML
     private void handleCancel() {
+        // Close the popup window
         closeWindow();
     }
 

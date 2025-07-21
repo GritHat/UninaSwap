@@ -16,9 +16,15 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.collections.transformation.FilteredList;
+import com.uninaswap.common.enums.Category;
 import java.util.Optional;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 public class InventoryController {
 
@@ -54,6 +60,17 @@ public class InventoryController {
     @FXML
     private Label itemDescriptionLabel;
 
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<String> categoryFilterComboBox;
+    @FXML
+    private ComboBox<String> conditionFilterComboBox;
+    @FXML
+    private ComboBox<String> availabilityFilterComboBox;
+    @FXML
+    private Button clearFiltersButton;
+
     private final ItemService itemService = ItemService.getInstance();
     private final ImageService imageService = ImageService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
@@ -61,30 +78,21 @@ public class InventoryController {
     private final NavigationService navigationService = NavigationService.getInstance();
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
 
+    // Add field for filtered list
+    private FilteredList<ItemViewModel> filteredItems;
+
     @FXML
     public void initialize() {
-        // Configure the table columns to work with ItemViewModel
-        nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        setupFilters();
+        setupTableColumns();
 
-        conditionColumn.setCellValueFactory(cellData -> {
-            ItemCondition condition = cellData.getValue().getCondition();
-            return new SimpleStringProperty(condition != null ? condition.getDisplayName() : "");
-        });
+        // Get the observable list from ItemService and create filtered list
+        ObservableList<ItemViewModel> allItems = itemService.getUserItemsListAsViewModel();
+        FilteredList<ItemViewModel> filteredItems = new FilteredList<>(allItems);
+        itemsTable.setItems(filteredItems);
 
-        stockColumn.setCellValueFactory(cellData -> cellData.getValue().totalQuantityProperty().asObject());
-        categoryColumn.setCellValueFactory(cellData -> cellData.getValue().itemCategoryProperty());
+        setupSearchFilter(filteredItems);
 
-        // Add cell factories for the new columns
-        availableColumn.setCellValueFactory(cellData -> cellData.getValue().availableQuantityProperty().asObject());
-
-        // Calculate reserved quantity (total - available)
-        reservedColumn.setCellValueFactory(cellData -> {
-            return Bindings.createObjectBinding(() -> cellData.getValue().getReservedQuantity(),
-                    cellData.getValue().totalQuantityProperty(),
-                    cellData.getValue().availableQuantityProperty());
-        });
-
-        // Add selection listener to show details
         itemsTable.getSelectionModel().selectedItemProperty().addListener((_, _, newSelection) -> {
             if (newSelection != null) {
                 showItemDetails(newSelection);
@@ -111,6 +119,121 @@ public class InventoryController {
                 System.out.println("InventoryController: Cleared view on logout");
             });
         });
+    }
+
+    // Add new method to setup filters
+    private void setupFilters() {
+        // Category filter
+        categoryFilterComboBox.setItems(FXCollections.observableArrayList(
+                localeService.getMessage("inventory.filter.all.categories", "All Categories"),
+                localeService.getMessage("category.electronics", "Electronics"),
+                localeService.getMessage("category.clothing", "Clothing"),
+                localeService.getMessage("category.books", "Books"),
+                localeService.getMessage("category.home", "Home & Garden"),
+                localeService.getMessage("category.sports", "Sports"),
+                localeService.getMessage("category.other", "Other")
+        ));
+        categoryFilterComboBox.setValue(localeService.getMessage("inventory.filter.all.categories", "All Categories"));
+
+        // Condition filter
+        conditionFilterComboBox.setItems(FXCollections.observableArrayList(
+                localeService.getMessage("inventory.filter.all.conditions", "All Conditions"),
+                localeService.getMessage("condition.new", "New"),
+                localeService.getMessage("condition.like_new", "Like New"),
+                localeService.getMessage("condition.very_good", "Very Good"),
+                localeService.getMessage("condition.good", "Good"),
+                localeService.getMessage("condition.acceptable", "Acceptable"),
+                localeService.getMessage("condition.for_parts", "For Parts")
+        ));
+        conditionFilterComboBox.setValue(localeService.getMessage("inventory.filter.all.conditions", "All Conditions"));
+
+        // Availability filter
+        availabilityFilterComboBox.setItems(FXCollections.observableArrayList(
+                localeService.getMessage("inventory.filter.all.availability", "All Items"),
+                localeService.getMessage("inventory.filter.available", "Available"),
+                localeService.getMessage("inventory.filter.reserved", "Reserved"),
+                localeService.getMessage("inventory.filter.out_of_stock", "Out of Stock")
+        ));
+        availabilityFilterComboBox.setValue(localeService.getMessage("inventory.filter.all.availability", "All Items"));
+
+        // Add listeners for filter changes
+        categoryFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
+        conditionFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
+        availabilityFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
+    }
+
+    // Add new method to setup search filter
+    private void setupSearchFilter(FilteredList<ItemViewModel> filteredItems) {
+        searchField.textProperty().addListener((_, _, _) -> updateFilters());
+
+        // Store reference to filtered list for filter updates
+        this.filteredItems = filteredItems;
+    }
+
+    // Add method to update filters
+    private void updateFilters() {
+        if (filteredItems == null) return;
+
+        filteredItems.setPredicate(item -> {
+            // Search filter
+            String searchText = searchField.getText().toLowerCase().trim();
+            if (!searchText.isEmpty()) {
+                if (!item.getName().toLowerCase().contains(searchText) &&
+                    !item.getDescription().toLowerCase().contains(searchText) &&
+                    !item.getBrand().toLowerCase().contains(searchText) &&
+                    !item.getModel().toLowerCase().contains(searchText)) {
+                    return false;
+                }
+            }
+
+            // Category filter
+            String categoryFilter = categoryFilterComboBox.getValue();
+            if (!localeService.getMessage("inventory.filter.all.categories", "All Categories").equals(categoryFilter)) {
+                String itemCategory = item.getItemCategory();
+                if (itemCategory == null || !getCategoryDisplayName(itemCategory).equals(categoryFilter)) {
+                    return false;
+                }
+            }
+
+            // Condition filter
+            String conditionFilter = conditionFilterComboBox.getValue();
+            if (!localeService.getMessage("inventory.filter.all.conditions", "All Conditions").equals(conditionFilter)) {
+                ItemCondition itemCondition = item.getCondition();
+                if (itemCondition == null || !itemCondition.getDisplayName().equals(conditionFilter)) {
+                    return false;
+                }
+            }
+
+            // Availability filter
+            String availabilityFilter = availabilityFilterComboBox.getValue();
+            if (!localeService.getMessage("inventory.filter.all.availability", "All Items").equals(availabilityFilter)) {
+                if (localeService.getMessage("inventory.filter.available", "Available").equals(availabilityFilter)) {
+                    if (item.getAvailableQuantity() <= 0) {
+                        return false;
+                    }
+                } else if (localeService.getMessage("inventory.filter.reserved", "Reserved").equals(availabilityFilter)) {
+                    if (item.getTotalQuantity() - item.getAvailableQuantity() <= 0) {
+                        return false;
+                    }
+                } else if (localeService.getMessage("inventory.filter.out_of_stock", "Out of Stock").equals(availabilityFilter)) {
+                    if (item.getTotalQuantity() > 0) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        });
+    }
+
+    // Helper method to get localized category display name
+    private String getCategoryDisplayName(String categoryName) {
+        try {
+            Category category = Category.valueOf(categoryName.toUpperCase());
+            return localeService.getMessage("category." + category.name().toLowerCase(), categoryName);
+        } catch (IllegalArgumentException e) {
+            return categoryName;
+        }
     }
 
     @FXML
@@ -160,6 +283,15 @@ public class InventoryController {
         refreshItems();
     }
 
+    // Add clear filters handler
+    @FXML
+    private void handleClearFilters() {
+        searchField.clear();
+        categoryFilterComboBox.setValue(localeService.getMessage("inventory.filter.all.categories", "All Categories"));
+        conditionFilterComboBox.setValue(localeService.getMessage("inventory.filter.all.conditions", "All Conditions"));
+        availabilityFilterComboBox.setValue(localeService.getMessage("inventory.filter.all.availability", "All Items"));
+    }
+
     private void refreshItems() {
         // Convert ItemDTOs from service to ItemViewModels
         itemsTable.setItems(itemService.getUserItemsListAsViewModel());
@@ -194,5 +326,20 @@ public class InventoryController {
         itemNameLabel.setText("");
         itemDescriptionLabel.setText("");
         itemImageView.setImage(null);
+    }
+
+    // Update the setupTableColumns method name (if it doesn't exist, add it)
+    private void setupTableColumns() {
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        categoryColumn.setCellValueFactory(cellData ->
+            new SimpleStringProperty(getCategoryDisplayName(cellData.getValue().getItemCategory())));
+        conditionColumn.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().getCondition() != null ?
+                cellData.getValue().getCondition().getDisplayName() : ""));
+        stockColumn.setCellValueFactory(new PropertyValueFactory<>("totalQuantity"));
+        availableColumn.setCellValueFactory(new PropertyValueFactory<>("availableQuantity"));
+        reservedColumn.setCellValueFactory(cellData ->
+            new SimpleIntegerProperty(cellData.getValue().getTotalQuantity() -
+                cellData.getValue().getAvailableQuantity()).asObject());
     }
 }

@@ -1,151 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<StackPane styleClass="standard-window" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.InventoryController">
-  <children>
-    <BorderPane>
-      <center>
-        <VBox prefHeight="484.0" prefWidth="501.0" style="-fx-background-color: #F8F8F8;" BorderPane.alignment="CENTER">
-          <children>
-            <!-- Header with search -->
-            <fx:include source="SearchBarView.fxml">
-              <VBox.margin>
-                <Insets bottom="10.0" left="15.0" right="15.0" top="15.0"/>
-              </VBox.margin>
-            </fx:include>
-            
-            <!-- Add new item button -->
-            <HBox alignment="CENTER_RIGHT">
-              <children>
-                <Button fx:id="addButton" mnemonicParsing="false" text="%inventory.new.item" onAction="#handleAddItem">
-                  <graphic>
-                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                      <image>
-                        <Image url="@../images/icons/add_item.png"/>
-                      </image>
-                    </ImageView>
-                  </graphic>
-                </Button>
-              </children>
-              <VBox.margin>
-                <Insets right="15.0"/>
-              </VBox.margin>
-            </HBox>
-            
-            <!-- Tab pane for different item states -->
-            <TabPane prefHeight="380.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-              <tabs>
-                <!-- Tab inventario -->
-                <Tab text="%inventory.title">
-                  <content>
-                    <VBox>
-                      <children>
-                        <TableView fx:id="itemsTable" VBox.vgrow="ALWAYS">
-                          <columns>
-                            <TableColumn fx:id="nameColumn" prefWidth="100.0" text="Name"/>
-                            <TableColumn fx:id="conditionColumn" prefWidth="80.0" text="Condition"/>
-                            <TableColumn fx:id="stockColumn" prefWidth="60.0" text="Stock"/>
-                            <TableColumn fx:id="categoryColumn" prefWidth="100.0" text="Category"/>
-                            <TableColumn fx:id="reservedColumn" prefWidth="80.0" text="Reserved"/>
-                            <TableColumn fx:id="availableColumn" prefWidth="80.0" text="Available"/>
-                          </columns>
-                        </TableView>
-                        
-                        <!-- Buttons for edit and delete -->
-                        <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                          <children>
-                            <Button fx:id="editButton" text="%button.edit" onAction="#handleEditItem" />
-                            <Button fx:id="deleteButton" text="%button.delete" onAction="#handleDeleteItem" />
-                          </children>
-                          <padding>
-                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                          </padding>
-                        </HBox>
-                      </children>
-                    </VBox>
-                  </content>
-                </Tab>
-                
-                <!-- Tab in vendita -->
-                <Tab text="%inventory.tab.forsale">
-                  <content>
-                    <ScrollPane fitToWidth="true">
-                      <content>
-                        <FlowPane fx:id="forSaleFlowPane" hgap="15.0" vgap="15.0">
-                          <padding>
-                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
-                          </padding>
-                        </FlowPane>
-                      </content>
-                    </ScrollPane>
-                  </content>
-                </Tab>
-                
-                <!-- Tab venduti -->
-                <Tab text="%inventory.tab.sold">
-                  <content>
-                    <ScrollPane fitToWidth="true">
-                      <content>
-                        <FlowPane fx:id="soldFlowPane" hgap="15.0" vgap="15.0">
-                          <padding>
-                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
-                          </padding>
-                        </FlowPane>
-                      </content>
-                    </ScrollPane>
-                  </content>
-                </Tab>
-                
-                <!-- Tab aste attive -->
-                <Tab text="%inventory.tab.activeauctions">
-                  <content>
-                    <ScrollPane fitToWidth="true">
-                      <content>
-                        <FlowPane fx:id="auctionsFlowPane" hgap="15.0" vgap="15.0">
-                          <padding>
-                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
-                          </padding>
-                        </FlowPane>
-                      </content>
-                    </ScrollPane>
-                  </content>
-                </Tab>
-                
-                <!-- Tab bozze -->
-                <Tab text="%inventory.tab.drafts">
-                  <content>
-                    <ScrollPane fitToWidth="true">
-                      <content>
-                        <FlowPane fx:id="draftsFlowPane" hgap="15.0" vgap="15.0">
-                          <padding>
-                            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0"/>
-                          </padding>
-                        </FlowPane>
-                      </content>
-                    </ScrollPane>
-                  </content>
-                </Tab>
-              </tabs>
-            </TabPane>
-          </children>
-        </VBox>
-      </center>
-    </BorderPane>
-  </children>
-</StackPane>
+<ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="main-content-background" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.InventoryController">
+  <content>
+    <VBox spacing="20.0" styleClass="inventory-main-container">
+      <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      </padding>
+      
+      <!-- Header Section -->
+      <VBox spacing="15.0" styleClass="inventory-header-section">
+        <children>
+          <!-- Title and Icon -->
+          <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <children>
+              <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@../images/icons/inventory.png" />
+                </image>
+              </ImageView>
+              <Text styleClass="page-title-label" text="%inventory.title">
+                <font>
+                  <Font size="24.0" />
+                </font>
+              </Text>
+              <Region HBox.hgrow="ALWAYS" />
+              <Button fx:id="addButton" onAction="#handleAddItem" styleClass="primary-button" text="%inventory.new.item">
+                <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                      <Image url="@../images/icons/add_w.png"/>
+                    </image>
+                  </ImageView>
+                </graphic>
+              </Button>
+            </children>
+          </HBox>
+          
+          <!-- Filters Section -->
+          <VBox spacing="10.0" styleClass="inventory-filters-section">
+            <children>
+              <!-- First row: Search and filters -->
+              <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <children>
+                  <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                    <children>
+                      <Label styleClass="filter-label" text="%inventory.filter.search" />
+                      <TextField fx:id="searchField" promptText="%inventory.filter.search.placeholder" styleClass="filter-search-field" />
+                    </children>
+                  </VBox>
+                  
+                  <VBox spacing="5.0">
+                    <children>
+                      <Label styleClass="filter-label" text="%inventory.filter.category" />
+                      <ComboBox fx:id="categoryFilterComboBox" prefWidth="150.0" promptText="%inventory.filter.all.categories" styleClass="filter-combo-box" />
+                    </children>
+                  </VBox>
+                  
+                  <VBox spacing="5.0">
+                    <children>
+                      <Label styleClass="filter-label" text="%inventory.filter.condition" />
+                      <ComboBox fx:id="conditionFilterComboBox" prefWidth="120.0" promptText="%inventory.filter.all.conditions" styleClass="filter-combo-box" />
+                    </children>
+                  </VBox>
+                  
+                  <VBox spacing="5.0">
+                    <children>
+                      <Label styleClass="filter-label" text="%inventory.filter.availability" />
+                      <ComboBox fx:id="availabilityFilterComboBox" prefWidth="130.0" promptText="%inventory.filter.all.availability" styleClass="filter-combo-box" />
+                    </children>
+                  </VBox>
+                  
+                  <VBox spacing="5.0">
+                    <children>
+                      <Label text=" " />
+                      <Button fx:id="clearFiltersButton" onAction="#handleClearFilters" styleClass="clear-filters-button" text="%inventory.filter.clear" />
+                    </children>
+                  </VBox>
+                </children>
+              </HBox>
+            </children>
+          </VBox>
+        </children>
+      </VBox>
+      
+      <!-- Main Content Area with Items Table -->
+      <VBox spacing="0.0" VBox.vgrow="ALWAYS">
+        <children>
+          <!-- Items Table Container -->
+          <VBox styleClass="inventory-table-container" VBox.vgrow="ALWAYS">
+            <children>
+              <TableView fx:id="itemsTable" styleClass="inventory-table" VBox.vgrow="ALWAYS">
+                <columns>
+                  <TableColumn fx:id="nameColumn" prefWidth="150.0" text="%inventory.column.name"/>
+                  <TableColumn fx:id="categoryColumn" prefWidth="120.0" text="%inventory.column.category"/>
+                  <TableColumn fx:id="conditionColumn" prefWidth="100.0" text="%inventory.column.condition"/>
+                  <TableColumn fx:id="stockColumn" prefWidth="80.0" text="%inventory.column.stock"/>
+                  <TableColumn fx:id="availableColumn" prefWidth="80.0" text="%inventory.column.available"/>
+                  <TableColumn fx:id="reservedColumn" prefWidth="80.0" text="%inventory.column.reserved"/>
+                  <TableColumn fx:id="actionsColumn" prefWidth="150.0" sortable="false" text="%inventory.column.actions"/>
+                </columns>
+                <placeholder>
+                  <VBox alignment="CENTER" spacing="15.0" styleClass="table-placeholder">
+                    <children>
+                      <ImageView fitHeight="64.0" fitWidth="64.0" opacity="0.5" preserveRatio="true">
+                        <image>
+                          <Image url="@../images/icons/inventory.png" />
+                        </image>
+                      </ImageView>
+                      <Text styleClass="placeholder-title" text="%inventory.empty.title" />
+                      <Text styleClass="placeholder-subtitle" text="%inventory.empty.subtitle" />
+                      <Button onAction="#handleAddItem" styleClass="primary-button" text="%inventory.new.item" />
+                    </children>
+                  </VBox>
+                </placeholder>
+              </TableView>
+              
+              <!-- Action Buttons Section -->
+              <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="inventory-action-buttons">
+                <children>
+                  <Button fx:id="editButton" onAction="#handleEditItem" styleClass="secondary-button" text="%button.edit" />
+                  <Button fx:id="deleteButton" onAction="#handleDeleteItem" styleClass="danger-button" text="%button.delete" />
+                </children>
+                <padding>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                </padding>
+              </HBox>
+            </children>
+          </VBox>
+        </children>
+      </VBox>
+    </VBox>
+  </content>
+</ScrollPane>

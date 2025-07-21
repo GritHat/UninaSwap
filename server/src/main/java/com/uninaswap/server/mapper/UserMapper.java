@@ -27,6 +27,8 @@ public class UserMapper {
         dto.setAddress(entity.getAddress());
         dto.setCity(entity.getCity());
         dto.setCountry(entity.getCountry());
+        dto.setZipPostalCode(entity.getZipPostalCode());
+        dto.setStateProvince(entity.getStateProvince());
 
         return dto;
     }

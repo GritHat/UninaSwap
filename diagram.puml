@@ -1,0 +1,1158 @@
+@startuml UninaSwap_Enhanced_EBC_Architecture
+
+!define CLIENT_COLOR #E8F4FD
+!define SERVER_COLOR #FFF2E8
+!define BOUNDARY_COLOR #D4EDDA
+!define CONTROL_COLOR #FCE4EC
+!define ENTITY_COLOR #FFF3CD
+!define SHARED_COLOR #F0F8FF
+
+title UninaSwap - Enhanced EBC Architecture
+
+skinparam backgroundColor white
+skinparam packageStyle rectangle
+skinparam packageBorderThickness 0
+skinparam packageBackgroundColor CLIENT_COLOR
+skinparam packageFontColor black
+
+rectangle "CLIENT DOMAIN" as ClientDomain #lightblue {
+    
+    rectangle "Boundaries (FXML Views)" as ClientBoundary #E8F4FD {
+        class "ProfileView.fxml" as ProfileFXML
+        class "OffersView.fxml" as OffersFXML
+        class "ListingDetailsView.fxml" as ListingDetailsFXML
+        class "ItemDialogView.fxml" as ItemDialogFXML
+        class "ImageCropperView.fxml" as CropperFXML
+        class "MainView.fxml" as MainFXML
+        class "ListingsView.fxml" as ListingsFXML
+        class "OffersTabContent.fxml" as OffersTabFXML
+        class "HomeView.fxml" as HomeFXML
+    }
+    
+    rectangle "Boundaries (Controllers)" as Controllers #D4EDDA {
+        class ProfileController {
+            -viewedUser: UserViewModel
+            -isOwnProfile: boolean
+            -profileService: ProfileService
+            -imageService: ImageService
+            +loadProfile(user: UserViewModel)
+            +handleChangeImage()
+            +handleSave()
+            +loadUserListings()
+        }
+        
+        class OffersController {
+            -selectedOffer: OfferViewModel
+            -offerService: OfferService
+            -filteredOffers: FilteredList<OfferViewModel>
+            +handleAcceptOffer()
+            +handleRejectOffer()
+            +refreshOffers()
+            +showOfferDetails(offer: OfferViewModel)
+        }
+        
+        class ListingDetailsController {
+            -currentListing: ListingViewModel
+            -imageUrls: List<String>
+            -isFavorite: boolean
+            -favoritesService: FavoritesService
+            +setListing(listing: ListingViewModel)
+            +handleMakeOffer()
+            +handleBuyNow()
+            +toggleFavorite()
+        }
+        
+        class ItemDialogController {
+            -item: ItemDTO
+            -selectedImageFile: File
+            -isNewItem: boolean
+            +setItem(item: ItemDTO)
+            +getUpdatedItem(): ItemDTO
+            +handleSelectImage()
+        }
+        
+        class ImageCropperController {
+            -cropCallback: Consumer<Image>
+            +setImage(image: Image)
+            +createCroppedImage(): Image
+        }
+        
+        class MainController {
+            -currentFilter: String
+            -isInSearchMode: boolean
+            -navigationService: NavigationService
+            -searchService: SearchService
+            +handleSearch()
+            +setContent(Parent)
+            +filterListings(type: String)
+        }
+        
+        class ListingsController {
+            -userListings: ObservableList<ListingViewModel>
+            -filteredListings: FilteredList<ListingViewModel>
+            -listingService: ListingService
+            +refreshData()
+            +handleCreateNew()
+            +updateFilters()
+        }
+        
+        class OfferDialogController {
+            -currentListing: ListingViewModel
+            -selectedItems: ObservableList<OfferItemViewModel>
+            -offerService: OfferService
+            +createOffer(): CompletableFuture<Boolean>
+            +isValidOffer(): boolean
+        }
+        
+        class HomeController {
+            -allListingsContainer: FlowPane
+            -listingService: ListingService
+            -currentPage: int
+            +initialize()
+            +updateHomeViewWithListings()
+            +handleUserAction()
+        }
+    }
+    
+    rectangle "Controls (Services)" as ClientControl #FCE4EC {
+        class ListingService {
+            -webSocketClient: WebSocketClient
+            -userListings: ObservableList<ListingViewModel>
+            -allListings: ObservableList<ListingViewModel>
+            +getUserListings(userId: Long): CompletableFuture<List<ListingDTO>>
+            +createListing(listing: ListingDTO): CompletableFuture<ListingDTO>
+            +refreshUserListings()
+            +getListings(page: int, size: int): CompletableFuture<List<ListingDTO>>
+        }
+        
+        class OfferService {
+            -webSocketClient: WebSocketClient
+            -receivedOffers: ObservableList<OfferViewModel>
+            -sentOffers: ObservableList<OfferViewModel>
+            +createOffer(offer: OfferViewModel): CompletableFuture<OfferDTO>
+            +acceptOffer(offerId: String): CompletableFuture<Boolean>
+            +getReceivedOffers(): CompletableFuture<List<OfferDTO>>
+        }
+        
+        class ItemService {
+            -webSocketClient: WebSocketClient
+            -userItems: ObservableList<ItemViewModel>
+            +getUserItems(): CompletableFuture<List<ItemDTO>>
+            +createItem(item: ItemDTO): CompletableFuture<ItemDTO>
+            +getUserItemsList(): List<ItemDTO>
+        }
+        
+        class NotificationService {
+            -webSocketClient: WebSocketClient
+            -notifications: ObservableList<NotificationViewModel>
+            -unreadCount: IntegerProperty
+            +getNotifications(): CompletableFuture<List<NotificationDTO>>
+            +markAsRead(notificationId: String): CompletableFuture<Boolean>
+            +setUnreadCountCallback(callback: Consumer<Integer>)
+        }
+        
+        class ProfileService {
+            -webSocketClient: WebSocketClient
+            +updateProfile(user: UserDTO): CompletableFuture<Void>
+            +setUpdateResponseHandler(handler: Consumer<ProfileUpdateMessage>)
+        }
+        
+        class ImageService {
+            -imageCache: Map<String, Image>
+            +fetchImage(path: String): CompletableFuture<Image>
+            +uploadImage(file: File): CompletableFuture<String>
+            +getInstance(): ImageService
+        }
+        
+        class FavoritesService {
+            -webSocketClient: WebSocketClient
+            -favoriteListings: ObservableList<FavoriteViewModel>
+            +addToFavorites(listingId: String): CompletableFuture<Boolean>
+            +removeFromFavorites(listingId: String): CompletableFuture<Boolean>
+            +getUserFavorites(): CompletableFuture<List<FavoriteDTO>>
+        }
+        
+        class WebSocketClient {
+            -messageHandlers: Map<Class, Consumer>
+            -session: WebSocketSession
+            -isConnected: BooleanProperty
+            +sendMessage(message: Message): CompletableFuture<Void>
+            +registerMessageHandler(type: Class, handler: Consumer)
+            +getInstance(): WebSocketClient
+        }
+        
+        class NavigationService {
+            -mainController: MainController
+            +loadHomeView(): Parent
+            +loadProfileView(user: UserViewModel): Parent
+            +navigateToListingDetails(listing: ListingViewModel)
+            +openItemDialog(item: ItemViewModel)
+            +getInstance(): NavigationService
+        }
+        
+        class SearchService {
+            -webSocketClient: WebSocketClient
+            +search(query: String, category: Category, type: String): CompletableFuture<SearchResult>
+            +getInstance(): SearchService
+        }
+    }
+    
+    rectangle "Entities (ViewModels)" as ClientEntity #FFF3CD {
+        class UserViewModel {
+            -id: StringProperty
+            -username: StringProperty
+            -email: StringProperty
+            -firstName: StringProperty
+            -lastName: StringProperty
+            -profileImagePath: StringProperty
+            -bio: StringProperty
+            -address: StringProperty
+            -city: StringProperty
+            -country: StringProperty
+            +getDisplayName(): String
+            +getId(): String
+            +setId(id: String)
+        }
+        
+        abstract class ListingViewModel {
+            -id: StringProperty
+            -title: StringProperty
+            -description: StringProperty
+            -user: ObjectProperty<UserViewModel>
+            -status: ObjectProperty<ListingStatus>
+            -items: ObservableList<ListingItemViewModel>
+            -createdAt: ObjectProperty<LocalDateTime>
+            -featured: BooleanProperty
+            +getListingTypeValue(): String
+            +getPickupLocation(): String
+            +setPickupLocation(location: String)
+        }
+        
+        class SellListingViewModel {
+            -price: ObjectProperty<BigDecimal>
+            -currency: ObjectProperty<Currency>
+            -pickupLocation: ObjectProperty<String>
+            +getDeliveryType(type: DeliveryType): DeliveryType
+            +getListingTypeValue(): String
+        }
+        
+        class TradeListingViewModel {
+            -acceptMoneyOffers: BooleanProperty
+            -pickupLocation: ObjectProperty<String>
+            +getListingTypeValue(): String
+        }
+        
+        class GiftListingViewModel {
+            -pickupOnly: BooleanProperty
+            -allowThankYouOffers: BooleanProperty
+            -pickupLocation: ObjectProperty<String>
+            +getListingTypeValue(): String
+        }
+        
+        class AuctionListingViewModel {
+            -startingBid: ObjectProperty<BigDecimal>
+            -currentBid: ObjectProperty<BigDecimal>
+            -endTime: ObjectProperty<LocalDateTime>
+            -currency: ObjectProperty<Currency>
+            +getListingTypeValue(): String
+        }
+        
+        class OfferViewModel {
+            -id: StringProperty
+            -listingId: StringProperty
+            -offeringUser: ObjectProperty<UserViewModel>
+            -listing: ObjectProperty<ListingViewModel>
+            -status: ObjectProperty<OfferStatus>
+            -amount: ObjectProperty<BigDecimal>
+            -currency: ObjectProperty<Currency>
+            -offerItems: ObservableList<OfferItemViewModel>
+            -message: StringProperty
+            -deliveryType: ObjectProperty<DeliveryType>
+            +hasMoneyOffer(): boolean
+            +hasItemOffer(): boolean
+            +getTotalItemCount(): int
+        }
+        
+        class ItemViewModel {
+            -id: StringProperty
+            -name: StringProperty
+            -description: StringProperty
+            -itemCategory: ObjectProperty<Category>
+            -condition: ObjectProperty<ItemCondition>
+            -totalQuantity: IntegerProperty
+            -availableQuantity: IntegerProperty
+            -imagePath: StringProperty
+            -owner: ObjectProperty<UserViewModel>
+            +isAvailable(): boolean
+        }
+        
+        class ListingItemViewModel {
+            -id: StringProperty
+            -name: StringProperty
+            -quantity: IntegerProperty
+            -item: ObjectProperty<ItemViewModel>
+            -imagePath: StringProperty
+        }
+        
+        class OfferItemViewModel {
+            -itemId: StringProperty
+            -itemName: StringProperty
+            -quantity: IntegerProperty
+            -condition: ObjectProperty<ItemCondition>
+            -item: ObjectProperty<ItemViewModel>
+        }
+        
+        class NotificationViewModel {
+            -id: StringProperty
+            -title: StringProperty
+            -message: StringProperty
+            -type: ObjectProperty<NotificationType>
+            -read: BooleanProperty
+            -createdAt: ObjectProperty<LocalDateTime>
+        }
+        
+        class FavoriteViewModel {
+            -id: StringProperty
+            -userId: StringProperty
+            -listingId: StringProperty
+            -user: ObjectProperty<UserViewModel>
+            -listing: ObjectProperty<ListingViewModel>
+        }
+        
+        class ReviewViewModel {
+            -id: StringProperty
+            -reviewer: ObjectProperty<UserViewModel>
+            -reviewedUser: ObjectProperty<UserViewModel>
+            -score: IntegerProperty
+            -comment: StringProperty
+            -createdAt: ObjectProperty<LocalDateTime>
+            -offerId: StringProperty
+        }
+    }
+}
+
+rectangle "SHARED COMMUNICATION" as SharedComm #F0F8FF {
+    rectangle "Data Transfer" as ClientDTO #FFF3CD {
+        class ViewModelMapper {
+            -instance: ViewModelMapper
+            +getInstance(): ViewModelMapper
+            +toViewModel(dto: UserDTO): UserViewModel
+            +toDTO(viewModel: UserViewModel): UserDTO
+            +toViewModel(dto: ListingDTO): ListingViewModel
+            +toDTO(viewModel: ListingViewModel): ListingDTO
+            +toViewModel(dto: OfferDTO): OfferViewModel
+            +toDTO(viewModel: OfferViewModel): OfferDTO
+            +toItemViewModels(dtos: List<ItemDTO>): List<ItemViewModel>
+            +toListingViewModels(dtos: List<ListingDTO>): List<ListingViewModel>
+        }
+        
+        class UserDTO {
+            -id: Long
+            -username: String
+            -email: String
+            -firstName: String
+            -lastName: String
+            -profileImagePath: String
+            -bio: String
+            -address: String
+            -city: String
+            -country: String
+            -createdAt: LocalDateTime
+            -active: boolean
+        }
+        
+        abstract class ListingDTO {
+            -id: String
+            -title: String
+            -description: String
+            -creator: UserDTO
+            -status: ListingStatus
+            -items: List<ListingItemDTO>
+            -createdAt: LocalDateTime
+            -featured: boolean
+            +getListingTypeValue(): String
+            +getPickupLocation(): String
+            +setPickupLocation(location: String)
+        }
+        
+        class SellListingDTO {
+            -price: BigDecimal
+            -currency: Currency
+            -pickupLocation: String
+            +getPriceInfo(): String
+        }
+        
+        class TradeListingDTO {
+            -acceptMoneyOffers: boolean
+            -pickupLocation: String
+            +getListingTypeValue(): String
+        }
+        
+        class GiftListingDTO {
+            -pickupOnly: boolean
+            -allowThankYouOffers: boolean
+            -pickupLocation: String
+            +getListingTypeValue(): String
+        }
+        
+        class AuctionListingDTO {
+            -startingBid: BigDecimal
+            -currentBid: BigDecimal
+            -endTime: LocalDateTime
+            -currency: Currency
+            +getListingTypeValue(): String
+        }
+        
+        class OfferDTO {
+            -id: String
+            -listingId: String
+            -offeringUser: UserDTO
+            -listing: ListingDTO
+            -status: OfferStatus
+            -amount: BigDecimal
+            -currency: Currency
+            -offerItems: List<OfferItemDTO>
+            -message: String
+            -deliveryType: DeliveryType
+        }
+        
+        class ItemDTO {
+            -id: String
+            -name: String
+            -description: String
+            -category: String
+            -condition: ItemCondition
+            -stockQuantity: Integer
+            -availableQuantity: Integer
+            -imagePath: String
+            -owner: UserDTO
+            -ownerId: String
+            -available: boolean
+        }
+        
+        class ListingItemDTO {
+            -itemId: String
+            -itemName: String
+            -quantity: Integer
+            -item: ItemDTO
+            -itemImagePath: String
+        }
+        
+        class OfferItemDTO {
+            -itemId: String
+            -itemName: String
+            -quantity: Integer
+            -condition: ItemCondition
+            -item: ItemDTO
+            -itemImagePath: String
+        }
+        
+        class NotificationDTO {
+            -id: String
+            -title: String
+            -message: String
+            -type: NotificationType
+            -read: boolean
+            -createdAt: LocalDateTime
+            -userId: Long
+        }
+        
+        class FavoriteDTO {
+            -id: String
+            -userId: String
+            -listingId: String
+            -user: UserDTO
+            -listing: ListingDTO
+        }
+        
+        class ReviewDTO {
+            -id: String
+            -reviewer: UserDTO
+            -reviewedUser: UserDTO
+            -score: Integer
+            -comment: String
+            -createdAt: LocalDateTime
+            -offerId: String
+        }
+    }
+    
+    rectangle "Enums & Messages" as EnumsMessages #FFF3CD {
+        enum ListingStatus {
+            ACTIVE
+            PAUSED
+            COMPLETED
+            CANCELLED
+            EXPIRED
+            +getDisplayName(): String
+        }
+        
+        enum OfferStatus {
+            PENDING
+            ACCEPTED
+            CONFIRMED
+            SELLER_VERIFIED
+            BUYER_VERIFIED
+            PICKUP_SCHEDULING
+            PICKUP_RESCHEDULING
+            CANCELLED
+            REJECTED
+            WITHDRAWN
+            COMPLETED
+            +getDisplayName(): String
+        }
+        
+        enum Currency {
+            EUR
+            USD
+            GBP
+        }
+        
+        enum Category {
+            ALL
+            ELECTRONICS
+            BOOKS
+            CLOTHING
+            SPORTS
+            HOME_GARDEN
+            VEHICLES
+            TOYS_GAMES
+            MUSIC_MOVIES
+            OTHER
+            +getDisplayName(): String
+            +fromString(name: String): Category
+        }
+        
+        enum ItemCondition {
+            NEW
+            LIKE_NEW
+            VERY_GOOD
+            GOOD
+            ACCEPTABLE
+            POOR
+            +getDisplayName(): String
+        }
+        
+        enum DeliveryType {
+            PICKUP
+            SHIPPING
+            BOTH
+        }
+        
+        enum NotificationType {
+            OFFER_RECEIVED
+            OFFER_ACCEPTED
+            OFFER_REJECTED
+            LISTING_EXPIRED
+            SYSTEM
+        }
+        
+        class ProfileUpdateMessage {
+            -type: Type
+            -username: String
+            -firstName: String
+            -lastName: String
+            -bio: String
+            -profileImagePath: String
+            -success: boolean
+            -message: String
+        }
+        
+        class ListingMessage {
+            -type: Type
+            -listing: ListingDTO
+            -listings: List<ListingDTO>
+            -userId: Long
+            -listingId: String
+            -page: Integer
+            -size: Integer
+            -success: boolean
+            -errorMessage: String
+        }
+        
+        class OfferMessage {
+            -type: Type
+            -offer: OfferDTO
+            -offers: List<OfferDTO>
+            -offerId: String
+            -success: boolean
+            -errorMessage: String
+        }
+    }
+}
+
+rectangle "SERVER DOMAIN" as ServerDomain #lightyellow {
+    
+    rectangle "Boundaries (WebSocket Handlers)" as ServerBoundary #D4EDDA {
+        class ListingWebSocketHandler {
+            -listingService: ListingService
+            -objectMapper: ObjectMapper
+            +handleTextMessage(session: WebSocketSession, message: TextMessage)
+            -handleGetUserListings(request: ListingMessage, user: UserEntity)
+            -handleCreateListing(request: ListingMessage, user: UserEntity)
+        }
+        
+        class OfferWebSocketHandler {
+            -offerService: OfferService
+            -objectMapper: ObjectMapper
+            +handleTextMessage(session: WebSocketSession, message: TextMessage)
+            -handleCreateOffer(request: OfferMessage, user: UserEntity)
+            -handleAcceptOffer(request: OfferMessage, user: UserEntity)
+        }
+        
+        class ProfileWebSocketHandler {
+            -userService: UserService
+            -objectMapper: ObjectMapper
+            +handleTextMessage(session: WebSocketSession, message: TextMessage)
+            -handleUpdateProfile(request: ProfileUpdateMessage)
+        }
+        
+        class ItemWebSocketHandler {
+            -itemService: ItemService
+            -objectMapper: ObjectMapper
+            +handleTextMessage(session: WebSocketSession, message: TextMessage)
+            -handleCreateItem(request: ItemMessage, user: UserEntity)
+        }
+        
+        class NotificationWebSocketHandler {
+            -notificationService: NotificationService
+            -objectMapper: ObjectMapper
+            +handleTextMessage(session: WebSocketSession, message: TextMessage)
+            -handleGetNotifications(request: NotificationMessage, user: UserEntity)
+        }
+    }
+    
+    rectangle "Controls (Services)" as ServerControl #FCE4EC {
+        class ListingService {
+            -listingRepository: ListingRepository
+            -listingMapper: ListingMapper
+            +getUserListings(userId: Long): List<ListingDTO>
+            +createListing(listingDTO: ListingDTO, userId: Long): ListingDTO
+            +updateListing(listingDTO: ListingDTO): ListingDTO
+            +deleteListing(listingId: String): boolean
+            +getListings(page: int, size: int): List<ListingDTO>
+        }
+        
+        class OfferService {
+            -offerRepository: OfferRepository
+            -offerMapper: OfferMapper
+            +createOffer(offerDTO: OfferDTO): OfferDTO
+            +acceptOffer(offerId: String, userId: Long): OfferDTO
+            +rejectOffer(offerId: String, userId: Long): OfferDTO
+            +getUserReceivedOffers(userId: Long): List<OfferDTO>
+            +getUserSentOffers(userId: Long): List<OfferDTO>
+        }
+        
+        class UserService {
+            -userRepository: UserRepository
+            -userMapper: UserMapper
+            +updateUser(userDTO: UserDTO): UserDTO
+            +getUserById(id: Long): UserDTO
+            +createUser(userDTO: UserDTO): UserDTO
+            +findByUsername(username: String): Optional<UserEntity>
+        }
+        
+        class ItemService {
+            -itemRepository: ItemRepository
+            -itemMapper: ItemMapper
+            +createItem(itemDTO: ItemDTO, userId: Long): ItemDTO
+            +updateItem(itemDTO: ItemDTO): ItemDTO
+            +getUserItems(userId: Long): List<ItemDTO>
+        }
+        
+        class NotificationService {
+            -notificationRepository: NotificationRepository
+            -notificationMapper: NotificationMapper
+            +createNotification(notification: NotificationDTO): NotificationDTO
+            +getUserNotifications(userId: Long): List<NotificationDTO>
+            +markAsRead(notificationId: String): boolean
+        }
+        
+        class FavoriteService {
+            -favoriteRepository: FavoriteRepository
+            -favoriteMapper: FavoriteMapper
+            +addToFavorites(userId: Long, listingId: String): FavoriteDTO
+            +removeFromFavorites(userId: Long, listingId: String): boolean
+            +getUserFavorites(userId: Long): List<FavoriteDTO>
+        }
+        
+        class ReviewService {
+            -reviewRepository: ReviewRepository
+            -reviewMapper: ReviewMapper
+            +createReview(reviewDTO: ReviewDTO): ReviewDTO
+            +getUserReviews(userId: Long): List<ReviewDTO>
+            +getReviewsForUser(userId: Long): List<ReviewDTO>
+        }
+    }
+    
+    rectangle "Entities (JPA Entities)" as ServerEntity #FFF3CD {
+        class UserEntity {
+            -id: Long
+            -username: String
+            -email: String
+            -firstName: String
+            -lastName: String
+            -profileImagePath: String
+            -bio: String
+            -address: String
+            -city: String
+            -country: String
+            -createdAt: LocalDateTime
+            -updatedAt: LocalDateTime
+            -active: boolean
+        }
+        
+        abstract class ListingEntity {
+            -id: String
+            -title: String
+            -description: String
+            -creator: UserEntity
+            -status: ListingStatus
+            -createdAt: LocalDateTime
+            -updatedAt: LocalDateTime
+            -listingItems: List<ListingItemEntity>
+            -featured: boolean
+            +getListingType(): String
+            +getPriceInfo(): String
+            +getPickupLocation(): String
+            +setPickupLocation(location: String)
+        }
+        
+        class SellListingEntity {
+            -price: BigDecimal
+            -currency: Currency
+            -pickupLocation: String
+            +getListingType(): String
+            +getPriceInfo(): String
+        }
+        
+        class TradeListingEntity {
+            -acceptMoneyOffers: boolean
+            -pickupLocation: String
+            +getListingType(): String
+        }
+        
+        class GiftListingEntity {
+            -pickupOnly: boolean
+            -allowThankYouOffers: boolean
+            -pickupLocation: String
+            +getListingType(): String
+        }
+        
+        class AuctionListingEntity {
+            -startingBid: BigDecimal
+            -currentBid: BigDecimal
+            -endTime: LocalDateTime
+            -currency: Currency
+            +getListingType(): String
+            +getPriceInfo(): String
+        }
+        
+        class OfferEntity {
+            -id: String
+            -listing: ListingEntity
+            -user: UserEntity
+            -status: OfferStatus
+            -amount: BigDecimal
+            -currency: Currency
+            -deliveryType: DeliveryType
+            -offerItems: List<OfferItemEntity>
+            -createdAt: LocalDateTime
+            -updatedAt: LocalDateTime
+            -message: String
+            +hasMoneyOffer(): boolean
+            +hasItemOffer(): boolean
+        }
+        
+        class ItemEntity {
+            -id: String
+            -name: String
+            -description: String
+            -category: String
+            -condition: ItemCondition
+            -stockQuantity: Integer
+            -availableQuantity: Integer
+            -owner: UserEntity
+            -createdAt: LocalDateTime
+            -updatedAt: LocalDateTime
+            -imagePath: String
+        }
+        
+        class ListingItemEntity {
+            -id: String
+            -listing: ListingEntity
+            -item: ItemEntity
+            -quantity: Integer
+        }
+        
+        class OfferItemEntity {
+            -id: String
+            -offer: OfferEntity
+            -item: ItemEntity
+            -quantity: Integer
+        }
+        
+        class NotificationEntity {
+            -id: String
+            -title: String
+            -message: String
+            -type: NotificationType
+            -read: boolean
+            -user: UserEntity
+            -createdAt: LocalDateTime
+        }
+        
+        class FavoriteEntity {
+            -id: String
+            -user: UserEntity
+            -listing: ListingEntity
+            -createdAt: LocalDateTime
+        }
+        
+        class ReviewEntity {
+            -id: String
+            -reviewer: UserEntity
+            -reviewedUser: UserEntity
+            -offer: OfferEntity
+            -score: Integer
+            -comment: String
+            -createdAt: LocalDateTime
+            -updatedAt: LocalDateTime
+        }
+
+        class FollowerEntity {
+            -id: String
+            -follower: UserEntity
+            -followed: UserEntity
+            -createdAt: LocalDateTime
+        }
+        
+        class UserReportEntity {
+            -id: String
+            -reportingUser: UserEntity
+            -reportedUser: UserEntity
+            -reason: String
+            -description: String
+            -reviewed: boolean
+            -createdAt: LocalDateTime
+        }
+        
+        class ListingReportEntity {
+            -id: String
+            -reportingUser: UserEntity
+            -reportedListing: ListingEntity
+            -reason: String
+            -description: String
+            -reviewed: boolean
+            -createdAt: LocalDateTime
+        }
+        
+        class PickupEntity {
+            -id: String
+            -offer: OfferEntity
+            -scheduledDateTime: LocalDateTime
+            -location: String
+            -status: PickupStatus
+            -notes: String
+            -createdAt: LocalDateTime
+        }
+    }
+    
+    rectangle "Data Access" as ServerDAO #FCE4EC {
+        interface UserRepository {
+            +findByUsername(username: String): Optional<UserEntity>
+            +findById(id: Long): Optional<UserEntity>
+            +save(user: UserEntity): UserEntity
+        }
+        
+        interface ListingRepository {
+            +findByCreatorIdWithItems(userId: Long): List<ListingEntity>
+            +findById(id: String): Optional<ListingEntity>
+            +save(listing: ListingEntity): ListingEntity
+            +findByStatus(status: ListingStatus): List<ListingEntity>
+            +findByCreatorId(userId: Long): List<ListingEntity>
+        }
+        
+        interface OfferRepository {
+            +findByListingCreatorId(userId: Long): List<OfferEntity>
+            +findByUserId(userId: Long): List<OfferEntity>
+            +findById(id: String): Optional<OfferEntity>
+            +save(offer: OfferEntity): OfferEntity
+        }
+        
+        interface ItemRepository {
+            +findByOwnerId(userId: Long): List<ItemEntity>
+            +findById(id: String): Optional<ItemEntity>
+            +save(item: ItemEntity): ItemEntity
+            +findByCategory(category: String): List<ItemEntity>
+        }
+        
+        interface NotificationRepository {
+            +findByUserIdAndReadFalse(userId: Long): List<NotificationEntity>
+            +findByUserId(userId: Long): List<NotificationEntity>
+            +save(notification: NotificationEntity): NotificationEntity
+        }
+        
+        interface FavoriteRepository {
+            +findByUserId(userId: Long): List<FavoriteEntity>
+            +findByUserIdAndListingId(userId: Long, listingId: String): Optional<FavoriteEntity>
+            +save(favorite: FavoriteEntity): FavoriteEntity
+        }
+        
+        interface ReviewRepository {
+            +findByReviewedUserId(userId: Long): List<ReviewEntity>
+            +findByReviewerId(userId: Long): List<ReviewEntity>
+            +save(review: ReviewEntity): ReviewEntity
+        }
+    }
+    
+    rectangle "Mappers" as ServerMapper #FFF3CD {
+        class ListingMapper {
+            -sellListingMapper: SellListingMapper
+            -tradeListingMapper: TradeListingMapper
+            -giftListingMapper: GiftListingMapper
+            -auctionListingMapper: AuctionListingMapper
+            +toDto(entity: ListingEntity): ListingDTO
+            +toEntity(dto: ListingDTO): ListingEntity
+        }
+        class SellListingMapper {
+            -commonListingMapper: CommonListingMapper
+            +toDto(entity: SellListingEntity): SellListingDTO
+        }
+        
+        class TradeListingMapper {
+            -commonListingMapper: CommonListingMapper
+            +toDto(entity: TradeListingEntity): TradeListingDTO
+        }
+        
+        class GiftListingMapper {
+            -commonListingMapper: CommonListingMapper
+            +toDto(entity: GiftListingEntity): GiftListingDTO
+        }
+        
+        class AuctionListingMapper {
+            -commonListingMapper: CommonListingMapper
+            +toDto(entity: AuctionListingEntity): AuctionListingDTO
+        }
+        
+        class CommonListingMapper {
+            -userMapper: UserMapper
+            -itemMapper: ItemMapper
+            +mapCommonFields(entity: ListingEntity, dto: ListingDTO)
+            +mapListingItems(entities: List<ListingItemEntity>): List<ListingItemDTO>
+        }
+        
+        class OfferMapper {
+            -userMapper: UserMapper
+            -listingMapper: ListingMapper
+            -itemMapper: ItemMapper
+            +toDto(entity: OfferEntity): OfferDTO
+            +toEntity(dto: OfferDTO): OfferEntity
+        }
+        
+        class UserMapper {
+            +toDto(entity: UserEntity): UserDTO
+            +toEntity(dto: UserDTO): UserEntity
+        }
+        
+        class ItemMapper {
+            -userMapper: UserMapper
+            +toDto(entity: ItemEntity): ItemDTO
+            +toEntity(dto: ItemDTO): ItemEntity
+        }
+
+        class NotificationMapper {
+            -userMapper: UserMapper
+            +toDto(entity: NotificationEntity): NotificationDTO
+            +toEntity(dto: NotificationDTO): NotificationEntity
+        }
+        
+        class FavoriteMapper {
+            -userMapper: UserMapper
+            -listingMapper: ListingMapper
+            +toDto(entity: FavoriteEntity): FavoriteDTO
+            +toEntity(dto: FavoriteDTO): FavoriteEntity
+        }
+        
+        class ReviewMapper {
+            -userMapper: UserMapper
+            +toDto(entity: ReviewEntity): ReviewDTO
+            +toEntity(dto: ReviewDTO): ReviewEntity
+        }
+    }
+}
+
+' FXML to Controller relationships
+ProfileFXML --> ProfileController
+OffersFXML --> OffersController
+ListingDetailsFXML --> ListingDetailsController
+ItemDialogFXML --> ItemDialogController
+CropperFXML --> ImageCropperController
+MainFXML --> MainController
+ListingsFXML --> ListingsController
+OffersTabFXML --> OffersTabContentController
+HomeFXML --> HomeController
+
+' Controller to Service relationships
+ProfileController --> ProfileService
+ProfileController --> ListingService
+ProfileController --> ImageService
+OffersController --> OfferService
+ListingDetailsController --> ListingService
+ListingDetailsController --> FavoritesService
+ItemDialogController --> ItemService
+MainController --> NavigationService
+MainController --> SearchService
+ListingsController --> ListingService
+OfferDialogController --> OfferService
+HomeController --> ListingService
+
+' Service to WebSocket relationships
+ListingService --> WebSocketClient
+OfferService --> WebSocketClient
+ProfileService --> WebSocketClient
+ImageService --> WebSocketClient
+ItemService --> WebSocketClient
+FavoritesService --> WebSocketClient
+NotificationService --> WebSocketClient
+
+' ViewModel relationships
+ProfileController --> UserViewModel
+ProfileController --> ListingViewModel
+OffersController --> OfferViewModel
+ListingDetailsController --> ListingViewModel
+ItemDialogController --> ItemViewModel
+MainController --> ListingViewModel
+ListingsController --> ListingViewModel
+
+' DTO and Mapper relationships
+ViewModelMapper --> UserDTO
+ViewModelMapper --> ListingDTO
+ViewModelMapper --> OfferDTO
+ViewModelMapper --> ItemDTO
+ViewModelMapper --> NotificationDTO
+ViewModelMapper --> FavoriteDTO
+ViewModelMapper --> ReviewDTO
+ViewModelMapper --> UserViewModel
+ViewModelMapper --> ListingViewModel
+ViewModelMapper --> OfferViewModel
+ViewModelMapper --> ItemViewModel
+ViewModelMapper --> NotificationViewModel
+ViewModelMapper --> FavoriteViewModel
+ViewModelMapper --> ReviewViewModel
+
+' Service to Mapper relationships
+ListingService --> ViewModelMapper
+OfferService --> ViewModelMapper
+ProfileService --> ViewModelMapper
+ItemService --> ViewModelMapper
+FavoritesService --> ViewModelMapper
+NotificationService --> ViewModelMapper
+
+' Server Handler to Service relationships
+ListingWebSocketHandler --> ListingService
+OfferWebSocketHandler --> OfferService
+ProfileWebSocketHandler --> UserService
+ItemWebSocketHandler --> ItemService
+NotificationWebSocketHandler --> NotificationService
+
+' Server Service to Repository relationships
+ListingService --> ListingRepository
+ListingService --> ListingMapper
+OfferService --> OfferRepository
+OfferService --> OfferMapper
+UserService --> UserRepository
+UserService --> UserMapper
+ItemService --> ItemRepository
+ItemService --> ItemMapper
+NotificationService --> NotificationRepository
+
+NotificationService --> NotificationMapper
+FavoriteService --> FavoriteRepository
+FavoriteService --> FavoriteMapper
+ReviewService --> ReviewRepository
+ReviewService --> ReviewMapper
+
+' Entity inheritance relationships
+ListingEntity <|-- SellListingEntity
+ListingEntity <|-- TradeListingEntity
+ListingEntity <|-- GiftListingEntity
+ListingEntity <|-- AuctionListingEntity
+
+ListingDTO <|-- SellListingDTO
+ListingDTO <|-- TradeListingDTO
+ListingDTO <|-- GiftListingDTO
+ListingDTO <|-- AuctionListingDTO
+
+ListingViewModel <|-- SellListingViewModel
+ListingViewModel <|-- TradeListingViewModel
+ListingViewModel <|-- GiftListingViewModel
+ListingViewModel <|-- AuctionListingViewModel
+
+' Entity relationships
+ListingEntity --> UserEntity : creator
+OfferEntity --> ListingEntity : listing
+OfferEntity --> UserEntity : user
+ItemEntity --> UserEntity : owner
+ListingItemEntity --> ListingEntity : listing
+ListingItemEntity --> ItemEntity : item
+OfferItemEntity --> OfferEntity : offer
+OfferItemEntity --> ItemEntity : item
+NotificationEntity --> UserEntity : user
+FavoriteEntity --> UserEntity : user
+FavoriteEntity --> ListingEntity : listing
+ReviewEntity --> UserEntity : reviewer
+ReviewEntity --> UserEntity : reviewedUser
+
+' Enum usage relationships
+ListingEntity --> ListingStatus
+OfferEntity --> OfferStatus
+ItemEntity --> ItemCondition
+SellListingEntity --> Currency
+AuctionListingEntity --> Currency
+OfferEntity --> Currency
+ItemEntity --> Category
+NotificationEntity --> NotificationType
+OfferEntity --> DeliveryType
+
+' Mapper relationships
+ListingMapper --> SellListingMapper
+ListingMapper --> TradeListingMapper
+ListingMapper --> GiftListingMapper
+ListingMapper --> AuctionListingMapper
+SellListingMapper --> CommonListingMapper
+TradeListingMapper --> CommonListingMapper
+GiftListingMapper --> CommonListingMapper
+AuctionListingMapper --> CommonListingMapper
+CommonListingMapper --> UserMapper
+CommonListingMapper --> ItemMapper
+OfferMapper --> UserMapper
+OfferMapper --> ListingMapper
+OfferMapper --> ItemMapper
+NotificationMapper --> UserMapper
+FavoriteMapper --> UserMapper
+FavoriteMapper --> ListingMapper
+ReviewMapper --> UserMapper
+
+' WebSocket communication (crosses domains)
+WebSocketClient ..> ListingWebSocketHandler : WebSocket\nCommunication
+WebSocketClient ..> OfferWebSocketHandler : WebSocket\nCommunication
+WebSocketClient ..> ProfileWebSocketHandler : WebSocket\nCommunication
+WebSocketClient ..> ItemWebSocketHandler : WebSocket\nCommunication
+WebSocketClient ..> NotificationWebSocketHandler : WebSocket\nCommunication
+
+' Message usage
+ListingWebSocketHandler --> ListingMessage
+OfferWebSocketHandler --> OfferMessage
+ProfileWebSocketHandler --> ProfileUpdateMessage
+
+legend bottom
+|Color |Domain/Layer |
+|<#lightblue>   | Client Domain |
+|<#lightyellow>  | Server Domain |
+|<#F0F8FF>    | Shared Communication |
+|<#D4EDDA>    | EBC Boundaries |
+|<#FCE4EC>    | EBC Controls |
+|<#FFF3CD>    | EBC Entities |
+endlegend
+
+@enduml

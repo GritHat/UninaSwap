@@ -4997,3 +4997,2333 @@
 .write-review-button:pressed {
     -fx-background-color: #229954;
 }
+
+/* Profile Listing Items (Drawer-style) */
+.profile-listing-item {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8px;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 8px;
+    -fx-padding: 10px;
+    -fx-cursor: hand;
+}
+
+.profile-listing-item:hover,
+.profile-listing-item.listing-item-hover {
+    -fx-background-color: #F5F5F5;
+    -fx-border-color: #2196F3;
+    -fx-effect: dropshadow(gaussian, rgba(33, 150, 243, 0.2), 4, 0, 0, 2);
+}
+
+.listing-item-header-row {
+    -fx-alignment: center-left;
+}
+
+.listing-thumbnail {
+    -fx-background-radius: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
+}
+
+.listing-item-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.listing-type-badge {
+    -fx-background-color: #E3F2FD;
+    -fx-text-fill: #1976D2;
+    -fx-background-radius: 12px;
+    -fx-padding: 2px 8px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.listing-date-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #666666;
+    -fx-padding: 2px 0 0 50px; /* Align with text container */
+}
+
+.listings-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.listings-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.user-listings-container {
+    -fx-background-color: transparent;
+}
+
+.count-badge {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 2px 8px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* Rating and Reviews Label */
+.info-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+
+/* Button styling for analytics and report */
+.danger-button {
+    -fx-background-color: #F44336;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.danger-button:hover {
+    -fx-background-color: #D32F2F;
+}
+
+.danger-button:pressed {
+    -fx-background-color: #B71C1C;
+}
+
+/* Profile View Specific Styles */
+.profile-listing-item {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8px;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-padding: 12px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.profile-listing-item:hover,
+.profile-listing-item.listing-item-hover {
+    -fx-background-color: #F8F9FA;
+    -fx-border-color: #2196F3;
+    -fx-effect: dropshadow(gaussian, rgba(33, 150, 243, 0.15), 4, 0, 0, 2);
+}
+
+.listing-item-header-row {
+    -fx-alignment: center-left;
+    -fx-spacing: 10px;
+}
+
+.listing-thumbnail {
+    -fx-background-radius: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
+}
+
+.listing-item-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.listing-type-badge {
+    -fx-background-color: #E3F2FD;
+    -fx-text-fill: #1976D2;
+    -fx-background-radius: 12px;
+    -fx-padding: 3px 10px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.status-badge {
+    -fx-background-radius: 12px;
+    -fx-padding: 3px 10px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.status-active {
+    -fx-background-color: #E8F5E8;
+    -fx-text-fill: #2E7D32;
+}
+
+.status-completed {
+    -fx-background-color: #FFF3E0;
+    -fx-text-fill: #F57C00;
+}
+
+.status-cancelled {
+    -fx-background-color: #FFEBEE;
+    -fx-text-fill: #C62828;
+}
+
+.listing-date-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #666666;
+    -fx-padding: 2px 0 0 50px;
+}
+
+.listings-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.listings-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.user-listings-container {
+    -fx-background-color: transparent;
+}
+
+.count-badge {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 4px 10px;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-min-width: 20px;
+    -fx-alignment: center;
+}
+
+.info-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+
+.danger-button {
+    -fx-background-color: #F44336;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
+}
+
+.danger-button:hover {
+    -fx-background-color: #D32F2F;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4, 0, 0, 2);
+}
+
+.danger-button:pressed {
+    -fx-background-color: #B71C1C;
+}
+
+.section-subtitle {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.action-buttons-section {
+    -fx-padding: 15px 0;
+}
+
+.profile-field {
+    -fx-background-color: white;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+}
+
+.profile-field:focused {
+    -fx-border-color: #2196F3;
+    -fx-effect: dropshadow(gaussian, rgba(33, 150, 243, 0.2), 3, 0, 0, 0);
+}
+
+.profile-text-area {
+    -fx-background-color: white;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px;
+    -fx-font-size: 14px;
+}
+
+.profile-text-area:focused {
+    -fx-border-color: #2196F3;
+    -fx-effect: dropshadow(gaussian, rgba(33, 150, 243, 0.2), 3, 0, 0, 0);
+}
+
+.field-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+}
+
+/* Add these styles to your styles.css file */
+
+/* =========================
+   INVENTORY VIEW STYLING  
+   ========================= */
+
+/* Inventory main container */
+.inventory-main-container {
+    -fx-background-color: transparent;
+}
+
+/* Inventory header section */
+.inventory-header-section {
+    -fx-background-color: transparent;
+}
+
+/* Inventory filters section */
+.inventory-filters-section {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 4, 0, 0, 1);
+}
+
+/* Reuse existing filter label styling */
+.inventory-filters-section .filter-label {
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+/* Reuse existing filter search field styling */
+.inventory-filters-section .filter-search-field {
+    -fx-background-color: white;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-padding: 8px 15px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.inventory-filters-section .filter-search-field:focused {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(33, 150, 243, 0.3), 4, 0, 0, 1);
+}
+
+/* Reuse existing filter combo box styling */
+.inventory-filters-section .filter-combo-box {
+    -fx-background-color: white;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-padding: 6px 12px;
+    -fx-font-size: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.inventory-filters-section .filter-combo-box:focused {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(33, 150, 243, 0.3), 4, 0, 0, 1);
+}
+
+.inventory-filters-section .filter-combo-box .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.inventory-filters-section .filter-combo-box .arrow {
+    -fx-background-color: -fx-primary;
+}
+
+/* Clear filters button styling */
+.inventory-filters-section .clear-filters-button {
+    -fx-background-color: -fx-accent-light;
+    -fx-text-fill: -fx-accent;
+    -fx-border-color: -fx-accent;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+    -fx-padding: 6px 15px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.inventory-filters-section .clear-filters-button:hover {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+}
+
+.inventory-filters-section .clear-filters-button:pressed {
+    -fx-background-color: derive(-fx-accent, -10%);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 2, 0, 0, 1);
+}
+
+/* Inventory table container */
+.inventory-table-container {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 10, 0, 0, 2);
+}
+
+/* Inventory table styling */
+.inventory-table {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+}
+
+.inventory-table .column-header-background {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 8px 8px 0 0;
+}
+
+.inventory-table .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent -fx-light-grey transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 12px 8px;
+}
+
+.inventory-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent -fx-very-light-grey transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 8px 0;
+}
+
+.inventory-table .table-row-cell:hover {
+    -fx-background-color: -fx-primary-ultralight;
+}
+
+.inventory-table .table-row-cell:selected {
+    -fx-background-color: -fx-primary-light;
+    -fx-text-fill: -fx-primary;
+}
+
+.inventory-table .table-cell {
+    -fx-padding: 8px;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Action buttons section */
+.inventory-action-buttons {
+    -fx-background-color: -fx-very-light-grey;
+    -fx-background-radius: 0 0 8px 8px;
+}
+
+/* Responsive adjustments for inventory filters */
+@media (max-width: 1000px) {
+    .inventory-filters-section .filter-combo-box {
+        -fx-pref-width: 130px;
+    }
+    
+    .inventory-filters-section .filter-search-field {
+        -fx-pref-width: 200px;
+    }
+}
+
+@media (max-width: 800px) {
+    .inventory-filters-section {
+        -fx-padding: 10px;
+    }
+    
+    .inventory-filters-section .filter-combo-box {
+        -fx-pref-width: 110px;
+        -fx-font-size: 11px;
+    }
+    
+    .inventory-filters-section .filter-search-field {
+        -fx-pref-width: 180px;
+        -fx-font-size: 11px;
+    }
+    
+    .inventory-filters-section .clear-filters-button {
+        -fx-font-size: 10px;
+        -fx-padding: 5px 10px;
+    }
+}
+
+/* Integration with existing inventory styling */
+.inventory-table {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 10, 0, 0, 2);
+}
+
+/* Ensure proper spacing in the inventory view */
+.inventory-filters-section + .inventory-table-container {
+    -fx-margin: 10px 0 0 0;
+}
+
+/* Add these styles to your styles.css file */
+
+/* =========================
+   PICKUP SCHEDULING VIEW  
+   ========================= */
+
+/* Pickup main container */
+.pickup-main-container {
+    -fx-background-color: transparent;
+}
+
+/* Pickup header section */
+.pickup-header-section {
+    -fx-background-color: transparent;
+}
+
+.pickup-instructions-section {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+/* Pickup section cards */
+.pickup-section-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 12px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+.pickup-section-card .section-header {
+    -fx-border-color: transparent transparent -fx-very-light-grey transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 0 0 10px 0;
+}
+
+.pickup-section-card .section-title {
+    -fx-fill: -fx-primary;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+/* Field labels */
+.pickup-section-card .field-label {
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+/* Text fields */
+.pickup-text-field {
+    -fx-background-color: white;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 15px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.pickup-text-field:focused {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(33, 150, 243, 0.3), 4, 0, 0, 1);
+}
+
+/* Text areas */
+.pickup-text-area {
+    -fx-background-color: white;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 15px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.pickup-text-area:focused {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(33, 150, 243, 0.3), 4, 0, 0, 1);
+}
+
+/* Date pickers */
+.pickup-date-picker {
+    -fx-background-color: white;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.pickup-date-picker:focused {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(33, 150, 243, 0.3), 4, 0, 0, 1);
+}
+
+.pickup-date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.pickup-date-picker .arrow {
+    -fx-background-color: -fx-primary;
+}
+
+/* Time spinners */
+.time-spinner {
+    -fx-background-color: white;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.time-spinner:focused {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(33, 150, 243, 0.3), 4, 0, 0, 1);
+}
+
+.time-spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 8px 10px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+.time-separator {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary;
+}
+
+/* Date range selector */
+.date-range-selector {
+    -fx-background-color: -fx-very-light-grey;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+}
+
+.subsection-title {
+    -fx-fill: -fx-dark-grey;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/* Selected dates summary */
+.selected-dates-summary {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.dates-count-label {
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+/* Selected dates scroll pane */
+.selected-dates-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.selected-dates-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.selected-dates-container {
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
+}
+
+/* Date chips */
+.date-chip {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+    -fx-background-radius: 15px;
+    -fx-padding: 6px 12px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.date-chip-remove {
+    -fx-background-color: white;
+    -fx-text-fill: -fx-primary;
+    -fx-background-radius: 10px;
+    -fx-padding: 2px 6px;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.date-chip-remove:hover {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: white;
+}
+
+/* Action buttons section */
+.pickup-action-buttons {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: -fx-light-grey;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 6, 0, 0, 2);
+}
+
+/* Help text styling */
+.pickup-section-card .help-text {
+    -fx-fill: -fx-dark-grey;
+    -fx-font-size: 12px;
+    -fx-font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    .pickup-section-card {
+        -fx-padding: 15px;
+    }
+    
+    .time-spinner {
+        -fx-pref-width: 60px;
+    }
+    
+    .pickup-date-picker {
+        -fx-pref-width: 140px;
+    }
+}
+
+/* Empty state for selected dates */
+.selected-dates-container:empty {
+    -fx-min-height: 40px;
+}
+
+.selected-dates-container:empty::after {
+    content: "No dates selected";
+    -fx-text-fill: -fx-dark-grey;
+    -fx-font-style: italic;
+}
+
+/* Section transitions */
+.pickup-section-card {
+    -fx-transition: -fx-effect 0.2s ease-out;
+}
+
+.pickup-section-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 12, 0, 0, 3);
+}
+
+/* Integration with existing button styles */
+.pickup-section-card .primary-button,
+.pickup-section-card .secondary-button {
+    -fx-min-width: 120px;
+}
+
+/* Ensure proper spacing in pickup action buttons */
+.pickup-action-buttons .primary-button {
+    -fx-min-width: 150px;
+}
+
+.pickup-action-buttons .secondary-button {
+    -fx-min-width: 100px;
+}
+
+/* Add these styles to your styles.css file */
+
+/* =========================
+   LISTING CREATION VIEW STYLING
+   ========================= */
+
+/* Main listing creation container */
+.listing-creation-main-container {
+    -fx-background-color: transparent;
+    -fx-max-width: 1400px;
+    -fx-alignment: TOP_CENTER;
+}
+
+/* Header section */
+.listing-creation-header-section {
+    -fx-background-color: -fx-background-light;
+    -fx-background-radius: 12px;
+    -fx-padding: 20px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+}
+
+/* Basic information section */
+.basic-info-section {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 8px;
+    -fx-padding: 15px;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+/* Split pane styling */
+.listing-creation-split-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.listing-creation-split-pane .split-pane-divider {
+    -fx-background-color: #e9ecef;
+    -fx-padding: 0 1 0 1;
+    -fx-border-color: transparent;
+}
+
+/* Left panel - listing configuration */
+.listing-configuration-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 0;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 6, 0, 0, 1);
+}
+
+/* Right panel - items selection */
+.items-selection-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 6, 0, 0, 1);
+}
+
+/* Listing type tabs */
+.listing-type-tabs {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.listing-type-tabs .tab-header-area {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 12px 12px 0 0;
+    -fx-padding: 10px 15px 0 15px;
+}
+
+.listing-type-tabs .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.listing-type-tabs .tab {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-border-color: transparent;
+    -fx-padding: 10px 20px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.listing-type-tabs .tab:hover {
+    -fx-background-color: rgba(74, 43, 107, 0.1);
+}
+
+.listing-type-tabs .tab:selected {
+    -fx-background-color: white;
+    -fx-border-color: -fx-primary-light -fx-primary-light transparent -fx-primary-light;
+    -fx-border-width: 1px 1px 0 1px;
+    -fx-text-fill: -fx-primary;
+}
+
+.listing-type-tabs .tab .tab-label {
+    -fx-text-fill: -fx-text-dark;
+}
+
+.listing-type-tabs .tab:selected .tab-label {
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+}
+
+.listing-type-tabs .tab-content-area {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 12px 12px;
+    -fx-border-color: transparent;
+}
+
+/* Tab scroll pane */
+.tab-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.tab-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+/* Tab content container */
+.tab-content-container {
+    -fx-background-color: transparent;
+}
+
+/* Listing section cards */
+.listing-section-card {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 3, 0, 0, 1);
+}
+
+.listing-section-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
+.listing-section-card .section-header {
+    -fx-border-color: transparent transparent #e9ecef transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 0 0 10px 0;
+}
+
+.listing-section-card .section-title {
+    -fx-fill: -fx-primary;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+
+/* Required section styling */
+.listing-required-section {
+    -fx-border-color: -fx-accent !important;
+    -fx-border-width: 2px !important;
+    -fx-background-color: #fff9f0;
+}
+
+.listing-required-section .section-title {
+    -fx-fill: -fx-accent;
+}
+
+.required-indicator {
+    -fx-fill: -fx-accent;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+/* Text field styling */
+.listing-text-field {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.listing-text-field:focused {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.3), 4, 0, 0, 1);
+}
+
+.required-field {
+    -fx-border-color: -fx-accent !important;
+}
+
+.required-field:focused {
+    -fx-border-color: -fx-accent !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 107, 0, 0.3), 4, 0, 0, 1);
+}
+
+/* Text area styling */
+.listing-text-area {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.listing-text-area:focused {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.3), 4, 0, 0, 1);
+}
+
+/* Price field styling */
+.price-field {
+    -fx-background-color: white;
+    -fx-border-color: #28a745;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.price-field:focused {
+    -fx-border-color: #20c997;
+    -fx-effect: dropshadow(three-pass-box, rgba(40, 167, 69, 0.3), 4, 0, 0, 1);
+}
+
+/* Currency combo box styling */
+.currency-combo {
+    -fx-background-color: white;
+    -fx-border-color: #28a745;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 8px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.currency-combo:focused {
+    -fx-border-color: #20c997;
+    -fx-effect: dropshadow(three-pass-box, rgba(40, 167, 69, 0.3), 4, 0, 0, 1);
+}
+
+.currency-combo .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.currency-combo .arrow {
+    -fx-background-color: #28a745;
+}
+
+/* Location field styling */
+.location-field {
+    -fx-background-color: white;
+    -fx-border-color: #17a2b8;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.location-field:focused {
+    -fx-border-color: #138496;
+    -fx-effect: dropshadow(three-pass-box, rgba(23, 162, 184, 0.3), 4, 0, 0, 1);
+}
+
+/* Categories field styling */
+.categories-field {
+    -fx-background-color: white;
+    -fx-border-color: #6f42c1;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.categories-field:focused {
+    -fx-border-color: #5a2d91;
+    -fx-effect: dropshadow(three-pass-box, rgba(111, 66, 193, 0.3), 4, 0, 0, 1);
+}
+
+/* Restrictions area styling */
+.restrictions-area {
+    -fx-background-color: white;
+    -fx-border-color: #fd7e14;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.restrictions-area:focused {
+    -fx-border-color: #e55a00;
+    -fx-effect: dropshadow(three-pass-box, rgba(253, 126, 20, 0.3), 4, 0, 0, 1);
+}
+
+/* Duration combo box styling */
+.duration-combo {
+    -fx-background-color: white;
+    -fx-border-color: #dc3545;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 8px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.duration-combo:focused {
+    -fx-border-color: #c82333;
+    -fx-effect: dropshadow(three-pass-box, rgba(220, 53, 69, 0.3), 4, 0, 0, 1);
+}
+
+.duration-combo .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.duration-combo .arrow {
+    -fx-background-color: #dc3545;
+}
+
+/* Checkbox styling */
+.trade-checkbox,
+.gift-checkbox {
+    -fx-font-size: 14px;
+    -fx-text-fill: -fx-text-dark;
+    -fx-padding: 5px 0;
+}
+
+.trade-checkbox:selected,
+.gift-checkbox:selected {
+    -fx-text-fill: -fx-primary;
+    -fx-font-weight: bold;
+}
+
+/* Items section styling */
+.items-header-section {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 12px 12px 0 0;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.items-split-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.items-split-pane .split-pane-divider {
+    -fx-background-color: #e9ecef;
+    -fx-padding: 1 0 1 0;
+    -fx-border-color: transparent;
+}
+
+/* Available items section */
+.available-items-section {
+    -fx-background-color: transparent;
+}
+
+.available-items-header {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 10px 0;
+}
+
+.subsection-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: -fx-primary;
+}
+
+/* Items table styling */
+.items-table {
+    -fx-background-color: white;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+}
+
+.items-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f0f0f0 transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 8px 0;
+}
+
+.items-table .table-row-cell:hover {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-cursor: hand;
+}
+
+.items-table .table-row-cell:selected {
+    -fx-background-color: -fx-primary-light;
+    -fx-text-fill: -fx-primary;
+}
+
+.items-table .table-cell {
+    -fx-padding: 8px;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Add item section */
+.add-item-section {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px 0 0 0;
+}
+
+.quantity-spinner {
+    -fx-background-color: white;
+    -fx-border-color: -fx-primary-light;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1);
+}
+
+.quantity-spinner:focused {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.3), 4, 0, 0, 1);
+}
+
+.quantity-spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 6px 8px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+.add-item-button {
+    -fx-background-color: -fx-info;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 8px 15px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.add-item-button:hover {
+    -fx-background-color: derive(-fx-info, 10%);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
+
+.add-item-button:disabled {
+    -fx-background-color: #6c757d;
+    -fx-cursor: default;
+    -fx-effect: none;
+}
+
+/* Selected items section */
+.selected-items-section {
+    -fx-background-color: transparent;
+}
+
+.selected-items-header {
+    -fx-background-color: #e8f5e8;
+    -fx-padding: 10px 0;
+}
+
+.selected-items-table {
+    -fx-background-color: white;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+}
+
+.selected-items-table .table-row-cell {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: transparent transparent #e0e0e0 transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 6px 0;
+}
+
+.selected-items-table .table-row-cell:hover {
+    -fx-background-color: #e8f5e8;
+}
+
+.selected-items-table .table-cell {
+    -fx-padding: 6px;
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Help text styling */
+.help-text {
+    -fx-fill: #6c757d;
+    -fx-font-size: 12px;
+    -fx-font-style: italic;
+    -fx-wrap-text: true;
+}
+
+/* Field label styling */
+.field-label {
+    -fx-text-fill: -fx-text-dark;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .listing-creation-split-pane {
+        -fx-orientation: vertical;
+        -fx-divider-positions: 0.6;
+    }
+    
+    .listing-configuration-panel {
+        -fx-min-height: 400px;
+    }
+    
+    .items-selection-panel {
+        -fx-min-height: 300px;
+    }
+}
+
+@media (max-width: 800px) {
+    .listing-creation-main-container {
+        -fx-padding: 10px;
+    }
+    
+    .listing-creation-header-section {
+        -fx-padding: 15px;
+    }
+    
+    .basic-info-section {
+        -fx-padding: 10px;
+    }
+    
+    .listing-section-card {
+        -fx-padding: 15px;
+    }
+    
+    .tab-content-container {
+        -fx-padding: 15px;
+    }
+    
+    .items-header-section {
+        -fx-padding: 15px;
+    }
+}
+
+@media (max-width: 600px) {
+    .listing-type-tabs .tab {
+        -fx-padding: 8px 12px;
+        -fx-font-size: 12px;
+    }
+    
+    .price-field,
+    .currency-combo,
+    .location-field,
+    .categories-field,
+    .duration-combo {
+        -fx-font-size: 12px;
+        -fx-padding: 6px 8px;
+    }
+    
+    .quantity-spinner {
+        -fx-pref-width: 60px;
+    }
+    
+    .add-item-button {
+        -fx-font-size: 12px;
+        -fx-padding: 6px 12px;
+    }
+}
+
+/* Animation and transitions */
+.listing-section-card {
+    -fx-transition: -fx-effect 0.2s ease-out;
+}
+
+.listing-text-field,
+.listing-text-area,
+.price-field,
+.location-field,
+.categories-field,
+.restrictions-area {
+    -fx-transition: -fx-border-color 0.2s ease-out, -fx-effect 0.2s ease-out;
+}
+
+.add-item-button,
+.primary-button,
+.secondary-button {
+    -fx-transition: -fx-background-color 0.2s ease-out, -fx-effect 0.2s ease-out;
+}
+
+/* Integration with existing styles */
+.listing-creation-split-pane {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 8, 0, 0, 2);
+}
+
+.listing-type-tabs {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 4, 0, 0, 1);
+}
+
+/* Ensure proper spacing and alignment */
+.listing-creation-main-container .section-subtitle {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: -fx-primary;
+}
+
+.listing-creation-main-container .page-title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: -fx-text-dark;
+}
+
+/* Add these styles to the existing CSS file */
+
+/* =============================================================================
+   LISTING CREATION STYLES
+   ============================================================================= */
+
+/* Main Container */
+.listing-creation-main-container {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 0;
+}
+
+.listing-creation-header-section {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+    -fx-padding: 20px;
+}
+
+/* Split Pane Styling */
+.listing-creation-split-pane {
+    -fx-background-color: transparent;
+}
+
+.listing-creation-split-pane .split-pane-divider {
+    -fx-background-color: #dee2e6;
+    -fx-padding: 0 1 0 1;
+}
+
+/* Configuration Panel */
+.listing-configuration-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 8px 0 0 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+/* Items Selection Panel */
+.items-selection-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 0 8px 8px 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+/* Tab Styling */
+.listing-type-tabs {
+    -fx-tab-min-height: 50px;
+}
+
+.listing-type-tabs .tab-header-area {
+    -fx-padding: 10px 10px 0 10px;
+}
+
+.listing-type-tabs .tab {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-border-color: #dee2e6;
+    -fx-border-width: 1px 1px 0 1px;
+    -fx-padding: 12px 20px;
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+}
+
+.listing-type-tabs .tab:selected {
+    -fx-background-color: white;
+    -fx-text-fill: #0066cc;
+    -fx-border-color: #0066cc #0066cc transparent #0066cc;
+}
+
+.listing-type-tabs .tab:hover {
+    -fx-background-color: #e9ecef;
+}
+
+/* Tab Content */
+.tab-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.tab-content-container {
+    -fx-background-color: transparent;
+}
+
+/* Section Cards */
+.listing-section-card {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.listing-required-section {
+    -fx-border-color: #ffc107;
+    -fx-border-width: 2px;
+}
+
+.section-header {
+    -fx-border-color: transparent transparent #e9ecef transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 0 0 10px 0;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: #495057;
+}
+
+.section-subtitle {
+    -fx-font-size: 14px;
+    -fx-fill: #6c757d;
+}
+
+.subsection-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-fill: #495057;
+}
+
+.subsection-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #6c757d;
+}
+
+/* Form Controls */
+.listing-text-field {
+    -fx-font-size: 14px;
+    -fx-padding: 12px;
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.listing-text-field:focused {
+    -fx-border-color: #0066cc;
+    -fx-effect: dropshadow(gaussian, rgba(0,102,204,0.25), 4, 0, 0, 0);
+}
+
+.listing-text-area {
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px;
+}
+
+.listing-text-area:focused {
+    -fx-border-color: #0066cc;
+    -fx-effect: dropshadow(gaussian, rgba(0,102,204,0.25), 4, 0, 0, 0);
+}
+
+.price-field {
+    -fx-font-size: 14px;
+    -fx-padding: 12px;
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-min-width: 120px;
+}
+
+.price-field:focused {
+    -fx-border-color: #28a745;
+    -fx-effect: dropshadow(gaussian, rgba(40,167,69,0.25), 4, 0, 0, 0);
+}
+
+.currency-combo, .duration-combo {
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.currency-combo:focused, .duration-combo:focused {
+    -fx-border-color: #0066cc;
+    -fx-effect: dropshadow(gaussian, rgba(0,102,204,0.25), 4, 0, 0, 0);
+}
+
+.location-field {
+    -fx-font-size: 14px;
+    -fx-padding: 12px;
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.location-field:focused {
+    -fx-border-color: #6f42c1;
+    -fx-effect: dropshadow(gaussian, rgba(111,66,193,0.25), 4, 0, 0, 0);
+}
+
+.required-field {
+    -fx-border-color: #ffc107;
+    -fx-border-width: 2px;
+}
+
+.required-field:focused {
+    -fx-border-color: #ff6b35;
+    -fx-effect: dropshadow(gaussian, rgba(255,107,53,0.25), 4, 0, 0, 0);
+}
+
+/* Checkboxes */
+.trade-checkbox, .gift-checkbox {
+    -fx-font-size: 14px;
+    -fx-text-fill: #495057;
+    -fx-padding: 8px 0;
+}
+
+.trade-checkbox .box, .gift-checkbox .box {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.trade-checkbox:selected .mark, .gift-checkbox:selected .mark {
+    -fx-background-color: #0066cc;
+}
+
+/* Category Selection */
+.category-selection-container {
+    -fx-background-color: white;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 15px;
+}
+
+.category-combo {
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.add-category-button {
+    -fx-font-size: 12px;
+    -fx-padding: 8px 16px;
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+}
+
+.add-category-button:hover {
+    -fx-background-color: #218838;
+}
+
+.add-category-button:disabled {
+    -fx-background-color: #6c757d;
+    -fx-cursor: default;
+}
+
+.selected-categories-scroll {
+    -fx-background-color: white;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.selected-categories-container {
+    -fx-padding: 10px;
+}
+
+.category-chip {
+    -fx-background-color: #e3f2fd;
+    -fx-border-color: #2196f3;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-padding: 6px 12px;
+    -fx-spacing: 8px;
+}
+
+.category-chip-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #1976d2;
+    -fx-font-weight: 500;
+}
+
+.category-chip-remove {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-min-width: 20px;
+    -fx-min-height: 20px;
+    -fx-max-width: 20px;
+    -fx-max-height: 20px;
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-cursor: hand;
+}
+
+.category-chip-remove:hover {
+    -fx-background-color: #d32f2f;
+}
+
+.empty-categories-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d;
+    -fx-font-style: italic;
+    -fx-padding: 10px;
+}
+
+/* Items Section */
+.items-header-section {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: transparent transparent #e9ecef transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.items-split-pane {
+    -fx-background-color: transparent;
+}
+
+.items-split-pane .split-pane-divider {
+    -fx-background-color: #e9ecef;
+    -fx-padding: 1 0 1 0;
+}
+
+.available-items-section, .selected-items-section {
+    -fx-background-color: transparent;
+}
+
+.available-items-header, .selected-items-header {
+    -fx-background-color: #f8f9fa;
+}
+
+/* Tables */
+.items-table, .selected-items-table {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+}
+
+.items-table .column-header, .selected-items-table .column-header {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 0 0 1px 0;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #495057;
+    -fx-padding: 10px;
+}
+
+.items-table .table-row-cell, .selected-items-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f1f3f4 transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.items-table .table-row-cell:selected, .selected-items-table .table-row-cell:selected {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1976d2;
+}
+
+.items-table .table-row-cell:hover, .selected-items-table .table-row-cell:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Add Item Section */
+.add-item-section {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e9ecef transparent transparent transparent;
+    -fx-border-width: 1px 0 0 0;
+}
+
+.quantity-spinner {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.add-item-button {
+    -fx-font-size: 14px;
+    -fx-padding: 8px 16px;
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+}
+
+.add-item-button:hover {
+    -fx-background-color: #0056b3;
+}
+
+.add-item-button:disabled {
+    -fx-background-color: #6c757d;
+    -fx-cursor: default;
+}
+
+/* Table Placeholders */
+.table-placeholder {
+    -fx-background-color: transparent;
+    -fx-padding: 40px 20px;
+}
+
+.placeholder-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: #6c757d;
+}
+
+.placeholder-subtitle {
+    -fx-font-size: 12px;
+    -fx-fill: #adb5bd;
+}
+
+/* Help Text */
+.help-text {
+    -fx-font-size: 12px;
+    -fx-fill: #6c757d;
+    -fx-font-style: italic;
+}
+
+/* Required Indicator */
+.required-indicator {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-fill: #dc3545;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 1200px) {
+    .listing-creation-split-pane {
+        -fx-orientation: vertical;
+    }
+    
+    .listing-configuration-panel {
+        -fx-background-radius: 8px 8px 0 0;
+    }
+    
+    .items-selection-panel {
+        -fx-background-radius: 0 0 8px 8px;
+    }
+}
+
+/* Small button utility class */
+.small-button {
+    -fx-font-size: 10px;
+    -fx-padding: 2px 6px;
+}
+
+/* Add these styles to your styles.css file */
+
+/* =============================================================================
+   PICKUP SELECTION STYLES (Additional)
+   ============================================================================= */
+
+/* Counter proposal section styling */
+.counter-proposal-section {
+    -fx-border-color: #007bff;
+    -fx-border-width: 2px;
+    -fx-background-color: #f8f9ff;
+}
+
+.counter-proposal-section .section-header {
+    -fx-border-color: transparent transparent #007bff transparent;
+    -fx-border-width: 0 0 2px 0;
+}
+
+/* Available dates container */
+.available-dates-container {
+    -fx-padding: 10px;
+    -fx-background-color: white;
+    -fx-background-radius: 6px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+}
+
+.available-dates-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Available date chips (clickable) */
+.available-date-chip {
+    -fx-background-color: #e3f2fd;
+    -fx-border-color: #2196f3;
+    -fx-border-width: 1px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-padding: 8px 16px;
+    -fx-text-fill: #1976d2;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-cursor: hand;
+}
+
+.available-date-chip:hover {
+    -fx-background-color: #bbdefb;
+    -fx-border-color: #1976d2;
+    -fx-text-fill: #0d47a1;
+}
+
+.available-date-chip:pressed {
+    -fx-background-color: #90caf9;
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* Time range display */
+.time-range-display {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e7d32;
+    -fx-background-color: #e8f5e8;
+    -fx-padding: 10px 15px;
+    -fx-background-radius: 6px;
+    -fx-border-color: #66bb6a;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+}
+
+/* Pickup location display */
+.pickup-location-display {
+    -fx-font-size: 14px;
+    -fx-text-fill: #495057;
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 12px;
+    -fx-background-radius: 6px;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-wrap-text: true;
+}
+
+/* Pickup details display */
+.pickup-details-display {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 13px;
+    -fx-text-fill: #495057;
+}
+
+.pickup-details-display .content {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6px;
+}
+
+/* Date picker styling for pickup selection */
+.pickup-date-picker {
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-min-width: 150px;
+}
+
+.pickup-date-picker:focused {
+    -fx-border-color: #0066cc;
+    -fx-effect: dropshadow(gaussian, rgba(0,102,204,0.25), 4, 0, 0, 0);
+}
+
+.pickup-date-picker .arrow-button {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: transparent transparent transparent #ced4da;
+    -fx-border-width: 0 0 0 1px;
+}
+
+.pickup-date-picker .arrow-button .arrow {
+    -fx-background-color: #495057;
+}
+
+.pickup-date-picker:hover .arrow-button .arrow {
+    -fx-background-color: #212529;
+}
+
+/* Time spinner styling for pickup selection */
+.time-spinner {
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.time-spinner:focused {
+    -fx-border-color: #0066cc;
+    -fx-effect: dropshadow(gaussian, rgba(0,102,204,0.25), 4, 0, 0, 0);
+}
+
+.time-spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6px;
+    -fx-border-color: transparent;
+    -fx-text-fill: #495057;
+    -fx-font-size: 14px;
+    -fx-alignment: center;
+}
+
+.time-spinner .increment-arrow-button,
+.time-spinner .decrement-arrow-button {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0 6px 6px 0;
+}
+
+.time-spinner .decrement-arrow-button {
+    -fx-background-radius: 0 0 6px 0;
+}
+
+.time-spinner .increment-arrow-button {
+    -fx-background-radius: 0 6px 0 0;
+}
+
+.time-spinner .increment-arrow-button:hover,
+.time-spinner .decrement-arrow-button:hover {
+    -fx-background-color: #e9ecef;
+}
+
+.time-separator {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+
+/* Danger button styling for reject button */
+.danger-button {
+    -fx-background-color: #dc3545;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 6px;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+}
+
+.danger-button:hover {
+    -fx-background-color: #c82333;
+}
+
+.danger-button:pressed {
+    -fx-background-color: #bd2130;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.danger-button:disabled {
+    -fx-background-color: #6c757d;
+    -fx-cursor: default;
+}
+
+/* Action buttons section */
+.pickup-action-buttons {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e9ecef transparent transparent transparent;
+    -fx-border-width: 2px 0 0 0;
+}
+
+/* Responsive adjustments for pickup selection */
+@media (max-width: 800px) {
+    .pickup-action-buttons {
+        -fx-orientation: vertical;
+        -fx-spacing: 10px;
+        -fx-alignment: center;
+    }
+    
+    .pickup-action-buttons HBox {
+        -fx-orientation: vertical;
+        -fx-spacing: 8px;
+        -fx-alignment: center;
+    }
+    
+    .available-dates-container {
+        -fx-max-height: 100px;
+    }
+    
+    .time-range-display {
+        -fx-font-size: 14px;
+        -fx-padding: 8px 12px;
+    }
+}
+
+/* Animation for section transitions */
+.pickup-section-card {
+    -fx-transition: all 0.3s ease;
+}
+
+.counter-proposal-section {
+    -fx-transition: all 0.3s ease;
+}
+
+/* Enhanced focus indicators */
+.pickup-text-field:focused,
+.pickup-text-area:focused,
+.pickup-date-picker:focused,
+.time-spinner:focused {
+    -fx-effect: dropshadow(gaussian, rgba(0,102,204,0.4), 6, 0, 0, 0);
+}
+
+/* Add these styles to your styles.css file */
+
+/* =============================================================================
+   REVIEW CREATION STYLES
+   ============================================================================= */
+
+/* Main Container */
+.review-main-container {
+    -fx-background-color: #f8f9fa;
+    -fx-padding: 0;
+}
+
+.review-header-section {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+    -fx-padding: 20px;
+}
+
+/* Section Cards */
+.review-section-card {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.review-required-section {
+    -fx-border-color: #ffc107;
+    -fx-border-width: 2px;
+}
+
+/* Information Display */
+.review-info-display {
+    -fx-font-size: 14px;
+    -fx-text-fill: #495057;
+    -fx-background-color: white;
+    -fx-padding: 12px;
+    -fx-background-radius: 6px;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-wrap-text: true;
+}
+
+/* Star Rating Container */
+.star-rating-container {
+    -fx-background-color: white;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 20px;
+}
+
+.stars-display {
+    -fx-padding: 10px;
+}
+
+/* Star Button Styling */
+.star-button {
+    -fx-font-size: 32px;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #ddd;
+    -fx-cursor: hand;
+    -fx-min-width: 48px;
+    -fx-min-height: 48px;
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+}
+
+.star-button:hover {
+    -fx-background-color: rgba(255, 193, 7, 0.1);
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.star-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+.star-empty {
+    -fx-text-fill: #ddd;
+}
+
+.star-filled {
+    -fx-text-fill: #ffc107;
+    -fx-effect: dropshadow(gaussian, rgba(255, 193, 7, 0.3), 4, 0, 0, 0);
+}
+
+.star-button:hover .star-empty {
+    -fx-text-fill: #ffeb3b;
+}
+
+/* Score Display */
+.score-display-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+
+/* Text Area Styling */
+.review-text-area {
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px;
+}
+
+.review-text-area:focused {
+    -fx-border-color: #0066cc;
+    -fx-effect: dropshadow(gaussian, rgba(0,102,204,0.25), 4, 0, 0, 0);
+}
+
+.review-text-area .content {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6px;
+}
+
+/* Character Count */
+.character-count-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6c757d;
+}
+
+.character-count-exceeded {
+    -fx-text-fill: #dc3545;
+    -fx-font-weight: bold;
+}
+
+/* Optional Indicator */
+.optional-indicator {
+    -fx-font-size: 12px;
+    -fx-font-style: italic;
+    -fx-fill: #6c757d;
+}
+
+/* Action Buttons Section */
+.review-action-buttons {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e9ecef transparent transparent transparent;
+    -fx-border-width: 2px 0 0 0;
+}
+
+/* Enhanced Button Styling for Review */
+.review-action-buttons .primary-button {
+    -fx-font-size: 14px;
+    -fx-padding: 12px 24px;
+    -fx-background-color: #28a745;
+    -fx-text-fill: white;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-font-weight: 600;
+}
+
+.review-action-buttons .primary-button:hover {
+    -fx-background-color: #218838;
+    -fx-effect: dropshadow(gaussian, rgba(40,167,69,0.3), 6, 0, 0, 2);
+}
+
+.review-action-buttons .primary-button:disabled {
+    -fx-background-color: #6c757d;
+    -fx-cursor: default;
+    -fx-effect: none;
+}
+
+.review-action-buttons .secondary-button {
+    -fx-font-size: 14px;
+    -fx-padding: 12px 24px;
+    -fx-background-color: transparent;
+    -fx-text-fill: #6c757d;
+    -fx-border-color: #6c757d;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-font-weight: 500;
+}
+
+.review-action-buttons .secondary-button:hover {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(108,117,125,0.3), 4, 0, 0, 2);
+}
+
+/* Instructions Section */
+.review-instructions-section {
+    -fx-padding: 5px 0;
+}
+
+/* Form Field Labels */
+.review-section-card .field-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #495057;
+}
+
+/* Enhanced Focus Indicators */
+.review-text-area:focused {
+    -fx-effect: dropshadow(gaussian, rgba(0,102,204,0.4), 6, 0, 0, 0);
+}
+
+/* Responsive Design */
+@media (max-width: 800px) {
+    .review-action-buttons {
+        -fx-orientation: vertical;
+        -fx-spacing: 10px;
+        -fx-alignment: center;
+    }
+    
+    .star-button {
+        -fx-font-size: 28px;
+        -fx-min-width: 40px;
+        -fx-min-height: 40px;
+    }
+    
+    .stars-display {
+        -fx-spacing: 6px;
+    }
+    
+    .score-display-label {
+        -fx-font-size: 16px;
+    }
+}
+
+/* Animation for star interactions */
+.star-button {
+    -fx-transition: all 0.2s ease;
+}
+
+.star-rating-container {
+    -fx-transition: all 0.3s ease;
+}
+
+/* Enhanced visual feedback */
+.review-section-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 3);
+}
+
+.review-required-section:hover {
+    -fx-border-color: #ff8c00;
+}

@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -30,15 +31,16 @@ import java.util.stream.Collectors;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
+import com.uninaswap.client.viewmodel.ListingItemViewModel;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.viewmodel.UserViewModel;
 import com.uninaswap.client.service.ProfileService;
+import com.uninaswap.client.service.SearchService;
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.ListingService;
-import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.ProfileUpdateMessage;
 
 public class ProfileController implements Refreshable {
@@ -92,12 +94,24 @@ public class ProfileController implements Refreshable {
     @FXML
     private Label userListingsCountLabel;
 
+    // Add these FXML fields
+    @FXML
+    private Label ratingReviewsLabel;
+    @FXML
+    private Button analyticsButton;
+    @FXML
+    private Button reportUserButton;
+    @FXML
+    private HBox viewAllButtonContainer;
+    @FXML
+    private Button viewAllListingsButton;
+
     private final NavigationService navigationService;
     private final LocaleService localeService;
     private final UserSessionService sessionService;
     private final ProfileService profileService;
     private final ListingService listingService = ListingService.getInstance();
-
+    private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
     private String tempProfileImagePath;
     private File tempSelectedImageFile;
     private UserViewModel user;
@@ -200,13 +214,13 @@ public class ProfileController implements Refreshable {
                 cityField.setText(viewedUser.getCity());
             }
             if (stateProvinceField != null) {
-                stateProvinceField.setText(viewedUser.getAddress()); // You might need a separate state field in UserViewModel
+                stateProvinceField.setText(viewedUser.getStateProvince()); // You might need a separate state field in UserViewModel
             }
             if (countryField != null) {
                 countryField.setText(viewedUser.getCountry());
             }
             if (zipPostalCodeField != null) {
-                zipPostalCodeField.setText(viewedUser.getPhoneNumber()); // You might need a separate zip field in UserViewModel
+                zipPostalCodeField.setText(viewedUser.getZipPostalCode()); // You might need a separate zip field in UserViewModel
             }
         }
 
@@ -271,6 +285,41 @@ public class ProfileController implements Refreshable {
             cancelButton.setVisible(isOwnProfile);
             cancelButton.setManaged(isOwnProfile);
         }
+
+        // Show/hide analytics button (only for own profile)
+        if (analyticsButton != null) {
+            analyticsButton.setVisible(isOwnProfile);
+            analyticsButton.setManaged(isOwnProfile);
+        }
+
+        // Show/hide report user button (only for other profiles)
+        if (reportUserButton != null) {
+            reportUserButton.setVisible(!isOwnProfile);
+            reportUserButton.setManaged(!isOwnProfile);
+        }
+        
+        // Update rating/reviews label with actual data
+        updateRatingReviewsLabel();
+    }
+
+    // Add method to update rating and reviews display
+    private void updateRatingReviewsLabel() {
+        if (ratingReviewsLabel != null && viewedUser != null) {
+            double rating = viewedUser.getRating();
+            int reviewCount = viewedUser.getReviewCount();
+            
+            if (reviewCount > 0) {
+                String ratingText = String.format("⭐ %.2f/5 (%d %s)", 
+                    rating, 
+                    reviewCount, 
+                    reviewCount == 1 ? 
+                        localeService.getMessage("profile.review.singular", "review") : 
+                        localeService.getMessage("profile.reviews.plural", "reviews"));
+                ratingReviewsLabel.setText(ratingText);
+            } else {
+                ratingReviewsLabel.setText(localeService.getMessage("profile.no.reviews", "No reviews yet"));
+            }
+        }
     }
 
     private void loadUserListings() {
@@ -296,21 +345,26 @@ public class ProfileController implements Refreshable {
                         );
                         noListingsLabel.getStyleClass().add("placeholder-subtitle");
                         userListingsList.getChildren().add(noListingsLabel);
+                        
+                        // Hide view all button container
+                        if (viewAllButtonContainer != null) {
+                            viewAllButtonContainer.setVisible(false);
+                            viewAllButtonContainer.setManaged(false);
+                        }
                     } else {
-                        // Show only first few listings with "View All" button
-                        int maxListings = Math.min(5, listingViewModels.size());
-                        for (int i = 0; i < maxListings; i++) {
-                            VBox listingItem = createListingPreviewItem(listingViewModels.get(i));
+                        // Show all listings in the scroll pane (no limit like before)
+                        for (ListingViewModel listing : listingViewModels) {
+                            VBox listingItem = createListingPreviewItem(listing);
                             userListingsList.getChildren().add(listingItem);
                         }
-
-                        if (listingViewModels.size() > maxListings) {
-                            Button viewAllButton = new Button(
-                                    localeService.getMessage("profile.listings.view.all", "View All ({0})", listingViewModels.size())
-                            );
-                            viewAllButton.getStyleClass().add("secondary-button");
-                            viewAllButton.setOnAction(e -> handleViewAllListings());
-                            userListingsList.getChildren().add(viewAllButton);
+                        
+                        // Show view all button if there are many listings (optional)
+                        if (listingViewModels.size() > 10 && isOwnProfile) {
+                            viewAllButtonContainer.setVisible(true);
+                            viewAllButtonContainer.setManaged(true);
+                        } else {
+                            viewAllButtonContainer.setVisible(false);
+                            viewAllButtonContainer.setManaged(false);
                         }
                     }
                 }))
@@ -326,43 +380,60 @@ public class ProfileController implements Refreshable {
                 });
     }
 
+    // Update the createListingPreviewItem method to use drawer-style layout
     private VBox createListingPreviewItem(ListingViewModel listing) {
-        VBox itemContainer = new VBox(8);
-        itemContainer.getStyleClass().add("listing-preview-item");
+        VBox itemContainer = new VBox(5);
+        itemContainer.getStyleClass().add("profile-listing-item");
 
-        // Title and status row
+        // Main item header row (similar to favorites drawer)
         HBox headerRow = new HBox(10);
         headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        headerRow.getStyleClass().add("listing-item-header-row");
 
-        Label titleLabel = new Label(listing.getTitle());
-        titleLabel.getStyleClass().add("listing-preview-title");
-        titleLabel.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(titleLabel, javafx.scene.layout.Priority.ALWAYS);
+        // Listing thumbnail
+        ImageView thumbnail = new ImageView();
+        thumbnail.setFitHeight(40);
+        thumbnail.setFitWidth(40);
+        thumbnail.setPreserveRatio(true);
+        thumbnail.getStyleClass().add("listing-thumbnail");
 
-        Label statusLabel = new Label(listing.getStatus().getDisplayName());
-        statusLabel.getStyleClass().addAll("status-badge", "status-" + listing.getStatus().toString().toLowerCase());
+        // Load listing image
+        loadListingThumbnail(thumbnail, listing);
 
-        headerRow.getChildren().addAll(titleLabel, statusLabel);
+        // Title and details container
+        VBox textContainer = new VBox(2);
+        textContainer.setMaxWidth(250);
 
-        // Type and date row
-        HBox detailsRow = new HBox(15);
-        detailsRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        Label title = new Label(listing.getTitle());
+        title.setMaxWidth(250);
+        title.setTextOverrun(OverrunStyle.ELLIPSIS);
+        title.getStyleClass().add("listing-item-title");
+
+        // Status and type info
+        HBox infoRow = new HBox(10);
+        infoRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
         Label typeLabel = new Label(listing.getListingTypeValue());
-        typeLabel.getStyleClass().add("listing-type-label");
+        typeLabel.getStyleClass().add("listing-type-badge");
 
-        Label dateLabel = new Label(
-                listing.getCreatedAt() != null ?
-                        listing.getCreatedAt().toLocalDate().toString() :
-                        ""
-        );
+        Label statusLabel = new Label(listing.getStatus().getDisplayName());
+        statusLabel.getStyleClass().addAll("status-badge", 
+            "status-" + listing.getStatus().toString().toLowerCase());
+
+        infoRow.getChildren().addAll(typeLabel, statusLabel);
+
+        textContainer.getChildren().addAll(title, infoRow);
+
+        // Date label
+        Label dateLabel = new Label();
+        if (listing.getCreatedAt() != null) {
+            dateLabel.setText(listing.getCreatedAt().toLocalDate().toString());
+        }
         dateLabel.getStyleClass().add("listing-date-label");
 
-        detailsRow.getChildren().addAll(typeLabel, dateLabel);
+        headerRow.getChildren().addAll(thumbnail, textContainer);
 
-        itemContainer.getChildren().addAll(headerRow, detailsRow);
-
-        // Make clickable
+        // Click handler with visual feedback
         itemContainer.setOnMouseClicked(e -> {
             try {
                 navigationService.navigateToListingDetails(listing);
@@ -371,30 +442,50 @@ public class ProfileController implements Refreshable {
             }
         });
 
+        // Add hover effect
+        itemContainer.setOnMouseEntered(e -> itemContainer.getStyleClass().add("listing-item-hover"));
+        itemContainer.setOnMouseExited(e -> itemContainer.getStyleClass().remove("listing-item-hover"));
+
+        itemContainer.getChildren().addAll(headerRow, dateLabel);
         return itemContainer;
     }
 
-    private void handleViewAllListings() {
-        if (isOwnProfile) {
-            // Navigate to user's own listings page
-            try {
-                navigationService.navigateToListingsView();
-            } catch (Exception e) {
-                System.err.println("Error navigating to listings: " + e.getMessage());
-            }
+    // Add method to load listing thumbnail
+    private void loadListingThumbnail(ImageView thumbnail, ListingViewModel listing) {
+        String imagePath = getFirstListingImagePath(listing);
+        
+        if (imagePath != null && !imagePath.isEmpty() && !imagePath.equals("default")) {
+            ImageService.getInstance().fetchImage(imagePath)
+                .thenAccept(image -> Platform.runLater(() -> thumbnail.setImage(image)))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> setDefaultListingThumbnail(thumbnail));
+                    return null;
+                });
         } else {
-            // Show user's public listings in a dialog or new view
-            showUserListingsDialog(viewedUser);
+            setDefaultListingThumbnail(thumbnail);
         }
     }
 
-    private void showUserListingsDialog(UserViewModel user) {
-        // TODO: Implement user listings dialog
-        AlertHelper.showInformationAlert(
-                "User Listings",
-                user.getDisplayName() + "'s Listings",
-                "Feature coming soon: View all user listings in a dedicated dialog."
-        );
+    // Add method to get first image from listing
+    private String getFirstListingImagePath(ListingViewModel listing) {
+        if (listing.getItems() != null && !listing.getItems().isEmpty()) {
+            for (ListingItemViewModel item : listing.getItems()) {
+                if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
+                    return item.getImagePath();
+                }
+            }
+        }
+        return null;
+    }
+
+    // Add method to set default listing thumbnail
+    private void setDefaultListingThumbnail(ImageView imageView) {
+        try {
+            Image defaultImage = new Image(getClass().getResourceAsStream("/images/icons/listings.png"));
+            imageView.setImage(defaultImage);
+        } catch (Exception e) {
+            System.err.println("Could not load default listing thumbnail: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -567,22 +658,12 @@ public class ProfileController implements Refreshable {
             user.setAddress(addressField.getText());
             user.setCity(cityField.getText());
             user.setCountry(countryField.getText());
+            user.setStateProvince(stateProvinceField.getText());
+            user.setZipPostalCode(zipPostalCodeField.getText());
             // Note: You might need to add stateProvince and zipPostalCode fields to UserViewModel
 
-            // Create user object for update
-            UserDTO updatedUser = new UserDTO();
-            updatedUser.setUsername(usernameField.getText());
-            updatedUser.setEmail(emailField.getText());
-            updatedUser.setFirstName(firstNameField.getText());
-            updatedUser.setLastName(lastNameField.getText());
-            updatedUser.setBio(bioField.getText());
-            updatedUser.setProfileImagePath(tempProfileImagePath);
-            updatedUser.setAddress(addressField.getText());
-            updatedUser.setCity(cityField.getText());
-            updatedUser.setCountry(countryField.getText());
-
             // Send profile update request
-            profileService.updateProfile(updatedUser)
+            profileService.updateProfile(viewModelMapper.toDTO(user))
                     .exceptionally(ex -> {
                         Platform.runLater(() -> {
                             showStatus("profile.error.connection", true);
@@ -628,6 +709,41 @@ public class ProfileController implements Refreshable {
         if (userListingsCountLabel != null) {
             // Refresh listings count
             loadUserListings();
+        }
+    }
+
+    // Add report user handler
+    @FXML
+    private void handleReportUser() {
+        if (viewedUser != null) {
+            try {
+                //navigationService.openReportDialog(viewedUser);
+            } catch (Exception e) {
+                System.err.println("Error opening report dialog: " + e.getMessage());
+                AlertHelper.showErrorAlert(
+                    localeService.getMessage("error.title", "Error"),
+                    localeService.getMessage("error.report.user", "Report Error"),
+                    "Failed to open report dialog: " + e.getMessage());
+            }
+        }
+    }
+
+    // Alternative implementation using SearchService
+
+    @FXML
+    private void handleViewAllListings() {
+        if (viewedUser == null) {
+            System.err.println("No user available to view listings for");
+            return;
+        }
+        try {
+            navigationService.navigateToHomeViewAndSearchListingsByUserId(viewedUser.getId());
+        } catch (Exception e) {
+            System.err.println("Error navigating to view all listings: " + e.getMessage());
+            AlertHelper.showErrorAlert(
+                localeService.getMessage("error.title", "Error"),
+                localeService.getMessage("error.navigation", "Navigation Error"),
+                "Failed to view all listings: " + e.getMessage());
         }
     }
 }

@@ -9,6 +9,7 @@ import com.uninaswap.client.viewmodel.ListingViewModel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -327,6 +328,67 @@ public class HomeController {
         
         noResultsContainer.getChildren().addAll(noResultsText, suggestionText);
         allListingsContainer.getChildren().add(noResultsContainer);
+    }
+
+    /**
+     * Display listings for a specific user (called from profile view)
+     * This reuses the existing search results infrastructure
+     */
+    public void displayUserListings(Long userId) {
+        // Load user listings and convert to search results format
+        listingService.getUserListings(userId)
+            .thenAccept(listings -> Platform.runLater(() -> {
+                // Convert DTOs to ViewModels
+                List<ListingViewModel> listingViewModels = listings.stream()
+                        .map(ViewModelMapper.getInstance()::toViewModel)
+                        .collect(Collectors.toList());
+                
+                // Create observable list for search results
+                ObservableList<ListingViewModel> userListingsResults = FXCollections.observableArrayList(listingViewModels);
+                
+                // Use the existing displaySearchResults method
+                displaySearchResults(userListingsResults);
+            }))
+            .exceptionally(ex -> {
+                Platform.runLater(() -> {
+                    System.err.println("Error loading user listings for home display: " + ex.getMessage());
+                    
+                    // Show error using the existing infrastructure
+                    isDisplayingSearchResults = true;
+                    clearAllContainers();
+                    
+                    // Hide auction section when showing error
+                    if (auctionSection != null) {
+                        auctionSection.setVisible(false);
+                        auctionSection.setManaged(false);
+                    }
+                    
+                    // Show error message in the listings container
+                    addUserListingsErrorPlaceholder();
+                });
+                return null;
+            });
+    }
+
+    private void addUserListingsErrorPlaceholder() {
+        if (allListingsContainer != null) {
+            allListingsContainer.getChildren().clear();
+            
+            VBox errorContainer = new VBox(10);
+            errorContainer.setAlignment(Pos.CENTER);
+            errorContainer.getStyleClass().add("no-results-container");
+            
+            Text errorText = new Text("Errore nel caricamento");
+            errorText.getStyleClass().add("no-results-text");
+            errorText.setStyle("-fx-font-size: 18px; -fx-fill: #d32f2f; -fx-font-weight: bold;");
+            
+            Text errorDetailText = new Text("Non è stato possibile caricare le inserzioni dell'utente");
+            errorDetailText.getStyleClass().add("suggestion-text");
+            errorDetailText.setStyle("-fx-font-size: 14px; -fx-fill: #888888;");
+            
+            errorContainer.getChildren().addAll(errorText, errorDetailText);
+            allListingsContainer.getChildren().add(errorContainer);
+        }
     }
     
     /**

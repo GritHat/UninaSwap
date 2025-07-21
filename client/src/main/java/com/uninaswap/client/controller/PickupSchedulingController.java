@@ -5,7 +5,6 @@ import com.uninaswap.client.service.PickupService;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.OfferViewModel;
 import com.uninaswap.client.viewmodel.PickupViewModel;
-import com.uninaswap.common.dto.PickupDTO;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -14,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,17 +145,20 @@ public class PickupSchedulingController {
     private void setupLabels() {
         titleLabel.setText(localeService.getMessage("pickup.scheduling.title", "Schedule Pickup"));
         instructionsLabel.setText(localeService.getMessage("pickup.scheduling.instructions",
-                "Select your available dates and time range for pickup"));
+                "Set your available dates and time range for item pickup"));
 
         locationField.setPromptText(localeService.getMessage("pickup.location.prompt",
                 "Enter pickup location (e.g., University Campus, Building A)"));
         detailsArea.setPromptText(localeService.getMessage("pickup.details.prompt",
-                "Add any additional details or instructions (optional)"));
+                "Add any special instructions or additional information here"));
 
         confirmButton.setText(localeService.getMessage("pickup.scheduling.confirm", "Schedule Pickup"));
-        cancelButton.setText(localeService.getMessage("pickup.scheduling.cancel", "Cancel"));
-        addDateRangeButton.setText(localeService.getMessage("pickup.add.dates", "Add Date Range"));
-        clearDatesButton.setText(localeService.getMessage("pickup.clear.dates", "Clear All"));
+        cancelButton.setText(localeService.getMessage("button.cancel", "Cancel"));
+        addDateRangeButton.setText(localeService.getMessage("pickup.dates.add.button", "Add Range"));
+        clearDatesButton.setText(localeService.getMessage("pickup.dates.clear.button", "Clear All"));
+        
+        // Update selected dates count display
+        updateSelectedDatesDisplay();
     }
 
     public void setOfferId(String offerId) {
@@ -399,7 +402,7 @@ public class PickupSchedulingController {
                 selectedDates.size()));
 
         for (LocalDate date : selectedDates) {
-            Label dateLabel = new Label(date.toString());
+            Label dateLabel = new Label(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
             dateLabel.getStyleClass().add("date-chip");
 
             Button removeButton = new Button("×");

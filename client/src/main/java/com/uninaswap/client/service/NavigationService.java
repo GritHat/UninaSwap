@@ -21,7 +21,6 @@ import javafx.stage.Popup;
 
 import com.uninaswap.client.controller.ItemDialogController;
 import com.uninaswap.client.controller.ListingDetailsController;
-import com.uninaswap.client.controller.ListingsController;
 import com.uninaswap.client.controller.LoginController;
 import com.uninaswap.client.controller.ProfileController;
 import com.uninaswap.client.controller.RegisterController;
@@ -37,13 +36,13 @@ import com.uninaswap.client.controller.MainController;
 import com.uninaswap.client.controller.NotificationDropdownController;
 import com.uninaswap.client.controller.PickupSchedulingController;
 import com.uninaswap.client.controller.PickupSelectionController;
-import com.uninaswap.common.dto.PickupDTO;
 import com.uninaswap.client.controller.ReviewCreateController;
 import com.uninaswap.client.controller.UserFavoritesController;
 import com.uninaswap.client.controller.UserFollowersController;
 import com.uninaswap.client.controller.UserMenuDropdownController;
 import com.uninaswap.client.controller.UserReviewsController;
 import com.uninaswap.client.controller.ReportDialogController;
+import com.uninaswap.client.controller.HomeController;
 
 /**
  * Service class to handle navigation between screens.
@@ -291,6 +290,13 @@ public class NavigationService {
         Parent homeView = loaderBundle.getView();
 
         return homeView;
+    }
+
+    public void navigateToHomeView() throws IOException {
+        Parent homeView = loadHomeView();
+        mainController.setContent(homeView);
+        mainController.updateSidebarButtonSelection("home");
+        mainController.sidebarClearAllSelection();
     }
 
     /**
@@ -590,6 +596,7 @@ public class NavigationService {
     public void openPickupScheduling(OfferViewModel offer, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PickupSchedulingView.fxml"));
+            loader.setResources(localeService.getResourceBundle());
             Parent root = loader.load();
 
             PickupSchedulingController controller = loader.getController();
@@ -964,6 +971,7 @@ public class NavigationService {
         try {
             // Load the pickup scheduling FXML (we can reuse the same UI)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PickupSchedulingView.fxml"));
+            loader.setResources(localeService.getResourceBundle());
             Parent root = loader.load();
             
             // Get the controller
@@ -995,6 +1003,28 @@ public class NavigationService {
                 localeService.getMessage("pickup.reschedule.error.header", "Failed to Open Rescheduling"),
                 "Could not open pickup rescheduling dialog: " + e.getMessage()
             );
+        }
+    }
+
+    /**
+     * Navigate to home view and display listings for a specific user
+     */
+    public void navigateToHomeViewAndSearchListingsByUserId(Long userId) throws IOException {
+        // Navigate to home view first
+        Parent homeView = loadHomeView();
+        mainController.setContent(homeView);
+        mainController.updateSidebarButtonSelection("home");
+        
+        // Get the HomeController instance from the loaded view
+        Object controller = homeView.getProperties().get("controller");
+        if (controller instanceof HomeController homeController) {
+            // Call the method to display user listings
+            Platform.runLater(() -> {
+                homeController.displayUserListings(userId);
+            });
+        } else {
+            // Fallback: try to get controller from the loader if property method doesn't work
+            System.err.println("Could not get HomeController instance to display user listings");
         }
     }
 }

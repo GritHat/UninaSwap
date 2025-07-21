@@ -19,6 +19,8 @@ public class UserDTO implements Serializable {
     private String address;
     private String city;
     private String country;
+    private String zipPostalCode;
+    private String stateProvince;
 
     public UserDTO() {
     }
@@ -148,5 +150,21 @@ public class UserDTO implements Serializable {
 
     public void setActive(Boolean active) {
         this.isActive = active;
+    }
+
+    public String getZipPostalCode() {
+        return zipPostalCode;
+    }
+
+    public void setZipPostalCode(String zipPostalCode) {
+        this.zipPostalCode = zipPostalCode;
+    }
+
+    public String getStateProvince() {
+        return stateProvince;
+    }
+
+    public void setStateProvince(String stateProvince) {
+        this.stateProvince = stateProvince;
     }
 }

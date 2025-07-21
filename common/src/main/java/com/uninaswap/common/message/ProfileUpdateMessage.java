@@ -19,6 +19,12 @@ public class ProfileUpdateMessage extends Message {
     private String bio;
     private String profileImagePath;
     private String message;
+    private String zipPostalCode;
+    private String stateProvince;
+    private String address;
+    private String country;
+    private String city;
+
 
     // Getters and setters
     public Type getType() {
@@ -75,5 +81,45 @@ public class ProfileUpdateMessage extends Message {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getZipPostalCode() {
+        return zipPostalCode;
+    }
+
+    public void setZipPostalCode(String zipPostalCode) {
+        this.zipPostalCode = zipPostalCode;
+    }
+
+    public String getStateProvince() {
+        return stateProvince;
+    }
+
+    public void setStateProvince(String stateProvince) {
+        this.stateProvince = stateProvince;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

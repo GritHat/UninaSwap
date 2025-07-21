@@ -122,6 +122,8 @@ public class ViewModelMapper {
         viewModel.setCity(dto.getCity());
         viewModel.setCountry(dto.getCountry());
         viewModel.setBio(dto.getBio());
+        viewModel.setZipPostalCode(dto.getZipPostalCode());
+        viewModel.setStateProvince(dto.getStateProvince());
         // Add rating and review count if available in DTO
         // viewModel.setRating(dto.getRating());
         // viewModel.setReviewCount(dto.getReviewCount());
@@ -148,6 +150,8 @@ public class ViewModelMapper {
         dto.setCity(viewModel.getCity());
         dto.setCountry(viewModel.getCountry());
         dto.setBio(viewModel.getBio());
+        dto.setZipPostalCode(viewModel.getZipPostalCode());
+        dto.setStateProvince(viewModel.getStateProvince());
 
         return dto;
     }

@@ -5,6 +5,8 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
@@ -13,186 +15,613 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane styleClass="listing-creation-view" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.ListingCreationController">
-            
-    <top>
-        <VBox spacing="10">
-            <padding>
-                <Insets bottom="10" left="10" right="10" top="10" />
-            </padding>
-            <Label styleClass="section-title" text="%listing.create.title" />
-            
-            <GridPane hgap="10" vgap="10">
-                <Label text="%listing.title.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                <TextField fx:id="titleField" promptText="%listing.title.prompt" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0" />
+<ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="main-content-background" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.ListingCreationController">
+  <content>
+    <VBox spacing="20.0" styleClass="listing-creation-main-container">
+      <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      </padding>
+      
+      <!-- Header Section -->
+      <VBox spacing="15.0" styleClass="listing-creation-header-section">
+        <children>
+          <!-- Title and Icon -->
+          <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <children>
+              <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@../images/icons/create_listing.png" />
+                </image>
+              </ImageView>
+              <Text styleClass="page-title-label" text="%listing.create.title">
+                <font>
+                  <Font size="24.0" />
+                </font>
+              </Text>
+              <Region HBox.hgrow="ALWAYS" />
+              <Button fx:id="cancelButton" onAction="#handleCancel" styleClass="secondary-button" text="%button.cancel" />
+              <Button fx:id="createButton" onAction="#handleCreateListing" styleClass="primary-button" text="%button.create" />
+            </children>
+          </HBox>
+          
+          <!-- Basic Information Section -->
+          <VBox spacing="15.0" styleClass="basic-info-section">
+            <children>
+              <Text styleClass="section-subtitle" text="%listing.basic.info.title" />
+              <GridPane hgap="15.0" vgap="12.0">
+                <columnConstraints>
+                  <ColumnConstraints hgrow="NEVER" minWidth="120.0" prefWidth="120.0" />
+                  <ColumnConstraints hgrow="ALWAYS" />
+                </columnConstraints>
+                <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                </rowConstraints>
                 
-                <Label text="%listing.description.label" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="TOP" />
-                <TextArea fx:id="descriptionArea" prefRowCount="3" promptText="%listing.description.prompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <columnConstraints>
-               <ColumnConstraints />
-               <ColumnConstraints />
-            </columnConstraints>
-            <rowConstraints>
-               <RowConstraints />
-               <RowConstraints />
-            </rowConstraints>
-            </GridPane>
-        </VBox>
-    </top>
-    
-    <center>
-        <TabPane fx:id="listingTypeTabs" tabClosingPolicy="UNAVAILABLE">
-            <Tab fx:id="sellTab" text="%listing.type.sell">
-                <VBox spacing="10">
-                    <padding>
-                        <Insets bottom="10" left="10" right="10" top="10" />
-                    </padding>
-                    <GridPane hgap="10" vgap="10">
-                        <Label text="%listing.sell.price.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <TextField fx:id="sellPriceField" prefWidth="100" promptText="%listing.sell.price.prompt" />
-                            <ComboBox fx:id="sellCurrencyComboBox" prefWidth="80" />
-                        </HBox>
-                  <columnConstraints>
-                     <ColumnConstraints />
-                     <ColumnConstraints />
-                  </columnConstraints>
-                  <rowConstraints>
-                     <RowConstraints />
-                  </rowConstraints>
-                    </GridPane>
-                </VBox>
-            </Tab>
-            
-            <Tab fx:id="tradeTab" text="%listing.type.trade">
-                <VBox spacing="10">
-                    <padding>
-                        <Insets bottom="10" left="10" right="10" top="10" />
-                    </padding>
-                    
-                    <TitledPane expanded="true" text="%listing.trade.offers.title">
-                        <VBox spacing="10">
-                            <CheckBox fx:id="acceptMoneyOffersCheckBox" text="%listing.trade.money.offers" />
-                            <HBox spacing="10">
-                                <Label text="%listing.trade.reference.price.label" />
-                                <TextField fx:id="referencePriceField" prefWidth="100" promptText="%listing.trade.reference.price.prompt" />
-                                <ComboBox fx:id="tradeCurrencyComboBox" prefWidth="80" />
-                            </HBox>
+                <Label styleClass="field-label" text="%listing.title.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                <TextField fx:id="titleField" promptText="%listing.title.prompt" styleClass="listing-text-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                
+                <Label styleClass="field-label" text="%listing.description.label" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                <TextArea fx:id="descriptionArea" prefRowCount="3" promptText="%listing.description.prompt" styleClass="listing-text-area" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+              </GridPane>
+            </children>
+          </VBox>
+        </children>
+      </VBox>
+      
+      <!-- Main Content Split Pane -->
+      <SplitPane fx:id="mainSplitPane" dividerPositions="0.55" styleClass="listing-creation-split-pane" VBox.vgrow="ALWAYS">
+        <items>
+          <!-- Left Side - Listing Type Configuration -->
+          <VBox styleClass="listing-configuration-panel">
+            <children>
+              <!-- Listing Type Tabs -->
+              <TabPane fx:id="listingTypeTabs" styleClass="listing-type-tabs" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                <tabs>
+                  <!-- Sell Tab -->
+                  <Tab fx:id="sellTab" text="%listing.type.sell">
+                    <content>
+                      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="tab-scroll-pane">
+                        <content>
+                          <VBox spacing="20.0" styleClass="tab-content-container">
+                            <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </padding>
                             
-                            <CheckBox fx:id="acceptMixedOffersCheckBox" text="%listing.trade.mixed.offers" />
-                            <CheckBox fx:id="acceptOtherOffersCheckBox" text="%listing.trade.other.offers" />
-                        </VBox>
-                    </TitledPane>
-                    
-                    <TitledPane expanded="true" text="%listing.trade.desired.categories.title">
-                        <VBox spacing="10">
-                            <Label text="%listing.trade.categories.label" />
-                            <TextField fx:id="categoriesField" promptText="%listing.trade.categories.prompt" />
-                        </VBox>
-                    </TitledPane>
-                </VBox>
-            </Tab>
-            
-            <Tab fx:id="giftTab" text="%listing.type.gift">
-                <VBox spacing="10">
-                    <padding>
-                        <Insets bottom="10" left="10" right="10" top="10" />
-                    </padding>
-                    
-                    <CheckBox fx:id="pickupOnlyCheckBox" text="%listing.gift.pickup.only" />
-                    <CheckBox fx:id="allowThankYouOffersCheckBox" selected="true" text="%listing.gift.thank.you.offers" />
-                    
-                    <Label text="%listing.gift.restrictions.label" />
-                    <TextArea fx:id="restrictionsArea" prefRowCount="3" promptText="%listing.gift.restrictions.prompt" />
-                </VBox>
-            </Tab>
-            
-            <Tab fx:id="auctionTab" text="%listing.type.auction">
-                <VBox spacing="10">
-                    <padding>
-                        <Insets bottom="10" left="10" right="10" top="10" />
-                    </padding>
-                    
-                    <GridPane hgap="10" vgap="10">
-                        <Label text="%listing.auction.starting.price.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <HBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                            <TextField fx:id="startingPriceField" prefWidth="100" promptText="%listing.auction.starting.price.prompt" />
-                            <ComboBox fx:id="auctionCurrencyComboBox" prefWidth="80" />
-                        </HBox>
-                        
-                        <Label text="%listing.auction.reserve.price.label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                        <TextField fx:id="reservePriceField" promptText="%listing.auction.reserve.price.prompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        
-                        <Label text="%listing.auction.duration.label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                        <ComboBox fx:id="durationComboBox" prefWidth="150" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        
-                        <Label text="%listing.auction.bid.increment.label" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-                        <TextField fx:id="bidIncrementField" promptText="%listing.auction.bid.increment.prompt" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <columnConstraints>
-                     <ColumnConstraints />
-                     <ColumnConstraints />
-                  </columnConstraints>
-                  <rowConstraints>
-                     <RowConstraints />
-                     <RowConstraints />
-                     <RowConstraints />
-                     <RowConstraints />
-                  </rowConstraints>
-                    </GridPane>
-                </VBox>
-            </Tab>
-        </TabPane>
-    </center>
-    
-    <bottom>
-        <VBox spacing="10">
+                            <!-- Sell Pricing -->
+                            <VBox spacing="15.0" styleClass="listing-section-card">
+                              <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                                  <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/sell_price.png" />
+                                      </image>
+                                    </ImageView>
+                                    <Text styleClass="section-title" text="%listing.sell.pricing.section.title" />
+                                  </children>
+                                </HBox>
+                                
+                                <GridPane hgap="15.0" vgap="12.0">
+                                  <columnConstraints>
+                                    <ColumnConstraints hgrow="NEVER" minWidth="100.0" prefWidth="100.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                  </columnConstraints>
+                                  
+                                  <Label styleClass="field-label" text="%listing.sell.price.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                  <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                    <children>
+                                      <TextField fx:id="sellPriceField" promptText="%listing.sell.price.prompt" styleClass="price-field" HBox.hgrow="ALWAYS" />
+                                      <ComboBox fx:id="sellCurrencyComboBox" prefWidth="80.0" styleClass="currency-combo" />
+                                    </children>
+                                  </HBox>
+                                </GridPane>
+                              </children>
+                              <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              </padding>
+                            </VBox>
+                            
+                            <!-- Location Section -->
+                            <VBox spacing="15.0" styleClass="listing-section-card">
+                              <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                                  <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/location.png" />
+                                      </image>
+                                    </ImageView>
+                                    <Text styleClass="section-title" text="%listing.location.section.title" />
+                                  </children>
+                                </HBox>
+                                
+                                <VBox spacing="8.0">
+                                  <children>
+                                    <Label styleClass="field-label" text="%listing.location.label" />
+                                    <TextField fx:id="sellLocationField" promptText="%listing.location.prompt" styleClass="location-field" />
+                                    <Text styleClass="help-text" text="%listing.location.help" />
+                                  </children>
+                                </VBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              </padding>
+                            </VBox>
+                          </VBox>
+                        </content>
+                      </ScrollPane>
+                    </content>
+                  </Tab>
+                  
+                  <!-- Trade Tab -->
+                  <Tab fx:id="tradeTab" text="%listing.type.trade">
+                    <content>
+                      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="tab-scroll-pane">
+                        <content>
+                          <VBox spacing="20.0" styleClass="tab-content-container">
+                            <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </padding>
+                            
+                            <!-- Trade Settings -->
+                            <VBox spacing="15.0" styleClass="listing-section-card">
+                              <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                                  <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/trade_settings.png" />
+                                      </image>
+                                    </ImageView>
+                                    <Text styleClass="section-title" text="%listing.trade.settings.title" />
+                                  </children>
+                                </HBox>
+                                
+                                <VBox spacing="12.0">
+                                  <children>
+                                    <CheckBox fx:id="acceptMoneyOffersCheckBox" styleClass="trade-checkbox" text="%listing.trade.money.offers" />
+                                    <VBox spacing="8.0">
+                                      <children>
+                                        <Label styleClass="field-label" text="%listing.trade.reference.price.label" />
+                                        <HBox spacing="10.0">
+                                          <children>
+                                            <TextField fx:id="referencePriceField" promptText="%listing.trade.reference.price.prompt" styleClass="price-field" HBox.hgrow="ALWAYS" />
+                                            <ComboBox fx:id="tradeCurrencyComboBox" prefWidth="80.0" styleClass="currency-combo" />
+                                          </children>
+                                        </HBox>
+                                      </children>
+                                    </VBox>
+                                    <CheckBox fx:id="acceptMixedOffersCheckBox" styleClass="trade-checkbox" text="%listing.trade.mixed.offers" />
+                                    <CheckBox fx:id="acceptOtherOffersCheckBox" styleClass="trade-checkbox" text="%listing.trade.other.offers" />
+                                  </children>
+                                </VBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              </padding>
+                            </VBox>
+                            
+                            <!-- Desired Categories -->
+                            <VBox spacing="15.0" styleClass="listing-section-card">
+                              <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                                  <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/categories.png" />
+                                      </image>
+                                    </ImageView>
+                                    <Text styleClass="section-title" text="%listing.trade.desired.categories.title" />
+                                  </children>
+                                </HBox>
+                                
+                                <VBox spacing="12.0">
+                                  <children>
+                                    <Label styleClass="field-label" text="%listing.trade.categories.label" />
+                                    
+                                    <!-- Category Selection Area -->
+                                    <VBox spacing="8.0" styleClass="category-selection-container">
+                                      <children>
+                                        <!-- Available Categories -->
+                                        <VBox spacing="5.0">
+                                          <children>
+                                            <Label styleClass="subsection-label" text="%listing.trade.categories.available" />
+                                            <ComboBox fx:id="availableCategoriesComboBox" promptText="%listing.trade.categories.select.prompt" styleClass="category-combo" />
+                                            <Button fx:id="addCategoryButton" onAction="#handleAddCategory" styleClass="add-category-button" text="%button.add.category" />
+                                          </children>
+                                        </VBox>
+                                        
+                                        <!-- Selected Categories Display -->
+                                        <VBox spacing="5.0">
+                                          <children>
+                                            <Label styleClass="subsection-label" text="%listing.trade.categories.selected" />
+                                            <ScrollPane fx:id="selectedCategoriesScrollPane" fitToWidth="true" maxHeight="120.0" styleClass="selected-categories-scroll">
+                                              <content>
+                                                <VBox fx:id="selectedCategoriesContainer" spacing="5.0" styleClass="selected-categories-container" />
+                                              </content>
+                                            </ScrollPane>
+                                          </children>
+                                        </VBox>
+                                      </children>
+                                    </VBox>
+                                    
+                                    <Text styleClass="help-text" text="%listing.trade.categories.help" />
+                                  </children>
+                                </VBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              </padding>
+                            </VBox>
+                            
+                            <!-- Location Section (MANDATORY) -->
+                            <VBox spacing="15.0" styleClass="listing-section-card listing-required-section">
+                              <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                                  <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/location.png" />
+                                      </image>
+                                    </ImageView>
+                                    <Text styleClass="section-title" text="%listing.location.section.title" />
+                                    <Text styleClass="required-indicator" text=" *" />
+                                  </children>
+                                </HBox>
+                                
+                                <VBox spacing="8.0">
+                                  <children>
+                                    <Label styleClass="field-label" text="%listing.location.label" />
+                                    <TextField fx:id="tradeLocationField" promptText="%listing.location.prompt" styleClass="location-field required-field" />
+                                    <Text styleClass="help-text" text="%listing.location.trade.mandatory.help" />
+                                  </children>
+                                </VBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              </padding>
+                            </VBox>
+                          </VBox>
+                        </content>
+                      </ScrollPane>
+                    </content>
+                  </Tab>
+                  
+                  <!-- Gift Tab -->
+                  <Tab fx:id="giftTab" text="%listing.type.gift">
+                    <content>
+                      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="tab-scroll-pane">
+                        <content>
+                          <VBox spacing="20.0" styleClass="tab-content-container">
+                            <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </padding>
+                            
+                            <!-- Gift Settings -->
+                            <VBox spacing="15.0" styleClass="listing-section-card">
+                              <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                                  <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/gift_settings.png" />
+                                      </image>
+                                    </ImageView>
+                                    <Text styleClass="section-title" text="%listing.gift.settings.title" />
+                                  </children>
+                                </HBox>
+                                
+                                <VBox spacing="12.0">
+                                  <children>
+                                    <CheckBox fx:id="pickupOnlyCheckBox" styleClass="gift-checkbox" text="%listing.gift.pickup.only" />
+                                    <CheckBox fx:id="allowThankYouOffersCheckBox" styleClass="gift-checkbox" text="%listing.gift.thank.you.offers" />
+                                  </children>
+                                </VBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              </padding>
+                            </VBox>
+                            
+                            <!-- Gift Restrictions -->
+                            <VBox spacing="15.0" styleClass="listing-section-card">
+                              <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                                  <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/restrictions.png" />
+                                      </image>
+                                    </ImageView>
+                                    <Text styleClass="section-title" text="%listing.gift.restrictions.title" />
+                                  </children>
+                                </HBox>
+                                
+                                <VBox spacing="8.0">
+                                  <children>
+                                    <Label styleClass="field-label" text="%listing.gift.restrictions.label" />
+                                    <TextArea fx:id="restrictionsArea" prefRowCount="4" promptText="%listing.gift.restrictions.prompt" styleClass="restrictions-area" wrapText="true" />
+                                  </children>
+                                </VBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              </padding>
+                            </VBox>
+                            
+                            <!-- Location Section -->
+                            <VBox spacing="15.0" styleClass="listing-section-card">
+                              <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                                  <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/location.png" />
+                                      </image>
+                                    </ImageView>
+                                    <Text styleClass="section-title" text="%listing.location.section.title" />
+                                  </children>
+                                </HBox>
+                                
+                                <VBox spacing="8.0">
+                                  <children>
+                                    <Label styleClass="field-label" text="%listing.location.label" />
+                                    <TextField fx:id="giftLocationField" promptText="%listing.location.prompt" styleClass="location-field" />
+                                    <Text styleClass="help-text" text="%listing.location.help" />
+                                  </children>
+                                </VBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              </padding>
+                            </VBox>
+                          </VBox>
+                        </content>
+                      </ScrollPane>
+                    </content>
+                  </Tab>
+                  
+                  <!-- Auction Tab -->
+                  <Tab fx:id="auctionTab" text="%listing.type.auction">
+                    <content>
+                      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="tab-scroll-pane">
+                        <content>
+                          <VBox spacing="20.0" styleClass="tab-content-container">
+                            <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </padding>
+                            
+                            <!-- Auction Pricing -->
+                            <VBox spacing="15.0" styleClass="listing-section-card">
+                              <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                                  <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/auction_price.png" />
+                                      </image>
+                                    </ImageView>
+                                    <Text styleClass="section-title" text="%listing.auction.pricing.section.title" />
+                                  </children>
+                                </HBox>
+                                
+                                <GridPane hgap="15.0" vgap="12.0">
+                                  <columnConstraints>
+                                    <ColumnConstraints hgrow="NEVER" minWidth="130.0" prefWidth="130.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                  </columnConstraints>
+                                  
+                                  <Label styleClass="field-label" text="%listing.auction.starting.price.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                  <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                    <children>
+                                      <TextField fx:id="startingPriceField" promptText="%listing.auction.starting.price.prompt" styleClass="price-field" HBox.hgrow="ALWAYS" />
+                                      <ComboBox fx:id="auctionCurrencyComboBox" prefWidth="80.0" styleClass="currency-combo" />
+                                    </children>
+                                  </HBox>
+                                  
+                                  <Label styleClass="field-label" text="%listing.auction.reserve.price.label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                  <TextField fx:id="reservePriceField" promptText="%listing.auction.reserve.price.prompt" styleClass="price-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                  
+                                  <Label styleClass="field-label" text="%listing.auction.bid.increment.label" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                  <TextField fx:id="bidIncrementField" promptText="%listing.auction.bid.increment.prompt" styleClass="price-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                </GridPane>
+                              </children>
+                              <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              </padding>
+                            </VBox>
+                            
+                            <!-- Auction Duration -->
+                            <VBox spacing="15.0" styleClass="listing-section-card">
+                              <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                                  <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/duration.png" />
+                                      </image>
+                                    </ImageView>
+                                    <Text styleClass="section-title" text="%listing.auction.duration.section.title" />
+                                  </children>
+                                </HBox>
+                                
+                                <VBox spacing="8.0">
+                                  <children>
+                                    <Label styleClass="field-label" text="%listing.auction.duration.label" />
+                                    <ComboBox fx:id="durationComboBox" prefWidth="200.0" styleClass="duration-combo" />
+                                  </children>
+                                </VBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              </padding>
+                            </VBox>
+                            
+                            <!-- Location Section -->
+                            <VBox spacing="15.0" styleClass="listing-section-card">
+                              <children>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                                  <children>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/location.png" />
+                                      </image>
+                                    </ImageView>
+                                    <Text styleClass="section-title" text="%listing.location.section.title" />
+                                  </children>
+                                </HBox>
+                                
+                                <VBox spacing="8.0">
+                                  <children>
+                                    <Label styleClass="field-label" text="%listing.location.label" />
+                                    <TextField fx:id="auctionLocationField" promptText="%listing.location.prompt" styleClass="location-field" />
+                                    <Text styleClass="help-text" text="%listing.location.help" />
+                                  </children>
+                                </VBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                              </padding>
+                            </VBox>
+                          </VBox>
+                        </content>
+                      </ScrollPane>
+                    </content>
+                  </Tab>
+                </tabs>
+              </TabPane>
+            </children>
             <padding>
-                <Insets bottom="10" left="10" right="10" top="10" />
+              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
-            
-            <TitledPane expanded="true" text="%listing.items.title">
-                <SplitPane dividerPositions="0.5">
-                    <VBox spacing="5">
-                        <Label styleClass="subsection-title" text="%listing.items.available.title" />
-                        <TableView fx:id="itemsTable" prefHeight="200">
-                            <columns>
-                                <TableColumn fx:id="nameColumn" prefWidth="150" text="%item.name.column" />
-                                <TableColumn fx:id="conditionColumn" prefWidth="100" text="%item.condition.column" />
-                                <TableColumn fx:id="availableQuantityColumn" prefWidth="100.0" text="%item.available.column" />
-                            </columns>
-                        </TableView>
-                        <HBox alignment="CENTER_LEFT" spacing="10">
-                            <Label text="%listing.items.quantity.label" />
-                            <Spinner fx:id="quantitySpinner" editable="true" prefWidth="80" />
-                            <Button fx:id="addItemButton" disable="true" onAction="#handleAddItem" text="%button.add" />
-                        </HBox>
-                    </VBox>
-                    
-                    <VBox spacing="5">
-                        <Label styleClass="subsection-title" text="%listing.items.selected.title" />
-                        <TableView fx:id="selectedItemsTable" prefHeight="200">
-                            <columns>
-                                <TableColumn fx:id="selectedNameColumn" prefWidth="150" text="%item.name.column" />
-                                <TableColumn fx:id="selectedQuantityColumn" prefWidth="91.0" text="%item.quantity.column" />
-                                <TableColumn fx:id="selectedActionColumn" prefWidth="108.0" text="%item.action.column" />
-                            </columns>
-                        </TableView>
-                    </VBox>
-                </SplitPane>
-            </TitledPane>
-            
-            <HBox alignment="CENTER_RIGHT" spacing="10">
-                <Button fx:id="createButton" onAction="#handleCreateListing" styleClass="primary-button" text="%button.create" />
-                <Button fx:id="cancelButton" onAction="#handleCancel" text="%button.cancel" />
-            </HBox>
-        </VBox>
-    </bottom>
-</BorderPane>
+          </VBox>
+          
+          <!-- Right Side - Items Selection -->
+          <VBox styleClass="items-selection-panel">
+            <children>
+              <!-- Items Section Header -->
+              <VBox spacing="15.0" styleClass="items-header-section">
+                <children>
+                  <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                    <children>
+                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                          <Image url="@../images/icons/items.png" />
+                        </image>
+                      </ImageView>
+                      <Text styleClass="section-title" text="%listing.items.title" />
+                    </children>
+                  </HBox>
+                  <Text styleClass="section-subtitle" text="%listing.items.subtitle" />
+                </children>
+                <padding>
+                  <Insets bottom="15.0" left="20.0" right="20.0" top="20.0" />
+                </padding>
+              </VBox>
+              
+              <!-- Items Split Container -->
+              <SplitPane fx:id="itemsSplitPane" dividerPositions="0.6" orientation="VERTICAL" styleClass="items-split-pane" VBox.vgrow="ALWAYS">
+                <items>
+                  <!-- Available Items Section -->
+                  <VBox styleClass="available-items-section">
+                    <children>
+                      <VBox spacing="10.0" styleClass="available-items-header">
+                        <children>
+                          <Text styleClass="subsection-title" text="%listing.items.available.title" />
+                          <Separator />
+                        </children>
+                        <padding>
+                          <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                        </padding>
+                      </VBox>
+                      
+                      <TableView fx:id="itemsTable" styleClass="items-table" VBox.vgrow="ALWAYS">
+                        <columns>
+                          <TableColumn fx:id="nameColumn" prefWidth="140.0" text="%item.name.column" />
+                          <TableColumn fx:id="conditionColumn" prefWidth="100.0" text="%item.condition.column" />
+                          <TableColumn fx:id="availableQuantityColumn" prefWidth="80.0" text="%item.available.column" />
+                        </columns>
+                        <placeholder>
+                          <VBox alignment="CENTER" spacing="15.0" styleClass="table-placeholder">
+                            <children>
+                              <ImageView fitHeight="48.0" fitWidth="48.0" opacity="0.5" preserveRatio="true">
+                                <image>
+                                  <Image url="@../images/icons/items.png" />
+                                </image>
+                              </ImageView>
+                              <Text styleClass="placeholder-title" text="%listing.items.empty.title" />
+                              <Text styleClass="placeholder-subtitle" text="%listing.items.empty.subtitle" />
+                            </children>
+                          </VBox>
+                        </placeholder>
+                      </TableView>
+                      
+                      <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="add-item-section">
+                        <children>
+                          <Label styleClass="field-label" text="%listing.items.quantity.label" />
+                          <Spinner fx:id="quantitySpinner" editable="true" prefWidth="80.0" styleClass="quantity-spinner" />
+                          <Button fx:id="addItemButton" disable="true" onAction="#handleAddItem" styleClass="add-item-button" text="%button.add" />
+                        </children>
+                        <padding>
+                          <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                        </padding>
+                      </HBox>
+                    </children>
+                  </VBox>
+                  
+                  <!-- Selected Items Section -->
+                  <VBox styleClass="selected-items-section">
+                    <children>
+                      <VBox spacing="10.0" styleClass="selected-items-header">
+                        <children>
+                          <Text styleClass="subsection-title" text="%listing.items.selected.title" />
+                          <Separator />
+                        </children>
+                        <padding>
+                          <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                        </padding>
+                      </VBox>
+                      
+                      <TableView fx:id="selectedItemsTable" styleClass="selected-items-table" VBox.vgrow="ALWAYS">
+                        <columns>
+                          <TableColumn fx:id="selectedNameColumn" prefWidth="160.0" text="%item.name.column" />
+                          <TableColumn fx:id="selectedQuantityColumn" prefWidth="80.0" text="%item.quantity.column" />
+                          <TableColumn fx:id="selectedActionColumn" prefWidth="80.0" sortable="false" text="%item.action.column" />
+                        </columns>
+                        <placeholder>
+                          <VBox alignment="CENTER" spacing="10.0" styleClass="table-placeholder">
+                            <children>
+                              <ImageView fitHeight="32.0" fitWidth="32.0" opacity="0.5" preserveRatio="true">
+                                <image>
+                                  <Image url="@../images/icons/selected_items.png" />
+                                </image>
+                              </ImageView>
+                              <Text styleClass="placeholder-title" text="%listing.items.selected.empty.title" />
+                              <Text styleClass="placeholder-subtitle" text="%listing.items.selected.empty.subtitle" />
+                            </children>
+                          </VBox>
+                        </placeholder>
+                      </TableView>
+                    </children>
+                  </VBox>
+                </items>
+              </SplitPane>
+            </children>
+          </VBox>
+        </items>
+      </SplitPane>
+    </VBox>
+  </content>
+</ScrollPane>

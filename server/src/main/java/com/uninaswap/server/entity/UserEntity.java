@@ -50,6 +50,11 @@ public class UserEntity {
 
     private String country;
 
+    private String zipPostalCode;
+
+    private String stateProvince;
+
+
     // Original getters and setters
     public Long getId() {
         return id;
@@ -130,6 +135,22 @@ public class UserEntity {
 
     public void setLastLoginAt(LocalDateTime lastLoginAt) {
         this.lastLoginAt = lastLoginAt;
+    }
+
+    public void setZipPostalCode(String zipPostalCode) {
+        this.zipPostalCode = zipPostalCode;
+    }
+
+    public void setStateProvince(String stateProvince) {
+        this.stateProvince = stateProvince;
+    }
+
+    public String getZipPostalCode() {
+        return zipPostalCode;
+    }
+
+    public String getStateProvince() {
+        return stateProvince;
     }
 
     public Boolean isActive() {

@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.uninaswap.common.enums.Currency;
+import com.uninaswap.common.enums.DeliveryType;
 import com.uninaswap.common.enums.OfferStatus;
 
 /**
@@ -45,6 +46,8 @@ public class OfferEntity {
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
+
+    private DeliveryType deliveryType;
 
     // Items component of the offer - UPDATED to use OfferItem
     @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -190,6 +193,14 @@ public class OfferEntity {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public DeliveryType getDeliveryType() {
+        return deliveryType;
+    }
+
+    public void setDeliveryType(DeliveryType deliveryType) {
+        this.deliveryType = deliveryType;
     }
 
     @PreUpdate

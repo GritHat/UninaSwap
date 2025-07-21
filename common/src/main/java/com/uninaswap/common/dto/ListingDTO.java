@@ -113,4 +113,7 @@ public abstract class ListingDTO implements Serializable {
     public void addItem(ListingItemDTO item) {
         this.items.add(item);
     }
+
+    public abstract String getPickupLocation();
+    public abstract void setPickupLocation(String pickupLocation);
 }

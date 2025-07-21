@@ -1,5 +1,7 @@
 package com.uninaswap.client.service;
 
+import com.uninaswap.client.mapper.ViewModelMapper;
+import com.uninaswap.client.viewmodel.PickupViewModel;
 import com.uninaswap.client.websocket.WebSocketClient;
 import com.uninaswap.common.dto.PickupDTO;
 import com.uninaswap.common.enums.PickupStatus;
@@ -28,6 +30,9 @@ public class PickupService {
     private Consumer<PickupMessage> createPickupHandler;
     private Consumer<PickupMessage> acceptPickupHandler;
     private Consumer<PickupMessage> updatePickupHandler;
+    private Consumer<PickupMessage> getPickupHandler; // Add this line
+
+    private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
 
     private PickupService() {
         this.webSocketClient = WebSocketClient.getInstance();
@@ -47,8 +52,9 @@ public class PickupService {
     /**
      * Create a pickup arrangement
      */
-    public CompletableFuture<Boolean> createPickup(PickupDTO pickupDTO) {
+    public CompletableFuture<Boolean> createPickup(PickupViewModel pickupViewModel) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
+        PickupDTO pickupDTO = viewModelMapper.toDTO(pickupViewModel);
 
         // Set up response handler
         createPickupHandler = response -> {
@@ -138,6 +144,35 @@ public class PickupService {
     }
 
     /**
+     * Cancel pickup arrangement and update offer status to CANCELLED
+     */
+    public CompletableFuture<Boolean> cancelPickupArrangement(Long pickupId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+        // Set up response handler
+        updatePickupHandler = response -> {
+            future.complete(response.isSuccess());
+            if (response.isSuccess() && response.getPickup() != null) {
+                Platform.runLater(() -> updatePickupInLists(response.getPickup()));
+            }
+            updatePickupHandler = null; // Clear handler
+        };
+
+        PickupMessage message = new PickupMessage();
+        message.setType(PickupMessage.Type.CANCEL_PICKUP_ARRANGEMENT_REQUEST);
+        message.setPickupId(pickupId);
+
+        webSocketClient.sendMessage(message)
+                .exceptionally(ex -> {
+                    future.completeExceptionally(ex);
+                    updatePickupHandler = null;
+                    return null;
+                });
+
+        return future;
+    }
+
+    /**
      * Get user's pickups
      */
     public CompletableFuture<Void> getUserPickups() {
@@ -177,6 +212,38 @@ public class PickupService {
         return future;
     }
 
+    /**
+     * Get pickup by offer ID
+     */
+    public CompletableFuture<PickupViewModel> getPickupByOfferId(String offerId) {
+        CompletableFuture<PickupViewModel> future = new CompletableFuture<>();
+
+        // Set up response handler
+        Consumer<PickupMessage> tempHandler = response -> {
+            if (response.isSuccess() && response.getPickup() != null) {
+                PickupViewModel pickup = ViewModelMapper.getInstance().toViewModel(response.getPickup());
+                future.complete(pickup);
+            } else {
+                future.complete(null);
+            }
+        };
+
+        getPickupHandler = tempHandler;
+
+        PickupMessage message = new PickupMessage();
+        message.setType(PickupMessage.Type.GET_PICKUP_BY_OFFER_REQUEST);
+        message.setOfferId(offerId);
+
+        webSocketClient.sendMessage(message)
+                .exceptionally(ex -> {
+                    future.completeExceptionally(ex);
+                    getPickupHandler = null;
+                    return null;
+                });
+
+        return future;
+    }
+
     private void handlePickupMessage(PickupMessage message) {
         Platform.runLater(() -> {
             switch (message.getType()) {
@@ -199,6 +266,18 @@ public class PickupService {
                     }
                     break;
 
+                case CANCEL_PICKUP_ARRANGEMENT_RESPONSE: // Add this case
+                    if (updatePickupHandler != null) {
+                        updatePickupHandler.accept(message);
+                    }
+                    break;
+
+                case GET_PICKUP_BY_OFFER_RESPONSE: // Add this case
+                    if (getPickupHandler != null) {
+                        getPickupHandler.accept(message);
+                    }
+                    break;
+
                 case GET_USER_PICKUPS_RESPONSE:
                     handleGetUserPickupsResponse(message);
                     break;
@@ -212,7 +291,7 @@ public class PickupService {
                     break;
 
                 default:
-                    System.out.println("Unhandled pickup message type: " + message.getType());
+                    System.err.println("Unknown pickup message type: " + message.getType());
                     break;
             }
         });

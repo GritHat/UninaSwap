@@ -105,6 +105,10 @@ public class PickupWebSocketHandler extends TextWebSocketHandler {
                         handleCancelPickup(pickupMessage, response, currentUser);
                         break;
 
+                    case CANCEL_PICKUP_ARRANGEMENT_REQUEST:
+                        handleCancelPickupArrangement(pickupMessage, response, currentUser);
+                        break;
+
                     default:
                         response.setSuccess(false);
                         response.setErrorMessage("Unknown pickup message type: " + pickupMessage.getType());
@@ -233,24 +237,6 @@ public class PickupWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    private void handleGetPickupByOffer(PickupMessage request, PickupMessage response, UserEntity currentUser) {
-        try {
-            String offerId = request.getOfferId();
-            PickupDTO pickup = pickupService.getPickupByOfferId(offerId).orElse(null);
-
-            response.setType(PickupMessage.Type.GET_PICKUP_BY_OFFER_RESPONSE);
-            response.setPickup(pickup);
-            response.setSuccess(true);
-
-            logger.info("Retrieved pickup for offer {} by user {}", offerId, currentUser.getUsername());
-        } catch (Exception e) {
-            response.setType(PickupMessage.Type.GET_PICKUP_BY_OFFER_RESPONSE);
-            response.setSuccess(false);
-            response.setErrorMessage("Failed to get pickup by offer: " + e.getMessage());
-            logger.error("Failed to get pickup by offer {}: {}", request.getOfferId(), e.getMessage());
-        }
-    }
-
     private void handleGetUserPickups(PickupMessage request, PickupMessage response, UserEntity currentUser) {
         try {
             List<PickupDTO> pickups = pickupService.getUserPickups(currentUser.getId());
@@ -359,7 +345,7 @@ public class PickupWebSocketHandler extends TextWebSocketHandler {
     private void handleCancelPickup(PickupMessage request, PickupMessage response, UserEntity currentUser) {
         try {
             Long pickupId = request.getPickupId();
-            pickupService.cancelPickup(pickupId, currentUser.getId());
+            pickupService.cancelPickupArrangement(pickupId, currentUser.getId());
 
             response.setType(PickupMessage.Type.CANCEL_PICKUP_RESPONSE);
             response.setSuccess(true);
@@ -370,6 +356,49 @@ public class PickupWebSocketHandler extends TextWebSocketHandler {
             response.setSuccess(false);
             response.setErrorMessage("Failed to cancel pickup: " + e.getMessage());
             logger.error("Failed to cancel pickup {}: {}", request.getPickupId(), e.getMessage());
+        }
+    }
+
+    private void handleCancelPickupArrangement(PickupMessage message, PickupMessage response, UserEntity currentUser) {
+        try {
+            Long pickupId = message.getPickupId();
+            Long userIdLong = Long.parseLong(currentUser.getId().toString());
+            
+            // Cancel the pickup arrangement
+            pickupService.cancelPickupArrangement(pickupId, userIdLong);
+            
+            // Send success response
+            response.setType(PickupMessage.Type.CANCEL_PICKUP_ARRANGEMENT_RESPONSE);
+            response.setPickupId(pickupId);
+            response.setSuccess(true);
+        } catch (Exception e) {
+            logger.error("Error cancelling pickup arrangement: {}", e.getMessage(), e);
+            
+            response.setType(PickupMessage.Type.CANCEL_PICKUP_ARRANGEMENT_RESPONSE);
+            response.setPickupId(message.getPickupId());
+            response.setSuccess(false);
+            response.setErrorMessage("Failed to cancel pickup arrangement: " + e.getMessage());
+        }
+    }
+
+    private void handleGetPickupByOffer(PickupMessage message, PickupMessage response, UserEntity currentUser) {
+        try {
+            String offerId = message.getOfferId();
+            // Get the pickup for the specific offer
+            PickupDTO pickup = pickupService.getPickupByOfferId(offerId, currentUser.getId());
+            response.setType(PickupMessage.Type.GET_PICKUP_BY_OFFER_RESPONSE);
+            response.setOfferId(offerId);
+            response.setSuccess(true);
+            
+            if (pickup != null) {
+                response.setPickup(pickup);
+            }
+        } catch (Exception e) {
+            logger.error("Error getting pickup by offer: {}", e.getMessage(), e);
+            response.setType(PickupMessage.Type.GET_PICKUP_BY_OFFER_RESPONSE);
+            response.setOfferId(message.getOfferId());
+            response.setSuccess(false);
+            response.setErrorMessage("Failed to get pickup: " + e.getMessage());
         }
     }
 }

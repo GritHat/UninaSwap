@@ -4339,3 +4339,661 @@
     -fx-opacity: 1;
     -fx-mouse-transparent: false;
 }
+
+/* Add these styles to your styles.css file */
+
+/* =========================
+   NEW OFFERS VIEW STYLING
+   ========================= */
+
+/* Main offers container */
+.offers-main-container {
+    -fx-max-width: 1400px;
+    -fx-alignment: TOP_CENTER;
+}
+
+/* Header section improvements */
+.offers-header-section {
+    -fx-background-color: -fx-background-light;
+    -fx-background-radius: 12px;
+    -fx-padding: 20px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+}
+
+/* Split pane styling */
+.offers-split-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.offers-split-pane .split-pane-divider {
+    -fx-background-color: #e9ecef;
+    -fx-padding: 0 1 0 1;
+    -fx-border-color: transparent;
+}
+
+/* Left panel - offers list */
+.offers-list-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-padding: 15px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 6, 0, 0, 1);
+}
+
+/* Right panel - offer details */
+.offer-details-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 6, 0, 0, 1);
+}
+
+/* Details header */
+.details-header-section {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 12px 12px 0 0;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 0 0 1 0;
+}
+
+.details-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-fill: -fx-primary;
+}
+
+.close-details-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-text-subtle;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 50%;
+    -fx-min-width: 30px;
+    -fx-min-height: 30px;
+    -fx-max-width: 30px;
+    -fx-max-height: 30px;
+    -fx-cursor: hand;
+}
+
+.close-details-button:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: -fx-text-dark;
+}
+
+/* Details content */
+.details-content {
+    -fx-background-color: transparent;
+}
+
+.details-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Offer summary card */
+.offer-summary-card {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 10px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+}
+
+.offer-info-grid {
+    -fx-vgap: 12px;
+    -fx-hgap: 15px;
+}
+
+.info-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-subtle;
+}
+
+.info-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: normal;
+    -fx-text-fill: -fx-text-dark;
+}
+
+.info-value.listing-link {
+    -fx-text-fill: -fx-primary;
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+
+.info-value.listing-link:hover {
+    -fx-text-fill: -fx-primary-light;
+}
+
+.info-value.amount-value {
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-success;
+}
+
+/* Message area */
+.message-area {
+    -fx-background-color: white;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-font-size: 13px;
+}
+
+.message-area:focused {
+    -fx-border-color: -fx-primary-light;
+}
+
+/* Offered items section */
+.offered-items-section {
+    -fx-background-color: #fafbfc;
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+}
+
+.section-subtitle {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: -fx-primary;
+}
+
+/* Compact offered items list for details panel */
+.offered-items-section .offered-items-list {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+    -fx-spacing: 8px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.offered-items-section .offer-item-row {
+    -fx-padding: 8px;
+    -fx-background-color: transparent;
+    -fx-spacing: 6px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 6px;
+}
+
+.offered-items-section .offer-item-row:hover {
+    -fx-background-color: -fx-primary-ultralight;
+}
+
+.offered-items-section .offer-item-thumbnail {
+    -fx-fit-height: 35px;
+    -fx-fit-width: 35px;
+}
+
+.offered-items-section .offer-item-name {
+    -fx-font-size: 13px;
+}
+
+.offered-items-section .offer-quantity-badge {
+    -fx-font-size: 10px;
+    -fx-padding: 2px 6px;
+}
+
+.offered-items-section .offer-item-condition {
+    -fx-font-size: 10px;
+    -fx-padding: 1px 6px;
+}
+
+/* Action buttons section */
+.action-buttons-section {
+    -fx-background-color: transparent;
+}
+
+.action-buttons-container {
+    -fx-padding: 15px 0;
+}
+
+.action-buttons-container .button {
+    -fx-min-width: 100px;
+    -fx-font-weight: bold;
+}
+
+/* Empty state styling */
+.empty-details-state {
+    -fx-background-color: transparent;
+    -fx-padding: 40px 20px;
+}
+
+.empty-state-icon {
+    -fx-font-size: 48px;
+    -fx-fill: -fx-text-subtle;
+}
+
+.empty-state-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-fill: -fx-text-dark;
+    -fx-text-alignment: center;
+}
+
+.empty-state-subtitle {
+    -fx-font-size: 14px;
+    -fx-fill: -fx-text-subtle;
+    -fx-text-alignment: center;
+    -fx-wrap-text: true;
+}
+
+/* Table improvements for offers */
+.offers-table {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: transparent;
+}
+
+.offers-table .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 8px 5px;
+}
+
+.offers-table .table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.offers-table .table-row-cell:hover {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-cursor: hand;
+}
+
+.offers-table .table-row-cell:selected {
+    -fx-background-color: -fx-primary-light;
+    -fx-text-fill: white;
+}
+
+.offers-table .table-row-cell:selected .label {
+    -fx-text-fill: white;
+}
+
+/* Tab pane improvements */
+.offers-tab-pane {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 8, 0, 0, 2);
+}
+
+.offers-tab-pane .tab-header-area {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-background-radius: 12px 12px 0 0;
+    -fx-padding: 10px 15px 0 15px;
+}
+
+.offers-tab-pane .tab {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 12px 20px 8px 20px;
+}
+
+.offers-tab-pane .tab:selected {
+    -fx-background-color: white;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px 1px 0 1px;
+}
+
+.offers-tab-pane .tab .tab-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-subtle;
+}
+
+.offers-tab-pane .tab:selected .tab-label {
+    -fx-text-fill: -fx-primary;
+}
+
+.offers-tab-pane .tab-content-area {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 12px 12px;
+    -fx-padding: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .offers-main-container {
+        -fx-max-width: none;
+    }
+    
+    .offers-split-pane .split-pane-divider {
+        -fx-padding: 0 2 0 2;
+    }
+}
+
+@media (max-width: 800px) {
+    .offers-header-section {
+        -fx-padding: 15px;
+    }
+    
+    .offers-list-panel,
+    .offer-details-panel {
+        -fx-padding: 10px;
+    }
+    
+    .details-header-section {
+        -fx-padding: 15px;
+    }
+    
+    .offer-summary-card {
+        -fx-padding: 15px;
+    }
+    
+    .action-buttons-container .button {
+        -fx-min-width: 80px;
+        -fx-font-size: 12px;
+    }
+    
+    /* Stack action buttons vertically on very small screens */
+    .action-buttons-container {
+        -fx-orientation: vertical;
+        -fx-spacing: 8px;
+        -fx-alignment: center;
+    }
+    
+    .offered-items-section {
+        -fx-padding: 10px;
+    }
+    
+    .empty-state-title {
+        -fx-font-size: 16px;
+    }
+    
+    .empty-state-subtitle {
+        -fx-font-size: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .offers-split-pane {
+        -fx-orientation: vertical;
+    }
+    
+    .offers-header-section .filter-label {
+        -fx-font-size: 11px;
+    }
+    
+    .offers-header-section .filter-search-field,
+    .offers-header-section .filter-combo-box {
+        -fx-font-size: 12px;
+    }
+}
+
+/* Placeholder styling improvements */
+.offers-table .table-row-cell:empty {
+    -fx-background-color: transparent;
+}
+
+.table-placeholder .placeholder-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: -fx-text-dark;
+}
+
+.table-placeholder .placeholder-subtitle {
+    -fx-font-size: 14px;
+    -fx-fill: -fx-text-subtle;
+}
+
+/* Loading state */
+.offers-loading {
+    -fx-alignment: center;
+    -fx-spacing: 15px;
+    -fx-padding: 40px;
+}
+
+.offers-loading-text {
+    -fx-font-size: 16px;
+    -fx-fill: -fx-text-subtle;
+}
+
+/* Animation for smooth transitions */
+.offer-details-panel,
+.offers-list-panel {
+    -fx-transition-duration: 0.3s;
+}
+
+/* Ensure proper contrast in selected state */
+.offers-table .table-row-cell:selected .info-value,
+.offers-table .table-row-cell:selected .info-label {
+    -fx-text-fill: white;
+}
+
+/* Integration with existing filter styling */
+.offers-main-container .offers-filters-section {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-effect: none;
+}
+
+/* Smooth scrolling for details */
+.details-scroll-pane .scroll-bar:vertical {
+    -fx-pref-width: 8px;
+    -fx-background-color: transparent;
+}
+
+.details-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: -fx-text-subtle;
+    -fx-background-radius: 4px;
+}
+
+.details-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+/* =========================
+   DELIVERY OPTIONS STYLING
+   ========================= */
+
+/* Delivery options section */
+.delivery-options-section {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 10px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 10px;
+    -fx-padding: 15px;
+}
+
+/* Delivery labels */
+.delivery-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+
+/* Pickup location value */
+.pickup-location-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #212529;
+    -fx-wrap-text: true;
+    -fx-max-width: 300px;
+}
+
+/* Delivery method combo box */
+.delivery-method-combo {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-font-size: 13px;
+}
+
+.delivery-method-combo:focused {
+    -fx-border-color: -fx-primary;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 123, 255, 0.25), 3, 0, 0, 0);
+}
+
+.delivery-method-combo .label {
+    -fx-text-fill: #495057;
+}
+
+.delivery-method-combo:disabled {
+    -fx-opacity: 0.7;
+    -fx-background-color: #f8f9fa;
+}
+
+.delivery-method-combo:disabled .label {
+    -fx-text-fill: #6c757d;
+}
+
+/* Arrow button styling */
+.delivery-method-combo .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0 8 0 0;
+}
+
+.delivery-method-combo .arrow-button .arrow {
+    -fx-background-color: #6c757d;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+    -fx-scale-shape: true;
+    -fx-scale-x: 0.8;
+    -fx-scale-y: 0.8;
+}
+
+.delivery-method-combo:hover .arrow-button .arrow {
+    -fx-background-color: #495057;
+}
+
+/* Dropdown styling */
+.delivery-method-combo .list-view {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 6, 0, 0, 2);
+}
+
+.delivery-method-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #495057;
+    -fx-padding: 8 12;
+    -fx-font-size: 13px;
+}
+
+.delivery-method-combo .list-cell:hover {
+    -fx-background-color: #f8f9fa;
+}
+
+.delivery-method-combo .list-cell:selected {
+    -fx-background-color: -fx-primary;
+    -fx-text-fill: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    .delivery-options-section {
+        -fx-orientation: vertical;
+        -fx-spacing: 10px;
+    }
+    
+    .delivery-method-combo {
+        -fx-pref-width: 200px;
+        -fx-max-width: infinity;
+    }
+    
+    .pickup-location-value {
+        -fx-max-width: infinity;
+    }
+}
+
+@media (max-width: 600px) {
+    .delivery-options-section {
+        -fx-padding: 10px;
+    }
+    
+    .delivery-label {
+        -fx-font-size: 11px;
+    }
+    
+    .pickup-location-value {
+        -fx-font-size: 13px;
+    }
+    
+    .delivery-method-combo {
+        -fx-font-size: 12px;
+    }
+}
+
+/* Integration with existing listing details styling */
+.listing-details-section .delivery-options-section {
+    -fx-background-color: #f1f3f4;
+    -fx-border-color: #dadce0;
+}
+
+/* Alternative styling for different themes */
+.delivery-options-section.compact {
+    -fx-padding: 10px;
+    -fx-background-color: transparent;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px 0 0 0;
+}
+
+.delivery-options-section.compact .delivery-label {
+    -fx-font-size: 11px;
+}
+
+.delivery-options-section.compact .pickup-location-value {
+    -fx-font-size: 13px;
+}
+
+/* Pickup only indicator styling */
+.delivery-method-combo.pickup-only {
+    -fx-background-color: #fff3cd;
+    -fx-border-color: #ffeaa7;
+}
+
+.delivery-method-combo.pickup-only .label {
+    -fx-text-fill: #856404;
+}
+
+/* Shipping available indicator styling */
+.delivery-method-combo.shipping-available {
+    -fx-background-color: #d4edda;
+    -fx-border-color: #c3e6cb;
+}
+
+.delivery-method-combo.shipping-available .label {
+    -fx-text-fill: #155724;
+}
+
+/* Add this to your styles.css */
+
+/* Review button styling */
+.write-review-button {
+    -fx-background-color: #2ECC71;
+    -fx-text-fill: white;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 8px 16px;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.write-review-button:hover {
+    -fx-background-color: #27AE60;
+}
+
+.write-review-button:pressed {
+    -fx-background-color: #229954;
+}

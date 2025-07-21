@@ -242,6 +242,50 @@ public class OfferService {
         return future;
     }
 
+    /**
+     * Confirm a transaction (buyer or seller verification)
+     */
+    public CompletableFuture<Boolean> confirmTransaction(String offerId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+        OfferMessage message = new OfferMessage();
+        message.setType(OfferMessage.Type.CONFIRM_TRANSACTION_REQUEST);
+        message.setOfferId(offerId);
+
+        this.futureToComplete = future;
+
+        webSocketClient.sendMessage(message)
+                .exceptionally(ex -> {
+                    future.completeExceptionally(ex);
+                    this.futureToComplete = null;
+                    return null;
+                });
+
+        return future;
+    }
+
+    /**
+     * Cancel a transaction
+     */
+    public CompletableFuture<Boolean> cancelTransaction(String offerId) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+        OfferMessage message = new OfferMessage();
+        message.setType(OfferMessage.Type.CANCEL_TRANSACTION_REQUEST);
+        message.setOfferId(offerId);
+
+        this.futureToComplete = future;
+
+        webSocketClient.sendMessage(message)
+                .exceptionally(ex -> {
+                    future.completeExceptionally(ex);
+                    this.futureToComplete = null;
+                    return null;
+                });
+
+        return future;
+    }
+
     // Handle incoming messages - convert DTOs to ViewModels
     @SuppressWarnings("unchecked")
     private void handleOfferMessage(OfferMessage message) {
@@ -399,6 +443,24 @@ public class OfferService {
                         if (futureToComplete != null) {
                             futureToComplete.completeExceptionally(
                                     new Exception("Failed to update offer status: " + message.getErrorMessage()));
+                            futureToComplete = null;
+                        }
+                    }
+                });
+                break;
+
+            case CONFIRM_TRANSACTION_RESPONSE:
+            case CANCEL_TRANSACTION_RESPONSE:
+                Platform.runLater(() -> {
+                    if (message.isSuccess()) {
+                        if (futureToComplete != null) {
+                            ((CompletableFuture<Boolean>) futureToComplete).complete(true);
+                            futureToComplete = null;
+                        }
+                    } else {
+                        if (futureToComplete != null) {
+                            futureToComplete.completeExceptionally(
+                                    new Exception("Failed to process transaction: " + message.getErrorMessage()));
                             futureToComplete = null;
                         }
                     }

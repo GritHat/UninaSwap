@@ -24,7 +24,10 @@ public class OfferMessage extends Message {
         REJECT_OFFER_RESPONSE,
         WITHDRAW_OFFER_REQUEST,
         WITHDRAW_OFFER_RESPONSE,
-
+        CONFIRM_TRANSACTION_REQUEST,
+        CONFIRM_TRANSACTION_RESPONSE,
+        CANCEL_TRANSACTION_REQUEST,
+        CANCEL_TRANSACTION_RESPONSE
     }
 
     private Type type;

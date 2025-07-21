@@ -19,6 +19,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class OfferWebSocketHandler extends TextWebSocketHandler {
@@ -85,6 +86,14 @@ public class OfferWebSocketHandler extends TextWebSocketHandler {
 
                     case UPDATE_OFFER_STATUS_REQUEST:
                         handleUpdateOfferStatus(offerMessage, response, currentUser);
+                        break;
+
+                    case CONFIRM_TRANSACTION_REQUEST:
+                        handleConfirmTransaction(offerMessage, response, currentUser);
+                        break;
+                        
+                    case CANCEL_TRANSACTION_REQUEST:
+                        handleCancelTransaction(offerMessage, response, currentUser);
                         break;
 
                     default:
@@ -228,6 +237,40 @@ public class OfferWebSocketHandler extends TextWebSocketHandler {
             response.setSuccess(false);
             response.setErrorMessage("Failed to reject offer: " + e.getMessage());
             logger.error("Failed to reject offer {}: {}", offerId, e.getMessage());
+        }
+    }
+
+    private void handleConfirmTransaction(OfferMessage message, OfferMessage response, UserEntity user) {
+        try {
+            Long userId = user.getId();
+            OfferDTO result = offerService.confirmTransaction(message.getOfferId(), userId);
+            
+            response.setMessageId(UUID.randomUUID().toString());
+            response.setTimestamp(System.currentTimeMillis());
+            response.setType(OfferMessage.Type.CONFIRM_TRANSACTION_RESPONSE);
+            response.setSuccess(true);
+            response.setOffer(result);
+            logger.info("Transaction confirmation successful for offer: {}", message.getOfferId());
+            
+        } catch (Exception e) {
+            logger.error("Failed to confirm transaction for offer: {}", message.getOfferId(), e);
+            response.setErrorMessage("Failed to confirm transaction: " + e.getMessage());
+        }
+    }
+
+    private void handleCancelTransaction(OfferMessage message, OfferMessage response, UserEntity user) {
+        try {
+            Long userId = user.getId();
+            OfferDTO result = offerService.cancelTransaction(message.getOfferId(), userId);
+            response.setMessageId(UUID.randomUUID().toString());
+            response.setTimestamp(System.currentTimeMillis());
+            response.setType(OfferMessage.Type.CANCEL_TRANSACTION_RESPONSE);
+            response.setSuccess(true);
+            response.setOffer(result);
+            logger.info("Transaction cancellation successful for offer: {}", message.getOfferId());
+        } catch (Exception e) {
+            logger.error("Failed to cancel transaction for offer: {}", message.getOfferId(), e);
+            response.setErrorMessage("Failed to cancel transaction: " + e.getMessage());
         }
     }
 

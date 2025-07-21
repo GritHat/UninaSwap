@@ -2,8 +2,11 @@ package com.uninaswap.server.service;
 
 import com.uninaswap.common.dto.OfferDTO;
 import com.uninaswap.common.dto.OfferItemDTO;
+import com.uninaswap.common.enums.DeliveryType;
+import com.uninaswap.common.enums.ListingStatus;
 import com.uninaswap.common.enums.NotificationType;
 import com.uninaswap.common.enums.OfferStatus;
+import com.uninaswap.common.enums.PickupStatus;
 import com.uninaswap.server.entity.*;
 import com.uninaswap.server.mapper.OfferMapper;
 import com.uninaswap.server.repository.*;
@@ -37,6 +40,9 @@ public class OfferService {
 
     @Autowired
     private OfferItemRepository offerItemRepository;
+
+    @Autowired
+    private PickupRepository pickupRepository;
 
     @Autowired
     private OfferMapper offerMapper;
@@ -80,6 +86,7 @@ public class OfferService {
         offer.setAmount(offerDTO.getAmount());
         offer.setCurrency(offerDTO.getCurrency());
         offer.setMessage(offerDTO.getMessage());
+        offer.setDeliveryType(offerDTO.getDeliveryType());
         offer.setStatus(OfferStatus.PENDING);
 
         // Save the offer first
@@ -245,26 +252,247 @@ public class OfferService {
     }
 
     /**
-     * Validate status transitions
+     * Confirm transaction (buyer or seller verification)
+     */
+    @Transactional
+    public OfferDTO confirmTransaction(String offerId, Long userId) {
+        logger.info("Confirming transaction for offer {} by user {}", offerId, userId);
+
+        Optional<OfferEntity> offerOpt = offerRepository.findById(offerId);
+        if (!offerOpt.isPresent()) {
+            throw new IllegalArgumentException("Offer with ID " + offerId + " not found");
+        }
+
+        OfferEntity offer = offerOpt.get();
+
+        // Verify user is involved in the offer
+        boolean isOfferOwner = offer.getUser().getId().equals(userId);
+        boolean isListingOwner = offer.getListing().getCreator().getId().equals(userId);
+
+        if (!isOfferOwner && !isListingOwner) {
+            throw new IllegalArgumentException("User is not involved in this offer");
+        }
+
+        OfferStatus currentStatus = offer.getStatus();
+        OfferStatus newStatus;
+
+        // Determine new status based on current status and user role
+        if (currentStatus == OfferStatus.CONFIRMED) {
+            if (offer.getDeliveryType() == DeliveryType.PICKUP) {
+                // For pickup: both parties need to verify
+                if (isListingOwner) {
+                    newStatus = OfferStatus.SELLERVERIFIED;
+                } else {
+                    newStatus = OfferStatus.BUYERVERIFIED;
+                }
+            } else {
+                // For shipping: only buyer verifies and it goes to COMPLETED
+                if (isOfferOwner) {
+                    newStatus = OfferStatus.COMPLETED;
+                } else {
+                    throw new IllegalStateException("Only the buyer can confirm shipping transactions");
+                }
+            }
+        } else if (currentStatus == OfferStatus.SELLERVERIFIED) {
+            // Seller already verified, buyer confirming should complete
+            if (isOfferOwner) {
+                newStatus = OfferStatus.COMPLETED;
+            } else {
+                throw new IllegalStateException("Seller already verified, waiting for buyer");
+            }
+        } else if (currentStatus == OfferStatus.BUYERVERIFIED) {
+            // Buyer already verified, seller confirming should complete
+            if (isListingOwner) {
+                newStatus = OfferStatus.COMPLETED;
+            } else {
+                throw new IllegalStateException("Buyer already verified, waiting for seller");
+            }
+        } else {
+            throw new IllegalStateException("Cannot confirm transaction for offer in status: " + currentStatus);
+        }
+
+        // Update offer status
+        offer.setStatus(newStatus);
+        offer.setUpdatedAt(LocalDateTime.now());
+        OfferEntity savedOffer = offerRepository.save(offer);
+
+        // If completed, update listing status
+        if (newStatus == OfferStatus.COMPLETED) {
+            ListingEntity listing = offer.getListing();
+            listing.setStatus(ListingStatus.COMPLETED);
+            listing.setUpdatedAt(LocalDateTime.now());
+            listingRepository.save(listing);
+            
+            logger.info("Transaction completed - offer {} and listing {} marked as completed", offerId, listing.getId());
+        }
+
+        logger.info("Successfully confirmed transaction for offer {} - status updated to {}", offerId, newStatus);
+        return offerMapper.toDto(savedOffer);
+    }
+
+    /**
+     * Cancel transaction
+     */
+    @Transactional
+    public OfferDTO cancelTransaction(String offerId, Long userId) {
+        logger.info("Cancelling transaction for offer {} by user {}", offerId, userId);
+
+        Optional<OfferEntity> offerOpt = offerRepository.findById(offerId);
+        if (!offerOpt.isPresent()) {
+            throw new IllegalArgumentException("Offer with ID " + offerId + " not found");
+        }
+
+        OfferEntity offer = offerOpt.get();
+
+        // Verify user is involved in the offer
+        boolean isOfferOwner = offer.getUser().getId().equals(userId);
+        boolean isListingOwner = offer.getListing().getCreator().getId().equals(userId);
+
+        if (!isOfferOwner && !isListingOwner) {
+            throw new IllegalArgumentException("User is not involved in this offer");
+        }
+
+        OfferStatus currentStatus = offer.getStatus();
+
+        // Can only cancel from verification states
+        if (currentStatus != OfferStatus.CONFIRMED && 
+            currentStatus != OfferStatus.SELLERVERIFIED && 
+            currentStatus != OfferStatus.BUYERVERIFIED) {
+            throw new IllegalStateException("Cannot cancel transaction for offer in status: " + currentStatus);
+        }
+
+        // Update offer status to CANCELLED
+        offer.setStatus(OfferStatus.CANCELLED);
+        offer.setUpdatedAt(LocalDateTime.now());
+        OfferEntity savedOffer = offerRepository.save(offer);
+
+        // If there's an associated pickup, cancel it too
+        Optional<PickupEntity> pickup = pickupRepository.findByOfferId(offerId);
+        if (pickup.isPresent()) {
+            PickupEntity pickupEntity = pickup.get();
+            pickupEntity.setStatus(PickupStatus.CANCELLED);
+            pickupEntity.setUpdatedAt(LocalDateTime.now());
+            pickupRepository.save(pickupEntity);
+            logger.info("Associated pickup {} also cancelled", pickupEntity.getId());
+        }
+
+        logger.info("Successfully cancelled transaction for offer {} - status updated to CANCELLED", offerId);
+        return offerMapper.toDto(savedOffer);
+    }
+
+    /**
+     * Validate status transitions with new pickup scheduling logic
      */
     private boolean isValidStatusTransition(OfferStatus currentStatus, OfferStatus newStatus, boolean isListingOwner) {
         switch (currentStatus) {
             case PENDING:
                 if (isListingOwner) {
-                    return newStatus == OfferStatus.ACCEPTED || newStatus == OfferStatus.REJECTED;
+                    // Listing owner can accept or reject
+                    return newStatus == OfferStatus.ACCEPTED || 
+                           newStatus == OfferStatus.REJECTED ||
+                           newStatus == OfferStatus.CONFIRMED; // Direct to CONFIRMED for non-pickup
                 } else {
+                    // Offer creator can only withdraw
                     return newStatus == OfferStatus.WITHDRAWN;
                 }
+                
             case ACCEPTED:
-                return newStatus == OfferStatus.COMPLETED;
+                // From ACCEPTED, can go to PICKUPSCHEDULING, CONFIRMED, or CANCELLED
+                return newStatus == OfferStatus.PICKUPSCHEDULING ||
+                       newStatus == OfferStatus.CONFIRMED ||
+                       newStatus == OfferStatus.CANCELLED;
+                       
+            case PICKUPSCHEDULING:
+                // From PICKUPSCHEDULING, can go to CONFIRMED, CANCELLED, or PICKUPRESCHEDULING
+                return newStatus == OfferStatus.CONFIRMED ||
+                       newStatus == OfferStatus.CANCELLED ||
+                       newStatus == OfferStatus.PICKUPRESCHEDULING;
+                       
+            case PICKUPRESCHEDULING:
+                // From PICKUPRESCHEDULING, can go to CONFIRMED or CANCELLED
+                return newStatus == OfferStatus.CONFIRMED ||
+                       newStatus == OfferStatus.CANCELLED;
+                       
+            case CONFIRMED:
+                // From CONFIRMED, can go to SELLERVERIFIED, BUYERVERIFIED, COMPLETED, or CANCELLED
+                return newStatus == OfferStatus.SELLERVERIFIED ||
+                       newStatus == OfferStatus.BUYERVERIFIED ||
+                       newStatus == OfferStatus.COMPLETED ||
+                       newStatus == OfferStatus.CANCELLED;
+                       
+            case SELLERVERIFIED:
+                // From SELLERVERIFIED, can go to COMPLETED or CANCELLED
+                return newStatus == OfferStatus.COMPLETED ||
+                       newStatus == OfferStatus.CANCELLED;
+                       
+            case BUYERVERIFIED:
+                // From BUYERVERIFIED, can go to COMPLETED or CANCELLED
+                return newStatus == OfferStatus.COMPLETED ||
+                       newStatus == OfferStatus.CANCELLED;
+                       
+            case COMPLETED:
+                // From COMPLETED, can only go to REVIEWED (when review is submitted)
+                return newStatus == OfferStatus.REVIEWED;
+                       
+            case REVIEWED:
             case REJECTED:
             case WITHDRAWN:
             case EXPIRED:
-            case COMPLETED:
+            case CANCELLED:
                 return false; // Terminal states
+                
             default:
                 return false;
         }
+    }
+
+    /**
+     * Accept an offer with new status logic based on delivery type
+     */
+    @Transactional
+    public OfferDTO acceptOffer(String offerId, Long userId) {
+        logger.info("Accepting offer {} by user {}", offerId, userId);
+
+        Optional<OfferEntity> offerOpt = offerRepository.findById(offerId);
+        if (!offerOpt.isPresent()) {
+            throw new IllegalArgumentException("Offer with ID " + offerId + " not found");
+        }
+
+        OfferEntity offer = offerOpt.get();
+
+        // Verify user is the listing owner
+        if (!offer.getListing().getCreator().getId().equals(userId)) {
+            throw new IllegalArgumentException("Only the listing owner can accept offers");
+        }
+
+        // Validate current status
+        if (offer.getStatus() != OfferStatus.PENDING) {
+            throw new IllegalStateException("Can only accept pending offers");
+        }
+
+        // Determine next status based on delivery type
+        OfferStatus nextStatus;
+        if (offer.getDeliveryType() == DeliveryType.PICKUP) {
+            // For pickup delivery, go to ACCEPTED (waiting for pickup scheduling)
+            nextStatus = OfferStatus.ACCEPTED;
+            logger.info("Offer {} accepted with PICKUP delivery, status set to ACCEPTED", offerId);
+        } else {
+            // For shipping delivery, go directly to CONFIRMED
+            nextStatus = OfferStatus.CONFIRMED;
+            logger.info("Offer {} accepted with SHIPPING delivery, status set to CONFIRMED", offerId);
+        }
+
+        OfferStatus oldStatus = offer.getStatus();
+        offer.setStatus(nextStatus);
+        offer.setUpdatedAt(LocalDateTime.now());
+
+        // Handle item reservations
+        handleItemReservationsOnStatusChange(offer, oldStatus, nextStatus);
+
+        OfferEntity savedOffer = offerRepository.save(offer);
+        logger.info("Successfully accepted offer {} with status {}", offerId, nextStatus);
+
+        return offerMapper.toDto(savedOffer);
     }
 
     /**

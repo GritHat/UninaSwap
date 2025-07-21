@@ -36,6 +36,7 @@ public class ViewModelMapper {
         viewModel.setCurrency(dto.getCurrency());
         viewModel.setMessage(dto.getMessage());
         viewModel.setListing(toViewModel(dto.getListing()));
+        viewModel.setDeliveryType(dto.getDeliveryType());
 
         if (dto.getOfferItems() != null) {
             List<OfferItemViewModel> itemViewModels = dto.getOfferItems().stream()
@@ -62,6 +63,7 @@ public class ViewModelMapper {
         dto.setCurrency(viewModel.getCurrency());
         dto.setMessage(viewModel.getMessage());
         dto.setListing(toDTO(viewModel.getListing()));
+        dto.setDeliveryType(viewModel.getDeliveryType());
 
         if (!viewModel.getOfferItems().isEmpty()) {
             List<OfferItemDTO> itemDTOs = viewModel.getOfferItems().stream()
@@ -231,6 +233,7 @@ public class ViewModelMapper {
         viewModel.setUser(toViewModel(dto.getCreator()));
         viewModel.setStatus(dto.getStatus());
         viewModel.setFeatured(dto.isFeatured());
+        viewModel.setPickupLocation(dto.getPickupLocation());
         if (dto.getItems() != null) {
             List<ListingItemViewModel> itemViewModels = dto.getItems().stream()
                     .map(this::toViewModel)
@@ -263,6 +266,7 @@ public class ViewModelMapper {
         dto.setCreator(toDTO(viewModel.getUser()));
         dto.setStatus(viewModel.getStatus());
         dto.setFeatured(viewModel.isFeatured());
+        dto.setPickupLocation(viewModel.getPickupLocation());
         if (!viewModel.getItems().isEmpty()) {
             List<ListingItemDTO> itemDTOs = viewModel.getItems().stream()
                     .map(this::toDTO)
@@ -502,6 +506,46 @@ public class ViewModelMapper {
         dto.setFollower(toDTO(viewModel.getFollower()));
         dto.setFollowed(toDTO(viewModel.getFollowed()));
         dto.setCreatedAt(viewModel.getCreatedAt());
+
+        return dto;
+    }
+
+    public PickupViewModel toViewModel(PickupDTO dto) {
+        if (dto == null)
+            return null;
+
+        PickupViewModel viewModel = new PickupViewModel();
+        viewModel.setId(dto.getId());
+        viewModel.setOfferId(dto.getOfferId());
+        viewModel.setSelectedTime(dto.getSelectedTime());
+        viewModel.setAvailableDates(dto.getAvailableDates());
+        viewModel.setSelectedDate(dto.getSelectedDate());
+        viewModel.setStartTime(dto.getStartTime());
+        viewModel.setEndTime(dto.getEndTime());
+        viewModel.setOffer(toViewModel(dto.getOffer()));
+        viewModel.setCreatedAt(dto.getCreatedAt());
+        viewModel.setUpdatedAt(dto.getUpdatedAt());
+        viewModel.setStatus(dto.getStatus());
+
+        return viewModel;
+    }
+
+    public PickupDTO toDTO(PickupViewModel viewModel) {
+        if (viewModel == null)
+            return null;
+
+        PickupDTO dto = new PickupDTO();
+        dto.setId(viewModel.getId());
+        dto.setOfferId(viewModel.getOfferId());
+        dto.setSelectedTime(viewModel.getSelectedTime());
+        dto.setAvailableDates(viewModel.getAvailableDates());
+        dto.setSelectedDate(viewModel.getSelectedDate());
+        dto.setStartTime(viewModel.getStartTime());
+        dto.setEndTime(viewModel.getEndTime());
+        dto.setOffer(toDTO(viewModel.getOffer()));
+        dto.setCreatedAt(viewModel.getCreatedAt());
+        dto.setUpdatedAt(viewModel.getUpdatedAt());
+        dto.setStatus(viewModel.getStatus());
 
         return dto;
     }

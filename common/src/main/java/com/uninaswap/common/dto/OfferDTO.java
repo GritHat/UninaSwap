@@ -1,6 +1,7 @@
 package com.uninaswap.common.dto;
 
 import com.uninaswap.common.enums.Currency;
+import com.uninaswap.common.enums.DeliveryType;
 import com.uninaswap.common.enums.OfferStatus;
 
 import java.io.Serializable;
@@ -19,6 +20,7 @@ public class OfferDTO implements Serializable {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private OfferStatus status;
+    private DeliveryType deliveryType;
 
     // Money component
     private BigDecimal amount;
@@ -121,5 +123,13 @@ public class OfferDTO implements Serializable {
 
     public void setListing(ListingDTO listing) {
         this.listing = listing;
+    }
+
+    public DeliveryType getDeliveryType() {
+        return deliveryType;
+    }
+
+    public void setDeliveryType(DeliveryType deliveryType) {
+        this.deliveryType = deliveryType;
     }
 }

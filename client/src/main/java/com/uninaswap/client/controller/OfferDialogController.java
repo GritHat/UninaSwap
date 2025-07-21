@@ -6,6 +6,7 @@ import com.uninaswap.client.service.*;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.*;
 import com.uninaswap.common.enums.Currency;
+import com.uninaswap.common.enums.DeliveryType;
 import com.uninaswap.common.enums.ItemCondition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -81,6 +82,8 @@ public class OfferDialogController {
     private TextArea messageArea;
     @FXML
     private VBox offerSummaryContent;
+    @FXML
+    private ComboBox<DeliveryType> deliveryMethodComboBox;
 
     // Services
     private final ItemService itemService = ItemService.getInstance();
@@ -531,6 +534,8 @@ public class OfferDialogController {
         OfferViewModel offer = new OfferViewModel();
         offer.setListingId(currentListing.getId());
         offer.setMessage(messageArea.getText().trim());
+        System.out.println("delivery type " + currentListing.getDeliveryType(deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
+        offer.setDeliveryType(currentListing.getDeliveryType(deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
 
         // Set money offer
         if (includeMoneyCheckBox.isSelected() && !moneyAmountField.getText().trim().isEmpty()) {

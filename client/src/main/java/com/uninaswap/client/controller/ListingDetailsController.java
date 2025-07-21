@@ -145,6 +145,14 @@ public class ListingDetailsController {
     @FXML
     private Button reportListingButton;
 
+    // Delivery options
+    @FXML
+    private HBox deliveryOptionsSection;
+    @FXML
+    private Label pickupLocationLabel;
+    @FXML
+    private ComboBox<String> deliveryMethodComboBox;
+
     // Services
     private final NavigationService navigationService = NavigationService.getInstance();
     private final FavoritesService favoritesService = FavoritesService.getInstance();
@@ -161,6 +169,7 @@ public class ListingDetailsController {
     @FXML
     public void initialize() {
         setupCurrencyComboBoxes();
+        setupDeliveryMethodComboBox();
         setupEventHandlers();
     }
 
@@ -173,6 +182,18 @@ public class ListingDetailsController {
         // Set default currency
         currencyComboBox.setValue(Currency.EUR);
         bidCurrencyComboBox.setValue(Currency.EUR);
+    }
+
+    private void setupDeliveryMethodComboBox() {
+        // Setup delivery method options
+        deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
+            localeService.getMessage("delivery.method.pickup", "Pickup"),
+            localeService.getMessage("delivery.method.shipping", "Shipping"),
+            localeService.getMessage("delivery.method.both", "Pickup or Shipping")
+        ));
+        
+        // Set default selection
+        deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
     }
 
     private void setupEventHandlers() {
@@ -231,7 +252,161 @@ public class ListingDetailsController {
 
         // Items list
         populateItemsList();
+        
+        // Setup delivery options (add this near the end of the method)
+        setupDeliveryOptions();
     }
+
+    private void setupDeliveryOptions() {
+        String pickupLocation = getPickupLocationFromListing();
+        
+        if (pickupLocation != null && !pickupLocation.trim().isEmpty()) {
+            // Show the delivery options section
+            setVisibleAndManaged(deliveryOptionsSection, true);
+            
+            // Set the pickup location text
+            pickupLocationLabel.setText(pickupLocation);
+            
+            // Set up delivery method based on listing type and settings
+            setupDeliveryMethodForListing();
+        } else {
+            // Hide the delivery options section
+            setVisibleAndManaged(deliveryOptionsSection, false);
+        }
+    }
+
+    // Helper method to get pickup location from the current listing
+    private String getPickupLocationFromListing() {
+        if (currentListing == null) {
+            return null;
+        }
+        
+        // Get pickup location based on listing type
+        String pickupLocation = currentListing.getPickupLocation();
+        
+        // If the base method doesn't return anything, try type-specific methods
+        if (pickupLocation == null || pickupLocation.trim().isEmpty()) {
+            String listingType = currentListing.getListingTypeValue();
+            switch (listingType.toUpperCase()) {
+                case "SELL":
+                    if (currentListing instanceof SellListingViewModel sellListing) {
+                        pickupLocation = sellListing.getPickupLocation();
+                    }
+                    break;
+                case "TRADE":
+                    if (currentListing instanceof TradeListingViewModel tradeListing) {
+                        pickupLocation = tradeListing.getPickupLocation();
+                    }
+                    break;
+                case "GIFT":
+                    if (currentListing instanceof GiftListingViewModel giftListing) {
+                        pickupLocation = giftListing.getPickupLocation();
+                    }
+                    break;
+                case "AUCTION":
+                    if (currentListing instanceof AuctionListingViewModel auctionListing) {
+                        pickupLocation = auctionListing.getPickupLocation();
+                    }
+                    break;
+            }
+        }
+        
+        return pickupLocation;
+    }
+
+    @FXML
+    private void handleDeliveryMethodChange() {
+        String selectedMethod = deliveryMethodComboBox.getValue();
+        if (selectedMethod != null) {
+            System.out.println("Selected delivery method: " + selectedMethod);
+            // You can add logic here to update shipping costs, availability, etc.
+        }
+    }
+
+    // Helper method to setup delivery method options based on listing
+    private void setupDeliveryMethodForListing() {
+        if (currentListing == null) {
+            return;
+        }
+        
+        // Check if listing supports shipping (this would depend on your business logic)
+        boolean supportsShipping = doesListingSupportShipping();
+        boolean isPickupOnly = isListingPickupOnly();
+        
+        if (isPickupOnly) {
+            // Only pickup available
+            deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
+                localeService.getMessage("delivery.method.pickup", "Pickup")
+            ));
+            deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
+            deliveryMethodComboBox.setDisable(true);
+        } else if (supportsShipping) {
+            // Both pickup and shipping available
+            deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
+                localeService.getMessage("delivery.method.pickup", "Pickup"),
+                localeService.getMessage("delivery.method.shipping", "Shipping"),
+                localeService.getMessage("delivery.method.both", "Pickup or Shipping")
+            ));
+            deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
+            deliveryMethodComboBox.setDisable(false);
+        } else {
+            // Default to pickup only
+            deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
+                localeService.getMessage("delivery.method.pickup", "Pickup")
+            ));
+            deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
+            deliveryMethodComboBox.setDisable(true);
+        }
+    }
+
+    // Helper method to check if listing supports shipping
+    private boolean doesListingSupportShipping() {
+        if (currentListing == null) {
+            return false;
+        }
+        
+        // This would depend on your business logic
+        // For example, you might check listing settings, item types, seller preferences, etc.
+        String listingType = currentListing.getListingTypeValue();
+        
+        switch (listingType.toUpperCase()) {
+            case "SELL":
+                // Sell listings might support shipping
+                return true;
+            case "AUCTION":
+                // Auction listings might support shipping
+                return true;
+            case "TRADE":
+                // Trade listings might be pickup only by default
+                return false;
+            case "GIFT":
+                // Check if gift listing allows shipping
+                if (currentListing instanceof GiftListingViewModel giftListing) {
+                    return !giftListing.isPickupOnly();
+                }
+                return false;
+            default:
+                return false;
+        }
+    }
+
+    // Helper method to check if listing is pickup only
+    private boolean isListingPickupOnly() {
+        if (currentListing == null) {
+            return true;
+        }
+        
+        String listingType = currentListing.getListingTypeValue();
+        
+        if ("GIFT".equals(listingType.toUpperCase()) && currentListing instanceof GiftListingViewModel giftListing) {
+            return giftListing.isPickupOnly();
+        }
+        
+        // Add logic for other listing types if they have pickup-only flags
+        // For now, default to allowing shipping unless explicitly pickup-only
+        return false;
+    }
+
 
     private void loadSellerAvatar(UserViewModel seller) {
         String profileImagePath = seller.getProfileImagePath();

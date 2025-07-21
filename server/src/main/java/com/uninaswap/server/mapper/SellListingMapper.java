@@ -28,6 +28,7 @@ public class SellListingMapper {
         // Map sell-specific fields
         dto.setPrice(entity.getPrice());
         dto.setCurrency(entity.getCurrency());
+        dto.setPickupLocation(entity.getPickupLocation());
 
         return dto;
     }

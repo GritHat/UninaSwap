@@ -2,6 +2,7 @@ package com.uninaswap.client.viewmodel;
 
 import java.time.LocalDateTime;
 
+import com.uninaswap.common.enums.DeliveryType;
 import com.uninaswap.common.enums.ListingStatus;
 
 import javafx.beans.property.BooleanProperty;
@@ -14,6 +15,7 @@ public class GiftListingViewModel extends ListingViewModel {
     private final StringProperty giftDetails = new SimpleStringProperty();
     private final BooleanProperty pickupOnly = new SimpleBooleanProperty();
     private final BooleanProperty allowThankYouOffers = new SimpleBooleanProperty();
+    private final StringProperty pickupLocation = new SimpleStringProperty(); // Added pickup location
 
     // Constructors
     public GiftListingViewModel() {
@@ -42,6 +44,10 @@ public class GiftListingViewModel extends ListingViewModel {
 
     public BooleanProperty allowThankYouOffersProperty() {
         return allowThankYouOffers;
+    }
+
+    public StringProperty pickupLocationProperty() {
+        return pickupLocation;
     }
 
     // Getters and setters
@@ -75,6 +81,26 @@ public class GiftListingViewModel extends ListingViewModel {
 
     public void setAllowThankYouOffers(boolean allowThankYouOffer) {
         this.allowThankYouOffers.set(allowThankYouOffer);
+    }
+
+    @Override
+    public DeliveryType getDeliveryType(DeliveryType deliveryType) {
+        if (pickupLocation.get() == null || !pickupLocation.get().isEmpty()) {
+            return DeliveryType.SHIPPING;
+        } else if (pickupOnly.get()) {
+            return DeliveryType.PICKUP;
+        }
+        return deliveryType;
+    }
+
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation.get();
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation.set(pickupLocation);
     }
 
     @Override

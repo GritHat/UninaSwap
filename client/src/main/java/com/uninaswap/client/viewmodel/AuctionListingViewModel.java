@@ -3,12 +3,15 @@ package com.uninaswap.client.viewmodel;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import com.uninaswap.common.enums.Currency;
+import com.uninaswap.common.enums.DeliveryType;
 import com.uninaswap.common.enums.ListingStatus;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 public class AuctionListingViewModel extends ListingViewModel {
 
@@ -21,6 +24,7 @@ public class AuctionListingViewModel extends ListingViewModel {
     private final ObjectProperty<BigDecimal> minimumBidIncrement = new SimpleObjectProperty<>();
     private final ObjectProperty<UserViewModel> highestBidder = new SimpleObjectProperty<>();
     private final IntegerProperty durationInDays = new SimpleIntegerProperty();
+    private final StringProperty pickupLocation = new SimpleStringProperty();
 
     // Constructors
     public AuctionListingViewModel() {
@@ -69,6 +73,10 @@ public class AuctionListingViewModel extends ListingViewModel {
         return minimumBidIncrement;
     }
 
+    public StringProperty pickupLocationProperty() {
+        return pickupLocation;
+    }
+
     // Setters
     public void setStartingPrice(BigDecimal startingPrice) {
         this.startingPrice.set(startingPrice);
@@ -104,6 +112,20 @@ public class AuctionListingViewModel extends ListingViewModel {
 
     public void setMinimumBidIncrement(BigDecimal minimumBidIncrement) {
         this.minimumBidIncrement.set(minimumBidIncrement);
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation.set(pickupLocation);
+    }
+
+    @Override
+    public DeliveryType getDeliveryType(DeliveryType deliveryType) {
+        if (pickupLocation.get() != null && !pickupLocation.get().isEmpty()) {
+            return deliveryType;
+        } else {
+            return DeliveryType.SHIPPING;
+        }
     }
 
     // Getters
@@ -142,6 +164,11 @@ public class AuctionListingViewModel extends ListingViewModel {
 
     public BigDecimal getMinimumBidIncrement() {
         return minimumBidIncrement.get();
+    }
+
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation.get();
     }
 
     @Override

@@ -24,6 +24,8 @@ public class TradeListingDTO extends ListingDTO {
     // Mixed offer properties
     private boolean acceptMixedOffers = false;
     private boolean acceptOtherOffers = false;
+
+    private String pickupLocation;
     
     // Default constructor
     public TradeListingDTO() {
@@ -144,5 +146,15 @@ public class TradeListingDTO extends ListingDTO {
     
     public void setAcceptOtherOffers(boolean acceptOtherOffers) {
         this.acceptOtherOffers = acceptOtherOffers;
+    }
+
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation;
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
     }
 }

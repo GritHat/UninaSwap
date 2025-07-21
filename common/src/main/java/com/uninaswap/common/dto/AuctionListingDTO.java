@@ -21,6 +21,8 @@ public class AuctionListingDTO extends ListingDTO {
     private BigDecimal currentHighestBid;
     private UserDTO highestBidder;
     private int durationInDays; // Added missing durationInDays field
+    private boolean anyBids = false; // Indicates if there are any bids
+    private String pickupLocation; // Added pickup location field
     
     // Default constructor
     public AuctionListingDTO() {
@@ -138,5 +140,23 @@ public class AuctionListingDTO extends ListingDTO {
     
     public void setDurationInDays(int durationInDays) {
         this.durationInDays = durationInDays;
+    }
+
+    public boolean hasAnyBids() {
+        return anyBids;
+    }
+
+    public void setAnyBids(boolean hasBids) {
+        this.anyBids = hasBids;
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
+    }
+
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation;
     }
 }

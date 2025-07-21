@@ -25,6 +25,8 @@ public class GiftListingEntity extends ListingEntity {
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OfferEntity> thankYouOffers = new ArrayList<>();
 
+    private String pickupLocation;
+
     // Default constructor
     public GiftListingEntity() {
         super();
@@ -147,5 +149,15 @@ public class GiftListingEntity extends ListingEntity {
 
     public List<OfferEntity> getThankYouOffers() {
         return thankYouOffers;
+    }
+
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation;
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
     }
 }

@@ -1,6 +1,9 @@
 package com.uninaswap.client.viewmodel;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+
+import com.uninaswap.common.enums.DeliveryType;
 import com.uninaswap.common.enums.ListingStatus;
 
 import javafx.beans.property.BooleanProperty;
@@ -140,5 +143,10 @@ public abstract class ListingViewModel {
         this.featured.set(featured);
     }
 
+    public abstract void setPickupLocation(String pickupLocation);
+    public abstract String getPickupLocation();
+
     public abstract String getListingTypeValue();
+
+    public abstract DeliveryType getDeliveryType(DeliveryType deliveryType);
 }

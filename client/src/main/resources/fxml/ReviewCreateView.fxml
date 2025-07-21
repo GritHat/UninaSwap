@@ -54,7 +54,7 @@
              styleClass="help-text" wrapText="true" />
    </VBox>
 
-   <!-- Actions -->
+   <!-- Actions - Keep only this one -->
    <HBox spacing="10" alignment="CENTER_RIGHT">
       <Button fx:id="cancelButton" onAction="#handleCancel" />
       <Button fx:id="submitButton" onAction="#handleSubmit" 

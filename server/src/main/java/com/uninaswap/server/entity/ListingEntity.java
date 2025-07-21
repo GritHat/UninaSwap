@@ -153,6 +153,9 @@ public abstract class ListingEntity {
         listingItems.removeIf(li -> li.getItem().equals(item));
     }
 
+    public abstract String getPickupLocation();
+    public abstract void setPickupLocation(String pickupLocation);
+
     /**
      * Get all items in this listing
      * 

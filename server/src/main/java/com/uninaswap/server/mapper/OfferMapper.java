@@ -35,6 +35,7 @@ public class OfferMapper {
         dto.setAmount(entity.getAmount());
         dto.setCurrency(entity.getCurrency());
         dto.setMessage(entity.getMessage());
+        dto.setDeliveryType(entity.getDeliveryType());
         dto.setListing(listingMapper.toDto(entity.getListing()));
 
         // Map offer items

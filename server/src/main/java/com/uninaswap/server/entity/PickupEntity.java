@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.uninaswap.common.enums.PickupStatus;
+import com.uninaswap.server.converter.LocalDateListConverter;
 
 /**
  * Entity representing a pickup arrangement for an accepted offer
@@ -25,8 +26,9 @@ public class PickupEntity {
     private OfferEntity offer;
 
     // Available dates (JSON array in database)
-    @Column(name = "available_dates", nullable = false, columnDefinition = "JSON")
-    private String availableDatesJson;
+    @Convert(converter = LocalDateListConverter.class)
+    @Column(name = "available_dates", nullable = false, columnDefinition = "TEXT")
+    private List<LocalDate> availableDates = new ArrayList<>();
 
     // Time range for all dates
     @Column(name = "start_time", nullable = false)
@@ -66,10 +68,6 @@ public class PickupEntity {
     @JoinColumn(name = "updated_by")
     private UserEntity updatedBy;
 
-    // Transient field for Java operations
-    @Transient
-    private List<LocalDate> availableDates = new ArrayList<>();
-
     // Default constructor
     public PickupEntity() {
         this.createdAt = LocalDateTime.now();
@@ -88,7 +86,6 @@ public class PickupEntity {
         this.location = location;
         this.details = details;
         this.createdBy = createdBy;
-        updateAvailableDatesJson();
     }
 
     // Getters and setters
@@ -109,24 +106,11 @@ public class PickupEntity {
     }
 
     public List<LocalDate> getAvailableDates() {
-        if (availableDates.isEmpty() && availableDatesJson != null) {
-            parseAvailableDatesJson();
-        }
         return availableDates;
     }
 
     public void setAvailableDates(List<LocalDate> availableDates) {
         this.availableDates = availableDates != null ? new ArrayList<>(availableDates) : new ArrayList<>();
-        updateAvailableDatesJson();
-    }
-
-    public String getAvailableDatesJson() {
-        return availableDatesJson;
-    }
-
-    public void setAvailableDatesJson(String availableDatesJson) {
-        this.availableDatesJson = availableDatesJson;
-        parseAvailableDatesJson();
     }
 
     public LocalTime getStartTime() {
@@ -239,52 +223,13 @@ public class PickupEntity {
                 isDateAvailable(selectedDate) && isTimeSlotValid(selectedTime);
     }
 
-    // JSON conversion methods
-    private void updateAvailableDatesJson() {
-        if (availableDates != null && !availableDates.isEmpty()) {
-            StringBuilder json = new StringBuilder("[");
-            for (int i = 0; i < availableDates.size(); i++) {
-                json.append("\"").append(availableDates.get(i).toString()).append("\"");
-                if (i < availableDates.size() - 1) {
-                    json.append(",");
-                }
-            }
-            json.append("]");
-            this.availableDatesJson = json.toString();
-        } else {
-            this.availableDatesJson = "[]";
-        }
-    }
-
-    private void parseAvailableDatesJson() {
-        if (availableDatesJson != null && !availableDatesJson.trim().isEmpty() && !availableDatesJson.equals("[]")) {
-            try {
-                availableDates.clear();
-                String cleanJson = availableDatesJson.replace("[", "").replace("]", "").replace("\"", "");
-                String[] dateStrings = cleanJson.split(",");
-                for (String dateString : dateStrings) {
-                    if (!dateString.trim().isEmpty()) {
-                        availableDates.add(LocalDate.parse(dateString.trim()));
-                    }
-                }
-            } catch (Exception e) {
-                System.err.println("Error parsing available dates JSON: " + e.getMessage());
-                availableDates = new ArrayList<>();
-            }
-        } else {
-            availableDates = new ArrayList<>();
-        }
-    }
-
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
-        updateAvailableDatesJson();
     }
 
     @PrePersist
     protected void onPersist() {
-        updateAvailableDatesJson();
     }
 
     @Override

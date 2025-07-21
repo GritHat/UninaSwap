@@ -22,17 +22,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("unused")
 @Service
 public class ListingService {
     private static final Logger logger = LoggerFactory.getLogger(ListingService.class);
 
     private final ListingRepository listingRepository;
-    private final SellListingRepository sellListingRepository;
-
-    private final TradeListingRepository tradeListingRepository;
-    private final GiftListingRepository giftListingRepository;
-    private final AuctionListingRepository auctionListingRepository;
     private final ItemRepository itemRepository;
     private final ListingItemRepository listingItemRepository;
     private final UserRepository userRepository;
@@ -48,10 +42,6 @@ public class ListingService {
     @Autowired
     public ListingService(
             ListingRepository listingRepository,
-            SellListingRepository sellListingRepository,
-            TradeListingRepository tradeListingRepository,
-            GiftListingRepository giftListingRepository,
-            AuctionListingRepository auctionListingRepository,
             ItemRepository itemRepository,
             ListingItemRepository listingItemRepository,
             UserRepository userRepository,
@@ -62,10 +52,6 @@ public class ListingService {
             GiftListingMapper giftListingMapper,
             AuctionListingMapper auctionListingMapper) {
         this.listingRepository = listingRepository;
-        this.sellListingRepository = sellListingRepository;
-        this.tradeListingRepository = tradeListingRepository;
-        this.giftListingRepository = giftListingRepository;
-        this.auctionListingRepository = auctionListingRepository;
         this.itemRepository = itemRepository;
         this.listingItemRepository = listingItemRepository;
         this.userRepository = userRepository;
@@ -167,6 +153,7 @@ public class ListingService {
         listing.setStatus(ListingStatus.ACTIVE);
         listing.setCreatedAt(LocalDateTime.now());
         listing.setUpdatedAt(LocalDateTime.now());
+        listing.setPickupLocation(listingDTO.getPickupLocation());
 
         // Set image path from the first item's image if available
         if (listingDTO.getItems() != null && !listingDTO.getItems().isEmpty() &&

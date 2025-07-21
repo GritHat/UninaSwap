@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.uninaswap.common.enums.Currency;
+import com.uninaswap.common.enums.DeliveryType;
 import com.uninaswap.common.enums.ListingStatus;
 
 import javafx.beans.property.ObjectProperty;
@@ -12,6 +13,7 @@ import javafx.beans.property.SimpleObjectProperty;
 public class SellListingViewModel extends ListingViewModel {
     private final ObjectProperty<BigDecimal> price = new SimpleObjectProperty<>();
     private final ObjectProperty<Currency> currency = new SimpleObjectProperty<>();
+    private final ObjectProperty<String> pickupLocation = new SimpleObjectProperty<>(); // Added pickup location
 
     // Constructors
     public SellListingViewModel() {
@@ -34,6 +36,10 @@ public class SellListingViewModel extends ListingViewModel {
         return currency;
     }
 
+    public ObjectProperty<String> pickupLocationProperty() {
+        return pickupLocation;
+    }
+
     // Getters and setters
     public BigDecimal getPrice() {
         return price.get();
@@ -49,6 +55,25 @@ public class SellListingViewModel extends ListingViewModel {
 
     public void setCurrency(Currency currency) {
         this.currency.set(currency);
+    }
+
+    @Override
+    public DeliveryType getDeliveryType(DeliveryType deliveryType) {
+        if (pickupLocation.get() != null && !pickupLocation.get().isEmpty()) {
+            return deliveryType;
+        } else {
+            return DeliveryType.SHIPPING;
+        }
+    }
+
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation.get();
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation.set(pickupLocation);
     }
 
     @Override

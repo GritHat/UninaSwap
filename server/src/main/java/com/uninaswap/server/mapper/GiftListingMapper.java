@@ -31,6 +31,7 @@ public class GiftListingMapper {
         dto.setPickupOnly(entity.isPickupOnly());
         dto.setAllowThankYouOffers(entity.isAllowThankYouOffers());
         dto.setRestrictions(entity.getRestrictions());
+        dto.setPickupLocation(entity.getPickupLocation());
         return dto;
     }
 }

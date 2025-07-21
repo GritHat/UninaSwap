@@ -44,6 +44,9 @@ public class TradeListingEntity extends ListingEntity {
     @Column(nullable = false)
     private boolean acceptOtherOffers = false;
 
+    @Column(nullable = false)
+    private String pickupLocation;
+
     // Default constructor
     public TradeListingEntity() {
         super();
@@ -51,11 +54,12 @@ public class TradeListingEntity extends ListingEntity {
 
     // Constructor with required fields
     public TradeListingEntity(String title, String description, UserEntity creator,
-            List<String> desiredCategories, boolean acceptOtherOffers) {
+            List<String> desiredCategories, boolean acceptOtherOffers, String pickupLocation) {
         super();
         this.setTitle(title);
         this.setDescription(description);
         this.setCreator(creator);
+        this.pickupLocation = pickupLocation;
         this.desiredCategories = desiredCategories;
         this.acceptOtherOffers = acceptOtherOffers;
     }
@@ -208,5 +212,15 @@ public class TradeListingEntity extends ListingEntity {
 
     public void setAcceptMixedOffers(boolean acceptMixedOffers) {
         this.acceptMixedOffers = acceptMixedOffers;
+    }
+
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation;
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
     }
 }

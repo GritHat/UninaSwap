@@ -169,6 +169,31 @@
                                  </VBox>
                               </children>
                            </HBox>
+                           
+                           <!-- Delivery Options Section - Only shown if pickup location exists -->
+                           <HBox fx:id="deliveryOptionsSection" alignment="CENTER_LEFT" managed="false" spacing="15.0" styleClass="delivery-options-section" visible="false">
+                              <children>
+                                <!-- Pickup Location Info -->
+                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                  <children>
+                                    <Label styleClass="delivery-label" text="Pickup Location:" />
+                                    <Label fx:id="pickupLocationLabel" styleClass="pickup-location-value" text="Location will appear here" wrapText="true" />
+                                  </children>
+                                </VBox>
+                                
+                                <!-- Delivery Method Selector -->
+                                <VBox spacing="5.0">
+                                  <children>
+                                    <Label styleClass="delivery-label" text="Delivery Method:" />
+                                    <ComboBox fx:id="deliveryMethodComboBox" prefWidth="150.0" promptText="Select method" styleClass="delivery-method-combo" />
+                                  </children>
+                                </VBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="10.0" top="10.0" />
+                              </padding>
+                            </HBox>
+                           
                            <HBox alignment="CENTER_LEFT" VBox.vgrow="NEVER">
                               <children>
                                  <!-- Seller Avatar -->

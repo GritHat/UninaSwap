@@ -36,6 +36,7 @@ public class TradeListingMapper {
         dto.setAcceptMoneyOffers(entity.isAcceptMoneyOffers());
         dto.setAcceptMixedOffers(entity.isAcceptMixedOffers());
         dto.setAcceptOtherOffers(entity.isAcceptOtherOffers());
+        dto.setPickupLocation(entity.getPickupLocation());
 
         if (entity.isAcceptMoneyOffers()) {
             dto.setReferencePrice(entity.getReferencePrice());

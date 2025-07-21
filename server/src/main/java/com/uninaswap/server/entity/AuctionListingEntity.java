@@ -43,6 +43,8 @@ public class AuctionListingEntity extends ListingEntity {
     @Column(nullable = false)
     private boolean hasBids = false;
     
+    private String pickupLocation;
+
     // Default constructor
     public AuctionListingEntity() {
         super();
@@ -52,7 +54,7 @@ public class AuctionListingEntity extends ListingEntity {
     // Constructor with required fields
     public AuctionListingEntity(String title, String description, UserEntity creator, String imagePath,
                          BigDecimal startingPrice, BigDecimal reservePrice, Currency currency,
-                         LocalDateTime endTime, BigDecimal minimumBidIncrement) {
+                         LocalDateTime endTime, BigDecimal minimumBidIncrement, String pickupLocation) {
         super();
         this.setTitle(title);
         this.setDescription(description);
@@ -64,6 +66,7 @@ public class AuctionListingEntity extends ListingEntity {
         this.startTime = LocalDateTime.now(); // Set start time to now
         this.endTime = endTime;
         this.minimumBidIncrement = minimumBidIncrement;
+        this.pickupLocation = pickupLocation;
         // Do not set current highest bid yet - it will be null until first bid
     }
     
@@ -219,5 +222,15 @@ public class AuctionListingEntity extends ListingEntity {
     
     public void setHasBids(boolean hasBids) {
         this.hasBids = hasBids;
+    }
+
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation;
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
     }
 }

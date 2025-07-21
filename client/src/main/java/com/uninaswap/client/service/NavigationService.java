@@ -6,6 +6,7 @@ import java.util.Optional;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -29,6 +30,7 @@ import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.ItemViewModel;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.viewmodel.OfferViewModel;
+import com.uninaswap.client.viewmodel.PickupViewModel;
 import com.uninaswap.client.viewmodel.UserViewModel;
 import com.uninaswap.common.dto.ItemDTO;
 import com.uninaswap.client.controller.MainController;
@@ -592,6 +594,7 @@ public class NavigationService {
 
             PickupSchedulingController controller = loader.getController();
             controller.setOfferId(offer.getId());
+            controller.setOffer(offer);
 
             Stage stage = new Stage();
             stage.setTitle(localeService.getMessage("pickup.scheduling.window.title", "Schedule Pickup"));
@@ -613,55 +616,116 @@ public class NavigationService {
         }
     }
 
-    public void openPickupSelection(PickupDTO pickup, Stage parentStage) {
+    /**
+     * Open pickup selection dialog for accepting/selecting pickup times
+     */
+    public void openPickupSelection(OfferViewModel offer, Stage parentStage) {
+        try {
+            // First, get the pickup for this offer
+            PickupService pickupService = PickupService.getInstance();
+            
+            // Get the pickup associated with this offer
+            pickupService.getPickupByOfferId(offer.getId())
+                .thenAccept(pickup -> Platform.runLater(() -> {
+                    if (pickup != null) {
+                        openPickupSelectionDialog(pickup, parentStage);
+                    } else {
+                        AlertHelper.showErrorAlert(
+                            localeService.getMessage("error.title", "Error"),
+                            localeService.getMessage("pickup.not.found.header", "Pickup Not Found"),
+                            localeService.getMessage("pickup.not.found.message", 
+                                "No pickup arrangement found for this offer."));
+                    }
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> AlertHelper.showErrorAlert(
+                        localeService.getMessage("error.title", "Error"),
+                        localeService.getMessage("pickup.error.header", "Pickup Error"),
+                        ex.getMessage()));
+                    return null;
+                });
+            
+        } catch (Exception e) {
+            AlertHelper.showErrorAlert(
+                localeService.getMessage("error.title", "Error"),
+                localeService.getMessage("pickup.selection.error.header", "Failed to Open Pickup Selection"),
+                "Could not open pickup selection dialog: " + e.getMessage()
+            );
+        }
+    }
+
+    private void openPickupSelectionDialog(PickupViewModel pickup, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PickupSelectionView.fxml"));
+            loader.setResources(localeService.getResourceBundle());
             Parent root = loader.load();
-
             PickupSelectionController controller = loader.getController();
             controller.setPickup(pickup);
-
-            Stage stage = new Stage();
-            stage.setTitle(localeService.getMessage("pickup.selection.window.title", "Select Pickup Time"));
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(parentStage);
-            stage.centerOnScreen();
-
-            stage.showAndWait();
-
+            
+            Stage dialog = new Stage();
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.initOwner(parentStage);
+            dialog.setTitle(localeService.getMessage("pickup.selection.title", "Select Pickup Time"));
+            dialog.setScene(new Scene(root));
+            dialog.setResizable(false);
+            
+            // Center the dialog relative to the parent
+            dialog.setOnShown(e -> {
+                dialog.setX(parentStage.getX() + (parentStage.getWidth() - dialog.getWidth()) / 2);
+                dialog.setY(parentStage.getY() + (parentStage.getHeight() - dialog.getHeight()) / 2);
+            });
+            
+            dialog.showAndWait();
+            
         } catch (IOException e) {
             AlertHelper.showErrorAlert(
-                    localeService.getMessage("error.title", "Error"),
-                    localeService.getMessage("error.header", "Failed to open pickup selection"),
-                    e.getMessage());
+                localeService.getMessage("error.title", "Error"),
+                localeService.getMessage("pickup.selection.error.header", "Failed to Open Pickup Selection"),
+                "Could not open pickup selection dialog: " + e.getMessage()
+            );
         }
     }
 
     public void openReviewCreate(OfferViewModel offer, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ReviewCreateView.fxml"));
-            Parent root = loader.load();
-
+            loader.setResources(localeService.getResourceBundle());
+            
+            Parent reviewContent = loader.load();
             ReviewCreateController controller = loader.getController();
+            
+            // Set the offer for the review
             controller.setOffer(offer);
-
-            Stage stage = new Stage();
-            stage.setTitle(localeService.getMessage("review.create.window.title", "Write Review"));
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(parentStage);
-            stage.centerOnScreen();
-
-            stage.showAndWait();
-
+            
+            // Create and configure dialog
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.initOwner(parentStage);
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.setTitle(localeService.getMessage("review.create.title", "Write a Review"));
+            
+            // Set the content
+            DialogPane dialogPane = dialog.getDialogPane();
+            dialogPane.setContent(reviewContent);
+            
+            // Don't add extra buttons since they're already in the FXML
+            // The FXML buttons will handle the actions directly
+            dialogPane.getButtonTypes().add(ButtonType.CLOSE);
+            
+            // Hide the default close button
+            Button closeButton = (Button) dialogPane.lookupButton(ButtonType.CLOSE);
+            if (closeButton != null) {
+                closeButton.setVisible(false);
+                closeButton.setManaged(false);
+            }
+            
+            // Show dialog
+            dialog.showAndWait();
+            
         } catch (IOException e) {
             AlertHelper.showErrorAlert(
                     localeService.getMessage("error.title", "Error"),
-                    localeService.getMessage("error.header", "Failed to open review creation"),
-                    e.getMessage());
+                    localeService.getMessage("error.navigation", "Navigation Error"),
+                    "Failed to open review creation dialog: " + e.getMessage());
         }
     }
 
@@ -891,5 +955,46 @@ public class NavigationService {
         // This depends on your application structure
         // You might want to update the main window title or just ignore this
         System.out.println("Navigation: " + title);
+    }
+
+    /**
+     * Open pickup rescheduling dialog for an existing offer
+     */
+    public void openPickupRescheduling(String offerId, Stage parentStage) {
+        try {
+            // Load the pickup scheduling FXML (we can reuse the same UI)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PickupSchedulingView.fxml"));
+            Parent root = loader.load();
+            
+            // Get the controller
+            PickupSchedulingController controller = loader.getController();
+            
+            // Set the offer ID and configure for rescheduling mode
+            controller.setOfferId(offerId);
+            controller.setReschedulingMode(true); // We'll add this method
+            
+            // Create and configure the dialog
+            Stage dialog = new Stage();
+            dialog.initModality(Modality.WINDOW_MODAL);
+            dialog.initOwner(parentStage);
+            dialog.setTitle(localeService.getMessage("pickup.reschedule.title", "Reschedule Pickup"));
+            dialog.setScene(new Scene(root));
+            dialog.setResizable(false);
+            
+            // Center the dialog relative to the parent
+            dialog.setOnShown(e -> {
+                dialog.setX(parentStage.getX() + (parentStage.getWidth() - dialog.getWidth()) / 2);
+                dialog.setY(parentStage.getY() + (parentStage.getHeight() - dialog.getHeight()) / 2);
+            });
+            
+            dialog.showAndWait();
+            
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                localeService.getMessage("error.title", "Error"),
+                localeService.getMessage("pickup.reschedule.error.header", "Failed to Open Rescheduling"),
+                "Could not open pickup rescheduling dialog: " + e.getMessage()
+            );
+        }
     }
 }

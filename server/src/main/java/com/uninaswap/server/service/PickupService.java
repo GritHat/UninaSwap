@@ -1,6 +1,7 @@
 package com.uninaswap.server.service;
 
 import com.uninaswap.common.dto.PickupDTO;
+import com.uninaswap.common.enums.DeliveryType;
 import com.uninaswap.common.enums.ListingStatus;
 import com.uninaswap.common.enums.OfferStatus;
 import com.uninaswap.common.enums.PickupStatus;
@@ -51,18 +52,23 @@ public class PickupService {
     private PickupMapper pickupMapper;
 
     /**
-     * Create a pickup arrangement for an accepted offer
+     * Create a pickup arrangement and update offer status to PICKUPSCHEDULING
      */
     @Transactional
     public PickupDTO createPickup(PickupDTO pickupDTO, Long createdByUserId) {
         logger.info("Creating pickup for offer {} by user {}", pickupDTO.getOfferId(), createdByUserId);
 
-        // Validate offer exists and is accepted
+        // Validate offer exists and is in ACCEPTED status
         OfferEntity offer = offerRepository.findById(pickupDTO.getOfferId())
                 .orElseThrow(() -> new IllegalArgumentException("Offer not found: " + pickupDTO.getOfferId()));
 
         if (offer.getStatus() != OfferStatus.ACCEPTED) {
             throw new IllegalStateException("Can only create pickup for accepted offers");
+        }
+
+        // Validate delivery type is PICKUP
+        if (offer.getDeliveryType() != DeliveryType.PICKUP) {
+            throw new IllegalStateException("Can only create pickup scheduling for pickup delivery offers");
         }
 
         // Check if pickup already exists for this offer
@@ -99,23 +105,29 @@ public class PickupService {
                 pickupDTO.getAvailableDates(),
                 pickupDTO.getStartTime(),
                 pickupDTO.getEndTime(),
-                pickupDTO.getLocation(),
+                pickupDTO.getOffer().getListing().getPickupLocation(),
                 pickupDTO.getDetails(),
                 createdBy);
 
         pickup = pickupRepository.save(pickup);
 
-        logger.info("Successfully created pickup {} for offer {}", pickup.getId(), pickupDTO.getOfferId());
+        // Update offer status to PICKUPSCHEDULING
+        offer.setStatus(OfferStatus.PICKUPSCHEDULING);
+        offer.setUpdatedAt(LocalDateTime.now());
+        offerRepository.save(offer);
+
+        logger.info("Successfully created pickup {} for offer {} and updated status to PICKUPSCHEDULING",
+                pickup.getId(), pickupDTO.getOfferId());
+
         return pickupMapper.toDto(pickup);
     }
 
     /**
-     * Accept pickup with selected date and time
+     * Accept pickup with selected date and time, updating offer status to CONFIRMED
      */
     @Transactional
     public PickupDTO acceptPickup(Long pickupId, LocalDate selectedDate, LocalTime selectedTime, Long userId) {
-        logger.info("Accepting pickup {} with date {} time {} by user {}", pickupId, selectedDate, selectedTime,
-                userId);
+        logger.info("Accepting pickup {} with date {} time {} by user {}", pickupId, selectedDate, selectedTime, userId);
 
         PickupEntity pickup = pickupRepository.findById(pickupId)
                 .orElseThrow(() -> new IllegalArgumentException("Pickup not found: " + pickupId));
@@ -135,22 +147,16 @@ public class PickupService {
             throw new IllegalArgumentException("Selected date is not available");
         }
 
-        // Validate selected time is within time range
+        // Validate selected time is within allowed range
         if (!pickup.isTimeSlotValid(selectedTime)) {
-            throw new IllegalArgumentException("Selected time is not within the available time range");
-        }
-
-        // Validate selected date/time is in the future
-        LocalDateTime selectedDateTime = selectedDate.atTime(selectedTime);
-        if (selectedDateTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Selected date and time cannot be in the past");
+            throw new IllegalArgumentException("Selected time is not within the allowed range");
         }
 
         // Get updating user
         UserEntity updatedBy = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
 
-        // Update pickup
+        // Update pickup with selected date and time
         pickup.setSelectedDate(selectedDate);
         pickup.setSelectedTime(selectedTime);
         pickup.setStatus(PickupStatus.ACCEPTED);
@@ -158,16 +164,57 @@ public class PickupService {
 
         pickup = pickupRepository.save(pickup);
 
-        logger.info("Successfully accepted pickup {} for {}", pickupId, selectedDateTime);
+        // Update associated offer status to CONFIRMED
+        OfferEntity offer = pickup.getOffer();
+        OfferStatus oldStatus = offer.getStatus();
+        offer.setStatus(OfferStatus.CONFIRMED);
+        offer.setUpdatedAt(LocalDateTime.now());
+        offerRepository.save(offer);
+
+        logger.info("Successfully accepted pickup {} for {} and updated offer status from {} to CONFIRMED",
+                pickupId, selectedDate.atTime(selectedTime), oldStatus);
+
         return pickupMapper.toDto(pickup);
     }
 
     /**
-     * Cancel pickup and revert offer status
+     * Get pickup by offer ID - ensures user is involved in the offer
+     */
+    @Transactional(readOnly = true)
+    public PickupDTO getPickupByOfferId(String offerId, Long userId) {
+        logger.info("Getting pickup for offer {} by user {}", offerId, userId);
+
+        // First verify the user is involved in the offer
+        OfferEntity offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new IllegalArgumentException("Offer not found: " + offerId));
+
+        if (!isUserInvolvedInOffer(offer, userId)) {
+            throw new IllegalArgumentException("User is not involved in this offer");
+        }
+
+        // Get the pickup for this offer
+        Optional<PickupEntity> pickupOpt = pickupRepository.findByOfferId(offerId);
+        
+        if (pickupOpt.isPresent()) {
+            PickupEntity pickup = pickupOpt.get();
+            
+            // Verify user is involved in the pickup as well
+            if (!isUserInvolvedInPickup(pickup, userId)) {
+                throw new IllegalArgumentException("User is not involved in this pickup");
+            }
+            
+            return pickupMapper.toDto(pickup);
+        }
+        
+        return null; // No pickup found for this offer
+    }
+
+    /**
+     * Cancel pickup arrangement and update offer status to CANCELLED
      */
     @Transactional
-    public void cancelPickup(Long pickupId, Long userId) {
-        logger.info("Cancelling pickup {} by user {}", pickupId, userId);
+    public void cancelPickupArrangement(Long pickupId, Long userId) {
+        logger.info("Cancelling pickup arrangement {} by user {}", pickupId, userId);
 
         PickupEntity pickup = pickupRepository.findById(pickupId)
                 .orElseThrow(() -> new IllegalArgumentException("Pickup not found: " + pickupId));
@@ -175,11 +222,6 @@ public class PickupService {
         // Validate user is involved in the pickup
         if (!isUserInvolvedInPickup(pickup, userId)) {
             throw new IllegalArgumentException("User is not involved in this pickup");
-        }
-
-        // Only allow cancellation of pending or accepted pickups
-        if (pickup.getStatus() != PickupStatus.PENDING && pickup.getStatus() != PickupStatus.ACCEPTED) {
-            throw new IllegalStateException("Cannot cancel pickup with status: " + pickup.getStatus());
         }
 
         // Get the associated offer
@@ -190,26 +232,17 @@ public class PickupService {
         pickup.setUpdatedBy(userRepository.findById(userId).orElse(null));
         pickupRepository.save(pickup);
 
-        // Revert offer status back to PENDING if it was ACCEPTED
-        if (offer.getStatus() == OfferStatus.ACCEPTED) {
-            offer.setStatus(OfferStatus.PENDING);
-            offer.setUpdatedAt(LocalDateTime.now());
-            offerRepository.save(offer);
+        // Update offer status to CANCELLED
+        offer.setStatus(OfferStatus.CANCELLED);
+        offer.setUpdatedAt(LocalDateTime.now());
+        offerRepository.save(offer);
 
-            // Also revert listing status back to ACTIVE
-            ListingEntity listing = offer.getListing();
-            if (listing.getStatus() == ListingStatus.COMPLETED) {
-                listing.setStatus(ListingStatus.ACTIVE);
-                listing.setUpdatedAt(LocalDateTime.now());
-                listingRepository.save(listing);
-            }
-        }
-
-        logger.info("Successfully cancelled pickup {} and reverted offer status", pickupId);
+        logger.info("Successfully cancelled pickup arrangement {} and updated offer {} status to CANCELLED",
+                pickupId, offer.getId());
     }
 
     /**
-     * Reject pickup and update offer status
+     * Reject pickup and update offer status based on current state
      */
     @Transactional
     public PickupDTO rejectPickup(Long pickupId, Long userId) {
@@ -237,9 +270,19 @@ public class PickupService {
         pickup.setUpdatedBy(updatedBy);
         pickup = pickupRepository.save(pickup);
 
-        // Note: Offer and listing status handling will depend on your business logic
-        // You might want to keep the offer as ACCEPTED until a counter-proposal is made
-        // or immediately revert it to PENDING
+        // Update offer status - this will trigger a choice for the user:
+        // Either cancel the offer or reschedule pickup
+        OfferEntity offer = pickup.getOffer();
+        OfferStatus currentOfferStatus = offer.getStatus();
+
+        // Set status to PICKUPRESCHEDULING to indicate need for rescheduling decision
+        if (currentOfferStatus == OfferStatus.PICKUPSCHEDULING) {
+            offer.setStatus(OfferStatus.PICKUPRESCHEDULING);
+            offer.setUpdatedAt(LocalDateTime.now());
+            offerRepository.save(offer);
+
+            logger.info("Pickup rejected, offer {} status updated to PICKUPRESCHEDULING", offer.getId());
+        }
 
         logger.info("Successfully rejected pickup {}", pickupId);
         return pickupMapper.toDto(pickup);

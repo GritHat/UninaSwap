@@ -3,6 +3,7 @@ package com.uninaswap.client.viewmodel;
 import java.time.LocalDateTime;
 
 import com.uninaswap.common.enums.Currency;
+import com.uninaswap.common.enums.DeliveryType;
 import com.uninaswap.common.enums.ListingStatus;
 
 import javafx.beans.property.BooleanProperty;
@@ -24,6 +25,7 @@ public class TradeListingViewModel extends ListingViewModel {
     private final BooleanProperty acceptOtherOffers = new SimpleBooleanProperty();
     private final ObservableList<String> desiredCategories = FXCollections.observableArrayList();
     private final ObservableList<ListingItemViewModel> desiredItems = FXCollections.observableArrayList();
+    private final SimpleStringProperty pickupLocation = new SimpleStringProperty();
 
     // Constructors
     public TradeListingViewModel() {
@@ -72,6 +74,10 @@ public class TradeListingViewModel extends ListingViewModel {
 
     public ObservableList<ListingItemViewModel> desiredItemsProperty() {
         return desiredItems;
+    }
+
+    public StringProperty pickupLocationProperty() {
+        return pickupLocation;
     }
 
     public void setAcceptMoneyOffers(boolean acceptMoneyOffers) {
@@ -144,6 +150,21 @@ public class TradeListingViewModel extends ListingViewModel {
 
     public void setTradeDetails(String tradeDetails) {
         this.tradeDetails.set(tradeDetails);
+    }
+
+    @Override
+    public DeliveryType getDeliveryType(DeliveryType deliveryType) {
+        return DeliveryType.PICKUP;
+    }
+
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation.get();
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation.set(pickupLocation);
     }
 
     @Override

@@ -11,14 +11,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
 public class UserReviewsController {
 
     @FXML
@@ -163,14 +158,14 @@ public class UserReviewsController {
 
     private void setupSelectionHandlers() {
         receivedReviewsTable.getSelectionModel().selectedItemProperty()
-                .addListener((obs, oldSelection, newSelection) -> {
+                .addListener((_, _, newSelection) -> {
                     if (newSelection != null) {
                         showReviewDetails(newSelection);
                         givenReviewsTable.getSelectionModel().clearSelection();
                     }
                 });
 
-        givenReviewsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+        givenReviewsTable.getSelectionModel().selectedItemProperty().addListener((_, _, newSelection) -> {
             if (newSelection != null) {
                 showReviewDetails(newSelection);
                 receivedReviewsTable.getSelectionModel().clearSelection();
@@ -211,7 +206,7 @@ public class UserReviewsController {
 
                         updateRatingVisuals(avgRating);
                     }))
-                    .exceptionally(ex -> {
+                    .exceptionally(_ -> {
                         Platform.runLater(() -> {
                             averageRatingLabel.setText("N/A");
                             totalReviewsLabel.setText(localeService.getMessage("reviews.no.reviews", "No reviews"));

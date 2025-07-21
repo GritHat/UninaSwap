@@ -3,6 +3,8 @@ package com.uninaswap.client.controller;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.PickupService;
 import com.uninaswap.client.util.AlertHelper;
+import com.uninaswap.client.viewmodel.OfferViewModel;
+import com.uninaswap.client.viewmodel.PickupViewModel;
 import com.uninaswap.common.dto.PickupDTO;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -71,7 +73,9 @@ public class PickupSchedulingController {
 
     // Data
     private String offerId;
+    private OfferViewModel offer;
     private List<LocalDate> selectedDates = new ArrayList<>();
+    private boolean isReschedulingMode = false;
 
     @FXML
     public void initialize() {
@@ -158,6 +162,30 @@ public class PickupSchedulingController {
         this.offerId = offerId;
     }
 
+    public void setOffer(OfferViewModel offer) {
+        this.offer = offer;
+    }
+
+    public void setReschedulingMode(boolean reschedulingMode) {
+        this.isReschedulingMode = reschedulingMode;
+
+        Platform.runLater(() -> {
+            if (reschedulingMode) {
+                // Update UI for rescheduling
+                titleLabel.setText(localeService.getMessage("pickup.reschedule.title", "Reschedule Pickup"));
+                instructionsLabel.setText(localeService.getMessage("pickup.reschedule.instructions",
+                        "Propose new available dates and time range for pickup"));
+                confirmButton.setText(localeService.getMessage("pickup.reschedule.confirm", "Propose New Schedule"));
+            } else {
+                // Keep original scheduling UI
+                titleLabel.setText(localeService.getMessage("pickup.scheduling.title", "Schedule Pickup"));
+                instructionsLabel.setText(localeService.getMessage("pickup.scheduling.instructions",
+                        "Select your available dates and time range for pickup"));
+                confirmButton.setText(localeService.getMessage("pickup.scheduling.confirm", "Schedule Pickup"));
+            }
+        });
+    }
+
     @FXML
     private void handleAddDateRange() {
         LocalDate startDate = startDatePicker.getValue();
@@ -233,46 +261,80 @@ public class PickupSchedulingController {
         LocalTime startTime = LocalTime.of(startHourSpinner.getValue(), startMinuteSpinner.getValue());
         LocalTime endTime = LocalTime.of(endHourSpinner.getValue(), endMinuteSpinner.getValue());
 
-        PickupDTO pickupDTO = new PickupDTO(
+        PickupViewModel pickupDTO = new PickupViewModel(
                 offerId,
+                offer,
                 new ArrayList<>(selectedDates),
                 startTime,
                 endTime,
-                locationField.getText().trim(),
+                offer.getListing().getPickupLocation(),
                 detailsArea.getText().trim(),
                 null // createdByUserId will be set by the service
         );
 
         confirmButton.setDisable(true);
 
-        pickupService.createPickup(pickupDTO)
-                .thenAccept(success -> Platform.runLater(() -> {
-                    if (success) {
-                        AlertHelper.showInformationAlert(
-                                localeService.getMessage("pickup.created.title", "Pickup Scheduled"),
-                                localeService.getMessage("pickup.created.header", "Success"),
-                                localeService.getMessage("pickup.created.message",
-                                        "Pickup has been scheduled successfully. The other party can now select a convenient time."));
-                        closeWindow();
-                    } else {
-                        AlertHelper.showErrorAlert(
-                                localeService.getMessage("pickup.error.title", "Error"),
-                                localeService.getMessage("pickup.error.header", "Failed to schedule pickup"),
-                                localeService.getMessage("pickup.error.message",
-                                        "Could not schedule the pickup. Please try again."));
-                        confirmButton.setDisable(false);
-                    }
-                }))
-                .exceptionally(ex -> {
-                    Platform.runLater(() -> {
-                        AlertHelper.showErrorAlert(
-                                localeService.getMessage("pickup.error.title", "Error"),
-                                localeService.getMessage("pickup.error.header", "Connection Error"),
-                                ex.getMessage());
-                        confirmButton.setDisable(false);
+        if (isReschedulingMode) {
+            // Handle rescheduling - create new pickup proposal
+            pickupService.createPickup(pickupDTO)
+                    .thenAccept(success -> Platform.runLater(() -> {
+                        if (success) {
+                            AlertHelper.showInformationAlert(
+                                    localeService.getMessage("pickup.reschedule.success.title", "Rescheduling Proposed"),
+                                    localeService.getMessage("pickup.reschedule.success.header", "Success"),
+                                    localeService.getMessage("pickup.reschedule.success.message",
+                                            "Your new pickup schedule has been proposed. The other party can now review your availability."));
+                            closeWindow();
+                        } else {
+                            AlertHelper.showErrorAlert(
+                                    localeService.getMessage("pickup.error.title", "Error"),
+                                    localeService.getMessage("pickup.reschedule.error.header", "Failed to propose new schedule"),
+                                    localeService.getMessage("pickup.reschedule.error.message",
+                                            "Could not propose the new pickup schedule. Please try again."));
+                            confirmButton.setDisable(false);
+                        }
+                    }))
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> {
+                            AlertHelper.showErrorAlert(
+                                    localeService.getMessage("pickup.error.title", "Error"),
+                                    localeService.getMessage("pickup.error.header", "Connection Error"),
+                                    ex.getMessage());
+                            confirmButton.setDisable(false);
+                        });
+                        return null;
                     });
-                    return null;
-                });
+        } else {
+            // Handle original scheduling
+            pickupService.createPickup(pickupDTO)
+                    .thenAccept(success -> Platform.runLater(() -> {
+                        if (success) {
+                            AlertHelper.showInformationAlert(
+                                    localeService.getMessage("pickup.created.title", "Pickup Scheduled"),
+                                    localeService.getMessage("pickup.created.header", "Success"),
+                                    localeService.getMessage("pickup.created.message",
+                                            "Pickup has been scheduled successfully. The other party can now select a convenient time."));
+                            closeWindow();
+                        } else {
+                            AlertHelper.showErrorAlert(
+                                    localeService.getMessage("pickup.error.title", "Error"),
+                                    localeService.getMessage("pickup.error.header", "Failed to schedule pickup"),
+                                    localeService.getMessage("pickup.error.message",
+                                            "Could not schedule the pickup. Please try again."));
+                            confirmButton.setDisable(false);
+                        }
+                    }))
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> {
+                            AlertHelper.showErrorAlert(
+                                    localeService.getMessage("pickup.error.title", "Error"),
+                                    localeService.getMessage("pickup.error.header", "Connection Error"),
+                                    ex.getMessage());
+                            confirmButton.setDisable(false);
+                        });
+                        return null;
+                    });
+        }
     }
 
     @FXML

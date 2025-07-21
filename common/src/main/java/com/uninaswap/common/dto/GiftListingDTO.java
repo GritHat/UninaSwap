@@ -8,6 +8,7 @@ public class GiftListingDTO extends ListingDTO {
     private boolean pickupOnly;
     private String restrictions;
     private boolean allowThankYouOffers = true;
+    private String pickupLocation;
 
     // Default constructor
     public GiftListingDTO() {
@@ -57,5 +58,15 @@ public class GiftListingDTO extends ListingDTO {
 
     public void setAllowThankYouOffers(boolean allowThankYouOffers) {
         this.allowThankYouOffers = allowThankYouOffers;
+    }
+
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation;
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
     }
 }

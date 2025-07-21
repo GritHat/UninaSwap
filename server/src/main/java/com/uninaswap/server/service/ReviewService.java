@@ -91,10 +91,15 @@ public class ReviewService {
         review.setScore(reviewDTO.getScore());
         review.setComment(reviewDTO.getComment());
 
+        // Save review
         ReviewEntity savedReview = reviewRepository.save(review);
 
-        logger.info("Successfully created review {} for user {} by user {}",
-                savedReview.getId(), reviewedUser.getUsername(), reviewer.getUsername());
+        // UPDATE: Change offer status from COMPLETED to REVIEWED
+        offer.setStatus(OfferStatus.REVIEWED);
+        offer.setUpdatedAt(LocalDateTime.now());
+        offerRepository.save(offer);
+
+        logger.info("Successfully created review {} and updated offer status to REVIEWED", savedReview.getId());
 
         return reviewMapper.toDto(savedReview);
     }

@@ -1,8 +1,10 @@
 package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.LocaleService;
+import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.PickupService;
 import com.uninaswap.client.util.AlertHelper;
+import com.uninaswap.client.viewmodel.PickupViewModel;
 import com.uninaswap.common.dto.PickupDTO;
 import com.uninaswap.common.enums.PickupStatus;
 import javafx.application.Platform;
@@ -117,9 +119,10 @@ public class PickupSelectionController {
     // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final PickupService pickupService = PickupService.getInstance();
+    private final NavigationService navigationService = NavigationService.getInstance();
 
     // Data
-    private PickupDTO currentPickup;
+    private PickupViewModel currentPickup;
     private List<LocalDate> counterSelectedDates = new ArrayList<>();
     private boolean isCounterProposalMode = false;
 
@@ -215,7 +218,7 @@ public class PickupSelectionController {
         updateCounterSelectedDatesDisplay();
     }
 
-    public void setPickup(PickupDTO pickup) {
+    public void setPickup(PickupViewModel pickup) {
         this.currentPickup = pickup;
         updateUI();
     }
@@ -294,7 +297,7 @@ public class PickupSelectionController {
                                 localeService.getMessage("pickup.accept.success.title", "Pickup Confirmed"),
                                 localeService.getMessage("pickup.accept.success.header", "Success"),
                                 localeService.getMessage("pickup.accept.success.message",
-                                        String.format("Pickup confirmed for %s at %s",
+                                        String.format("Pickup confirmed for %s at %s. The offer status has been updated to 'Confirmed'.",
                                                 selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                                 selectedTime.format(DateTimeFormatter.ofPattern("HH:mm")))));
                         closeWindow();
@@ -310,8 +313,8 @@ public class PickupSelectionController {
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
                         AlertHelper.showErrorAlert(
-                                localeService.getMessage("pickup.accept.error.title", "Error"),
-                                localeService.getMessage("pickup.accept.error.header", "Connection Error"),
+                                localeService.getMessage("pickup.error.title", "Error"),
+                                localeService.getMessage("pickup.error.header", "Connection Error"),
                                 ex.getMessage());
                         acceptButton.setDisable(false);
                     });
@@ -325,7 +328,7 @@ public class PickupSelectionController {
                 localeService.getMessage("pickup.reject.confirm.title", "Reject Pickup"),
                 localeService.getMessage("pickup.reject.confirm.header", "Reject Pickup Proposal"),
                 localeService.getMessage("pickup.reject.confirm.message",
-                        "Are you sure you want to reject this pickup proposal? This will cancel the accepted offer."));
+                        "Are you sure you want to reject this pickup proposal? This will require rescheduling or cancelling the offer."));
 
         confirmation.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
@@ -334,30 +337,95 @@ public class PickupSelectionController {
                 pickupService.updatePickupStatus(currentPickup.getId(), PickupStatus.DECLINED)
                         .thenAccept(success -> Platform.runLater(() -> {
                             if (success) {
-                                AlertHelper.showInformationAlert(
-                                        localeService.getMessage("pickup.reject.success.title", "Pickup Rejected"),
-                                        localeService.getMessage("pickup.reject.success.header", "Pickup Rejected"),
-                                        localeService.getMessage("pickup.reject.success.message",
-                                                "The pickup proposal has been rejected. The offer will be cancelled."));
+                                // Show options for next steps
+                                Alert nextStepsDialog = new Alert(Alert.AlertType.CONFIRMATION);
+                                nextStepsDialog.setTitle(localeService.getMessage("pickup.reject.nextsteps.title", "Next Steps"));
+                                nextStepsDialog.setHeaderText(localeService.getMessage("pickup.reject.nextsteps.header", 
+                                        "Pickup proposal rejected"));
+                                nextStepsDialog.setContentText(localeService.getMessage("pickup.reject.nextsteps.message",
+                                        "What would you like to do next?"));
+
+                                ButtonType rescheduleButton = new ButtonType(
+                                        localeService.getMessage("pickup.reschedule.button", "Propose New Times"));
+                                ButtonType cancelOfferButton = new ButtonType(
+                                        localeService.getMessage("pickup.cancel.offer.button", "Cancel Offer"));
+                                ButtonType decideLaterButton = new ButtonType(
+                                        localeService.getMessage("pickup.decide.later.button", "Decide Later"));
+
+                                nextStepsDialog.getButtonTypes().setAll(rescheduleButton, cancelOfferButton, decideLaterButton);
+
+                                nextStepsDialog.showAndWait().ifPresent(choice -> {
+                                    if (choice == rescheduleButton) {
+                                        // Open pickup scheduling dialog for rescheduling
+                                        handleReschedulePickup();
+                                    } else if (choice == cancelOfferButton) {
+                                        // Cancel the entire offer
+                                        handleCancelOffer();
+                                    }
+                                    // If "Decide Later", just close the dialog
+                                });
+
                                 closeWindow();
                             } else {
                                 AlertHelper.showErrorAlert(
                                         localeService.getMessage("pickup.reject.error.title", "Error"),
-                                        localeService.getMessage("pickup.reject.error.header",
-                                                "Failed to reject pickup"),
+                                        localeService.getMessage("pickup.reject.error.header", "Failed to reject pickup"),
                                         localeService.getMessage("pickup.reject.error.message",
-                                                "Could not reject the pickup"));
+                                                "Could not reject the pickup proposal"));
                                 rejectButton.setDisable(false);
                             }
                         }))
                         .exceptionally(ex -> {
                             Platform.runLater(() -> {
                                 AlertHelper.showErrorAlert(
-                                        localeService.getMessage("pickup.reject.error.title", "Error"),
-                                        localeService.getMessage("pickup.reject.error.header", "Connection Error"),
+                                        localeService.getMessage("pickup.error.title", "Error"),
+                                        localeService.getMessage("pickup.error.header", "Connection Error"),
                                         ex.getMessage());
                                 rejectButton.setDisable(false);
                             });
+                            return null;
+                        });
+            }
+        });
+    }
+
+    private void handleReschedulePickup() {
+        // Open pickup scheduling dialog for rescheduling
+        Stage stage = (Stage) acceptButton.getScene().getWindow();
+        navigationService.openPickupRescheduling(currentPickup.getOfferId(), stage);
+    }
+
+    private void handleCancelOffer() {
+        Alert confirmation = AlertHelper.createConfirmationDialog(
+                localeService.getMessage("offer.cancel.confirm.title", "Cancel Offer"),
+                localeService.getMessage("offer.cancel.confirm.header", "Cancel Entire Offer"),
+                localeService.getMessage("offer.cancel.confirm.message",
+                        "Are you sure you want to cancel this offer? This action cannot be undone."));
+
+        confirmation.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                // Call service to cancel the pickup arrangement and update offer status
+                pickupService.cancelPickupArrangement(currentPickup.getId())
+                        .thenAccept(success -> Platform.runLater(() -> {
+                            if (success) {
+                                AlertHelper.showInformationAlert(
+                                        localeService.getMessage("offer.cancel.success.title", "Offer Cancelled"),
+                                        localeService.getMessage("offer.cancel.success.header", "Success"),
+                                        localeService.getMessage("offer.cancel.success.message",
+                                                "The offer has been cancelled successfully."));
+                            } else {
+                                AlertHelper.showErrorAlert(
+                                        localeService.getMessage("offer.cancel.error.title", "Error"),
+                                        localeService.getMessage("offer.cancel.error.header", "Failed to cancel offer"),
+                                        localeService.getMessage("offer.cancel.error.message",
+                                                "Could not cancel the offer"));
+                            }
+                        }))
+                        .exceptionally(ex -> {
+                            Platform.runLater(() -> AlertHelper.showErrorAlert(
+                                    localeService.getMessage("pickup.error.title", "Error"),
+                                    localeService.getMessage("pickup.error.header", "Connection Error"),
+                                    ex.getMessage()));
                             return null;
                         });
             }
@@ -468,12 +536,13 @@ public class PickupSelectionController {
         LocalTime endTime = LocalTime.of(counterEndHourSpinner.getValue(), counterEndMinuteSpinner.getValue());
 
         // Create new pickup with counter proposal
-        PickupDTO counterPickupDTO = new PickupDTO(
+        PickupViewModel counterPickupViewModel = new PickupViewModel(
                 currentPickup.getOfferId(),
+                currentPickup.getOffer(),
                 new ArrayList<>(counterSelectedDates),
                 startTime,
                 endTime,
-                counterLocationField.getText().trim(),
+                currentPickup.getOffer().getListing().getPickupLocation(),
                 counterDetailsArea.getText().trim(),
                 null // createdByUserId will be set by the service
         );
@@ -485,7 +554,7 @@ public class PickupSelectionController {
                 .thenCompose(rejected -> {
                     if (rejected) {
                         // Then create the counter proposal
-                        return pickupService.createPickup(counterPickupDTO);
+                        return pickupService.createPickup(counterPickupViewModel);
                     } else {
                         throw new RuntimeException("Failed to reject current pickup");
                     }

@@ -34,6 +34,9 @@ public class AuctionListingMapper {
         dto.setEndTime(entity.getEndTime());
         dto.setMinimumBidIncrement(entity.getMinimumBidIncrement());
         dto.setCurrentHighestBid(entity.getCurrentHighestBid());
+        dto.setStartTime(entity.getStartTime());
+        dto.setAnyBids(entity.getHasBids());
+        dto.setPickupLocation(entity.getPickupLocation());
 
         if (entity.getHighestBidder() != null) {
             dto.setHighestBidder(userMapper.toDto(entity.getHighestBidder()));

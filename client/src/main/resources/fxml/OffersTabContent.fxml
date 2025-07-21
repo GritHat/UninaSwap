@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<SplitPane fx:id="mainSplitPane" dividerPositions="0.6" styleClass="offers-split-pane" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.OffersTabContentController">
+  <items>
+    <!-- Left Side - Offers List -->
+    <VBox styleClass="offers-list-panel">
+      <children>
+        <!-- Offers Table -->
+        <TableView fx:id="offersTable" styleClass="offers-table" VBox.vgrow="ALWAYS">
+          <columns>
+            <TableColumn fx:id="listingTitleColumn" prefWidth="180.0" text="%offers.column.listing"/>
+            <TableColumn fx:id="fromToColumn" prefWidth="120.0" text="%offers.column.from"/>
+            <TableColumn fx:id="typeColumn" prefWidth="80.0" text="%offers.column.type"/>
+            <TableColumn fx:id="amountColumn" prefWidth="90.0" text="%offers.column.amount"/>
+            <TableColumn fx:id="statusColumn" prefWidth="90.0" text="%offers.column.status"/>
+            <TableColumn fx:id="dateColumn" prefWidth="110.0" text="%offers.column.date"/>
+            <!-- Actions column will be added programmatically if needed -->
+            <TableColumn fx:id="actionsColumn" prefWidth="100.0" text="%offers.column.actions" visible="false"/>
+          </columns>
+          <placeholder>
+            <VBox alignment="CENTER" spacing="15.0" styleClass="table-placeholder">
+              <children>
+                <Text styleClass="placeholder-title" text="%offers.empty.title" />
+                <Text styleClass="placeholder-subtitle" text="%offers.empty.subtitle" />
+              </children>
+            </VBox>
+          </placeholder>
+        </TableView>
+      </children>
+    </VBox>
+    
+    <!-- Right Side - Offer Details -->
+    <VBox fx:id="offerDetailsPanel" styleClass="offer-details-panel">
+      <children>
+        <!-- Details Header -->
+        <VBox fx:id="detailsHeader" styleClass="details-header-section">
+          <children>
+            <HBox alignment="CENTER_LEFT" spacing="10.0">
+              <children>
+                <Text styleClass="details-title" text="%offers.details.title" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button fx:id="closeDetailsButton" onAction="#handleCloseDetails" styleClass="close-details-button" text="✕" />
+              </children>
+            </HBox>
+          </children>
+          <padding>
+            <Insets bottom="15.0" left="20.0" right="20.0" top="20.0" />
+          </padding>
+        </VBox>
+        
+        <!-- Scrollable Details Content -->
+        <ScrollPane fx:id="detailsScrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="details-scroll-pane" VBox.vgrow="ALWAYS">
+          <content>
+            <VBox fx:id="detailsContent" spacing="20.0" styleClass="details-content">
+              <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="0.0" />
+              </padding>
+              
+              <!-- Offer Summary Card -->
+              <VBox fx:id="offerSummaryCard" styleClass="offer-summary-card">
+                <children>
+                  <VBox spacing="12.0">
+                    <children>
+                      <!-- Offer Basic Info Grid -->
+                      <GridPane hgap="15.0" vgap="10.0" styleClass="offer-info-grid">
+                        <columnConstraints>
+                          <ColumnConstraints hgrow="NEVER" minWidth="80.0" prefWidth="100.0" />
+                          <ColumnConstraints hgrow="ALWAYS" />
+                        </columnConstraints>
+                        
+                        <Label styleClass="info-label" text="%offers.details.from" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        <Label fx:id="offerFromLabel" styleClass="info-value" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                        
+                        <Label styleClass="info-label" text="%offers.details.listing" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                        <Label fx:id="offerListingLabel" styleClass="info-value listing-link" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        
+                        <Label styleClass="info-label" text="%offers.details.type" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        <Label fx:id="offerTypeLabel" styleClass="info-value" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        
+                        <Label styleClass="info-label" text="%offers.details.amount" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                        <Label fx:id="offerAmountLabel" styleClass="info-value amount-value" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                      </GridPane>
+                      
+                      <!-- Offer Message -->
+                      <VBox fx:id="messageSection" spacing="8.0">
+                        <children>
+                          <Label styleClass="info-label" text="%offers.details.message" />
+                          <TextArea fx:id="offerMessageArea" editable="false" prefRowCount="3" styleClass="message-area" wrapText="true" />
+                        </children>
+                      </VBox>
+                    </children>
+                  </VBox>
+                </children>
+                <padding>
+                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                </padding>
+              </VBox>
+              
+              <!-- Offered Items Section -->
+              <VBox fx:id="offeredItemsSection" spacing="15.0" styleClass="offered-items-section" visible="false">
+                <children>
+                  <Label styleClass="section-subtitle" text="%offers.details.items.offered" />
+                  <VBox fx:id="offeredItemsList" spacing="10.0" styleClass="offered-items-list" />
+                </children>
+              </VBox>
+              
+              <!-- Action Buttons Section -->
+              <VBox fx:id="actionButtonsSection" spacing="10.0" styleClass="action-buttons-section">
+                <children>
+                  <Separator />
+                  <HBox alignment="CENTER" spacing="15.0" styleClass="action-buttons-container">
+                    <children>
+                      <!-- Standard offer action buttons -->
+                      <Button fx:id="rejectOfferButton" onAction="#handleRejectOffer" styleClass="danger-button" text="%offers.button.reject" />
+                      <Button fx:id="counterOfferButton" onAction="#handleCounterOffer" styleClass="secondary-button" text="%offers.button.counter" />
+                      <Button fx:id="acceptOfferButton" onAction="#handleAcceptOffer" styleClass="primary-button" text="%offers.button.accept" />
+                      
+                      <!-- Pickup scheduling buttons -->
+                      <Button fx:id="schedulePickupButton" onAction="#handleSchedulePickup" styleClass="primary-button" text="%pickup.button.schedule" visible="false" managed="false" />
+                      <Button fx:id="selectPickupTimeButton" onAction="#handleSelectPickupTime" styleClass="primary-button" text="%pickup.button.select.time" visible="false" managed="false" />
+                      <Button fx:id="reschedulePickupButton" onAction="#handleReschedulePickup" styleClass="secondary-button" text="%pickup.button.reschedule" visible="false" managed="false" />
+                      
+                      <!-- Transaction verification buttons -->
+                      <Button fx:id="confirmTransactionButton" onAction="#handleConfirmTransaction" styleClass="primary-button" text="%transaction.button.confirm" visible="false" managed="false" />
+                      <Button fx:id="cancelTransactionButton" onAction="#handleCancelTransaction" styleClass="danger-button" text="%transaction.button.cancel" visible="false" managed="false" />
+                      
+                      <!-- Review button -->
+                      <Button fx:id="writeReviewButton" onAction="#handleWriteReview" styleClass="primary-button" text="%review.button.write" visible="false" managed="false" />
+                    </children>
+                  </HBox>
+                </children>
+              </VBox>
+            </VBox>
+          </content>
+        </ScrollPane>
+        
+        <!-- Empty State for Details Panel -->
+        <VBox fx:id="emptyDetailsState" alignment="CENTER" spacing="20.0" styleClass="empty-details-state" VBox.vgrow="ALWAYS">
+          <children>
+            <Text styleClass="empty-state-icon" text="📋" />
+            <Text styleClass="empty-state-title" text="%offers.details.empty.title" />
+            <Text styleClass="empty-state-subtitle" text="%offers.details.empty.subtitle" />
+          </children>
+        </VBox>
+      </children>
+    </VBox>
+  </items>
+</SplitPane>

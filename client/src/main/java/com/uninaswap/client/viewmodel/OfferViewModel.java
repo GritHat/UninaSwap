@@ -1,6 +1,7 @@
 package com.uninaswap.client.viewmodel;
 
 import com.uninaswap.common.enums.Currency;
+import com.uninaswap.common.enums.DeliveryType;
 import com.uninaswap.common.enums.OfferStatus;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -17,6 +18,7 @@ public class OfferViewModel {
     private final ObjectProperty<LocalDateTime> createdAt = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDateTime> updatedAt = new SimpleObjectProperty<>();
     private final ObjectProperty<OfferStatus> status = new SimpleObjectProperty<>();
+    private final ObjectProperty<DeliveryType> deliveryType = new SimpleObjectProperty<>();
 
     // Money component
     private final ObjectProperty<BigDecimal> amount = new SimpleObjectProperty<>();
@@ -83,6 +85,10 @@ public class OfferViewModel {
 
     public ObjectProperty<ListingViewModel> listingProperty() {
         return listing;
+    }
+
+    public ObjectProperty<DeliveryType> deliveryTypeProperty() {
+        return deliveryType;
     }
 
     // Getters and setters
@@ -197,5 +203,13 @@ public class OfferViewModel {
 
     public String getListingOwnerUsername() {
         return listing.get().getUser().getUsername();
+    }
+
+    public DeliveryType getDeliveryType() {
+        return deliveryType.get();
+    }
+
+    public void setDeliveryType(DeliveryType deliveryType) {
+        this.deliveryType.set(deliveryType);
     }
 }

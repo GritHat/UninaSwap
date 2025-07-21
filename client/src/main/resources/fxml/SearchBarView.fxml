@@ -9,12 +9,12 @@
 
 <HBox fx:id="searchBar" alignment="CENTER" spacing="5.0" style="-fx-background-color: -fx-primary-ultralight; -fx-background-radius: 8px;" styleClass="search-container" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.SearchBarController">
    <children>
-      <TextField fx:id="searchField" prefHeight="36.0" prefWidth="610.0" promptText="%label.search" styleClass="search-field">
+      <TextField fx:id="searchField" prefHeight="36.0" prefWidth="610.0" promptText="%searchbar.prompt" styleClass="search-field">
          <HBox.margin>
             <Insets left="15.0" />
          </HBox.margin>
       </TextField>
-      <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearch" styleClass="search-button" text="%button.search">
+      <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearch" styleClass="search-button" text="%searchbar.button.search">
          <graphic>
             <ImageView fitHeight="28.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
                <image>

@@ -550,7 +550,7 @@ public class PickupSelectionController {
         submitCounterProposalButton.setDisable(true);
 
         // First reject the current pickup
-        pickupService.updatePickupStatus(currentPickup.getId(), PickupStatus.DECLINED)
+        pickupService.updatePickupStatus(currentPickup.getId(), PickupStatus.CANCELLED)
                 .thenCompose(rejected -> {
                     if (rejected) {
                         // Then create the counter proposal

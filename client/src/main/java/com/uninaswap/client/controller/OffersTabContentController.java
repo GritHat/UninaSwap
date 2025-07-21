@@ -475,13 +475,13 @@ public class OffersTabContentController {
             case PICKUPRESCHEDULING:
                 if (offer.getDeliveryType() == DeliveryType.PICKUP) {
                     if (isListingOwner) {
-                        // Listing owner can reschedule pickup
-                        showActionButtons(false, false, false, false, false, true, false, false, false);
-                        System.out.println("PICKUPRESCHEDULING - showing reschedule button for listing owner");
+                        // FIXED: Listing owner should SELECT from the proposed times, not reschedule
+                        showActionButtons(false, false, false, false, true, false, false, false, false);
+                        System.out.println("PICKUPRESCHEDULING - showing SELECT TIME button for listing owner");
                     } else {
-                        // Offer creator can also reschedule or select from existing times
-                        showActionButtons(false, false, false, false, true, true, false, false, false);
-                        System.out.println("PICKUPRESCHEDULING - showing select/reschedule buttons for offer creator");
+                        // Offer creator can propose new times (reschedule)
+                        showActionButtons(false, false, false, false, false, true, false, false, false);
+                        System.out.println("PICKUPRESCHEDULING - showing RESCHEDULE button for offer creator");
                     }
                 }
                 break;
@@ -526,6 +526,12 @@ public class OffersTabContentController {
                 // Only buyers can review sellers, not the other way around
                 hideAllActionButtons();
                 System.out.println("COMPLETED - no review option for sellers (only buyers can review sellers)");
+                break;
+                
+            case REVIEWED:
+                // Review has been submitted - no more actions available
+                hideAllActionButtons();
+                System.out.println("REVIEWED - review already submitted, no actions available");
                 break;
                 
             case CANCELLED:
@@ -579,9 +585,9 @@ public class OffersTabContentController {
                 
             case PICKUPRESCHEDULING:
                 if (offer.getDeliveryType() == DeliveryType.PICKUP) {
-                    // Show reschedule or select time buttons for both parties
+                    // Offer creator (buyer) can propose new times or select from existing ones
                     showActionButtons(false, false, false, false, true, true, false, false, false);
-                    System.out.println("PICKUPRESCHEDULING - showing SELECT TIME and RESCHEDULE buttons");
+                    System.out.println("PICKUPRESCHEDULING - showing SELECT TIME and RESCHEDULE buttons for buyer");
                 }
                 break;
                 

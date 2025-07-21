@@ -80,6 +80,10 @@ public class ListingWebSocketHandler extends TextWebSocketHandler {
                         handleGetListingDetail(listingMessage, response);
                         break;
 
+                    case GET_USER_LISTINGS_REQUEST:
+                        handleGetUserListings(listingMessage, response, currentUser);
+                        break;
+
                     default:
                         response.setSuccess(false);
                         response.setErrorMessage("Unknown listing message type: " + listingMessage.getType());
@@ -228,5 +232,31 @@ public class ListingWebSocketHandler extends TextWebSocketHandler {
 
         response.setType(ListingMessage.Type.GET_LISTING_DETAIL_RESPONSE);
         logger.info("Retrieved listing details for: {}", listingId);
+    }
+
+    private void handleGetUserListings(ListingMessage request, ListingMessage response, UserEntity currentUser) {
+        Long userId = request.getUserId();
+        
+        if (userId == null) {
+            response.setSuccess(false);
+            response.setErrorMessage("User ID is required");
+            response.setType(ListingMessage.Type.GET_USER_LISTINGS_RESPONSE);
+            return;
+        }
+        
+        try {
+            List<ListingDTO> userListings = listingService.getUserListings(userId);
+            
+            response.setType(ListingMessage.Type.GET_USER_LISTINGS_RESPONSE);
+            response.setListings(userListings);
+            response.setSuccess(true);
+            
+            logger.info("Retrieved {} listings for user {}", userListings.size(), userId);
+        } catch (Exception e) {
+            logger.error("Error retrieving listings for user {}: {}", userId, e.getMessage());
+            response.setSuccess(false);
+            response.setErrorMessage("Failed to retrieve user listings: " + e.getMessage());
+            response.setType(ListingMessage.Type.GET_USER_LISTINGS_RESPONSE);
+        }
     }
 }

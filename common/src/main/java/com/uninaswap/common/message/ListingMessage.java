@@ -17,7 +17,9 @@ public class ListingMessage extends Message {
         DELETE_LISTING_REQUEST,
         DELETE_LISTING_RESPONSE,
         GET_LISTING_DETAIL_REQUEST,
-        GET_LISTING_DETAIL_RESPONSE
+        GET_LISTING_DETAIL_RESPONSE,
+        GET_USER_LISTINGS_REQUEST,
+        GET_USER_LISTINGS_RESPONSE
     }
 
     private Type type;
@@ -26,6 +28,7 @@ public class ListingMessage extends Message {
     private List<ListingDTO> listings;
     private String errorMessage;
     private String listingId;
+    private Long userId;
 
     // For pagination
     private int page;
@@ -85,6 +88,14 @@ public class ListingMessage extends Message {
 
     public void setListingId(String listingId) {
         this.listingId = listingId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public int getPage() {

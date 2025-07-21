@@ -385,6 +385,25 @@ public class ListingService {
                 });
                 break;
 
+            case GET_USER_LISTINGS_RESPONSE:
+                Platform.runLater(() -> {
+                    if (message.isSuccess()) {
+                        List<ListingDTO> listings = message.getListings() != null ? message.getListings()
+                                : new ArrayList<>();
+                        if (futureToComplete != null) {
+                            ((CompletableFuture<List<ListingDTO>>) futureToComplete).complete(listings);
+                            futureToComplete = null;
+                        }
+                    } else {
+                        if (futureToComplete != null) {
+                            futureToComplete.completeExceptionally(
+                                    new Exception("Failed to get user listings: " + message.getErrorMessage()));
+                            futureToComplete = null;
+                        }
+                    }
+                });
+                break;
+
             default:
                 System.out.println("Unknown listing message type: " + message.getType());
                 break;
@@ -409,5 +428,25 @@ public class ListingService {
     // Set a callback for incoming messages
     public void setMessageCallback(Consumer<ListingMessage> callback) {
         this.messageCallback = callback;
+    }
+
+    // Get listings for a specific user by user ID
+    public CompletableFuture<List<ListingDTO>> getUserListings(Long userId) {
+        CompletableFuture<List<ListingDTO>> future = new CompletableFuture<>();
+
+        ListingMessage message = new ListingMessage();
+        message.setType(ListingMessage.Type.GET_USER_LISTINGS_REQUEST);
+        message.setUserId(userId);
+
+        this.futureToComplete = future;
+
+        webSocketClient.sendMessage(message)
+                .exceptionally(ex -> {
+                    future.completeExceptionally(ex);
+                    this.futureToComplete = null;
+                    return null;
+                });
+
+        return future;
     }
 }

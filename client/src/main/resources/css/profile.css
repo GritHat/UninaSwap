@@ -1,0 +1,159 @@
+/* Add to styles.css */
+
+/* Profile-specific field styling */
+.profile-field {
+    -fx-background-color: white;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 14px;
+}
+
+.profile-field:focused {
+    -fx-border-color: #2196F3;
+    -fx-effect: dropshadow(three-pass-box, rgba(33, 150, 243, 0.3), 4, 0, 0, 0);
+}
+
+.profile-field:disabled {
+    -fx-background-color: #F5F5F5;
+    -fx-text-fill: #666666;
+}
+
+.profile-text-area {
+    -fx-background-color: white;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 12px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-text-area:focused {
+    -fx-border-color: #2196F3;
+    -fx-effect: dropshadow(three-pass-box, rgba(33, 150, 243, 0.3), 4, 0, 0, 0);
+}
+
+.profile-text-area .content {
+    -fx-background-color: transparent;
+}
+
+/* User Listings Section */
+.user-listings-list {
+    -fx-spacing: 12px;
+}
+
+.listing-preview-item {
+    -fx-background-color: #FAFAFA;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 12px;
+    -fx-cursor: hand;
+}
+
+.listing-preview-item:hover {
+    -fx-background-color: #F0F0F0;
+    -fx-border-color: #CCCCCC;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.listing-preview-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.listing-type-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+    -fx-font-weight: normal;
+}
+
+.listing-date-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #999999;
+}
+
+.status-badge {
+    -fx-background-radius: 12px;
+    -fx-padding: 2px 8px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.status-badge.status-active {
+    -fx-background-color: #4CAF50;
+}
+
+.status-badge.status-completed {
+    -fx-background-color: #2196F3;
+}
+
+.status-badge.status-cancelled {
+    -fx-background-color: #F44336;
+}
+
+.status-badge.status-expired {
+    -fx-background-color: #FF9800;
+}
+
+.count-badge {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-background-radius: 10px;
+    -fx-padding: 2px 8px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* Action buttons section */
+.action-buttons-section {
+    -fx-padding: 10px 0;
+}
+
+/* Status message styling */
+.status-message {
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+}
+
+.status-message.success-message {
+    -fx-background-color: #E8F5E8;
+    -fx-text-fill: #2E7D32;
+    -fx-border-color: #4CAF50;
+}
+
+.status-message.error-message {
+    -fx-background-color: #FFEBEE;
+    -fx-text-fill: #C62828;
+    -fx-border-color: #F44336;
+}
+
+/* Field label styling */
+.field-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #555555;
+    -fx-alignment: center-right;
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    .listing-preview-item {
+        -fx-padding: 8px;
+    }
+    
+    .listing-preview-title {
+        -fx-font-size: 13px;
+    }
+    
+    .profile-field {
+        -fx-padding: 6px 10px;
+        -fx-font-size: 13px;
+    }
+}

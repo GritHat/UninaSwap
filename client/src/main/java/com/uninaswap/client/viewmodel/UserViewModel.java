@@ -21,6 +21,8 @@ public class UserViewModel {
     private final DoubleProperty rating = new SimpleDoubleProperty(0.0);
     private final IntegerProperty reviewCount = new SimpleIntegerProperty(0);
     private final StringProperty bio = new SimpleStringProperty();
+    private final StringProperty stateProvince = new SimpleStringProperty();
+    private final StringProperty zipPostalCode = new SimpleStringProperty();
 
     // Constructors
     public UserViewModel() {
@@ -95,6 +97,14 @@ public class UserViewModel {
 
     public StringProperty bioProperty() {
         return bio;
+    }
+
+    public StringProperty stateProvinceProperty() {
+        return stateProvince;
+    }
+
+    public StringProperty zipPostalCodeProperty() {
+        return zipPostalCode;
     }
 
     // Getters and setters
@@ -224,6 +234,22 @@ public class UserViewModel {
 
     public void setBio(String bio) {
         this.bio.set(bio);
+    }
+
+    public String getStateProvince() {
+        return stateProvince.get();
+    }
+
+    public void setStateProvince(String stateProvince) {
+        this.stateProvince.set(stateProvince);
+    }
+
+    public String getZipPostalCode() {
+        return zipPostalCode.get();
+    }
+
+    public void setZipPostalCode(String zipPostalCode) {
+        this.zipPostalCode.set(zipPostalCode);
     }
 
     // Utility methods

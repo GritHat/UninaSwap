@@ -62,8 +62,10 @@ public class PickupService {
         OfferEntity offer = offerRepository.findById(pickupDTO.getOfferId())
                 .orElseThrow(() -> new IllegalArgumentException("Offer not found: " + pickupDTO.getOfferId()));
 
-        if (offer.getStatus() != OfferStatus.ACCEPTED) {
-            throw new IllegalStateException("Can only create pickup for accepted offers");
+        if (offer.getStatus() != OfferStatus.ACCEPTED && 
+            offer.getStatus() != OfferStatus.PICKUPSCHEDULING && 
+            offer.getStatus() != OfferStatus.PICKUPRESCHEDULING) {
+            throw new IllegalStateException("Can only create pickup for accepted offers or during pickup scheduling/rescheduling");
         }
 
         // Validate delivery type is PICKUP
@@ -72,8 +74,37 @@ public class PickupService {
         }
 
         // Check if pickup already exists for this offer
-        if (pickupRepository.existsByOfferId(pickupDTO.getOfferId())) {
-            throw new IllegalStateException("Pickup already exists for this offer");
+        Optional<PickupEntity> existingPickupOpt = pickupRepository.findByOfferId(pickupDTO.getOfferId());
+        
+        if (existingPickupOpt.isPresent()) {
+            PickupEntity existingPickup = existingPickupOpt.get();
+            
+            // If there's an existing pickup, we need to handle it based on its status
+            switch (existingPickup.getStatus()) {
+                case DECLINED:
+                    // If it was declined, delete the old one and create new
+                    logger.info("Deleting declined pickup {} and creating new one for offer {}", existingPickup.getId(), pickupDTO.getOfferId());
+                    pickupRepository.delete(existingPickup);
+                    pickupRepository.flush();
+                    offer.setStatus(OfferStatus.PICKUPSCHEDULING);
+                    break;
+                    
+                case CANCELLED:
+                    // If it was cancelled, delete the old one and create new
+                    logger.info("Deleting cancelled pickup {} and creating new one for offer {}", existingPickup.getId(), pickupDTO.getOfferId());
+                    pickupRepository.delete(existingPickup);
+                    pickupRepository.flush();
+                    offer.setStatus(OfferStatus.PICKUPRESCHEDULING);
+                    break;
+                    
+                case PENDING:
+                case ACCEPTED:
+                case COMPLETED:
+                    throw new IllegalStateException("Cannot create new pickup - existing pickup is already " + existingPickup.getStatus());
+                    
+                default:
+                    throw new IllegalStateException("Cannot create pickup - existing pickup has status: " + existingPickup.getStatus());
+            }
         }
 
         // Get creator user
@@ -112,7 +143,6 @@ public class PickupService {
         pickup = pickupRepository.save(pickup);
 
         // Update offer status to PICKUPSCHEDULING
-        offer.setStatus(OfferStatus.PICKUPSCHEDULING);
         offer.setUpdatedAt(LocalDateTime.now());
         offerRepository.save(offer);
 
@@ -120,6 +150,38 @@ public class PickupService {
                 pickup.getId(), pickupDTO.getOfferId());
 
         return pickupMapper.toDto(pickup);
+    }
+
+    /**
+     * Update an existing pickup with new scheduling information
+     */
+    private PickupDTO updateExistingPickup(PickupEntity existingPickup, PickupDTO pickupDTO, Long updatingUserId, OfferEntity offer) {
+        // Get updating user
+        UserEntity updatedBy = userRepository.findById(updatingUserId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + updatingUserId));
+
+        // Update the pickup with new information
+        existingPickup.setAvailableDates(pickupDTO.getAvailableDates());
+        existingPickup.setStartTime(pickupDTO.getStartTime());
+        existingPickup.setEndTime(pickupDTO.getEndTime());
+        existingPickup.setDetails(pickupDTO.getDetails());
+        existingPickup.setUpdatedBy(updatedBy);
+        existingPickup.setStatus(PickupStatus.PENDING); // Reset to pending
+        existingPickup.setSelectedDate(null); // Clear any previous selection
+        existingPickup.setSelectedTime(null);
+
+        existingPickup = pickupRepository.save(existingPickup);
+
+        // Update offer status to PICKUPSCHEDULING (or keep it in PICKUPRESCHEDULING)
+        if (offer.getStatus() != OfferStatus.PICKUPRESCHEDULING) {
+            offer.setStatus(OfferStatus.PICKUPSCHEDULING);
+            offer.setUpdatedAt(LocalDateTime.now());
+            offerRepository.save(offer);
+        }
+
+        logger.info("Successfully updated existing pickup {} for offer {}", existingPickup.getId(), pickupDTO.getOfferId());
+
+        return pickupMapper.toDto(existingPickup);
     }
 
     /**

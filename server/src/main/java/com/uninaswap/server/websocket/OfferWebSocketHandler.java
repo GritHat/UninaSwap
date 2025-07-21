@@ -254,6 +254,8 @@ public class OfferWebSocketHandler extends TextWebSocketHandler {
             
         } catch (Exception e) {
             logger.error("Failed to confirm transaction for offer: {}", message.getOfferId(), e);
+            response.setSuccess(false);
+            response.setType(OfferMessage.Type.CONFIRM_TRANSACTION_RESPONSE);
             response.setErrorMessage("Failed to confirm transaction: " + e.getMessage());
         }
     }
@@ -270,6 +272,8 @@ public class OfferWebSocketHandler extends TextWebSocketHandler {
             logger.info("Transaction cancellation successful for offer: {}", message.getOfferId());
         } catch (Exception e) {
             logger.error("Failed to cancel transaction for offer: {}", message.getOfferId(), e);
+            response.setType(OfferMessage.Type.CANCEL_TRANSACTION_RESPONSE);
+            response.setSuccess(false);
             response.setErrorMessage("Failed to cancel transaction: " + e.getMessage());
         }
     }

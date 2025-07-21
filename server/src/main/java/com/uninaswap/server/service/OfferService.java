@@ -366,11 +366,13 @@ public class OfferService {
         offer.setUpdatedAt(LocalDateTime.now());
         OfferEntity savedOffer = offerRepository.save(offer);
 
+        offer.getListing().setStatus(ListingStatus.PENDING);
+
         // If there's an associated pickup, cancel it too
         Optional<PickupEntity> pickup = pickupRepository.findByOfferId(offerId);
         if (pickup.isPresent()) {
             PickupEntity pickupEntity = pickup.get();
-            pickupEntity.setStatus(PickupStatus.CANCELLED);
+            pickupEntity.setStatus(PickupStatus.DECLINED);
             pickupEntity.setUpdatedAt(LocalDateTime.now());
             pickupRepository.save(pickupEntity);
             logger.info("Associated pickup {} also cancelled", pickupEntity.getId());

@@ -17,19 +17,27 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.scene.image.PixelReader;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import com.uninaswap.client.util.AlertHelper;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.function.Consumer;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.UserSessionService;
+import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.viewmodel.UserViewModel;
 import com.uninaswap.client.service.ProfileService;
 import com.uninaswap.client.constants.EventTypes;
+import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ImageService;
+import com.uninaswap.client.service.ListingService;
 import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.ProfileUpdateMessage;
 
@@ -65,14 +73,38 @@ public class ProfileController implements Refreshable {
     @FXML
     private Button cancelButton;
 
+    @FXML
+    private TextField addressField;
+    @FXML
+    private TextField cityField;
+    @FXML
+    private TextField stateProvinceField;
+    @FXML
+    private TextField countryField;
+    @FXML
+    private TextField zipPostalCodeField;
+
+    // Add for user listings section
+    @FXML
+    private VBox userListingsSection;
+    @FXML
+    private VBox userListingsList;
+    @FXML
+    private Label userListingsCountLabel;
+
     private final NavigationService navigationService;
     private final LocaleService localeService;
     private final UserSessionService sessionService;
     private final ProfileService profileService;
+    private final ListingService listingService = ListingService.getInstance();
 
     private String tempProfileImagePath;
     private File tempSelectedImageFile;
     private UserViewModel user;
+
+    // Add fields to track profile ownership
+    private boolean isOwnProfile = false;
+    private UserViewModel viewedUser;
 
     public ProfileController() {
         this.navigationService = NavigationService.getInstance();
@@ -97,9 +129,18 @@ public class ProfileController implements Refreshable {
         registerMessageHandler();
     }
 
+    // Update the loadProfile method
     public void loadProfile(UserViewModel user) {
+        this.viewedUser = user;
         this.user = user;
+
+        // Check if this is the current user's own profile
+        UserViewModel currentUser = sessionService.getUserViewModel();
+        this.isOwnProfile = currentUser != null && user.getId().equals(currentUser.getId());
+
         loadUserProfile();
+        loadUserListings();
+        setupProfileVisibility();
     }
 
     /**
@@ -127,27 +168,50 @@ public class ProfileController implements Refreshable {
 
     private void loadUserProfile() {
         if (usernameField != null) {
-            usernameField.setText(user.getUsername());
+            usernameField.setText(viewedUser.getUsername());
         }
 
         if (emailField != null) {
-            emailField.setText(user.getEmail());
+            emailField.setText(viewedUser.getEmail());
+            emailField.setEditable(isOwnProfile);
         }
 
         if (firstNameField != null) {
-            firstNameField.setText(user.getFirstName());
+            firstNameField.setText(viewedUser.getFirstName());
+            firstNameField.setEditable(isOwnProfile);
         }
 
         if (lastNameField != null) {
-            lastNameField.setText(user.getLastName());
+            lastNameField.setText(viewedUser.getLastName());
+            lastNameField.setEditable(isOwnProfile);
         }
 
         if (bioField != null) {
-            bioField.setText(user.getBio());
+            bioField.setText(viewedUser.getBio());
+            bioField.setEditable(isOwnProfile);
+        }
+
+        // Load address fields (only for own profile)
+        if (isOwnProfile) {
+            if (addressField != null) {
+                addressField.setText(viewedUser.getAddress());
+            }
+            if (cityField != null) {
+                cityField.setText(viewedUser.getCity());
+            }
+            if (stateProvinceField != null) {
+                stateProvinceField.setText(viewedUser.getAddress()); // You might need a separate state field in UserViewModel
+            }
+            if (countryField != null) {
+                countryField.setText(viewedUser.getCountry());
+            }
+            if (zipPostalCodeField != null) {
+                zipPostalCodeField.setText(viewedUser.getPhoneNumber()); // You might need a separate zip field in UserViewModel
+            }
         }
 
         // Set profile image
-        String imagePath = user.getProfileImagePath();
+        String imagePath = viewedUser.getProfileImagePath();
         if (imagePath != null && !imagePath.isEmpty()) {
             ImageService.getInstance().fetchImage(imagePath)
                     .thenAccept(image -> {
@@ -167,6 +231,170 @@ public class ProfileController implements Refreshable {
                         return null;
                     });
         }
+    }
+
+    private void setupProfileVisibility() {
+        // Show/hide address fields based on profile ownership
+        if (addressField != null) {
+            addressField.setVisible(isOwnProfile);
+            addressField.setManaged(isOwnProfile);
+        }
+        if (cityField != null) {
+            cityField.setVisible(isOwnProfile);
+            cityField.setManaged(isOwnProfile);
+        }
+        if (stateProvinceField != null) {
+            stateProvinceField.setVisible(isOwnProfile);
+            stateProvinceField.setManaged(isOwnProfile);
+        }
+        if (countryField != null) {
+            countryField.setVisible(isOwnProfile);
+            countryField.setManaged(isOwnProfile);
+        }
+        if (zipPostalCodeField != null) {
+            zipPostalCodeField.setVisible(isOwnProfile);
+            zipPostalCodeField.setManaged(isOwnProfile);
+        }
+
+        // Show/hide change image button
+        if (changeImageButton != null) {
+            changeImageButton.setVisible(isOwnProfile);
+            changeImageButton.setManaged(isOwnProfile);
+        }
+
+        // Show/hide save/cancel buttons
+        if (saveButton != null) {
+            saveButton.setVisible(isOwnProfile);
+            saveButton.setManaged(isOwnProfile);
+        }
+        if (cancelButton != null) {
+            cancelButton.setVisible(isOwnProfile);
+            cancelButton.setManaged(isOwnProfile);
+        }
+    }
+
+    private void loadUserListings() {
+        if (userListingsList == null) return;
+
+        userListingsList.getChildren().clear();
+
+        // Load listings for the viewed user
+        listingService.getUserListings(viewedUser.getId())
+                .thenAccept(listings -> Platform.runLater(() -> {
+                    // Convert DTOs to ViewModels
+                    List<ListingViewModel> listingViewModels = listings.stream()
+                            .map(ViewModelMapper.getInstance()::toViewModel)
+                            .collect(Collectors.toList());
+                    
+                    userListingsCountLabel.setText(String.valueOf(listingViewModels.size()));
+
+                    if (listingViewModels.isEmpty()) {
+                        Label noListingsLabel = new Label(
+                                isOwnProfile ?
+                                        localeService.getMessage("profile.listings.empty.own", "You haven't created any listings yet.") :
+                                        localeService.getMessage("profile.listings.empty.other", "This user hasn't created any listings yet.")
+                        );
+                        noListingsLabel.getStyleClass().add("placeholder-subtitle");
+                        userListingsList.getChildren().add(noListingsLabel);
+                    } else {
+                        // Show only first few listings with "View All" button
+                        int maxListings = Math.min(5, listingViewModels.size());
+                        for (int i = 0; i < maxListings; i++) {
+                            VBox listingItem = createListingPreviewItem(listingViewModels.get(i));
+                            userListingsList.getChildren().add(listingItem);
+                        }
+
+                        if (listingViewModels.size() > maxListings) {
+                            Button viewAllButton = new Button(
+                                    localeService.getMessage("profile.listings.view.all", "View All ({0})", listingViewModels.size())
+                            );
+                            viewAllButton.getStyleClass().add("secondary-button");
+                            viewAllButton.setOnAction(e -> handleViewAllListings());
+                            userListingsList.getChildren().add(viewAllButton);
+                        }
+                    }
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        Label errorLabel = new Label(
+                                localeService.getMessage("profile.listings.error", "Error loading listings.")
+                        );
+                        errorLabel.getStyleClass().add("error-message");
+                        userListingsList.getChildren().add(errorLabel);
+                    });
+                    return null;
+                });
+    }
+
+    private VBox createListingPreviewItem(ListingViewModel listing) {
+        VBox itemContainer = new VBox(8);
+        itemContainer.getStyleClass().add("listing-preview-item");
+
+        // Title and status row
+        HBox headerRow = new HBox(10);
+        headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        Label titleLabel = new Label(listing.getTitle());
+        titleLabel.getStyleClass().add("listing-preview-title");
+        titleLabel.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(titleLabel, javafx.scene.layout.Priority.ALWAYS);
+
+        Label statusLabel = new Label(listing.getStatus().getDisplayName());
+        statusLabel.getStyleClass().addAll("status-badge", "status-" + listing.getStatus().toString().toLowerCase());
+
+        headerRow.getChildren().addAll(titleLabel, statusLabel);
+
+        // Type and date row
+        HBox detailsRow = new HBox(15);
+        detailsRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        Label typeLabel = new Label(listing.getListingTypeValue());
+        typeLabel.getStyleClass().add("listing-type-label");
+
+        Label dateLabel = new Label(
+                listing.getCreatedAt() != null ?
+                        listing.getCreatedAt().toLocalDate().toString() :
+                        ""
+        );
+        dateLabel.getStyleClass().add("listing-date-label");
+
+        detailsRow.getChildren().addAll(typeLabel, dateLabel);
+
+        itemContainer.getChildren().addAll(headerRow, detailsRow);
+
+        // Make clickable
+        itemContainer.setOnMouseClicked(e -> {
+            try {
+                navigationService.navigateToListingDetails(listing);
+            } catch (Exception ex) {
+                System.err.println("Error navigating to listing: " + ex.getMessage());
+            }
+        });
+
+        return itemContainer;
+    }
+
+    private void handleViewAllListings() {
+        if (isOwnProfile) {
+            // Navigate to user's own listings page
+            try {
+                navigationService.navigateToListingsView();
+            } catch (Exception e) {
+                System.err.println("Error navigating to listings: " + e.getMessage());
+            }
+        } else {
+            // Show user's public listings in a dialog or new view
+            showUserListingsDialog(viewedUser);
+        }
+    }
+
+    private void showUserListingsDialog(UserViewModel user) {
+        // TODO: Implement user listings dialog
+        AlertHelper.showInformationAlert(
+                "User Listings",
+                user.getDisplayName() + "'s Listings",
+                "Feature coming soon: View all user listings in a dedicated dialog."
+        );
     }
 
     @FXML
@@ -326,31 +554,43 @@ public class ProfileController implements Refreshable {
         }
     }
 
+    // Update the saveProfileWithImage method to include address fields
     private void saveProfileWithImage() {
         // Update session with form values
-        user.setFirstName(firstNameField.getText());
-        user.setLastName(lastNameField.getText());
-        user.setBio(bioField.getText());
-        user.setProfileImagePath(tempProfileImagePath);
+        if (isOwnProfile) {
+            user.setFirstName(firstNameField.getText());
+            user.setLastName(lastNameField.getText());
+            user.setBio(bioField.getText());
+            user.setProfileImagePath(tempProfileImagePath);
 
-        // Create user object for update
-        UserDTO updatedUser = new UserDTO();
-        updatedUser.setUsername(usernameField.getText());
-        updatedUser.setEmail(emailField.getText());
-        updatedUser.setFirstName(firstNameField.getText());
-        updatedUser.setLastName(lastNameField.getText());
-        updatedUser.setBio(bioField.getText());
-        updatedUser.setProfileImagePath(tempProfileImagePath);
+            // Update address fields
+            user.setAddress(addressField.getText());
+            user.setCity(cityField.getText());
+            user.setCountry(countryField.getText());
+            // Note: You might need to add stateProvince and zipPostalCode fields to UserViewModel
 
-        // Send profile update request
-        profileService.updateProfile(updatedUser)
-                .exceptionally(ex -> {
-                    Platform.runLater(() -> {
-                        showStatus("profile.error.connection", true);
-                        System.err.println("Error sending profile update: " + ex.getMessage());
+            // Create user object for update
+            UserDTO updatedUser = new UserDTO();
+            updatedUser.setUsername(usernameField.getText());
+            updatedUser.setEmail(emailField.getText());
+            updatedUser.setFirstName(firstNameField.getText());
+            updatedUser.setLastName(lastNameField.getText());
+            updatedUser.setBio(bioField.getText());
+            updatedUser.setProfileImagePath(tempProfileImagePath);
+            updatedUser.setAddress(addressField.getText());
+            updatedUser.setCity(cityField.getText());
+            updatedUser.setCountry(countryField.getText());
+
+            // Send profile update request
+            profileService.updateProfile(updatedUser)
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> {
+                            showStatus("profile.error.connection", true);
+                            System.err.println("Error sending profile update: " + ex.getMessage());
+                        });
+                        return null;
                     });
-                    return null;
-                });
+        }
     }
 
     private void notifyProfileImageChange(String newImagePath) {
@@ -373,15 +613,21 @@ public class ProfileController implements Refreshable {
         statusLabel.getStyleClass().add(isError ? "error-message" : "success-message");
     }
 
+    @Override
     public void refreshUI() {
-        profileTitleLabel.setText(localeService.getMessage("profile.title"));
-        usernameField.setText(localeService.getMessage("label.username"));
-        emailLabel.setText(localeService.getMessage("label.email"));
-        firstNameLabel.setText(localeService.getMessage("label.firstname"));
-        lastNameLabel.setText(localeService.getMessage("label.lastname"));
-        bioLabel.setText(localeService.getMessage("label.bio"));
-        changeImageButton.setText(localeService.getMessage("button.change"));
-        saveButton.setText(localeService.getMessage("button.save"));
-        cancelButton.setText(localeService.getMessage("button.cancel"));
+        if (isOwnProfile) {
+            profileTitleLabel.setText(localeService.getMessage("profile.title"));
+            changeImageButton.setText(localeService.getMessage("button.change"));
+            saveButton.setText(localeService.getMessage("button.save"));
+            cancelButton.setText(localeService.getMessage("button.cancel"));
+        } else {
+            profileTitleLabel.setText(viewedUser.getDisplayName() + "'s " + localeService.getMessage("profile.title"));
+        }
+
+        // Update section labels
+        if (userListingsCountLabel != null) {
+            // Refresh listings count
+            loadUserListings();
+        }
     }
 }

@@ -137,7 +137,7 @@ public interface PickupRepository extends JpaRepository<PickupEntity, Long> {
         /**
          * Check if pickup exists for offer
          */
-        boolean existsByOfferId(String offerId);
+        boolean existsByOfferIdAndStatus(String offerId, PickupStatus status);
 
         /**
          * Delete pickup by offer ID
@@ -199,5 +199,5 @@ public interface PickupRepository extends JpaRepository<PickupEntity, Long> {
          * @return List of pickups matching the criteria
          */
         @Query("SELECT p FROM PickupEntity p WHERE p.offer.id = :id AND p.status = :status")
-        List<PickupEntity> findByOfferIdAndStatus(String id, PickupStatus status);
+        List<PickupEntity> findByOfferIdAndStatus(@Param("id") String id, @Param("status") PickupStatus status);
 }

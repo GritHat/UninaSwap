@@ -40,7 +40,7 @@
                                     <Insets left="15.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.center">
+                              <Text fx:id="supportCenterText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.center">
                                  <HBox.margin>
                                     <Insets left="10.0" />
                                  </HBox.margin>
@@ -64,7 +64,7 @@
                                           <Image url="@../images/icons/book.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.quick.guide">
+                                    <Text fx:id="quickGuideText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.quick.guide">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -74,7 +74,7 @@
                               <Separator prefWidth="200.0" />
                               
                               <VBox spacing="8.0">
-                                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%support.platform.description" wrappingWidth="650.0" />
+                                 <Text fx:id="platformDescriptionText" strokeType="OUTSIDE" strokeWidth="0.0" text="%support.platform.description" wrappingWidth="650.0" />
                                  
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
@@ -82,7 +82,7 @@
                                           <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
-                                    <Hyperlink text="%support.guide.beginners" />
+                                    <Hyperlink fx:id="beginnersGuideLink" onAction="#handleBeginnersGuide" text="%support.guide.beginners" />
                                  </HBox>
                                  
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -91,7 +91,7 @@
                                           <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
-                                    <Hyperlink text="%support.guide.selling" />
+                                    <Hyperlink fx:id="sellingGuideLink" onAction="#handleSellingGuide" text="%support.guide.selling" />
                                  </HBox>
                                  
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -100,7 +100,7 @@
                                           <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
-                                    <Hyperlink text="%support.guide.auctions" />
+                                    <Hyperlink fx:id="auctionsGuideLink" onAction="#handleAuctionsGuide" text="%support.guide.auctions" />
                                  </HBox>
                                  
                                  <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -109,7 +109,7 @@
                                           <Image url="@../images/icons/document.png" />
                                        </image>
                                     </ImageView>
-                                    <Hyperlink text="%support.guide.rules" />
+                                    <Hyperlink fx:id="rulesGuideLink" onAction="#handleRulesGuide" text="%support.guide.rules" />
                                  </HBox>
                               </VBox>
                            </children>
@@ -128,7 +128,7 @@
                                           <Image url="@../images/icons/faq.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.faq">
+                                    <Text fx:id="faqText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.faq">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -202,7 +202,7 @@
                                           <Image url="@../images/icons/customer_support.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.contact.us">
+                                    <Text fx:id="contactUsText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.contact.us">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -211,11 +211,11 @@
                               </HBox>
                               <Separator prefWidth="200.0" />
                               
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%support.contact.description" wrappingWidth="650.0" />
+                              <Text fx:id="contactDescriptionText" strokeType="OUTSIDE" strokeWidth="0.0" text="%support.contact.description" wrappingWidth="650.0" />
                               
                               <HBox alignment="CENTER_LEFT" spacing="10.0">
                                  <children>
-                                    <Label prefWidth="100.0" text="%support.contact.subject" />
+                                    <Label fx:id="subjectLabel" prefWidth="100.0" text="%support.contact.subject" />
                                     <TextField fx:id="subjectField" prefWidth="300.0" promptText="%support.contact.subject.prompt" HBox.hgrow="ALWAYS" />
                                  </children>
                                  <VBox.margin>
@@ -225,7 +225,7 @@
                               
                               <VBox spacing="5.0">
                                  <children>
-                                    <Label text="%support.contact.message" />
+                                    <Label fx:id="messageLabel" text="%support.contact.message" />
                                     <TextArea fx:id="messageField" prefHeight="150.0" prefWidth="200.0" promptText="%support.contact.message.prompt" wrapText="true" />
                                  </children>
                               </VBox>
@@ -262,7 +262,7 @@
                                           <Image url="@../images/icons/Phone-Call-In--Streamline-Ultimate.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.other.contact.methods">
+                                    <Text fx:id="otherContactMethodsText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.other.contact.methods">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -280,8 +280,8 @@
                                                 <Image url="@../images/icons/email.png" />
                                              </image>
                                           </ImageView>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.contact.email" />
-                                          <Hyperlink text="%support.contact.email.address" />
+                                          <Text fx:id="emailLabel" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.contact.email" />
+                                          <Hyperlink fx:id="emailAddressLink" onAction="#handleEmailLink" text="%support.contact.email.address" />
                                        </children>
                                     </VBox>
                                     
@@ -292,8 +292,8 @@
                                                 <Image url="@../images/icons/clock.png" />
                                              </image>
                                           </ImageView>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.contact.hours" />
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%support.contact.hours.value" />
+                                          <Text fx:id="hoursLabel" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.contact.hours" />
+                                          <Text fx:id="hoursValueText" strokeType="OUTSIDE" strokeWidth="0.0" text="%support.contact.hours.value" />
                                        </children>
                                     </VBox>
                                     
@@ -304,8 +304,8 @@
                                                 <Image url="@../images/icons/faq.png" />
                                              </image>
                                           </ImageView>
-                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.full.faq" />
-                                          <Hyperlink text="%support.knowledge.base.link" />
+                                          <Text fx:id="knowledgeBaseLabel" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%support.full.faq" />
+                                          <Hyperlink fx:id="knowledgeBaseLink" onAction="#handleKnowledgeBase" text="%support.knowledge.base.link" />
                                        </children>
                                     </VBox>
                                  </children>

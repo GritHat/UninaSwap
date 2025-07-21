@@ -17,7 +17,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PickupSchedulingController {
+public class PickupSchedulingController implements Refreshable {
 
     @FXML
     private Label titleLabel;
@@ -67,6 +67,37 @@ public class PickupSchedulingController {
     @FXML
     private Button cancelButton;
 
+    // Additional labels that need localization
+    @FXML
+    private Label locationLabel;
+
+    @FXML
+    private Label timeRangeLabel;
+
+    @FXML
+    private Label fromLabel;
+
+    @FXML
+    private Label toLabel;
+
+    @FXML
+    private Label timeHelpLabel;
+
+    @FXML
+    private Label availableDatesLabel;
+
+    @FXML
+    private Label startDateLabel;
+
+    @FXML
+    private Label endDateLabel;
+
+    @FXML
+    private Label detailsLabel;
+
+    @FXML
+    private Label detailsHelpLabel;
+
     // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final PickupService pickupService = PickupService.getInstance();
@@ -81,7 +112,95 @@ public class PickupSchedulingController {
     public void initialize() {
         setupTimeSpinners();
         setupDatePickers();
-        setupLabels();
+        updateSelectedDatesDisplay();
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("pickup.scheduling.debug.initialized", "PickupScheduling controller initialized"));
+    }
+
+    @Override
+    public void refreshUI() {
+        // Update labels based on current mode
+        if (isReschedulingMode) {
+            if (titleLabel != null) {
+                titleLabel.setText(localeService.getMessage("pickup.reschedule.title", "Reschedule Pickup"));
+            }
+            if (instructionsLabel != null) {
+                instructionsLabel.setText(localeService.getMessage("pickup.reschedule.instructions",
+                        "Propose new available dates and time range for pickup"));
+            }
+            if (confirmButton != null) {
+                confirmButton.setText(localeService.getMessage("pickup.reschedule.confirm", "Propose New Schedule"));
+            }
+        } else {
+            if (titleLabel != null) {
+                titleLabel.setText(localeService.getMessage("pickup.scheduling.title", "Schedule Pickup"));
+            }
+            if (instructionsLabel != null) {
+                instructionsLabel.setText(localeService.getMessage("pickup.scheduling.instructions",
+                        "Select your available dates and time range for pickup"));
+            }
+            if (confirmButton != null) {
+                confirmButton.setText(localeService.getMessage("pickup.scheduling.confirm", "Schedule Pickup"));
+            }
+        }
+
+        // Update common labels
+        if (locationLabel != null) {
+            locationLabel.setText(localeService.getMessage("pickup.label.location", "Pickup Location"));
+        }
+        if (timeRangeLabel != null) {
+            timeRangeLabel.setText(localeService.getMessage("pickup.label.time.range", "Available Time Range"));
+        }
+        if (fromLabel != null) {
+            fromLabel.setText(localeService.getMessage("pickup.label.from", "From:"));
+        }
+        if (toLabel != null) {
+            toLabel.setText(localeService.getMessage("pickup.label.to", "To:"));
+        }
+        if (timeHelpLabel != null) {
+            timeHelpLabel.setText(localeService.getMessage("pickup.help.time.range", "This time range will apply to all selected dates"));
+        }
+        if (availableDatesLabel != null) {
+            availableDatesLabel.setText(localeService.getMessage("pickup.label.available.dates", "Available Dates"));
+        }
+        if (startDateLabel != null) {
+            startDateLabel.setText(localeService.getMessage("pickup.label.start.date", "Start Date:"));
+        }
+        if (endDateLabel != null) {
+            endDateLabel.setText(localeService.getMessage("pickup.label.end.date", "End Date:"));
+        }
+        if (detailsLabel != null) {
+            detailsLabel.setText(localeService.getMessage("pickup.label.details", "Additional Details (Optional)"));
+        }
+        if (detailsHelpLabel != null) {
+            detailsHelpLabel.setText(localeService.getMessage("pickup.help.details", "You can add any special instructions or additional information here"));
+        }
+
+        // Update button labels
+        if (cancelButton != null) {
+            cancelButton.setText(localeService.getMessage("pickup.scheduling.cancel", "Cancel"));
+        }
+        if (addDateRangeButton != null) {
+            addDateRangeButton.setText(localeService.getMessage("pickup.add.dates", "Add Date Range"));
+        }
+        if (clearDatesButton != null) {
+            clearDatesButton.setText(localeService.getMessage("pickup.clear.dates", "Clear All"));
+        }
+
+        // Update prompt texts
+        if (locationField != null) {
+            locationField.setPromptText(localeService.getMessage("pickup.location.prompt",
+                    "Enter pickup location (e.g., University Campus, Building A)"));
+        }
+        if (detailsArea != null) {
+            detailsArea.setPromptText(localeService.getMessage("pickup.details.prompt",
+                    "Add any additional details or instructions (optional)"));
+        }
+
+        // Update selected dates count
         updateSelectedDatesDisplay();
     }
 
@@ -142,22 +261,6 @@ public class PickupSchedulingController {
         });
     }
 
-    private void setupLabels() {
-        titleLabel.setText(localeService.getMessage("pickup.scheduling.title", "Schedule Pickup"));
-        instructionsLabel.setText(localeService.getMessage("pickup.scheduling.instructions",
-                "Select your available dates and time range for pickup"));
-
-        locationField.setPromptText(localeService.getMessage("pickup.location.prompt",
-                "Enter pickup location (e.g., University Campus, Building A)"));
-        detailsArea.setPromptText(localeService.getMessage("pickup.details.prompt",
-                "Add any additional details or instructions (optional)"));
-
-        confirmButton.setText(localeService.getMessage("pickup.scheduling.confirm", "Schedule Pickup"));
-        cancelButton.setText(localeService.getMessage("pickup.scheduling.cancel", "Cancel"));
-        addDateRangeButton.setText(localeService.getMessage("pickup.add.dates", "Add Date Range"));
-        clearDatesButton.setText(localeService.getMessage("pickup.clear.dates", "Clear All"));
-    }
-
     public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
@@ -170,19 +273,8 @@ public class PickupSchedulingController {
         this.isReschedulingMode = reschedulingMode;
 
         Platform.runLater(() -> {
-            if (reschedulingMode) {
-                // Update UI for rescheduling
-                titleLabel.setText(localeService.getMessage("pickup.reschedule.title", "Reschedule Pickup"));
-                instructionsLabel.setText(localeService.getMessage("pickup.reschedule.instructions",
-                        "Propose new available dates and time range for pickup"));
-                confirmButton.setText(localeService.getMessage("pickup.reschedule.confirm", "Propose New Schedule"));
-            } else {
-                // Keep original scheduling UI
-                titleLabel.setText(localeService.getMessage("pickup.scheduling.title", "Schedule Pickup"));
-                instructionsLabel.setText(localeService.getMessage("pickup.scheduling.instructions",
-                        "Select your available dates and time range for pickup"));
-                confirmButton.setText(localeService.getMessage("pickup.scheduling.confirm", "Schedule Pickup"));
-            }
+            // Refresh UI to update labels based on mode
+            refreshUI();
         });
     }
 
@@ -227,9 +319,11 @@ public class PickupSchedulingController {
         AlertHelper.showInformationAlert(
                 localeService.getMessage("pickup.dates.added.title", "Dates Added"),
                 localeService.getMessage("pickup.dates.added.header", "Success"),
-                String.format(
-                        localeService.getMessage("pickup.dates.added.message", "Added %d dates to your availability"),
-                        datesToAdd.size()));
+                localeService.getMessage("pickup.dates.added.message", "Added {0} dates to your availability")
+                    .replace("{0}", String.valueOf(datesToAdd.size())));
+
+        System.out.println(localeService.getMessage("pickup.scheduling.debug.dates.added", "Added {0} dates to pickup schedule")
+            .replace("{0}", String.valueOf(datesToAdd.size())));
     }
 
     @FXML
@@ -248,6 +342,7 @@ public class PickupSchedulingController {
             if (response == ButtonType.OK) {
                 selectedDates.clear();
                 updateSelectedDatesDisplay();
+                System.out.println(localeService.getMessage("pickup.scheduling.debug.dates.cleared", "All pickup dates cleared"));
             }
         });
     }
@@ -267,7 +362,7 @@ public class PickupSchedulingController {
                 new ArrayList<>(selectedDates),
                 startTime,
                 endTime,
-                offer.getListing().getPickupLocation(),
+                locationField.getText().trim(),
                 detailsArea.getText().trim(),
                 null // createdByUserId will be set by the service
         );
@@ -284,6 +379,7 @@ public class PickupSchedulingController {
                                     localeService.getMessage("pickup.reschedule.success.header", "Success"),
                                     localeService.getMessage("pickup.reschedule.success.message",
                                             "Your new pickup schedule has been proposed. The other party can now review your availability."));
+                            System.out.println(localeService.getMessage("pickup.scheduling.debug.reschedule.success", "Pickup rescheduling proposed successfully"));
                             closeWindow();
                         } else {
                             AlertHelper.showErrorAlert(
@@ -301,6 +397,7 @@ public class PickupSchedulingController {
                                     localeService.getMessage("pickup.error.header", "Connection Error"),
                                     ex.getMessage());
                             confirmButton.setDisable(false);
+                            System.err.println(localeService.getMessage("pickup.scheduling.error.reschedule.failed", "Failed to reschedule pickup: {0}").replace("{0}", ex.getMessage()));
                         });
                         return null;
                     });
@@ -314,6 +411,7 @@ public class PickupSchedulingController {
                                     localeService.getMessage("pickup.created.header", "Success"),
                                     localeService.getMessage("pickup.created.message",
                                             "Pickup has been scheduled successfully. The other party can now select a convenient time."));
+                            System.out.println(localeService.getMessage("pickup.scheduling.debug.created.success", "Pickup scheduled successfully"));
                             closeWindow();
                         } else {
                             AlertHelper.showErrorAlert(
@@ -331,6 +429,7 @@ public class PickupSchedulingController {
                                     localeService.getMessage("pickup.error.header", "Connection Error"),
                                     ex.getMessage());
                             confirmButton.setDisable(false);
+                            System.err.println(localeService.getMessage("pickup.scheduling.error.create.failed", "Failed to schedule pickup: {0}").replace("{0}", ex.getMessage()));
                         });
                         return null;
                     });
@@ -339,6 +438,7 @@ public class PickupSchedulingController {
 
     @FXML
     private void handleCancel() {
+        System.out.println(localeService.getMessage("pickup.scheduling.debug.cancelled", "Pickup scheduling cancelled by user"));
         closeWindow();
     }
 
@@ -394,19 +494,21 @@ public class PickupSchedulingController {
     private void updateSelectedDatesDisplay() {
         selectedDatesPane.getChildren().clear();
 
-        selectedDatesCountLabel.setText(String.format(
-                localeService.getMessage("pickup.dates.selected.count", "Selected dates: %d"),
-                selectedDates.size()));
+        if (selectedDatesCountLabel != null) {
+            selectedDatesCountLabel.setText(localeService.getMessage("pickup.dates.selected.count", "Selected dates: {0}")
+                .replace("{0}", String.valueOf(selectedDates.size())));
+        }
 
         for (LocalDate date : selectedDates) {
             Label dateLabel = new Label(date.toString());
             dateLabel.getStyleClass().add("date-chip");
 
-            Button removeButton = new Button("×");
+            Button removeButton = new Button(localeService.getMessage("pickup.date.remove", "×"));
             removeButton.getStyleClass().add("date-chip-remove");
             removeButton.setOnAction(e -> {
                 selectedDates.remove(date);
                 updateSelectedDatesDisplay();
+                System.out.println(localeService.getMessage("pickup.scheduling.debug.date.removed", "Removed date from pickup schedule: {0}").replace("{0}", date.toString()));
             });
 
             dateLabel.setGraphic(removeButton);
@@ -416,6 +518,8 @@ public class PickupSchedulingController {
 
     private void closeWindow() {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.close();
+        if (stage != null) {
+            stage.close();
+        }
     }
 }

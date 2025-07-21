@@ -13,7 +13,6 @@ import javafx.scene.text.Text;
 
 import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.service.LocaleService;
-import com.uninaswap.client.service.Refreshable;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.util.AlertHelper;

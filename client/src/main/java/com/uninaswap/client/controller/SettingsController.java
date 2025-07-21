@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 
 import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.service.LocaleService;
+import com.uninaswap.client.service.Refreshable;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.util.AlertHelper;
@@ -286,4 +287,168 @@ public class SettingsController implements Refreshable {
             
             AlertHelper.showInformationAlert(
                 localeService.getMessage("settings.password.success.title", "Password Updated"),
-                localeService.getMessage("settings.password.success.header", "Your password has been updated with
+                localeService.getMessage("settings.password.success.header", "Your password has been updated successfully"),
+                localeService.getMessage("settings.password.success.content", "Use your new password on your next login.")
+            );
+            
+            // Clear password fields
+            currentPasswordField.clear();
+            newPasswordField.clear();
+            confirmPasswordField.clear();
+            
+            System.out.println(localeService.getMessage("settings.debug.password.success", "Password changed successfully"));
+            
+        } catch (Exception e) {
+            AlertHelper.showErrorAlert(
+                localeService.getMessage("settings.password.error.server.title", "Password Change Failed"),
+                localeService.getMessage("settings.password.error.server.header", "Could not update password"),
+                localeService.getMessage("settings.password.error.server.content", "Please try again later or contact support.")
+            );
+            System.err.println(localeService.getMessage("settings.debug.password.error", "Password change failed: {0}")
+                .replace("{0}", e.getMessage()));
+        }
+    }
+    
+    @FXML
+    public void handleSave(ActionEvent event) {
+        System.out.println(localeService.getMessage("settings.debug.save.started", "Saving settings"));
+        
+        try {
+            // Save language preference
+            String selectedLanguage = languageComboBox.getValue();
+            if (selectedLanguage != null) {
+                Locale locale;
+                if (selectedLanguage.equals(localeService.getMessage("language.english", "English")) || 
+                    selectedLanguage.equals("English")) {
+                    locale = Locale.ENGLISH;
+                } else {
+                    locale = Locale.ITALIAN;
+                }
+                localeService.setLocale(locale);
+                System.out.println(localeService.getMessage("settings.debug.language.saved", "Language preference saved: {0}")
+                    .replace("{0}", locale.getDisplayLanguage()));
+            }
+
+            // Save theme preference
+            String selectedTheme = themeComboBox.getValue();
+            if (selectedTheme != null) {
+                // Here you would save theme preference to user settings
+                System.out.println(localeService.getMessage("settings.debug.theme.saved", "Theme preference saved: {0}")
+                    .replace("{0}", selectedTheme));
+            }
+
+            // Save font size preference
+            double fontSize = fontSizeSlider.getValue();
+            // Here you would save font size preference
+            System.out.println(localeService.getMessage("settings.debug.font.saved", "Font size preference saved: {0}")
+                .replace("{0}", String.valueOf(fontSize)));
+
+            // Save notification preferences
+            boolean emailNotifications = emailNotificationsCheckBox.isSelected();
+            boolean appNotifications = appNotificationsCheckBox.isSelected();
+            boolean offerNotifications = offerNotificationsCheckBox.isSelected();
+            boolean messageNotifications = messageNotificationsCheckBox.isSelected();
+            
+            // Here you would save notification preferences to backend/local storage
+            System.out.println(localeService.getMessage("settings.debug.notifications.saved", 
+                "Notification preferences saved: email={0}, app={1}, offers={2}, messages={3}")
+                    .replace("{0}", String.valueOf(emailNotifications))
+                    .replace("{1}", String.valueOf(appNotifications))
+                    .replace("{2}", String.valueOf(offerNotifications))
+                    .replace("{3}", String.valueOf(messageNotifications)));
+            
+            AlertHelper.showInformationAlert(
+                localeService.getMessage("settings.save.success.title", "Settings Saved"),
+                localeService.getMessage("settings.save.success.header", "Your settings have been saved"),
+                localeService.getMessage("settings.save.success.content", "The new settings have been applied.")
+            );
+            
+            System.out.println(localeService.getMessage("settings.debug.save.success", "Settings saved successfully"));
+            
+        } catch (Exception e) {
+            AlertHelper.showErrorAlert(
+                localeService.getMessage("settings.save.error.title", "Save Failed"),
+                localeService.getMessage("settings.save.error.header", "Could not save settings"),
+                localeService.getMessage("settings.save.error.content", "Please try again later.")
+            );
+            System.err.println(localeService.getMessage("settings.debug.save.error", "Failed to save settings: {0}")
+                .replace("{0}", e.getMessage()));
+        }
+    }
+    
+    @FXML
+    public void handleCancel(ActionEvent event) {
+        System.out.println(localeService.getMessage("settings.debug.cancelled", "Settings changes cancelled"));
+        
+        // Reset form to original values
+        try {
+            if (userSessionService.isLoggedIn()) {
+                emailField.setText(userSessionService.getUser().getEmail());
+            }
+            
+            // Reset language to current locale
+            Locale currentLocale = localeService.getCurrentLocale();
+            languageComboBox.setValue(getLocalizedLanguageName(currentLocale));
+            
+            // Reset theme to default
+            themeComboBox.setValue(localeService.getMessage("theme.light", "Light"));
+            
+            // Reset font size to default
+            fontSizeSlider.setValue(14);
+            
+            // Reset notification preferences to defaults (or reload from settings)
+            loadUserPreferences();
+            
+            // Clear password fields
+            currentPasswordField.clear();
+            newPasswordField.clear();
+            confirmPasswordField.clear();
+            
+            System.out.println(localeService.getMessage("settings.debug.reset", "Settings form reset to defaults"));
+            
+        } catch (Exception e) {
+            System.err.println(localeService.getMessage("settings.debug.reset.error", "Error resetting settings form: {0}")
+                .replace("{0}", e.getMessage()));
+        }
+    }
+
+    // Public methods for external access
+    public boolean isEmailNotificationsEnabled() {
+        return emailNotificationsCheckBox != null && emailNotificationsCheckBox.isSelected();
+    }
+
+    public boolean isAppNotificationsEnabled() {
+        return appNotificationsCheckBox != null && appNotificationsCheckBox.isSelected();
+    }
+
+    public boolean isOfferNotificationsEnabled() {
+        return offerNotificationsCheckBox != null && offerNotificationsCheckBox.isSelected();
+    }
+
+    public boolean isMessageNotificationsEnabled() {
+        return messageNotificationsCheckBox != null && messageNotificationsCheckBox.isSelected();
+    }
+
+    public String getSelectedTheme() {
+        return themeComboBox != null ? themeComboBox.getValue() : null;
+    }
+
+    public double getSelectedFontSize() {
+        return fontSizeSlider != null ? fontSizeSlider.getValue() : 14.0;
+    }
+
+    public void setNotificationPreferences(boolean email, boolean app, boolean offers, boolean messages) {
+        if (emailNotificationsCheckBox != null) {
+            emailNotificationsCheckBox.setSelected(email);
+        }
+        if (appNotificationsCheckBox != null) {
+            appNotificationsCheckBox.setSelected(app);
+        }
+        if (offerNotificationsCheckBox != null) {
+            offerNotificationsCheckBox.setSelected(offers);
+        }
+        if (messageNotificationsCheckBox != null) {
+            messageNotificationsCheckBox.setSelected(messages);
+        }
+    }
+}

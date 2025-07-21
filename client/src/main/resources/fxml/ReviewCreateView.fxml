@@ -13,8 +13,8 @@
 
    <!-- Header -->
    <VBox spacing="5">
-      <Label fx:id="titleLabel" styleClass="title-label" />
-      <Label fx:id="instructionsLabel" styleClass="subtitle-label" wrapText="true" />
+      <Label fx:id="titleLabel" styleClass="title-label" text="%review.create.title" />
+      <Label fx:id="instructionsLabel" styleClass="subtitle-label" wrapText="true" text="%review.create.instructions" />
    </VBox>
 
    <Separator />
@@ -27,37 +27,38 @@
 
    <!-- Rating Section -->
    <VBox spacing="15">
-      <Label text="Rating" styleClass="section-label" />
+      <Label fx:id="ratingHeaderLabel" text="%review.create.rating.header" styleClass="section-label" />
       
       <VBox spacing="10" alignment="CENTER">
          <HBox fx:id="starsContainer" spacing="5" alignment="CENTER" />
          <Label fx:id="scoreLabel" styleClass="score-label" />
       </VBox>
       
-      <Label text="Click on a star to rate your experience" 
+      <Label fx:id="ratingHelpLabel" text="%review.create.rating.help" 
              styleClass="help-text" alignment="CENTER" />
    </VBox>
 
    <!-- Comment Section -->
    <VBox spacing="10" VBox.vgrow="ALWAYS">
-      <Label text="Review Comment (Optional)" styleClass="section-label" />
+      <Label fx:id="commentHeaderLabel" text="%review.create.comment.header" styleClass="section-label" />
       
       <TextArea fx:id="commentTextArea" 
                 prefRowCount="6" 
+                promptText="%review.create.comment.prompt"
                 VBox.vgrow="ALWAYS" />
       
       <HBox alignment="CENTER_RIGHT">
-         <Label fx:id="characterCountLabel" styleClass="character-count" />
+         <Label fx:id="characterCountLabel" styleClass="character-count" text="%review.create.character.count" />
       </HBox>
       
-      <Label text="Share details about your experience with this user" 
+      <Label fx:id="commentHelpLabel" text="%review.create.comment.help" 
              styleClass="help-text" wrapText="true" />
    </VBox>
 
-   <!-- Actions - Keep only this one -->
+   <!-- Actions -->
    <HBox spacing="10" alignment="CENTER_RIGHT">
-      <Button fx:id="cancelButton" onAction="#handleCancel" />
+      <Button fx:id="cancelButton" onAction="#handleCancel" text="%review.create.cancel" />
       <Button fx:id="submitButton" onAction="#handleSubmit" 
-              styleClass="primary-button" />
+              styleClass="primary-button" text="%review.create.submit" />
    </HBox>
 </VBox>

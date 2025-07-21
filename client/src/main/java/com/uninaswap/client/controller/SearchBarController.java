@@ -7,9 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-
 import com.uninaswap.client.service.LocaleService;
-import com.uninaswap.client.service.Refreshable;
 import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.constants.EventTypes;
 

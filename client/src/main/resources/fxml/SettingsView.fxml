@@ -43,7 +43,7 @@
                                     <Insets left="15.0" />
                                  </HBox.margin>
                               </ImageView>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.title">
+                              <Text fx:id="settingsTitleText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.title">
                                  <HBox.margin>
                                     <Insets left="10.0" />
                                  </HBox.margin>
@@ -67,7 +67,7 @@
                                           <Image url="@../images/icons/user_profile.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.account">
+                                    <Text fx:id="accountSectionText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.account">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -128,7 +128,7 @@
                                           <Image url="@../images/icons/notification.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.notifications">
+                                    <Text fx:id="notificationsSectionText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.notifications">
                                        <font>
                                           <Font size="16.0" />
                                        </font>
@@ -161,7 +161,7 @@
                                           <Image url="@../images/icons/Settings.png" />
                                        </image>
                                     </ImageView>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.application">
+                                    <Text fx:id="applicationSectionText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.application">
                                        <font>
                                           <Font size="16.0" />
                                        </font>

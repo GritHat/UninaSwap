@@ -15,30 +15,30 @@
 
       <!-- Header -->
       <VBox spacing="5">
-         <Label fx:id="titleLabel" styleClass="title-label" />
-         <Label fx:id="instructionsLabel" styleClass="subtitle-label" wrapText="true" />
+         <Label fx:id="titleLabel" styleClass="title-label" text="%pickup.selection.title" />
+         <Label fx:id="instructionsLabel" styleClass="subtitle-label" wrapText="true" text="%pickup.selection.instructions" />
       </VBox>
 
       <Separator />
 
       <!-- Available Dates Section -->
       <VBox fx:id="availableDatesSection" spacing="10">
-         <Label text="Available Dates" styleClass="section-label" />
+         <Label fx:id="availableDatesHeaderLabel" text="%pickup.section.available.dates" styleClass="section-label" />
          <ScrollPane maxHeight="120" fitToWidth="true">
             <FlowPane fx:id="availableDatesPane" hgap="8" vgap="8" />
          </ScrollPane>
-         <Label text="Click on a date to select it" styleClass="help-text" />
+         <Label fx:id="availableDatesHelpLabel" text="%pickup.help.click.date" styleClass="help-text" />
       </VBox>
 
       <!-- Time Range Display -->
       <VBox spacing="5">
-         <Label text="Available Time Range" styleClass="section-label" />
+         <Label fx:id="timeRangeHeaderLabel" text="%pickup.section.time.range" styleClass="section-label" />
          <Label fx:id="timeRangeLabel" styleClass="time-range-label" />
       </VBox>
 
       <!-- Selected Date and Time Section -->
       <VBox fx:id="selectedDateTimeSection" spacing="15">
-         <Label text="Select Your Preferred Time" styleClass="section-label" />
+         <Label fx:id="selectTimeHeaderLabel" text="%pickup.section.select.time" styleClass="section-label" />
          
          <GridPane hgap="10" vgap="10" maxWidth="400">
             <columnConstraints>
@@ -46,10 +46,10 @@
                <ColumnConstraints minWidth="150" />
             </columnConstraints>
             
-            <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label fx:id="dateLabel" text="%pickup.label.date" GridPane.columnIndex="0" GridPane.rowIndex="0" />
             <DatePicker fx:id="selectedDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="0" />
             
-            <Label text="Time:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label fx:id="timeLabel" text="%pickup.label.time" GridPane.columnIndex="0" GridPane.rowIndex="1" />
             <HBox spacing="5" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <Spinner fx:id="selectedHourSpinner" prefWidth="60" />
                <Label text=":" />
@@ -60,15 +60,15 @@
 
       <!-- Location and Details -->
       <VBox spacing="10">
-         <Label text="Pickup Details" styleClass="section-label" />
+         <Label fx:id="pickupDetailsHeaderLabel" text="%pickup.section.details" styleClass="section-label" />
          
          <VBox spacing="5">
-            <Label text="Location:" styleClass="field-label" />
+            <Label fx:id="locationFieldLabel" text="%pickup.label.location.field" styleClass="field-label" />
             <Label fx:id="locationLabel" styleClass="info-label" wrapText="true" />
          </VBox>
          
          <VBox spacing="5">
-            <Label text="Additional Details:" styleClass="field-label" />
+            <Label fx:id="detailsFieldLabel" text="%pickup.label.details.field" styleClass="field-label" />
             <TextArea fx:id="detailsArea" prefRowCount="3" maxWidth="500" editable="false" />
          </VBox>
       </VBox>
@@ -77,25 +77,25 @@
       <VBox fx:id="counterProposalSection" spacing="15">
          <Separator />
          
-         <Label text="Counter Proposal - Your Availability" styleClass="section-label" />
+         <Label fx:id="counterProposalHeaderLabel" text="%pickup.counter.section.header" styleClass="section-label" />
          
          <!-- Counter Location -->
          <VBox spacing="5">
-            <Label text="Preferred Location" styleClass="field-label" />
+            <Label fx:id="counterLocationHeaderLabel" text="%pickup.counter.label.location" styleClass="field-label" />
             <TextField fx:id="counterLocationField" maxWidth="400" 
-                      promptText="Enter your preferred pickup location" />
+                      promptText="%pickup.counter.location.prompt" />
          </VBox>
          
          <!-- Counter Time Range -->
          <VBox spacing="10">
-            <Label text="Your Available Time Range" styleClass="field-label" />
+            <Label fx:id="counterTimeRangeHeaderLabel" text="%pickup.counter.label.time.range" styleClass="field-label" />
             <HBox spacing="10" alignment="CENTER_LEFT">
-               <Label text="From:" />
+               <Label fx:id="counterFromLabel" text="%pickup.label.from" />
                <Spinner fx:id="counterStartHourSpinner" prefWidth="60" />
                <Label text=":" />
                <Spinner fx:id="counterStartMinuteSpinner" prefWidth="60" />
                
-               <Label text="To:" />
+               <Label fx:id="counterToLabel" text="%pickup.label.to" />
                <Spinner fx:id="counterEndHourSpinner" prefWidth="60" />
                <Label text=":" />
                <Spinner fx:id="counterEndMinuteSpinner" prefWidth="60" />
@@ -104,7 +104,7 @@
          
          <!-- Counter Date Selection -->
          <VBox spacing="10">
-            <Label text="Your Available Dates" styleClass="field-label" />
+            <Label fx:id="counterDatesHeaderLabel" text="%pickup.counter.label.dates" styleClass="field-label" />
             
             <GridPane hgap="10" vgap="10">
                <columnConstraints>
@@ -113,19 +113,20 @@
                   <ColumnConstraints />
                </columnConstraints>
                
-               <Label text="Start Date:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+               <Label fx:id="counterStartDateLabel" text="%pickup.label.start.date" GridPane.columnIndex="0" GridPane.rowIndex="0" />
                <DatePicker fx:id="counterStartDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                
-               <Label text="End Date:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+               <Label fx:id="counterEndDateLabel" text="%pickup.label.end.date" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                <DatePicker fx:id="counterEndDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                
                <Button fx:id="addCounterDateRangeButton" onAction="#handleAddCounterDateRange" 
-                       GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="2" />
+                       text="%pickup.add.dates" GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.rowSpan="2" />
             </GridPane>
             
             <HBox spacing="10" alignment="CENTER_LEFT">
-               <Label fx:id="counterSelectedDatesCountLabel" />
-               <Button fx:id="clearCounterDatesButton" onAction="#handleClearCounterDates" />
+               <Label fx:id="counterSelectedDatesCountLabel" text="%pickup.dates.selected.count" />
+               <Button fx:id="clearCounterDatesButton" onAction="#handleClearCounterDates" 
+                       text="%pickup.clear.dates" />
             </HBox>
             
             <!-- Counter Selected Dates Display -->
@@ -136,25 +137,29 @@
          
          <!-- Counter Details -->
          <VBox spacing="5">
-            <Label text="Additional Details (Optional)" styleClass="field-label" />
+            <Label fx:id="counterDetailsHeaderLabel" text="%pickup.counter.label.details" styleClass="field-label" />
             <TextArea fx:id="counterDetailsArea" prefRowCount="3" maxWidth="400" 
-                     promptText="Add any special instructions or information" />
+                     promptText="%pickup.counter.details.prompt" />
          </VBox>
          
          <!-- Counter Proposal Actions -->
          <HBox spacing="10" alignment="CENTER_RIGHT">
-            <Button fx:id="cancelCounterProposalButton" onAction="#handleCancelCounterProposal" />
+            <Button fx:id="cancelCounterProposalButton" onAction="#handleCancelCounterProposal" 
+                    text="%pickup.counter.cancel" />
             <Button fx:id="submitCounterProposalButton" onAction="#handleSubmitCounterProposal" 
-                    styleClass="primary-button" />
+                    styleClass="primary-button" text="%pickup.counter.submit" />
          </HBox>
       </VBox>
 
       <!-- Main Actions -->
       <HBox spacing="15" alignment="CENTER">
-         <Button fx:id="rejectButton" onAction="#handleReject" styleClass="reject-button" />
-         <Button fx:id="counterProposeButton" onAction="#handleCounterPropose" styleClass="secondary-button" />
-         <Button fx:id="acceptButton" onAction="#handleAccept" styleClass="primary-button" />
-         <Button fx:id="cancelButton" onAction="#handleCancel" />
+         <Button fx:id="rejectButton" onAction="#handleReject" styleClass="reject-button" 
+                 text="%pickup.selection.reject" />
+         <Button fx:id="counterProposeButton" onAction="#handleCounterPropose" styleClass="secondary-button" 
+                 text="%pickup.selection.counter" />
+         <Button fx:id="acceptButton" onAction="#handleAccept" styleClass="primary-button" 
+                 text="%pickup.selection.accept" />
+         <Button fx:id="cancelButton" onAction="#handleCancel" text="%pickup.selection.cancel" />
       </HBox>
    </VBox>
 </ScrollPane>

@@ -123,28 +123,28 @@
                               
                               <!-- Basic Info -->
                               <Label fx:id="firstNameLabel" text="%profile.first.name.label" GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="field-label" />
-                              <TextField fx:id="firstNameField" text="%profile.first.name.value" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="profile-field" />
+                              <TextField fx:id="firstNameField" promptText="%profile.first.name.prompt" GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="profile-field" />
                               
                               <Label fx:id="lastNameLabel" text="%profile.last.name.label" GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="field-label" />
-                              <TextField fx:id="lastNameField" text="%profile.last.name.value" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="profile-field" />
+                              <TextField fx:id="lastNameField" promptText="%profile.last.name.prompt" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="profile-field" />
                               
                               <Label fx:id="emailLabel" text="%profile.email.label" GridPane.columnIndex="0" GridPane.rowIndex="2" styleClass="field-label" />
-                              <TextField fx:id="emailField" text="%profile.email.value" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="profile-field" />
+                              <TextField fx:id="emailField" promptText="%profile.email.prompt" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="profile-field" />
                               
                               <!-- Address Information (only visible for own profile) -->
-                              <Label text="%profile.address.label" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="field-label" />
+                              <Label fx:id="addressLabel" text="%profile.address.label" GridPane.columnIndex="0" GridPane.rowIndex="3" styleClass="field-label" />
                               <TextField fx:id="addressField" promptText="%profile.address.prompt" GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="profile-field" />
                               
-                              <Label text="%profile.city.label" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="field-label" />
+                              <Label fx:id="cityLabel" text="%profile.city.label" GridPane.columnIndex="0" GridPane.rowIndex="4" styleClass="field-label" />
                               <TextField fx:id="cityField" promptText="%profile.city.prompt" GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="profile-field" />
                               
-                              <Label text="%profile.state.label" GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="field-label" />
+                              <Label fx:id="stateLabel" text="%profile.state.label" GridPane.columnIndex="0" GridPane.rowIndex="5" styleClass="field-label" />
                               <TextField fx:id="stateProvinceField" promptText="%profile.state.prompt" GridPane.columnIndex="1" GridPane.rowIndex="5" styleClass="profile-field" />
                               
-                              <Label text="%profile.country.label" GridPane.columnIndex="0" GridPane.rowIndex="6" styleClass="field-label" />
+                              <Label fx:id="countryLabel" text="%profile.country.label" GridPane.columnIndex="0" GridPane.rowIndex="6" styleClass="field-label" />
                               <TextField fx:id="countryField" promptText="%profile.country.prompt" GridPane.columnIndex="1" GridPane.rowIndex="6" styleClass="profile-field" />
                               
-                              <Label text="%profile.zip.label" GridPane.columnIndex="0" GridPane.rowIndex="7" styleClass="field-label" />
+                              <Label fx:id="zipLabel" text="%profile.zip.label" GridPane.columnIndex="0" GridPane.rowIndex="7" styleClass="field-label" />
                               <TextField fx:id="zipPostalCodeField" promptText="%profile.zip.prompt" GridPane.columnIndex="1" GridPane.rowIndex="7" styleClass="profile-field" />
                             </GridPane>
                           </children>
@@ -161,7 +161,7 @@
                                 <Label styleClass="section-subtitle" text="%profile.biography.title" />
                               </children>
                             </HBox>
-                            <TextArea fx:id="bioField" prefRowCount="6" promptText="%profile.biography.prompt" styleClass="profile-text-area" text="%profile.biography.text" wrapText="true" />
+                            <TextArea fx:id="bioField" prefRowCount="6" promptText="%profile.biography.prompt" styleClass="profile-text-area" wrapText="true" />
                           </children>
                           <padding>
                             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

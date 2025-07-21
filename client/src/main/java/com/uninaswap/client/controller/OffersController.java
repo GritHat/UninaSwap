@@ -25,7 +25,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class OffersController {
+public class OffersController implements Refreshable {
 
     // Filter controls
     @FXML
@@ -49,19 +49,19 @@ public class OffersController {
 
     // Received offers content
     @FXML
-    private SplitPane receivedOffersContent;  // Changed from VBox to SplitPane
+    private SplitPane receivedOffersContent;
     @FXML
     private OffersTabContentController receivedOffersContentController;
 
     // Sent offers content
     @FXML
-    private SplitPane sentOffersContent;  // Changed from VBox to SplitPane
+    private SplitPane sentOffersContent;
     @FXML
     private OffersTabContentController sentOffersContentController;
 
     // History offers content
     @FXML
-    private SplitPane historyOffersContent;  // Changed from VBox to SplitPane
+    private SplitPane historyOffersContent;
     @FXML
     private OffersTabContentController historyOffersContentController;
 
@@ -97,12 +97,63 @@ public class OffersController {
         eventBus.subscribe(EventTypes.USER_LOGGED_OUT, _ -> {
             Platform.runLater(() -> {
                 clearAllTabs();
-                System.out.println("OffersController: Cleared view on logout");
+                System.out.println(localeService.getMessage("offers.debug.cleared.on.logout", "OffersController: Cleared view on logout"));
             });
+        });
+
+        // Subscribe to locale changes
+        eventBus.subscribe(EventTypes.LOCALE_CHANGED, _ -> {
+            Platform.runLater(this::refreshUI);
         });
 
         // Load offers
         refreshOffers();
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("offers.debug.initialized", "OffersController initialized"));
+    }
+
+    @Override
+    public void refreshUI() {
+        // Update button text
+        if (refreshButton != null) {
+            refreshButton.setText(localeService.getMessage("button.refresh", "Refresh"));
+        }
+        if (clearFiltersButton != null) {
+            clearFiltersButton.setText(localeService.getMessage("offers.filter.clear", "Clear filters"));
+        }
+
+        // Update tab text
+        if (receivedTab != null) {
+            receivedTab.setText(localeService.getMessage("offers.tab.received", "Received"));
+        }
+        if (sentTab != null) {
+            sentTab.setText(localeService.getMessage("offers.tab.sent", "Sent"));
+        }
+        if (historyTab != null) {
+            historyTab.setText(localeService.getMessage("offers.tab.history", "History"));
+        }
+
+        // Update search field prompt
+        if (searchField != null) {
+            searchField.setPromptText(localeService.getMessage("offers.filter.search.placeholder", "Search by title, user..."));
+        }
+
+        // Refresh filter combo boxes with current selections
+        refreshFilters();
+
+        // Refresh tab controllers if they implement Refreshable
+        if (receivedOffersContentController instanceof Refreshable) {
+            ((Refreshable) receivedOffersContentController).refreshUI();
+        }
+        if (sentOffersContentController instanceof Refreshable) {
+            ((Refreshable) sentOffersContentController).refreshUI();
+        }
+        if (historyOffersContentController instanceof Refreshable) {
+            ((Refreshable) historyOffersContentController).refreshUI();
+        }
     }
 
     private void setupFilters() {
@@ -139,10 +190,10 @@ public class OffersController {
     }
 
     private void showOfferDetails(OfferViewModel offer) {
-    selectedOffer = offer;
-    
-    // Get the current tab controller
-    OffersTabContentController currentController = getCurrentTabController();
+        selectedOffer = offer;
+        
+        // Get the current tab controller
+        OffersTabContentController currentController = getCurrentTabController();
         if (currentController != null) {
             currentController.showOfferDetails(offer);
         }
@@ -150,9 +201,9 @@ public class OffersController {
 
     private void setupReceivedActionButtons(TableColumn<OfferViewModel, Void> actionsColumn) {
         actionsColumn.setCellFactory(_ -> new TableCell<>() {
-            private final Button viewButton = new Button(localeService.getMessage("offers.button.view", "View"));
-            private final Button acceptButton = new Button(localeService.getMessage("offers.button.accept", "Accept"));
-            private final Button rejectButton = new Button(localeService.getMessage("offers.button.reject", "Reject"));
+            private final Button viewButton = new Button();
+            private final Button acceptButton = new Button();
+            private final Button rejectButton = new Button();
             private final HBox actionBox = new HBox(5, viewButton, acceptButton, rejectButton);
 
             {
@@ -182,6 +233,11 @@ public class OffersController {
                 if (empty) {
                     setGraphic(null);
                 } else {
+                    // Update button text with current locale
+                    viewButton.setText(localeService.getMessage("offers.button.view", "View"));
+                    acceptButton.setText(localeService.getMessage("offers.button.accept", "Accept"));
+                    rejectButton.setText(localeService.getMessage("offers.button.reject", "Reject"));
+
                     OfferViewModel offer = getTableView().getItems().get(getIndex());
                     
                     // Show/hide buttons based on offer status
@@ -199,8 +255,8 @@ public class OffersController {
 
     private void setupSentActionButtons(TableColumn<OfferViewModel, Void> actionsColumn) {
         actionsColumn.setCellFactory(_ -> new TableCell<>() {
-            private final Button viewButton = new Button(localeService.getMessage("offers.button.view", "View"));
-            private final Button withdrawButton = new Button(localeService.getMessage("offers.button.withdraw", "Withdraw"));
+            private final Button viewButton = new Button();
+            private final Button withdrawButton = new Button();
             private final HBox actionBox = new HBox(5, viewButton, withdrawButton);
 
             {
@@ -224,6 +280,10 @@ public class OffersController {
                 if (empty) {
                     setGraphic(null);
                 } else {
+                    // Update button text with current locale
+                    viewButton.setText(localeService.getMessage("offers.button.view", "View"));
+                    withdrawButton.setText(localeService.getMessage("offers.button.withdraw", "Withdraw"));
+
                     OfferViewModel offer = getTableView().getItems().get(getIndex());
                     
                     // Show/hide buttons based on offer status  
@@ -376,8 +436,8 @@ public class OffersController {
     @FXML
     private void handleClearFilters() {
         searchField.clear();
-        statusFilterComboBox.setValue("Tutti gli stati");
-        typeFilterComboBox.setValue("Tutti i tipi");
+        statusFilterComboBox.setValue(localeService.getMessage("offers.filter.all.statuses", "All Statuses"));
+        typeFilterComboBox.setValue(localeService.getMessage("offers.filter.all.types", "All Types"));
         updateFilters();
     }
 
@@ -509,7 +569,6 @@ public class OffersController {
         
         selectedOffer = offer;
 
-        // TODO: Implement counter offer functionality
         AlertHelper.showInformationAlert(
                 localeService.getMessage("offers.counter.title", "Counter Offer"),
                 localeService.getMessage("offers.counter.header", "Feature Coming Soon"),
@@ -582,7 +641,7 @@ public class OffersController {
                 updateFilters();
             }))
             .exceptionally(ex -> {
-                System.err.println("Error loading offers: " + ex.getMessage());
+                System.err.println(localeService.getMessage("offers.error.loading", "Error loading offers: {0}").replace("{0}", ex.getMessage()));
                 return null;
             });
     }
@@ -646,12 +705,11 @@ public class OffersController {
         return "-";
     }
 
-    // Update the refreshFilters method
     public void refreshFilters() {
         String currentStatusValue = statusFilterComboBox.getValue();
         String currentTypeValue = typeFilterComboBox.getValue();
         
-        // Refresh items
+        // Refresh items with localized values
         setupFilters();
         
         // Try to maintain selection if possible, otherwise default to "All"
@@ -681,8 +739,8 @@ public class OffersController {
                     } else {
                         AlertHelper.showErrorAlert(
                                 localeService.getMessage("offers.error.title", "Error"),
-                                localeService.getMessage("offers.error.header", "Failed to confirm transaction"),
-                                localeService.getMessage("offers.error.message",
+                                localeService.getMessage("transaction.confirm.error.header", "Failed to confirm transaction"),
+                                localeService.getMessage("transaction.confirm.error.message",
                                         "Could not confirm the transaction"));
                     }
                 }))
@@ -712,8 +770,8 @@ public class OffersController {
                     } else {
                         AlertHelper.showErrorAlert(
                                 localeService.getMessage("offers.error.title", "Error"),
-                                localeService.getMessage("offers.error.header", "Failed to cancel transaction"),
-                                localeService.getMessage("offers.error.message",
+                                localeService.getMessage("transaction.cancel.error.header", "Failed to cancel transaction"),
+                                localeService.getMessage("transaction.cancel.error.message",
                                         "Could not cancel the transaction"));
                     }
                 }))

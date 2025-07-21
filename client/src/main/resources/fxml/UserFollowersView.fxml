@@ -3,61 +3,88 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
       fx:controller="com.uninaswap.client.controller.UserFollowersController"
-      spacing="15" prefWidth="700" prefHeight="600">
+      spacing="15" prefWidth="750" prefHeight="650" styleClass="followers-summary-section">
    <padding>
       <Insets top="20" right="20" bottom="20" left="20" />
    </padding>
 
    <!-- Header -->
-   <VBox spacing="5">
-      <Label fx:id="titleLabel" styleClass="title-label" />
+   <VBox spacing="10">
+      <HBox alignment="CENTER_LEFT" spacing="10">
+         <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/users.png" />
+            </image>
+         </ImageView>
+         <Label fx:id="titleLabel" styleClass="title-label" text="%followers.title" />
+      </HBox>
    </VBox>
 
    <Separator />
 
    <!-- User Summary -->
    <VBox spacing="15" styleClass="user-summary-section">
-      <Label fx:id="userNameLabel" styleClass="user-name-label" />
+      <Label fx:id="userNameLabel" styleClass="user-name-label" text="%followers.user.unknown" />
       
       <HBox spacing="30" alignment="CENTER_LEFT">
          <!-- Following Count -->
-         <VBox spacing="5" alignment="CENTER">
-            <Label fx:id="followingCountLabel" styleClass="count-label" />
-            <Label text="Following" styleClass="count-description" />
+         <VBox spacing="5" alignment="CENTER" styleClass="count-section">
+            <Label fx:id="followingCountLabel" styleClass="count-label" text="0" />
+            <Label fx:id="followingCountDescriptionLabel" text="%followers.following.label" styleClass="count-description" />
          </VBox>
          
          <!-- Followers Count -->
-         <VBox spacing="5" alignment="CENTER">
-            <Label fx:id="followersCountLabel" styleClass="count-label" />
-            <Label text="Followers" styleClass="count-description" />
+         <VBox spacing="5" alignment="CENTER" styleClass="count-section">
+            <Label fx:id="followersCountLabel" styleClass="count-label" text="0" />
+            <Label fx:id="followersCountDescriptionLabel" text="%followers.followers.label" styleClass="count-description" />
          </VBox>
          
+         <Region HBox.hgrow="ALWAYS" />
+         
          <!-- Refresh Button -->
-         <Button fx:id="refreshButton" onAction="#handleRefresh" />
+         <Button fx:id="refreshButton" onAction="#handleRefresh" styleClass="primary-button" text="%followers.button.refresh">
+            <graphic>
+               <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
+                  <image>
+                     <Image url="@../images/icons/refresh.png" />
+                  </image>
+               </ImageView>
+            </graphic>
+         </Button>
       </HBox>
    </VBox>
 
    <Separator />
 
    <!-- Followers/Following Tabs -->
-   <TabPane fx:id="followersTabPane" VBox.vgrow="ALWAYS">
+   <TabPane fx:id="followersTabPane" VBox.vgrow="ALWAYS" styleClass="tab-pane">
       <tabs>
          <!-- Following Tab -->
-         <Tab text="Following" closable="false">
+         <Tab fx:id="followingTab" text="%followers.tab.following" closable="false">
             <content>
                <VBox spacing="10">
-                  <TableView fx:id="followingTable" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="followingTable" VBox.vgrow="ALWAYS" styleClass="table-view">
                      <columns>
-                        <TableColumn fx:id="followingNameColumn" prefWidth="150" text="Name" />
-                        <TableColumn fx:id="followingUsernameColumn" prefWidth="120" text="Username" />
-                        <TableColumn fx:id="followingDateColumn" prefWidth="100" text="Since" />
-                        <TableColumn fx:id="followingActionsColumn" prefWidth="150" text="Actions" />
+                        <TableColumn fx:id="followingNameColumn" prefWidth="150" text="%followers.column.name" />
+                        <TableColumn fx:id="followingUsernameColumn" prefWidth="120" text="%followers.column.username" />
+                        <TableColumn fx:id="followingDateColumn" prefWidth="100" text="%followers.column.since" />
+                        <TableColumn fx:id="followingActionsColumn" prefWidth="150" text="%followers.column.actions" />
                      </columns>
                      <placeholder>
-                        <Label text="Not following anyone yet" />
+                        <VBox alignment="CENTER" spacing="10">
+                           <ImageView fitHeight="48" fitWidth="48" preserveRatio="true" opacity="0.5">
+                              <image>
+                                 <Image url="@../images/icons/users.png" />
+                              </image>
+                           </ImageView>
+                           <Label text="%followers.following.empty" styleClass="placeholder-text" />
+                           <Label text="%followers.following.suggestion" styleClass="suggestion-text" />
+                        </VBox>
                      </placeholder>
                   </TableView>
                </VBox>
@@ -65,18 +92,26 @@
          </Tab>
          
          <!-- Followers Tab -->
-         <Tab text="Followers" closable="false">
+         <Tab fx:id="followersTab" text="%followers.tab.followers" closable="false">
             <content>
                <VBox spacing="10">
-                  <TableView fx:id="followersTable" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="followersTable" VBox.vgrow="ALWAYS" styleClass="table-view">
                      <columns>
-                        <TableColumn fx:id="followersNameColumn" prefWidth="150" text="Name" />
-                        <TableColumn fx:id="followersUsernameColumn" prefWidth="120" text="Username" />
-                        <TableColumn fx:id="followersDateColumn" prefWidth="100" text="Since" />
-                        <TableColumn fx:id="followersActionsColumn" prefWidth="150" text="Actions" />
+                        <TableColumn fx:id="followersNameColumn" prefWidth="150" text="%followers.column.name" />
+                        <TableColumn fx:id="followersUsernameColumn" prefWidth="120" text="%followers.column.username" />
+                        <TableColumn fx:id="followersDateColumn" prefWidth="100" text="%followers.column.since" />
+                        <TableColumn fx:id="followersActionsColumn" prefWidth="150" text="%followers.column.actions" />
                      </columns>
                      <placeholder>
-                        <Label text="No followers yet" />
+                        <VBox alignment="CENTER" spacing="10">
+                           <ImageView fitHeight="48" fitWidth="48" preserveRatio="true" opacity="0.5">
+                              <image>
+                                 <Image url="@../images/icons/users.png" />
+                              </image>
+                           </ImageView>
+                           <Label text="%followers.followers.empty" styleClass="placeholder-text" />
+                           <Label text="%followers.followers.suggestion" styleClass="suggestion-text" />
+                        </VBox>
                      </placeholder>
                   </TableView>
                </VBox>
@@ -87,6 +122,6 @@
 
    <!-- Actions -->
    <HBox spacing="10" alignment="CENTER_RIGHT">
-      <Button fx:id="closeButton" onAction="#handleClose" />
+      <Button fx:id="closeButton" onAction="#handleClose" styleClass="button" text="%followers.button.close" />
    </HBox>
 </VBox>

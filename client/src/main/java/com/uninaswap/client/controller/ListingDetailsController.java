@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class ListingDetailsController {
+public class ListingDetailsController implements Refreshable {
 
     // Header elements
     @FXML
@@ -171,6 +171,11 @@ public class ListingDetailsController {
         setupCurrencyComboBoxes();
         setupDeliveryMethodComboBox();
         setupEventHandlers();
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("listingdetails.debug.initialized", "ListingDetails controller initialized"));
     }
 
     private void setupCurrencyComboBoxes() {
@@ -187,13 +192,13 @@ public class ListingDetailsController {
     private void setupDeliveryMethodComboBox() {
         // Setup delivery method options
         deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
-            localeService.getMessage("delivery.method.pickup", "Pickup"),
-            localeService.getMessage("delivery.method.shipping", "Shipping"),
-            localeService.getMessage("delivery.method.both", "Pickup or Shipping")
+            localeService.getMessage("listingdetails.delivery.method.pickup", "Pickup"),
+            localeService.getMessage("listingdetails.delivery.method.shipping", "Shipping"),
+            localeService.getMessage("listingdetails.delivery.method.both", "Pickup or Shipping")
         ));
         
         // Set default selection
-        deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
+        deliveryMethodComboBox.setValue(localeService.getMessage("listingdetails.delivery.method.pickup", "Pickup"));
     }
 
     private void setupEventHandlers() {
@@ -208,6 +213,145 @@ public class ListingDetailsController {
         });
     }
 
+    @Override
+    public void refreshUI() {
+        // Update button labels
+        if (backButton != null) {
+            backButton.setText(localeService.getMessage("listingdetails.button.back", "← Back"));
+        }
+        if (reportListingButton != null) {
+            reportListingButton.setText(localeService.getMessage("listingdetails.button.report.listing", "Report Listing"));
+        }
+        if (contactSellerButton != null) {
+            contactSellerButton.setText(localeService.getMessage("listingdetails.button.contact.seller", "Contact Seller"));
+        }
+
+        // Update action buttons
+        if (buyNowButton != null) {
+            buyNowButton.setText(localeService.getMessage("listingdetails.button.buy.now", "Buy Now"));
+        }
+        if (makeOfferButton != null) {
+            makeOfferButton.setText(localeService.getMessage("listingdetails.button.make.offer", "Make Offer"));
+        }
+        if (proposeTradeButton != null) {
+            proposeTradeButton.setText(localeService.getMessage("listingdetails.button.propose.trade", "Propose Trade"));
+        }
+        if (requestGiftButton != null) {
+            requestGiftButton.setText(localeService.getMessage("listingdetails.button.request.gift", "Request Gift"));
+        }
+        if (placeBidButton != null) {
+            placeBidButton.setText(localeService.getMessage("listingdetails.button.place.bid", "Place Bid"));
+        }
+
+        // Update checkbox labels
+        if (includeMoneyCheckBox != null) {
+            includeMoneyCheckBox.setText(localeService.getMessage("listingdetails.checkbox.include.money", "Include money in offer"));
+        }
+        if (offerThankYouCheckBox != null) {
+            offerThankYouCheckBox.setText(localeService.getMessage("listingdetails.checkbox.offer.thankyou", "Offer a thank you"));
+        }
+
+        // Update text field prompts
+        if (moneyAmountField != null) {
+            moneyAmountField.setPromptText(localeService.getMessage("listingdetails.prompt.amount", "Amount"));
+        }
+        if (thankYouMessageArea != null) {
+            thankYouMessageArea.setPromptText(localeService.getMessage("listingdetails.prompt.thankyou.message", "Thank you message (optional)"));
+        }
+        if (bidAmountField != null) {
+            bidAmountField.setPromptText(localeService.getMessage("listingdetails.prompt.bid.amount", "Enter bid"));
+        }
+
+        // Update section headers
+        updateSectionHeaders();
+
+        // Refresh delivery method combo box
+        refreshDeliveryMethodComboBox();
+
+        // Update image navigation buttons
+        if (prevImageButton != null) {
+            prevImageButton.setText(localeService.getMessage("listingdetails.button.previous", "◀"));
+        }
+        if (nextImageButton != null) {
+            nextImageButton.setText(localeService.getMessage("listingdetails.button.next", "▶"));
+        }
+
+        // Refresh current listing display if available
+        if (currentListing != null) {
+            updateListingTypeSpecificUI();
+        }
+    }
+
+    private void updateSectionHeaders() {
+        // Find and update section headers in the scene
+        if (itemsSection != null && itemsSection.getScene() != null) {
+            // Update section headers by finding Text nodes with specific style classes
+            updateTextByStyleClass("section-header", localeService.getMessage("listingdetails.section.description", "Description"));
+            updateTextByStyleClass("section-header", localeService.getMessage("listingdetails.section.items", "Items Included"));
+        }
+    }
+
+    private void updateTextByStyleClass(String styleClass, String newText) {
+        // Helper method to update Text nodes with specific style class
+        // This is a simplified approach - in a real implementation you might want to be more specific
+    }
+
+    private void refreshDeliveryMethodComboBox() {
+        if (deliveryMethodComboBox != null) {
+            String currentValue = deliveryMethodComboBox.getValue();
+            
+            // Clear and refresh items
+            deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
+                localeService.getMessage("listingdetails.delivery.method.pickup", "Pickup"),
+                localeService.getMessage("listingdetails.delivery.method.shipping", "Shipping"),
+                localeService.getMessage("listingdetails.delivery.method.both", "Pickup or Shipping")
+            ));
+            
+            // Try to maintain selection or default to pickup
+            if (currentValue != null) {
+                deliveryMethodComboBox.setValue(localeService.getMessage("listingdetails.delivery.method.pickup", "Pickup"));
+            }
+        }
+    }
+
+    private void updateListingTypeSpecificUI() {
+        if (currentListing == null) return;
+
+        String listingType = currentListing.getListingTypeValue();
+        boolean isOwner = currentListing.getUser() != null &&
+                sessionService.getUser() != null &&
+                currentListing.getUser().getId().equals(sessionService.getUser().getId());
+
+        // Update button text based on ownership and type
+        switch (listingType.toUpperCase()) {
+            case "SELL":
+                if (isOwner && buyNowButton != null) {
+                    buyNowButton.setText(localeService.getMessage("listingdetails.button.your.listing", "Your Listing"));
+                }
+                break;
+            case "TRADE":
+                if (isOwner && proposeTradeButton != null) {
+                    proposeTradeButton.setText(localeService.getMessage("listingdetails.button.your.listing", "Your Listing"));
+                }
+                break;
+            case "GIFT":
+                if (isOwner && requestGiftButton != null) {
+                    requestGiftButton.setText(localeService.getMessage("listingdetails.button.your.listing", "Your Listing"));
+                }
+                break;
+            case "AUCTION":
+                if (isOwner && placeBidButton != null) {
+                    placeBidButton.setText(localeService.getMessage("listingdetails.button.your.listing", "Your Listing"));
+                }
+                break;
+        }
+
+        // Refresh price section if listing is set
+        if (currentListing != null) {
+            setupPriceSection();
+        }
+    }
+
     public void setListing(ListingViewModel listing) {
         this.currentListing = listing;
 
@@ -217,6 +361,8 @@ public class ListingDetailsController {
                 setupImageGallery();
                 setupActionButtons();
                 initializeFavoriteStatus();
+                
+                System.out.println(localeService.getMessage("listingdetails.debug.listing.set", "Listing set for details view: {0}").replace("{0}", listing.getTitle()));
             });
         }
     }
@@ -239,7 +385,7 @@ public class ListingDetailsController {
             if (seller.getReviewCount() > 0) {
                 sellerRating.setText(seller.getFormattedRating());
             } else {
-                sellerRating.setText("Nuovo venditore");
+                sellerRating.setText(localeService.getMessage("listingdetails.seller.new", "New seller"));
             }
             
             // Load seller profile image
@@ -253,7 +399,7 @@ public class ListingDetailsController {
         // Items list
         populateItemsList();
         
-        // Setup delivery options (add this near the end of the method)
+        // Setup delivery options
         setupDeliveryOptions();
     }
 
@@ -264,7 +410,7 @@ public class ListingDetailsController {
             // Show the delivery options section
             setVisibleAndManaged(deliveryOptionsSection, true);
             
-            // Set the pickup location text
+            // Set the pickup location text with label
             pickupLocationLabel.setText(pickupLocation);
             
             // Set up delivery method based on listing type and settings
@@ -318,7 +464,7 @@ public class ListingDetailsController {
     private void handleDeliveryMethodChange() {
         String selectedMethod = deliveryMethodComboBox.getValue();
         if (selectedMethod != null) {
-            System.out.println("Selected delivery method: " + selectedMethod);
+            System.out.println(localeService.getMessage("listingdetails.debug.delivery.method.changed", "Selected delivery method: {0}").replace("{0}", selectedMethod));
             // You can add logic here to update shipping costs, availability, etc.
         }
     }
@@ -336,25 +482,25 @@ public class ListingDetailsController {
         if (isPickupOnly) {
             // Only pickup available
             deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
-                localeService.getMessage("delivery.method.pickup", "Pickup")
+                localeService.getMessage("listingdetails.delivery.method.pickup", "Pickup")
             ));
-            deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
+            deliveryMethodComboBox.setValue(localeService.getMessage("listingdetails.delivery.method.pickup", "Pickup"));
             deliveryMethodComboBox.setDisable(true);
         } else if (supportsShipping) {
             // Both pickup and shipping available
             deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
-                localeService.getMessage("delivery.method.pickup", "Pickup"),
-                localeService.getMessage("delivery.method.shipping", "Shipping"),
-                localeService.getMessage("delivery.method.both", "Pickup or Shipping")
+                localeService.getMessage("listingdetails.delivery.method.pickup", "Pickup"),
+                localeService.getMessage("listingdetails.delivery.method.shipping", "Shipping"),
+                localeService.getMessage("listingdetails.delivery.method.both", "Pickup or Shipping")
             ));
-            deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
+            deliveryMethodComboBox.setValue(localeService.getMessage("listingdetails.delivery.method.pickup", "Pickup"));
             deliveryMethodComboBox.setDisable(false);
         } else {
             // Default to pickup only
             deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
-                localeService.getMessage("delivery.method.pickup", "Pickup")
+                localeService.getMessage("listingdetails.delivery.method.pickup", "Pickup")
             ));
-            deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
+            deliveryMethodComboBox.setValue(localeService.getMessage("listingdetails.delivery.method.pickup", "Pickup"));
             deliveryMethodComboBox.setDisable(true);
         }
     }
@@ -407,7 +553,6 @@ public class ListingDetailsController {
         return false;
     }
 
-
     private void loadSellerAvatar(UserViewModel seller) {
         String profileImagePath = seller.getProfileImagePath();
         
@@ -423,7 +568,7 @@ public class ListingDetailsController {
                     .exceptionally(ex -> {
                         Platform.runLater(() -> {
                             setDefaultSellerAvatar();
-                            System.err.println("Failed to load seller avatar: " + ex.getMessage());
+                            System.err.println(localeService.getMessage("listingdetails.error.seller.avatar", "Failed to load seller avatar: {0}").replace("{0}", ex.getMessage()));
                         });
                         return null;
                     });
@@ -438,7 +583,7 @@ public class ListingDetailsController {
                     .getResourceAsStream("/images/icons/default_profile.png"));
             sellerAvatar.setImage(defaultAvatar);
         } catch (Exception e) {
-            System.err.println("Could not load default seller avatar: " + e.getMessage());
+            System.err.println(localeService.getMessage("listingdetails.error.default.avatar", "Could not load default seller avatar: {0}").replace("{0}", e.getMessage()));
         }
     }
 
@@ -474,34 +619,34 @@ public class ListingDetailsController {
     private void setupSellPricing(SellListingViewModel sellListing) {
         String currency = sellListing.getCurrency() != null ? sellListing.getCurrency().getSymbol() : "€";
         priceValue.setText(currency + " " + sellListing.getPrice());
-        priceDetails.setText("Prezzo fisso");
+        priceDetails.setText(localeService.getMessage("listingdetails.sell.price.fixed", "Fixed price"));
     }
 
     private void setupTradePricing(TradeListingViewModel tradeListing) {
-        priceValue.setText("Scambio");
+        priceValue.setText(localeService.getMessage("listingdetails.trade.title", "Trade"));
 
         StringBuilder details = new StringBuilder();
         if (tradeListing.isAcceptMoneyOffers()) {
             if (tradeListing.getReferencePrice() != null) {
                 String currency = tradeListing.getCurrency() != null ? tradeListing.getCurrency().getSymbol() : "€";
-                details.append("Ref: ").append(currency).append(" ").append(tradeListing.getReferencePrice());
+                details.append(localeService.getMessage("listingdetails.trade.reference", "Ref: ")).append(currency).append(" ").append(tradeListing.getReferencePrice());
             }
         }
         if (tradeListing.isAcceptMixedOffers()) {
-            details.append(details.length() > 0 ? " | " : "").append("Offerte miste accettate");
+            details.append(details.length() > 0 ? " | " : "").append(localeService.getMessage("listingdetails.trade.mixed.accepted", "Mixed offers accepted"));
         }
         priceDetails.setText(details.toString());
     }
 
     private void setupGiftPricing(GiftListingViewModel giftListing) {
-        priceValue.setText("Regalo");
+        priceValue.setText(localeService.getMessage("listingdetails.gift.title", "Gift"));
 
-        StringBuilder details = new StringBuilder("Gratuito");
+        StringBuilder details = new StringBuilder(localeService.getMessage("listingdetails.gift.free", "Free"));
         if (giftListing.isPickupOnly()) {
-            details.append(" - Solo ritiro");
+            details.append(" - ").append(localeService.getMessage("listingdetails.gift.pickup.only", "Pickup only"));
         }
         if (giftListing.isAllowThankYouOffers()) {
-            details.append(" - Ringraziamenti accettati");
+            details.append(" - ").append(localeService.getMessage("listingdetails.gift.thanks.accepted", "Thank you offers accepted"));
         }
         priceDetails.setText(details.toString());
     }
@@ -512,10 +657,10 @@ public class ListingDetailsController {
 
         if (currentBid != null && currentBid.compareTo(BigDecimal.ZERO) > 0) {
             priceValue.setText(currency + " " + currentBid);
-            priceDetails.setText("Offerta attuale");
+            priceDetails.setText(localeService.getMessage("listingdetails.auction.current.bid", "Current bid"));
         } else {
             priceValue.setText(currency + " " + auctionListing.getStartingPrice());
-            priceDetails.setText("Prezzo di partenza");
+            priceDetails.setText(localeService.getMessage("listingdetails.auction.starting.price", "Starting price"));
         }
 
         // Update auction-specific elements
@@ -524,7 +669,9 @@ public class ListingDetailsController {
 
         // Calculate minimum bid
         BigDecimal minimumBid = auctionListing.getMinimumNextBid();
-        minimumBidLabel.setText("Offerta minima: " + currency + " " + minimumBid);
+        minimumBidLabel.setText(localeService.getMessage("listingdetails.auction.minimum.bid", "Minimum bid: {0} {1}")
+                .replace("{0}", currency)
+                .replace("{1}", minimumBid.toString()));
 
         // Calculate time remaining
         updateTimeRemaining(auctionListing);
@@ -540,11 +687,13 @@ public class ListingDetailsController {
                 long hours = ChronoUnit.HOURS.between(now, endTime) % 24;
                 long minutes = ChronoUnit.MINUTES.between(now, endTime) % 60;
 
-                String timeText = String.format("Tempo rimanente: %d giorni %d ore %d minuti",
-                        days, hours, minutes);
+                String timeText = localeService.getMessage("listingdetails.auction.time.remaining", "Time remaining: {0} days {1} hours {2} minutes")
+                        .replace("{0}", String.valueOf(days))
+                        .replace("{1}", String.valueOf(hours))
+                        .replace("{2}", String.valueOf(minutes));
                 timeRemainingLabel.setText(timeText);
             } else {
-                timeRemainingLabel.setText("Asta terminata");
+                timeRemainingLabel.setText(localeService.getMessage("listingdetails.auction.ended", "Auction ended"));
                 placeBidButton.setDisable(true);
             }
         }
@@ -604,7 +753,7 @@ public class ListingDetailsController {
         itemName.getStyleClass().add("item-name");
         
         // Quantity badge
-        Label quantityBadge = new Label("x" + item.getQuantity());
+        Label quantityBadge = new Label(localeService.getMessage("listingdetails.item.quantity.prefix", "x{0}").replace("{0}", String.valueOf(item.getQuantity())));
         quantityBadge.getStyleClass().add("quantity-badge");
         
         nameQuantityRow.getChildren().addAll(itemName, quantityBadge);
@@ -669,7 +818,7 @@ public class ListingDetailsController {
             
             if (hasBrand) {
                 VBox brandBox = new VBox(2);
-                Label brandLabel = new Label("Marca:");
+                Label brandLabel = new Label(localeService.getMessage("listingdetails.item.brand", "Brand:"));
                 brandLabel.getStyleClass().add("detail-label");
                 Text brandValue = new Text(itemData.getBrand());
                 brandValue.getStyleClass().add("detail-value");
@@ -679,7 +828,7 @@ public class ListingDetailsController {
             
             if (hasModel) {
                 VBox modelBox = new VBox(2);
-                Label modelLabel = new Label("Modello:");
+                Label modelLabel = new Label(localeService.getMessage("listingdetails.item.model", "Model:"));
                 modelLabel.getStyleClass().add("detail-label");
                 Text modelValue = new Text(itemData.getModel());
                 modelValue.getStyleClass().add("detail-value");
@@ -696,7 +845,7 @@ public class ListingDetailsController {
             yearRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
             
             VBox yearBox = new VBox(2);
-            Label yearLabel = new Label("Anno:");
+            Label yearLabel = new Label(localeService.getMessage("listingdetails.item.year", "Year:"));
             yearLabel.getStyleClass().add("detail-label");
             Text yearValue = new Text(String.valueOf(itemData.getYear()));
             yearValue.getStyleClass().add("detail-value");
@@ -715,7 +864,7 @@ public class ListingDetailsController {
             VBox descriptionBox = new VBox(5);
             descriptionBox.getStyleClass().add("item-description-section");
             
-            Label descLabel = new Label("Descrizione:");
+            Label descLabel = new Label(localeService.getMessage("listingdetails.item.description", "Description:"));
             descLabel.getStyleClass().add("detail-label");
             
             Text descriptionText = new Text(itemData.getDescription());
@@ -735,7 +884,7 @@ public class ListingDetailsController {
                     .getResourceAsStream("/images/icons/immagine_generica.png"));
             imageView.setImage(defaultImage);
         } catch (Exception e) {
-            System.err.println("Could not load default item image: " + e.getMessage());
+            System.err.println(localeService.getMessage("listingdetails.error.default.item.image", "Could not load default item image: {0}").replace("{0}", e.getMessage()));
         }
     }
 
@@ -781,7 +930,12 @@ public class ListingDetailsController {
                     } else {
                         setDefaultMainImage();
                     }
-                }));
+                }))
+                .exceptionally(ex -> {
+                    System.err.println(localeService.getMessage("listingdetails.error.main.image", "Failed to load main image: {0}").replace("{0}", ex.getMessage()));
+                    Platform.runLater(this::setDefaultMainImage);
+                    return null;
+                });
     }
 
     private void setDefaultMainImage() {
@@ -790,7 +944,7 @@ public class ListingDetailsController {
                     .getResourceAsStream("/images/icons/immagine_generica.png"));
             mainImage.setImage(defaultImage);
         } catch (Exception e) {
-            System.err.println("Could not load default main image: " + e.getMessage());
+            System.err.println(localeService.getMessage("listingdetails.error.default.main.image", "Could not load default main image: {0}").replace("{0}", e.getMessage()));
         }
     }
 
@@ -831,7 +985,9 @@ public class ListingDetailsController {
 
     private void updateImageCounter() {
         if (!imageUrls.isEmpty()) {
-            imageCounter.setText((currentImageIndex + 1) + " / " + imageUrls.size());
+            imageCounter.setText(localeService.getMessage("listingdetails.image.counter", "{0} / {1}")
+                    .replace("{0}", String.valueOf(currentImageIndex + 1))
+                    .replace("{1}", String.valueOf(imageUrls.size())));
         }
     }
 
@@ -860,7 +1016,11 @@ public class ListingDetailsController {
                         if (image != null && !image.isError()) {
                             thumbnail.setImage(image);
                         }
-                    }));
+                    }))
+                    .exceptionally(ex -> {
+                        System.err.println(localeService.getMessage("listingdetails.error.thumbnail", "Failed to load thumbnail: {0}").replace("{0}", ex.getMessage()));
+                        return null;
+                    });
 
             // Add click handler
             thumbnail.setOnMouseClicked(e -> {
@@ -868,6 +1028,8 @@ public class ListingDetailsController {
                 loadMainImage(imageUrls.get(index));
                 updateImageNavigation();
                 updateThumbnailSelection();
+                
+                System.out.println(localeService.getMessage("listingdetails.debug.thumbnail.clicked", "Thumbnail clicked: {0}").replace("{0}", String.valueOf(index + 1)));
             });
 
             thumbnailContainer.getChildren().add(thumbnail);
@@ -911,12 +1073,12 @@ public class ListingDetailsController {
                     setVisibleAndManaged(makeOfferButton, false);
                     // Keep buy now button visible but disabled with different text
                     buyNowButton.setDisable(true);
-                    buyNowButton.setText("La tua inserzione");
+                    buyNowButton.setText(localeService.getMessage("listingdetails.button.your.listing", "Your Listing"));
                 } else {
                     // For listings not owned by user, show both buttons
                     setVisibleAndManaged(makeOfferButton, true);
                     buyNowButton.setDisable(false);
-                    buyNowButton.setText("Acquista ora");
+                    buyNowButton.setText(localeService.getMessage("listingdetails.button.buy.now", "Buy Now"));
                 }
                 break;
             case "TRADE":
@@ -943,17 +1105,17 @@ public class ListingDetailsController {
     // Remove the old disableAllActionButtons method and replace with specific methods
     private void disableTradeActions() {
         proposeTradeButton.setDisable(true);
-        proposeTradeButton.setText("La tua inserzione");
+        proposeTradeButton.setText(localeService.getMessage("listingdetails.button.your.listing", "Your Listing"));
     }
 
     private void disableGiftActions() {
         requestGiftButton.setDisable(true);
-        requestGiftButton.setText("La tua inserzione");
+        requestGiftButton.setText(localeService.getMessage("listingdetails.button.your.listing", "Your Listing"));
     }
 
     private void disableAuctionActions() {
         placeBidButton.setDisable(true);
-        placeBidButton.setText("La tua inserzione");
+        placeBidButton.setText(localeService.getMessage("listingdetails.button.your.listing", "Your Listing"));
     }
 
     private void initializeFavoriteStatus() {
@@ -969,7 +1131,7 @@ public class ListingDetailsController {
             Image icon = new Image(getClass().getResourceAsStream(iconPath));
             favoriteIcon.setImage(icon);
         } catch (Exception e) {
-            System.err.println("Could not load favorite icon: " + e.getMessage());
+            System.err.println(localeService.getMessage("listingdetails.error.favorite.icon", "Could not load favorite icon: {0}").replace("{0}", e.getMessage()));
         }
     }
 
@@ -991,14 +1153,16 @@ public class ListingDetailsController {
             try {
                 // Navigate to seller's profile or show seller info dialog
                 navigationService.navigateToProfileView(seller);
+                System.out.println(localeService.getMessage("listingdetails.debug.seller.profile.opened", "Opened seller profile for: {0}").replace("{0}", seller.getDisplayName()));
             } catch (Exception e) {
-                System.err.println("Failed to open seller profile: " + e.getMessage());
+                System.err.println(localeService.getMessage("listingdetails.error.seller.profile", "Failed to open seller profile: {0}").replace("{0}", e.getMessage()));
                 // Fallback: show seller info in an alert
                 AlertHelper.showInformationAlert(
-                    "Profilo Venditore",
+                    localeService.getMessage("listingdetails.seller.profile.title", "Seller Profile"),
                     seller.getDisplayName(),
-                    "Rating: " + seller.getFormattedRating() + "\n" +
-                    "Membro dal: " + (seller.getCreatedAt() != null ? seller.getCreatedAt().toLocalDate() : "N/A")
+                    localeService.getMessage("listingdetails.seller.profile.info", "Rating: {0}\nMember since: {1}")
+                            .replace("{0}", seller.getFormattedRating())
+                            .replace("{1}", (seller.getCreatedAt() != null ? seller.getCreatedAt().toLocalDate().toString() : "N/A"))
                 );
             }
         }
@@ -1008,6 +1172,7 @@ public class ListingDetailsController {
     @FXML
     private void handleBack() {
         navigationService.goBack();
+        System.out.println(localeService.getMessage("listingdetails.debug.back.clicked", "Back button clicked"));
     }
 
     @FXML
@@ -1023,26 +1188,26 @@ public class ListingDetailsController {
                 favoritesService.addFavoriteToServer(currentListing.getId())
                         .thenAccept(_ -> Platform.runLater(() -> {
                             // Server sync successful - observable lists updated via message handler
-                            System.out.println("Successfully added listing to favorites: " + currentListing.getId());
+                            System.out.println(localeService.getMessage("listingdetails.debug.favorite.added", "Successfully added listing to favorites: {0}").replace("{0}", currentListing.getId()));
                         }))
                         .exceptionally(ex -> {
                             // Revert UI on failure
                             isFavorite = false;
                             updateFavoriteIcon();
-                            System.err.println("Failed to add to favorites: " + ex.getMessage());
+                            System.err.println(localeService.getMessage("listingdetails.error.favorite.add", "Failed to add to favorites: {0}").replace("{0}", ex.getMessage()));
                             return null;
                         });
             } else {
                 favoritesService.removeFavoriteFromServer(currentListing.getId())
                         .thenAccept(_ -> Platform.runLater(() -> {
                             // Server sync successful - observable lists updated via message handler
-                            System.out.println("Successfully removed listing from favorites: " + currentListing.getId());
+                            System.out.println(localeService.getMessage("listingdetails.debug.favorite.removed", "Successfully removed listing from favorites: {0}").replace("{0}", currentListing.getId()));
                         }))
                         .exceptionally(ex -> {
                             // Revert UI on failure
                             isFavorite = true;
                             updateFavoriteIcon();
-                            System.err.println("Failed to remove from favorites: " + ex.getMessage());
+                            System.err.println(localeService.getMessage("listingdetails.error.favorite.remove", "Failed to remove from favorites: {0}").replace("{0}", ex.getMessage()));
                             return null;
                         });
             }
@@ -1056,6 +1221,8 @@ public class ListingDetailsController {
             loadMainImage(imageUrls.get(currentImageIndex));
             updateImageNavigation();
             updateThumbnailSelection();
+            
+            System.out.println(localeService.getMessage("listingdetails.debug.previous.image", "Showing previous image: {0}").replace("{0}", String.valueOf(currentImageIndex + 1)));
         }
     }
 
@@ -1066,6 +1233,8 @@ public class ListingDetailsController {
             loadMainImage(imageUrls.get(currentImageIndex));
             updateImageNavigation();
             updateThumbnailSelection();
+            
+            System.out.println(localeService.getMessage("listingdetails.debug.next.image", "Showing next image: {0}").replace("{0}", String.valueOf(currentImageIndex + 1)));
         }
     }
 
@@ -1075,22 +1244,26 @@ public class ListingDetailsController {
         if (currentListing instanceof SellListingViewModel) {
             SellListingViewModel sellListing = (SellListingViewModel) currentListing;
 
-            String message = String.format("Confermi l'acquisto di '%s' per %s %s?",
-                    currentListing.getTitle(),
-                    sellListing.getCurrency().getSymbol(),
-                    sellListing.getPrice());
+            String message = localeService.getMessage("listingdetails.buy.confirm.message", "Do you confirm the purchase of '{0}' for {1} {2}?")
+                    .replace("{0}", currentListing.getTitle())
+                    .replace("{1}", sellListing.getCurrency().getSymbol())
+                    .replace("{2}", sellListing.getPrice().toString());
 
             boolean confirmed = AlertHelper.showConfirmationAlert(
-                    "Conferma acquisto",
-                    "Acquisto diretto",
+                    localeService.getMessage("listingdetails.buy.confirm.title", "Confirm purchase"),
+                    localeService.getMessage("listingdetails.buy.confirm.header", "Direct purchase"),
                     message);
 
             if (confirmed) {
                 // TODO: Implement purchase logic
                 AlertHelper.showInformationAlert(
-                        "Acquisto confermato",
-                        "Il tuo acquisto è stato registrato",
-                        "Riceverai presto i dettagli per il pagamento e la consegna.");
+                        localeService.getMessage("listingdetails.buy.success.title", "Purchase confirmed"),
+                        localeService.getMessage("listingdetails.buy.success.header", "Your purchase has been registered"),
+                        localeService.getMessage("listingdetails.buy.success.message", "You will soon receive details for payment and delivery."));
+                        
+                System.out.println(localeService.getMessage("listingdetails.debug.purchase.confirmed", "Purchase confirmed for: {0}").replace("{0}", currentListing.getTitle()));
+            } else {
+                System.out.println(localeService.getMessage("listingdetails.debug.purchase.cancelled", "Purchase cancelled by user"));
             }
         }
     }
@@ -1103,10 +1276,10 @@ public class ListingDetailsController {
             DialogPane dialogPane = loader.load();
 
             ButtonType confirmButtonType = new ButtonType(
-                    localeService.getMessage("offer.dialog.button.send"),
+                    localeService.getMessage("listingdetails.offer.dialog.button.send", "Send offer"),
                     ButtonBar.ButtonData.OK_DONE);
             ButtonType cancelButtonType = new ButtonType(
-                    localeService.getMessage("offer.dialog.button.cancel"),
+                    localeService.getMessage("listingdetails.offer.dialog.button.cancel", "Cancel"),
                     ButtonBar.ButtonData.CANCEL_CLOSE);
             dialogPane.getButtonTypes().addAll(confirmButtonType, cancelButtonType);
 
@@ -1114,8 +1287,8 @@ public class ListingDetailsController {
             controller.setListing(currentListing);
 
             Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setTitle(localeService.getMessage("offer.dialog.title"));
-            dialog.setHeaderText(localeService.getMessage("offer.dialog.header", currentListing.getTitle()));
+            dialog.setTitle(localeService.getMessage("listingdetails.offer.dialog.title", "Make an offer"));
+            dialog.setHeaderText(localeService.getMessage("listingdetails.offer.dialog.header", "Make an offer for: {0}").replace("{0}", currentListing.getTitle()));
             dialog.setDialogPane(dialogPane);
 
             // Enable/disable confirm button based on offer validity
@@ -1135,20 +1308,22 @@ public class ListingDetailsController {
                         .thenAccept(success -> Platform.runLater(() -> {
                             if (success) {
                                 AlertHelper.showInformationAlert(
-                                        localeService.getMessage("offer.success.title"),
-                                        localeService.getMessage("offer.success.header"),
-                                        localeService.getMessage("offer.success.message"));
+                                        localeService.getMessage("listingdetails.offer.success.title", "Offer sent"),
+                                        localeService.getMessage("listingdetails.offer.success.header", "Your offer has been sent"),
+                                        localeService.getMessage("listingdetails.offer.success.message", "The seller will receive your offer and respond soon."));
+                                        
+                                System.out.println(localeService.getMessage("listingdetails.debug.offer.sent", "Offer sent successfully for: {0}").replace("{0}", currentListing.getTitle()));
                             } else {
                                 AlertHelper.showErrorAlert(
-                                        localeService.getMessage("offer.error.title"),
-                                        localeService.getMessage("offer.error.header"),
-                                        localeService.getMessage("offer.error.connection"));
+                                        localeService.getMessage("listingdetails.offer.error.title", "Error"),
+                                        localeService.getMessage("listingdetails.offer.error.header", "Failed to send offer"),
+                                        localeService.getMessage("listingdetails.offer.error.connection", "Connection error while sending offer"));
                             }
                         }))
                         .exceptionally(ex -> {
                             Platform.runLater(() -> AlertHelper.showErrorAlert(
-                                    localeService.getMessage("offer.error.title"),
-                                    localeService.getMessage("offer.error.header"),
+                                    localeService.getMessage("listingdetails.offer.error.title", "Error"),
+                                    localeService.getMessage("listingdetails.offer.error.header", "Failed to send offer"),
                                     ex.getMessage()));
                             return null;
                         });
@@ -1159,8 +1334,8 @@ public class ListingDetailsController {
 
         } catch (IOException e) {
             AlertHelper.showErrorAlert(
-                    localeService.getMessage("offer.error.title"),
-                    localeService.getMessage("offer.error.header"),
+                    localeService.getMessage("listingdetails.offer.error.title", "Error"),
+                    localeService.getMessage("listingdetails.offer.error.header", "Failed to send offer"),
                     e.getMessage());
         }
     }
@@ -1170,9 +1345,9 @@ public class ListingDetailsController {
         // Only allow for trade listings
         if (!(currentListing instanceof TradeListingViewModel)) {
             AlertHelper.showErrorAlert(
-                    localeService.getMessage("trade.propose.error.title"),
-                    localeService.getMessage("trade.propose.error.header"),
-                    localeService.getMessage("trade.propose.error.notrade"));
+                    localeService.getMessage("listingdetails.trade.error.title", "Error"),
+                    localeService.getMessage("listingdetails.trade.error.header", "Cannot propose trade"),
+                    localeService.getMessage("listingdetails.trade.error.not.trade", "This is not a trade listing"));
             return;
         }
 
@@ -1182,10 +1357,10 @@ public class ListingDetailsController {
             DialogPane dialogPane = loader.load();
 
             ButtonType confirmButtonType = new ButtonType(
-                    localeService.getMessage("trade.dialog.button.send", "Invia proposta"),
+                    localeService.getMessage("listingdetails.trade.dialog.button.send", "Send proposal"),
                     ButtonBar.ButtonData.OK_DONE);
             ButtonType cancelButtonType = new ButtonType(
-                    localeService.getMessage("trade.dialog.button.cancel", "Annulla"),
+                    localeService.getMessage("listingdetails.trade.dialog.button.cancel", "Cancel"),
                     ButtonBar.ButtonData.CANCEL_CLOSE);
             dialogPane.getButtonTypes().addAll(confirmButtonType, cancelButtonType);
 
@@ -1193,9 +1368,8 @@ public class ListingDetailsController {
             controller.setListing(currentListing);
 
             Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setTitle(localeService.getMessage("trade.dialog.title", "Proponi scambio"));
-            dialog.setHeaderText(localeService.getMessage("trade.dialog.header",
-                    "Proponi uno scambio per: " + currentListing.getTitle()));
+            dialog.setTitle(localeService.getMessage("listingdetails.trade.dialog.title", "Propose trade"));
+            dialog.setHeaderText(localeService.getMessage("listingdetails.trade.dialog.header", "Propose a trade for: {0}").replace("{0}", currentListing.getTitle()));
             dialog.setDialogPane(dialogPane);
 
             // Enable/disable confirm button based on offer validity
@@ -1215,25 +1389,22 @@ public class ListingDetailsController {
                         .thenAccept(success -> Platform.runLater(() -> {
                             if (success) {
                                 AlertHelper.showInformationAlert(
-                                        localeService.getMessage("trade.success.title", "Proposta inviata"),
-                                        localeService.getMessage("trade.success.header",
-                                                "La tua proposta di scambio è stata inviata"),
-                                        localeService.getMessage("trade.success.message",
-                                                "Il proprietario riceverà la tua proposta e ti risponderà presto."));
+                                        localeService.getMessage("listingdetails.trade.success.title", "Proposal sent"),
+                                        localeService.getMessage("listingdetails.trade.success.header", "Your trade proposal has been sent"),
+                                        localeService.getMessage("listingdetails.trade.success.message", "The owner will receive your proposal and respond soon."));
+                                        
+                                System.out.println(localeService.getMessage("listingdetails.debug.trade.sent", "Trade proposal sent successfully for: {0}").replace("{0}", currentListing.getTitle()));
                             } else {
                                 AlertHelper.showErrorAlert(
-                                        localeService.getMessage("trade.error.title", "Errore"),
-                                        localeService.getMessage("trade.error.header",
-                                                "Impossibile inviare la proposta"),
-                                        localeService.getMessage("trade.error.connection",
-                                                "Errore di connessione durante l'invio della proposta"));
+                                        localeService.getMessage("listingdetails.trade.error.title", "Error"),
+                                        localeService.getMessage("listingdetails.trade.error.header", "Cannot send proposal"),
+                                        localeService.getMessage("listingdetails.trade.error.connection", "Connection error while sending proposal"));
                             }
                         }))
                         .exceptionally(ex -> {
                             Platform.runLater(() -> AlertHelper.showErrorAlert(
-                                    localeService.getMessage("trade.error.title", "Errore"),
-                                    localeService.getMessage("trade.error.header",
-                                            "Impossibile inviare la proposta"),
+                                    localeService.getMessage("listingdetails.trade.error.title", "Error"),
+                                    localeService.getMessage("listingdetails.trade.error.header", "Cannot send proposal"),
                                     ex.getMessage()));
                             return null;
                         });
@@ -1244,8 +1415,8 @@ public class ListingDetailsController {
 
         } catch (IOException e) {
             AlertHelper.showErrorAlert(
-                    localeService.getMessage("trade.error.title", "Errore"),
-                    localeService.getMessage("trade.error.header", "Impossibile aprire la finestra di proposta"),
+                    localeService.getMessage("listingdetails.trade.error.title", "Error"),
+                    localeService.getMessage("listingdetails.trade.error.header", "Cannot open proposal window"),
                     e.getMessage());
         }
     }
@@ -1256,22 +1427,26 @@ public class ListingDetailsController {
             boolean offerThankYou = offerThankYouCheckBox.isSelected();
             String thankYouMessage = offerThankYou ? thankYouMessageArea.getText() : "";
 
-            String message = "Confermi la richiesta per il regalo '" + currentListing.getTitle() + "'?";
+            String message = localeService.getMessage("listingdetails.gift.confirm.message", "Do you confirm the request for the gift '{0}'?").replace("{0}", currentListing.getTitle());
             if (offerThankYou) {
-                message += "\n\nMessaggio di ringraziamento incluso.";
+                message += "\n\n" + localeService.getMessage("listingdetails.gift.thank.you.included", "Thank you message included.");
             }
 
             boolean confirmed = AlertHelper.showConfirmationAlert(
-                    "Conferma richiesta regalo",
-                    "Richiesta regalo",
+                    localeService.getMessage("listingdetails.gift.confirm.title", "Confirm gift request"),
+                    localeService.getMessage("listingdetails.gift.confirm.header", "Gift request"),
                     message);
 
             if (confirmed) {
                 // TODO: Implement gift request logic
                 AlertHelper.showInformationAlert(
-                        "Richiesta inviata",
-                        "La tua richiesta è stata inviata",
-                        "Il donatore riceverà la tua richiesta e ti risponderà presto.");
+                        localeService.getMessage("listingdetails.gift.success.title", "Request sent"),
+                        localeService.getMessage("listingdetails.gift.success.header", "Your request has been sent"),
+                        localeService.getMessage("listingdetails.gift.success.message", "The donor will receive your request and respond soon."));
+                        
+                System.out.println(localeService.getMessage("listingdetails.debug.gift.requested", "Gift request sent for: {0}").replace("{0}", currentListing.getTitle()));
+            } else {
+                System.out.println(localeService.getMessage("listingdetails.debug.gift.cancelled", "Gift request cancelled by user"));
             }
         }
     }
@@ -1287,37 +1462,45 @@ public class ListingDetailsController {
 
                 if (bidAmount.compareTo(minimumBid) < 0) {
                     AlertHelper.showWarningAlert(
-                            "Offerta non valida",
-                            "Importo troppo basso",
-                            "L'offerta deve essere almeno " +
-                                    auction.getCurrency().getSymbol() + " " + minimumBid);
+                            localeService.getMessage("listingdetails.bid.invalid.title", "Invalid bid"),
+                            localeService.getMessage("listingdetails.bid.invalid.header", "Amount too low"),
+                            localeService.getMessage("listingdetails.bid.invalid.message", "The bid must be at least {0} {1}")
+                                    .replace("{0}", auction.getCurrency().getSymbol())
+                                    .replace("{1}", minimumBid.toString()));
                     return;
                 }
 
                 boolean confirmed = AlertHelper.showConfirmationAlert(
-                        "Conferma offerta",
-                        "Offerta all'asta",
-                        String.format("Confermi l'offerta di %s %s per '%s'?",
-                                bidCurrencyComboBox.getValue().getSymbol(),
-                                bidAmount,
-                                currentListing.getTitle()));
+                        localeService.getMessage("listingdetails.bid.confirm.title", "Confirm bid"),
+                        localeService.getMessage("listingdetails.bid.confirm.header", "Auction bid"),
+                        localeService.getMessage("listingdetails.bid.confirm.message", "Do you confirm the bid of {0} {1} for '{2}'?")
+                                .replace("{0}", bidCurrencyComboBox.getValue().getSymbol())
+                                .replace("{1}", bidAmount.toString())
+                                .replace("{2}", currentListing.getTitle()));
 
                 if (confirmed) {
                     // TODO: Implement bid placement logic
                     AlertHelper.showInformationAlert(
-                            "Offerta piazzata",
-                            "La tua offerta è stata registrata",
-                            "Ti aggiorneremo se qualcuno supera la tua offerta.");
+                            localeService.getMessage("listingdetails.bid.success.title", "Bid placed"),
+                            localeService.getMessage("listingdetails.bid.success.header", "Your bid has been registered"),
+                            localeService.getMessage("listingdetails.bid.success.message", "We will update you if someone outbids you."));
 
                     // Clear bid field
                     bidAmountField.clear();
+                    
+                    System.out.println(localeService.getMessage("listingdetails.debug.bid.placed", "Bid placed: {0} {1} for {2}")
+                            .replace("{0}", bidCurrencyComboBox.getValue().getSymbol())
+                            .replace("{1}", bidAmount.toString())
+                            .replace("{2}", currentListing.getTitle()));
+                } else {
+                    System.out.println(localeService.getMessage("listingdetails.debug.bid.cancelled", "Bid cancelled by user"));
                 }
 
             } catch (NumberFormatException e) {
                 AlertHelper.showWarningAlert(
-                        "Offerta non valida",
-                        "Formato importo errato",
-                        "Inserisci un importo valido.");
+                        localeService.getMessage("listingdetails.bid.invalid.title", "Invalid bid"),
+                        localeService.getMessage("listingdetails.bid.invalid.format.header", "Invalid amount format"),
+                        localeService.getMessage("listingdetails.bid.invalid.format.message", "Please enter a valid amount."));
             }
         }
     }
@@ -1326,15 +1509,18 @@ public class ListingDetailsController {
     private void handleContactSeller() {
         // TODO: Open chat/message dialog
         AlertHelper.showInformationAlert(
-                "Contatta venditore",
-                "Funzionalità in sviluppo",
-                "La messaggistica diretta sarà disponibile presto.");
+                localeService.getMessage("listingdetails.contact.title", "Contact seller"),
+                localeService.getMessage("listingdetails.contact.header", "Feature in development"),
+                localeService.getMessage("listingdetails.contact.message", "Direct messaging will be available soon."));
+                
+        System.out.println(localeService.getMessage("listingdetails.debug.contact.clicked", "Contact seller clicked"));
     }
 
     @FXML
     private void handleReportListing() {
         if (currentListing != null) {
             navigationService.openReportDialog(currentListing, (Stage) backButton.getScene().getWindow());
+            System.out.println(localeService.getMessage("listingdetails.debug.report.listing", "Report listing dialog opened"));
         }
     }
 
@@ -1343,6 +1529,7 @@ public class ListingDetailsController {
         if (currentListing != null && currentListing.getUser() != null) {
             UserViewModel userViewModel = currentListing.getUser();
             navigationService.openReportDialog(userViewModel, (Stage) backButton.getScene().getWindow());
+            System.out.println(localeService.getMessage("listingdetails.debug.report.user", "Report user dialog opened"));
         }
     }
 
@@ -1371,6 +1558,10 @@ public class ListingDetailsController {
                 detailsSection.setVisible(!isExpanded);
                 detailsSection.setManaged(!isExpanded);
                 expandButton.setText(isExpanded ? "▼" : "▲");
+                
+                System.out.println(localeService.getMessage("listingdetails.debug.item.expanded", "Item details {0}: {1}")
+                        .replace("{0}", isExpanded ? "collapsed" : "expanded")
+                        .replace("{1}", item.getName()));
             });
             
             // Add expand button to main row
@@ -1426,7 +1617,7 @@ public class ListingDetailsController {
         itemName.getStyleClass().add("item-name");
         
         // Quantity badge
-        Label quantityBadge = new Label("x" + item.getQuantity());
+        Label quantityBadge = new Label(localeService.getMessage("listingdetails.item.quantity.prefix", "x{0}").replace("{0}", String.valueOf(item.getQuantity())));
         quantityBadge.getStyleClass().add("quantity-badge");
         
         nameQuantityRow.getChildren().addAll(itemName, quantityBadge);

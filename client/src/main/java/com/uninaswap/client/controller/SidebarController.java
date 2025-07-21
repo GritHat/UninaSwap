@@ -3,7 +3,10 @@ package com.uninaswap.client.controller;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.UserSessionService;
+import com.uninaswap.client.service.EventBusService;
+import com.uninaswap.client.constants.EventTypes;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import java.io.IOException;
@@ -11,8 +14,9 @@ import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
-public class SidebarController {
+public class SidebarController implements Refreshable {
     @FXML
     private ImageView ProfileImageIcon;
     @FXML
@@ -23,8 +27,9 @@ public class SidebarController {
     private ImageView notificationsIcon;
     @FXML
     private ImageView listingIcon;
+    @FXML
+    private ImageView offersIcon;
 
-    // Add FXML references to the button containers
     @FXML
     private VBox homeButton;
     @FXML
@@ -38,6 +43,20 @@ public class SidebarController {
     @FXML
     private VBox profileButton;
 
+    // Caption text elements for localization
+    @FXML
+    private Text homeCaptionText;
+    @FXML
+    private Text listingsCaptionText;
+    @FXML
+    private Text offersCaptionText;
+    @FXML
+    private Text inventoryCaptionText;
+    @FXML
+    private Text notificationsCaptionText;
+    @FXML
+    private Text profileCaptionText;
+
     @FXML
     private javafx.scene.control.Label statusLabel;
 
@@ -50,18 +69,57 @@ public class SidebarController {
     // Track currently selected button
     private VBox currentlySelected;
 
-    // Add these fields to track icon references
-    @FXML
-    private ImageView offersIcon;
-
     public SidebarController() {
         this.navigationService = NavigationService.getInstance();
     }
 
     @FXML
     public void initialize() {
+        // Subscribe to locale changes
+        EventBusService.getInstance().subscribe(EventTypes.LOCALE_CHANGED, _ -> {
+            Platform.runLater(this::refreshUI);
+        });
+
         // Set home as initially selected
         setSelectedButton(homeButton);
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("sidebar.debug.initialized", "Sidebar controller initialized"));
+    }
+
+    @Override
+    public void refreshUI() {
+        // Update caption texts if they exist (they should be automatically updated via FXML property binding)
+        // However, we can manually update them if needed
+        updateCaptionTexts();
+        
+        System.out.println(localeService.getMessage("sidebar.debug.ui.refreshed", "Sidebar UI refreshed"));
+    }
+
+    private void updateCaptionTexts() {
+        // Note: In the FXML, captions use property binding like text="%home.caption"
+        // These will be automatically updated when the locale changes
+        // This method is here for manual updates if needed
+        
+        // Find Text nodes within each button and update them manually if property binding isn't working
+        updateButtonCaptionText(homeButton, localeService.getMessage("home.caption", "Home"));
+        updateButtonCaptionText(listingButton, localeService.getMessage("listings.caption", "Listings"));
+        updateButtonCaptionText(offersButton, localeService.getMessage("offers.caption", "Offers"));
+        updateButtonCaptionText(inventoryButton, localeService.getMessage("inventory.caption", "Inventory"));
+        updateButtonCaptionText(notificationsButton, localeService.getMessage("notification.caption", "Notifications"));
+        updateButtonCaptionText(profileButton, localeService.getMessage("user.caption", "Profile"));
+    }
+
+    private void updateButtonCaptionText(VBox button, String text) {
+        if (button != null) {
+            button.getChildren().stream()
+                .filter(node -> node instanceof Text)
+                .map(node -> (Text) node)
+                .findFirst()
+                .ifPresent(textNode -> textNode.setText(text));
+        }
     }
 
     private void setSelectedButton(VBox selectedButton) {
@@ -73,6 +131,10 @@ public class SidebarController {
             selectedButton.getStyleClass().add("selected");
             currentlySelected = selectedButton;
             setWhiteIcon(selectedButton);
+            
+            String buttonName = getButtonName(selectedButton);
+            System.out.println(localeService.getMessage("sidebar.debug.button.selected", "Sidebar button selected: {0}")
+                .replace("{0}", buttonName));
         }
     }
 
@@ -105,6 +167,8 @@ public class SidebarController {
         
         // Reset the currently selected tracker
         currentlySelected = null;
+        
+        System.out.println(localeService.getMessage("sidebar.debug.selections.cleared", "All sidebar selections cleared"));
     }
 
     private void setWhiteIcon(VBox button) {
@@ -115,8 +179,13 @@ public class SidebarController {
             try {
                 Image whiteIcon = new Image(getClass().getResourceAsStream(whiteIconPath));
                 iconView.setImage(whiteIcon);
+                System.out.println(localeService.getMessage("sidebar.debug.icon.white.set", "White icon set: {0}")
+                    .replace("{0}", whiteIconPath));
             } catch (Exception e) {
-                System.err.println("Could not load white icon: " + whiteIconPath + " - " + e.getMessage());
+                System.err.println(localeService.getMessage("sidebar.debug.icon.white.error", 
+                    "Could not load white icon: {0} - {1}")
+                        .replace("{0}", whiteIconPath)
+                        .replace("{1}", e.getMessage()));
             }
         }
     }
@@ -127,7 +196,10 @@ public class SidebarController {
                 Image normalIcon = new Image(getClass().getResourceAsStream(normalIconPath));
                 iconView.setImage(normalIcon);
             } catch (Exception e) {
-                System.err.println("Could not load normal icon: " + normalIconPath + " - " + e.getMessage());
+                System.err.println(localeService.getMessage("sidebar.debug.icon.normal.error", 
+                    "Could not load normal icon: {0} - {1}")
+                        .replace("{0}", normalIconPath)
+                        .replace("{1}", e.getMessage()));
             }
         }
     }
@@ -152,13 +224,26 @@ public class SidebarController {
         return null;
     }
 
+    private String getButtonName(VBox button) {
+        if (button == homeButton) return localeService.getMessage("home.caption", "Home");
+        if (button == offersButton) return localeService.getMessage("offers.caption", "Offers");
+        if (button == inventoryButton) return localeService.getMessage("inventory.caption", "Inventory");
+        if (button == notificationsButton) return localeService.getMessage("notification.caption", "Notifications");
+        if (button == listingButton) return localeService.getMessage("listings.caption", "Listings");
+        if (button == profileButton) return localeService.getMessage("user.caption", "Profile");
+        return localeService.getMessage("sidebar.unknown.button", "Unknown");
+    }
+
     @FXML
     public void showProfile(MouseEvent event) {
         setSelectedButton(profileButton);
         try {
             Parent profileView = navigationService.loadProfileView(userSessionService.getUserViewModel());
             mainController.setContent(profileView);
+            System.out.println(localeService.getMessage("sidebar.debug.navigation.profile", "Navigated to profile view"));
         } catch (IOException e) {
+            System.err.println(localeService.getMessage("sidebar.debug.navigation.profile.error", 
+                "Error navigating to profile: {0}").replace("{0}", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -172,7 +257,10 @@ public class SidebarController {
             
             // Update header buttons when leaving listing creation
             mainController.updateHeaderButtonSelection("refresh");
+            System.out.println(localeService.getMessage("sidebar.debug.navigation.home", "Navigated to home view"));
         } catch (java.io.IOException e) {
+            System.err.println(localeService.getMessage("sidebar.debug.navigation.home.error", 
+                "Error navigating to home: {0}").replace("{0}", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -186,7 +274,10 @@ public class SidebarController {
             
             // Update header buttons when leaving listing creation
             mainController.updateHeaderButtonSelection("refresh");
+            System.out.println(localeService.getMessage("sidebar.debug.navigation.inventory", "Navigated to inventory view"));
         } catch (java.io.IOException e) {
+            System.err.println(localeService.getMessage("sidebar.debug.navigation.inventory.error", 
+                "Error navigating to inventory: {0}").replace("{0}", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -200,7 +291,10 @@ public class SidebarController {
             
             // Update header buttons when navigating
             mainController.updateHeaderButtonSelection("refresh");
+            System.out.println(localeService.getMessage("sidebar.debug.navigation.listings", "Navigated to listings view"));
         } catch (java.io.IOException e) {
+            System.err.println(localeService.getMessage("sidebar.debug.navigation.listings.error", 
+                "Error navigating to listings: {0}").replace("{0}", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -212,7 +306,10 @@ public class SidebarController {
             navigationService.navigateToNotificationsView();
             // Update header buttons when leaving listing creation
             mainController.updateHeaderButtonSelection("refresh");
+            System.out.println(localeService.getMessage("sidebar.debug.navigation.notifications", "Navigated to notifications view"));
         } catch (java.io.IOException e) {
+            System.err.println(localeService.getMessage("sidebar.debug.navigation.notifications.error", 
+                "Error navigating to notifications: {0}").replace("{0}", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -223,7 +320,10 @@ public class SidebarController {
         try {
             Parent settingsView = navigationService.loadSettingsView();
             mainController.setContent(settingsView);
+            System.out.println(localeService.getMessage("sidebar.debug.navigation.settings", "Navigated to settings view"));
         } catch (java.io.IOException e) {
+            System.err.println(localeService.getMessage("sidebar.debug.navigation.settings.error", 
+                "Error navigating to settings: {0}").replace("{0}", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -233,7 +333,10 @@ public class SidebarController {
         try {
             Parent supportView = navigationService.loadSupportView();
             mainController.setContent(supportView);
+            System.out.println(localeService.getMessage("sidebar.debug.navigation.support", "Navigated to support view"));
         } catch (java.io.IOException e) {
+            System.err.println(localeService.getMessage("sidebar.debug.navigation.support.error", 
+                "Error navigating to support: {0}").replace("{0}", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -247,7 +350,10 @@ public class SidebarController {
             
             // Update header buttons when leaving listing creation
             mainController.updateHeaderButtonSelection("refresh");
+            System.out.println(localeService.getMessage("sidebar.debug.navigation.offers", "Navigated to offers view"));
         } catch (java.io.IOException e) {
+            System.err.println(localeService.getMessage("sidebar.debug.navigation.offers.error", 
+                "Error navigating to offers: {0}").replace("{0}", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -256,43 +362,89 @@ public class SidebarController {
     public void logout(MouseEvent event) {
         try {
             navigationService.logout();
+            System.out.println(localeService.getMessage("sidebar.debug.logout.success", "User logged out successfully"));
         } catch (Exception e) {
+            String errorMessage = localeService.getMessage("sidebar.error.logout", "Error logging out: {0}")
+                .replace("{0}", e.getMessage());
+            
             if (statusLabel != null) {
-                statusLabel.setText(localeService.getMessage("dashboard.error.logout", e.getMessage()));
+                statusLabel.setText(errorMessage);
             }
+            System.err.println(localeService.getMessage("sidebar.debug.logout.error", "Logout error: {0}")
+                .replace("{0}", e.getMessage()));
         }
     }
 
-    // Public method to allow external selection updates
+    // Public methods to allow external selection updates
     public void selectHomeButton() {
         setSelectedButton(homeButton);
+        System.out.println(localeService.getMessage("sidebar.debug.external.home", "Home button selected externally"));
     }
 
     public void selectOffersButton() {
         setSelectedButton(offersButton);
+        System.out.println(localeService.getMessage("sidebar.debug.external.offers", "Offers button selected externally"));
     }
 
     public void selectInventoryButton() {
         setSelectedButton(inventoryButton);
+        System.out.println(localeService.getMessage("sidebar.debug.external.inventory", "Inventory button selected externally"));
     }
 
     public void selectNotificationsButton() {
         setSelectedButton(notificationsButton);
+        System.out.println(localeService.getMessage("sidebar.debug.external.notifications", "Notifications button selected externally"));
     }
 
     public void selectAddListingButton() {
         setSelectedButton(listingButton);
+        System.out.println(localeService.getMessage("sidebar.debug.external.add.listing", "Add listing button selected externally"));
     }
 
     public void selectProfileButton() {
         setSelectedButton(profileButton);
+        System.out.println(localeService.getMessage("sidebar.debug.external.profile", "Profile button selected externally"));
     }
 
     public void selectListingsButton() {
         setSelectedButton(listingButton);
+        System.out.println(localeService.getMessage("sidebar.debug.external.listings", "Listings button selected externally"));
     }
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
+        System.out.println(localeService.getMessage("sidebar.debug.main.controller.set", "Main controller reference set"));
+    }
+
+    // Utility methods
+    public VBox getCurrentlySelected() {
+        return currentlySelected;
+    }
+
+    public boolean isButtonSelected(String buttonName) {
+        VBox button = getButtonByName(buttonName);
+        return button != null && button == currentlySelected;
+    }
+
+    private VBox getButtonByName(String buttonName) {
+        return switch (buttonName.toLowerCase()) {
+            case "home" -> homeButton;
+            case "offers" -> offersButton;
+            case "inventory" -> inventoryButton;
+            case "notifications" -> notificationsButton;
+            case "listings" -> listingButton;
+            case "profile" -> profileButton;
+            default -> null;
+        };
+    }
+
+    public void refreshButtonSelection() {
+        // Force refresh of the current selection to update icons and styling
+        if (currentlySelected != null) {
+            VBox selected = currentlySelected;
+            clearAllSelections();
+            setSelectedButton(selected);
+            System.out.println(localeService.getMessage("sidebar.debug.selection.refreshed", "Button selection refreshed"));
+        }
     }
 }

@@ -24,6 +24,7 @@ import com.uninaswap.client.service.UserSessionService;
 import com.uninaswap.client.service.CategoryService;
 import com.uninaswap.client.service.SearchService;
 import com.uninaswap.client.service.NotificationService;
+import com.uninaswap.client.service.Refreshable;
 import com.uninaswap.common.enums.Category;
 import javafx.collections.FXCollections;
 import javafx.util.StringConverter;
@@ -44,8 +45,6 @@ public class MainController implements Refreshable {
     private StackPane contentArea;
 
     // Header FXML fields
-    // @FXML
-    // private Label welcomeLabel;
     @FXML
     private TextField searchField;
     @FXML
@@ -116,21 +115,20 @@ public class MainController implements Refreshable {
     @FXML
     private Button favoritesButton;
 
-
-    // Add this field
     @FXML
     private ComboBox<Category> categoryComboBox;
 
+    // Services
     private final NavigationService navigationService;
     private final LocaleService localeService;
     private final UserSessionService sessionService;
     private final EventBusService eventBus = EventBusService.getInstance();
     private final ImageService imageService = ImageService.getInstance();
-    // Add the CategoryService
     private final CategoryService categoryService = CategoryService.getInstance();
     private final SearchService searchService = SearchService.getInstance();
     private final NotificationService notificationService = NotificationService.getInstance();
 
+    // State
     private String currentFilter = "all";
     private boolean isInSearchMode = false;
 
@@ -197,14 +195,19 @@ public class MainController implements Refreshable {
             });
 
             initializeNotifications();
+            
+            // Initial UI refresh
+            refreshUI();
+            
+            System.out.println(localeService.getMessage("main.debug.initialized", "MainController initialized"));
         } catch (Exception e) {
-            System.err.println("Error initializing MainController: " + e.getMessage());
+            System.err.println(localeService.getMessage("main.error.initialization", "Error initializing MainController: {0}").replace("{0}", e.getMessage()));
             e.printStackTrace();
         }
     }
 
     private void initializeNotifications() {
-        System.out.println("Initializing notifications in MainController...");
+        System.out.println(localeService.getMessage("main.debug.notifications.initializing", "Initializing notifications in MainController..."));
 
         // Initialize the notification service
         notificationService.initializeNotifications();
@@ -216,7 +219,7 @@ public class MainController implements Refreshable {
         notificationService.setNewNotificationCallback(notification -> {
             Platform.runLater(() -> {
                 // You could show a brief toast/alert here for new notifications
-                System.out.println("New notification received: " + notification.getTitle());
+                System.out.println(localeService.getMessage("main.debug.notification.received", "New notification received: {0}").replace("{0}", notification.getTitle()));
                 // Optionally show a brief visual indicator
                 showNewNotificationAlert(notification);
             });
@@ -224,7 +227,7 @@ public class MainController implements Refreshable {
     }
 
     private void updateNotificationButtonBadge(int unreadCount) {
-        System.out.println("updating badge " + unreadCount);
+        System.out.println(localeService.getMessage("main.debug.badge.updating", "updating badge {0}").replace("{0}", String.valueOf(unreadCount)));
         Platform.runLater(() -> {
             // Remove existing badge if present
             if (notificationBadge != null && notificationsButton.getParent() instanceof StackPane) {
@@ -238,7 +241,7 @@ public class MainController implements Refreshable {
                 createNotificationBadge(unreadCount);
             }
             
-            System.out.println("Notification badge updated: " + unreadCount + " unread");
+            System.out.println(localeService.getMessage("main.debug.badge.updated", "Notification badge updated: {0} unread").replace("{0}", String.valueOf(unreadCount)));
         });
     }
     
@@ -255,7 +258,7 @@ public class MainController implements Refreshable {
         notificationBadge = new Label();
         
         if (unreadCount > 99) {
-            notificationBadge.setText("99+");
+            notificationBadge.setText(localeService.getMessage("main.badge.overflow", "99+"));
         } else if (unreadCount > 0) {
             notificationBadge.setText(String.valueOf(unreadCount));
         }
@@ -265,7 +268,6 @@ public class MainController implements Refreshable {
         
         // Position the badge in the top-right corner
         StackPane.setAlignment(notificationBadge, javafx.geometry.Pos.TOP_RIGHT);
-        //notificationBadge.setTranslateX(-10);  // Move slightly left from right edge
         notificationBadge.setTranslateY(5);   // Move slightly down from top edge
         
         // Add to the container
@@ -274,7 +276,6 @@ public class MainController implements Refreshable {
         // Make sure badge is on top
         notificationBadge.toFront();
         notificationBadge.setMouseTransparent(true);
-
     }
     
     private void wrapNotificationButtonInStackPane() {
@@ -299,7 +300,9 @@ public class MainController implements Refreshable {
     private void showNewNotificationAlert(com.uninaswap.client.viewmodel.NotificationViewModel notification) {
         // Optional: Show a brief toast or visual alert for new notifications
         // This could be a small popup that appears briefly and disappears
-        System.out.println("📢 " + notification.getTitle() + ": " + notification.getMessage());
+        System.out.println(localeService.getMessage("main.notification.alert", "📢 {0}: {1}")
+            .replace("{0}", notification.getTitle())
+            .replace("{1}", notification.getMessage()));
     }
 
     private void initializeHeaderButtonStates() {
@@ -335,8 +338,6 @@ public class MainController implements Refreshable {
         // Notifications button - temporary selection while popup is open
         if (notificationsButton != null) {
             notificationsButton.setOnAction(event -> {
-                boolean popupWasOpen = notificationPopup != null && notificationPopup.isShowing();
-                
                 showNotifications(event);
                 
                 // Update selection based on popup state
@@ -347,8 +348,6 @@ public class MainController implements Refreshable {
         // User menu button - temporary selection while popup is open
         if (userMenuButton != null) {
             userMenuButton.setOnAction(event -> {
-                boolean popupWasOpen = userMenuPopup != null && userMenuPopup.isShowing();
-                
                 showUserMenu(event);
                 
                 // Update selection based on popup state
@@ -410,7 +409,9 @@ public class MainController implements Refreshable {
                 Image normalIcon = new Image(getClass().getResourceAsStream(normalIconPath));
                 iconView.setImage(normalIcon);
             } catch (Exception e) {
-                System.err.println("Could not load normal header icon: " + normalIconPath + " - " + e.getMessage());
+                System.err.println(localeService.getMessage("main.error.icon.load", "Could not load normal header icon: {0} - {1}")
+                    .replace("{0}", normalIconPath)
+                    .replace("{1}", e.getMessage()));
             }
         }
     }
@@ -470,18 +471,9 @@ public class MainController implements Refreshable {
                 Image whiteIcon = new Image(getClass().getResourceAsStream(whiteIconPath));
                 iconView.setImage(whiteIcon);
             } catch (Exception e) {
-                System.err.println("Could not load white header icon: " + whiteIconPath + " - " + e.getMessage());
-            }
-        }
-    }
-
-    private void setNormalHeaderIcon(Button button, ImageView iconView, String normalIconPath) {
-        if (iconView != null && normalIconPath != null) {
-            try {
-                Image normalIcon = new Image(getClass().getResourceAsStream(normalIconPath));
-                iconView.setImage(normalIcon);
-            } catch (Exception e) {
-                System.err.println("Could not load normal header icon: " + normalIconPath + " - " + e.getMessage());
+                System.err.println(localeService.getMessage("main.error.white.icon.load", "Could not load white header icon: {0} - {1}")
+                    .replace("{0}", whiteIconPath)
+                    .replace("{1}", e.getMessage()));
             }
         }
     }
@@ -532,7 +524,7 @@ public class MainController implements Refreshable {
                 @Override
                 public String toString(Category category) {
                     if (category == null) {
-                        return "Tutte le categorie";
+                        return localeService.getMessage("header.category.all", "All Categories");
                     }
                     return categoryService.getLocalizedCategoryName(category);
                 }
@@ -546,7 +538,7 @@ public class MainController implements Refreshable {
             // Add change listener to trigger search
             categoryComboBox.valueProperty().addListener((_, oldValue, newValue) -> {
                 if (newValue != oldValue && newValue != null) {
-                    System.out.println("Category changed to: " + newValue);
+                    System.out.println(localeService.getMessage("main.debug.category.changed", "Category changed to: {0}").replace("{0}", newValue.toString()));
                     if (isInSearchMode) {
                         performCurrentSearch();
                     } else {
@@ -555,7 +547,7 @@ public class MainController implements Refreshable {
                 }
             });
         } else {
-            System.err.println("categoryComboBox is null - check FXML fx:id");
+            System.err.println(localeService.getMessage("main.error.category.combo.null", "categoryComboBox is null - check FXML fx:id"));
         }
     }
 
@@ -599,7 +591,7 @@ public class MainController implements Refreshable {
                 notificationsButton.localToScreen(notificationsButton.getBoundsInLocal()).getMaxY() + 5);
                 
         } catch (Exception e) {
-            System.err.println("Failed to show notifications dropdown: " + e.getMessage());
+            System.err.println(localeService.getMessage("main.error.notifications.dropdown", "Failed to show notifications dropdown: {0}").replace("{0}", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -634,7 +626,7 @@ public class MainController implements Refreshable {
                 userMenuButton.localToScreen(userMenuButton.getBoundsInLocal()).getMaxY() + 5);
                 
         } catch (Exception e) {
-            System.err.println("Failed to show user menu dropdown: " + e.getMessage());
+            System.err.println(localeService.getMessage("main.error.usermenu.dropdown", "Failed to show user menu dropdown: {0}").replace("{0}", e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -723,7 +715,10 @@ public class MainController implements Refreshable {
     }
 
     private void performSearch(String query, String listingType, Category category) {
-        System.out.println("Performing search: query='" + query + "', type='" + listingType + "', category=" + category);
+        System.out.println(localeService.getMessage("main.debug.search.performing", "Performing search: query='{0}', type='{1}', category={2}")
+            .replace("{0}", query)
+            .replace("{1}", listingType)
+            .replace("{2}", category != null ? category.toString() : "null"));
         
         searchService.search(query, listingType, category)
             .thenAccept(searchResult -> Platform.runLater(() -> {
@@ -733,7 +728,7 @@ public class MainController implements Refreshable {
             }))
             .exceptionally(ex -> {
                 Platform.runLater(() -> {
-                    System.err.println("Search failed: " + ex.getMessage());
+                    System.err.println(localeService.getMessage("main.error.search.failed", "Search failed: {0}").replace("{0}", ex.getMessage()));
                     showSearchError(ex.getMessage());
                 });
                 return null;
@@ -760,7 +755,7 @@ public class MainController implements Refreshable {
             Parent homeView = navigationService.loadHomeView();
             setContent(homeView);
         } catch (Exception e) {
-            System.err.println("Error returning to home view: " + e.getMessage());
+            System.err.println(localeService.getMessage("main.error.home.view.return", "Error returning to home view: {0}").replace("{0}", e.getMessage()));
         }
     }
     
@@ -778,7 +773,7 @@ public class MainController implements Refreshable {
             }
             
         } catch (Exception e) {
-            System.err.println("Error updating search results: " + e.getMessage());
+            System.err.println(localeService.getMessage("main.error.search.results.update", "Error updating search results: {0}").replace("{0}", e.getMessage()));
         }
     }
     
@@ -787,9 +782,12 @@ public class MainController implements Refreshable {
         String message;
         
         if (query.isEmpty()) {
-            message = "Filtri applicati: " + searchResult.getTotalResults() + " risultati trovati";
+            message = localeService.getMessage("main.search.results.filters", "Filters applied: {0} results found")
+                .replace("{0}", String.valueOf(searchResult.getTotalResults()));
         } else {
-            message = "Risultati per '" + query + "': " + searchResult.getTotalResults() + " inserzioni trovate";
+            message = localeService.getMessage("main.search.results.query", "Results for '{0}': {1} listings found")
+                .replace("{0}", query)
+                .replace("{1}", String.valueOf(searchResult.getTotalResults()));
         }
         
         // You can update a status label or show a temporary message
@@ -798,7 +796,7 @@ public class MainController implements Refreshable {
     
     private void showSearchError(String error) {
         // Handle search error - could show an alert or update UI
-        System.err.println("Search error: " + error);
+        System.err.println(localeService.getMessage("main.error.search.general", "Search error: {0}").replace("{0}", error));
     }
     
     // Update the existing handleSearchRequest method
@@ -831,7 +829,7 @@ public class MainController implements Refreshable {
                     });
                 })
                 .exceptionally(ex -> {
-                    System.err.println("Failed to load user avatar: " + ex.getMessage());
+                    System.err.println(localeService.getMessage("main.error.avatar.load", "Failed to load user avatar: {0}").replace("{0}", ex.getMessage()));
                     return null;
                 });
     }
@@ -842,7 +840,7 @@ public class MainController implements Refreshable {
                 try {
                     navigationService.navigateToLogin(usernameLabel);
                 } catch (Exception e) {
-                    System.err.println("User is not logged in, redirecting to login screen");
+                    System.err.println(localeService.getMessage("main.error.authentication.redirect", "User is not logged in, redirecting to login screen"));
                 }
             });
         }
@@ -853,198 +851,18 @@ public class MainController implements Refreshable {
         refreshCurrentContentView();
     }
 
+    @Override
     public void refreshUI() {
         // Update existing labels
-        statusLabel.setText(localeService.getMessage("label.ready"));
-        contentAreaSubtitleLabel.setText(localeService.getMessage("dashboard.contentared.title"));
-        contentAreaTitleLabel.setText(localeService.getMessage("dashboard.contentared.subtitle"));
+        if (statusLabel != null) {
+            statusLabel.setText(localeService.getMessage("label.ready", "Ready"));
+        }
+        if (contentAreaSubtitleLabel != null) {
+            contentAreaSubtitleLabel.setText(localeService.getMessage("main.content.title", "Welcome to UninaSwap"));
+        }
+        if (contentAreaTitleLabel != null) {
+            contentAreaTitleLabel.setText(localeService.getMessage("main.content.subtitle", "Select an option from the sidebar to get started"));
+        }
 
         // Update header elements
-        if (sessionService.isLoggedIn()) {
-            // String username = sessionService.getUser().getUsername();
-            // welcomeLabel.setText(localeService.getMessage("dashboard.welcome.user",
-            // username));
-        }
-
-        // Update filter button text
-        allItemsButton.setText(localeService.getMessage("header.filter.all"));
-        auctionsButton.setText(localeService.getMessage("header.filter.auctions"));
-        tradesButton.setText(localeService.getMessage("header.filter.trades"));
-        salesButton.setText(localeService.getMessage("header.filter.sales"));
-        giftsButton.setText(localeService.getMessage("header.filter.gifts"));
-
-        // Update search placeholder
-        searchField.setPromptText(localeService.getMessage("header.search.placeholder"));
-
-        // Update existing menu items (if they exist)
-        if (dashboardMenuItem != null) {
-            dashboardMenuItem.setText(localeService.getMessage("dashboard.menu.dashboard"));
-        }
-        if (marketsMenuItem != null) {
-            marketsMenuItem.setText(localeService.getMessage("dashboard.menu.markets"));
-        }
-        if (portfolioMenuItem != null) {
-            portfolioMenuItem.setText(localeService.getMessage("dashboard.menu.portfolio"));
-        }
-        if (tradeMenuItem != null) {
-            tradeMenuItem.setText(localeService.getMessage("dashboard.menu.trade"));
-        }
-        if (settingsMenuItem != null) {
-            settingsMenuItem.setText(localeService.getMessage("dashboard.menu.settings"));
-        }
-        if (profileMenuItem != null) {
-            profileMenuItem.setText(localeService.getMessage("dashboard.menu.profile"));
-        }
-        if (inventoryMenuItem != null) {
-            inventoryMenuItem.setText(localeService.getMessage("dashboard.menu.inventory"));
-        }
-        if (createListingMenuItem != null) {
-            createListingMenuItem.setText(localeService.getMessage("dashboard.menu.create.listing"));
-        }
-        if (logoutButton != null) {
-            logoutButton.setText(localeService.getMessage("button.logout"));
-        }
-        if (quickTradeButton != null) {
-            quickTradeButton.setText(localeService.getMessage("button.quicktrade"));
-        }
-        if (viewMarketsButton != null) {
-            viewMarketsButton.setText(localeService.getMessage("button.view.markets"));
-        }
-    }
-
-    public void toggleFavoritesDrawer(ActionEvent e) {
-        boolean currentlyVisible = favoritesDrawerIncludeController.isDrawerVisible();
-        
-        favoritesDrawerIncludeController.drawerVisibleProperty()
-                .set(!currentlyVisible);
-        
-        // Update favorites button selection based on new drawer state
-        updateFavoritesButtonState();
-    }
-
-    @FXML
-    public void addListing(ActionEvent event) {
-        try {
-            Parent addListingView = navigationService.loadListingCreationView();
-            setContent(addListingView);
-            // Button selection will be updated by updateHeaderButtonStatesForContent()
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-            // Make sure button state reflects actual state even on error
-            updateAddListingButtonState();
-        }
-    }
-
-    private void refreshCurrentContentView() {
-        if (contentArea.getChildren().isEmpty())
-            return;
-
-        Node currentView = contentArea.getChildren().get(0);
-        Object controller = null;
-
-        if (currentView instanceof Parent) {
-            controller = ((Parent) currentView).getProperties().get("controller");
-        }
-
-        if (controller instanceof Refreshable) {
-            ((Refreshable) controller).refreshUI();
-        } else {
-            reloadCurrentView();
-        }
-    }
-
-    private void reloadCurrentView() {
-        if (contentArea.getChildren().isEmpty())
-            return;
-
-        Node currentView = contentArea.getChildren().get(0);
-        String viewId = currentView.getId();
-        System.out.println("Reloading view: " + viewId);
-    }
-
-    public void setContent(Parent newContent) {
-        contentArea.getChildren().setAll(newContent);
-        
-        // Update header button states based on current view
-        updateHeaderButtonStatesForContent(newContent);
-    }
-
-    private void updateHeaderButtonStatesForContent(Parent content) {
-        // Update add listing button based on the new content
-        updateAddListingButtonState();
-        
-        // Favorites button state is independent of content changes
-        // Notification and user menu buttons are handled by their popup state
-    }
-
-    public void updateHeaderButtonSelection(String buttonType) {
-        switch (buttonType.toLowerCase()) {
-            case "addlisting", "create" -> updateAddListingButtonState();
-            case "favorites" -> updateFavoritesButtonState();
-            case "notifications" -> updateNotificationButtonSelection();
-            case "usermenu" -> updateUserMenuButtonSelection();
-            case "refresh", "update" -> updateAllHeaderButtonStates();
-        }
-    }
-
-    public void updateSidebarButtonSelection(String buttonType) {
-        if (sidebarIncludeController != null) {
-            switch (buttonType.toLowerCase()) {
-                case "home" -> sidebarIncludeController.selectHomeButton();
-                case "offers" -> sidebarIncludeController.selectOffersButton();
-                case "inventory" -> sidebarIncludeController.selectInventoryButton();
-                case "alerts", "notifications" -> sidebarIncludeController.selectNotificationsButton();
-                case "addlisting", "create" -> sidebarIncludeController.selectAddListingButton();
-                case "listings" -> sidebarIncludeController.selectListingsButton();
-                case "profile" -> sidebarIncludeController.selectProfileButton();
-            }
-        }
-    }
-
-    public void sidebarClearAllSelection() {
-        sidebarIncludeController.clearAllSelections();
-    }
-
-    public void onLeavingListingCreation() {
-        updateAddListingButtonState();
-    }
-
-    // Add method to be called when drawer state changes
-    public void onFavoritesDrawerStateChanged() {
-        updateFavoritesButtonState();
-    }
-
-    // Helper class for search data
-    public static class SearchData {
-        private final String query;
-        private final String filter;
-        private final Category category;
-
-        public SearchData(String query, String filter, Category category) {
-            this.query = query;
-            this.filter = filter;
-            this.category = category;
-        }
-
-        public String getQuery() {
-            return query;
-        }
-
-        public String getFilter() {
-            return filter;
-        }
-
-        public Category getCategory() {
-            return category;
-        }
-        
-        @Override
-        public String toString() {
-            return "SearchData{" +
-                    "query='" + query + '\'' +
-                    ", filter='" + filter + '\'' +
-                    ", category=" + category +
-                    '}';
-        }
-    }
-}
+        if

@@ -12,7 +12,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefWidth="280" spacing="0" styleClass="dropdown-menu, user-menu-dropdown" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.UserMenuDropdownController">
+<VBox prefWidth="280" spacing="0" styleClass="dropdown-menu, user-menu-dropdown" stylesheets="@../css/styles.css" 
+      xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.uninaswap.client.controller.UserMenuDropdownController">
 
     <!-- User profile section -->
     <VBox spacing="12" styleClass="user-profile-section">
@@ -30,17 +32,17 @@
             
             <!-- User info -->
             <VBox spacing="2">
-                <Text fx:id="displayNameText" styleClass="user-display-name" text="User Name">
+                <Text fx:id="displayNameText" styleClass="user-display-name" text="%user.menu.unknown.user">
                     <font>
                         <Font name="System Bold" size="14" />
                     </font>
                 </Text>
-                <Text fx:id="usernameText" styleClass="user-username" text="@username" />
+                <Text fx:id="usernameText" styleClass="user-username" text="%user.menu.unknown.username" />
             </VBox>
-         <Pane HBox.hgrow="ALWAYS" />
+            <Pane HBox.hgrow="ALWAYS" />
            
-           <!-- View Profile button - styled as primary button -->
-           <Button fx:id="viewProfileBtn" onAction="#handleViewProfile" styleClass="profile-button" text="%user.menu.view.profile" />
+            <!-- View Profile button - styled as primary button -->
+            <Button fx:id="viewProfileBtn" onAction="#handleViewProfile" styleClass="profile-button" text="%user.menu.view.profile" />
         </HBox>
     </VBox>
     
@@ -131,22 +133,24 @@
         
         <!-- Theme selector -->
         <VBox spacing="5">
-            <Text styleClass="preference-label" text="%user.menu.theme">
+            <Text fx:id="themeLabel" styleClass="preference-label" text="%user.menu.theme">
                 <font>
                     <Font size="11" />
                 </font>
             </Text>
-            <ComboBox fx:id="themeCombo" prefWidth="250" styleClass="preference-combo" />
+            <ComboBox fx:id="themeCombo" prefWidth="250" styleClass="preference-combo" 
+                      promptText="%user.menu.theme.select" />
         </VBox>
         
         <!-- Language selector -->
         <VBox spacing="5">
-            <Text styleClass="preference-label" text="%user.menu.language">
+            <Text fx:id="languageLabel" styleClass="preference-label" text="%user.menu.language">
                 <font>
                     <Font size="11" />
                 </font>
             </Text>
-            <ComboBox fx:id="languageCombo" prefWidth="250" styleClass="preference-combo" />
+            <ComboBox fx:id="languageCombo" prefWidth="250" styleClass="preference-combo" 
+                      promptText="%user.menu.language.select" />
         </VBox>
     </VBox>
     

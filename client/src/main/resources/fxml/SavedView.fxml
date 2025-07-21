@@ -19,13 +19,13 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane styleClass="standard-window" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane styleClass="standard-window" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.SavedController">
    <children>
       <BorderPane layoutX="-2.0" layoutY="-1.0" prefHeight="499.0" prefWidth="549.0">
          <center>
             <VBox prefHeight="484.0" prefWidth="501.0" style="-fx-background-color: #F8F8F8;" BorderPane.alignment="CENTER">
                <children>
-                  <!-- Barra di ricerca -->
+                  <!-- Search bar -->
                   <fx:include source="SearchBarView.fxml">
                      <VBox.margin>
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
@@ -33,24 +33,15 @@
                   </fx:include>
                   
                   <!-- Tab pane for different favorite categories -->
-                  <TabPane prefHeight="400.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                  <TabPane fx:id="favoritesTabPane" prefHeight="400.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                     <tabs>
-                      <Tab text="%favorites.tab.items">
+                      <Tab fx:id="itemsTab" text="%favorites.tab.items">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
-                                  <ScrollPane fitToWidth="true" layoutX="14.0" layoutY="14.0" prefHeight="343.0" prefWidth="469.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                  <ScrollPane fx:id="itemsScrollPane" fitToWidth="true" layoutX="14.0" layoutY="14.0" prefHeight="343.0" prefWidth="469.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                      <content>
-                                        <FlowPane hgap="15.0" prefWidth="467.0" vgap="15.0">
-                                           <children>
-                                              <!-- Item cards will be added dynamically, but here's a sample -->
-                                              <fx:include source="ItemCard.fxml" />
-                                              <fx:include source="ItemCard.fxml" />
-                                              <fx:include source="ItemCard.fxml" />
-                                              <fx:include source="ItemCard.fxml" />
-                                              <fx:include source="ItemCard.fxml" />
-                                              <fx:include source="ItemCard.fxml" />
-                                           </children>
+                                        <FlowPane fx:id="itemsFlowPane" hgap="15.0" prefWidth="467.0" vgap="15.0">
                                            <padding>
                                               <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                                            </padding>
@@ -61,16 +52,16 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="%favorites.tab.users">
+                      <Tab fx:id="usersTab" text="%favorites.tab.users">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
-                                  <ScrollPane fitToWidth="true" prefHeight="343.0" prefWidth="469.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                  <ScrollPane fx:id="usersScrollPane" fitToWidth="true" prefHeight="343.0" prefWidth="469.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                      <content>
-                                        <FlowPane hgap="15.0" prefWidth="467.0" vgap="15.0">
+                                        <FlowPane fx:id="usersFlowPane" hgap="15.0" prefWidth="467.0" vgap="15.0">
                                            <children>
-                                              <!-- User cards will be added dynamically -->
-                                              <VBox alignment="TOP_CENTER" prefWidth="100.0">
+                                              <!-- Sample user card for layout reference -->
+                                              <VBox alignment="TOP_CENTER" prefWidth="100.0" styleClass="user-card">
                                                  <children>
                                                     <Pane styleClass="user-circle">
                                                        <children>
@@ -84,12 +75,12 @@
                                                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                        </padding>
                                                     </Pane>
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mario Rossi" textAlignment="CENTER" wrappingWidth="100.0">
+                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sample User" textAlignment="CENTER" wrappingWidth="100.0">
                                                        <VBox.margin>
                                                           <Insets top="5.0" />
                                                        </VBox.margin>
                                                     </Text>
-                                                    <Button mnemonicParsing="false" styleClass="small-button" text="%button.visita">
+                                                    <Button fx:id="visitUserButton" mnemonicParsing="false" styleClass="small-button" text="%button.visit">
                                                        <VBox.margin>
                                                           <Insets top="5.0" />
                                                        </VBox.margin>
@@ -107,25 +98,25 @@
                             </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="%favorites.tab.auctions">
+                      <Tab fx:id="auctionsTab" text="%favorites.tab.auctions">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                <children>
-                                  <ScrollPane fitToWidth="true" prefHeight="343.0" prefWidth="469.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                  <ScrollPane fx:id="auctionsScrollPane" fitToWidth="true" prefHeight="343.0" prefWidth="469.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                      <content>
-                                        <VBox prefWidth="467.0" spacing="15.0">
+                                        <VBox fx:id="auctionsVBox" prefWidth="467.0" spacing="15.0">
                                            <children>
-                                              <!-- Auction cards will be added dynamically -->
+                                              <!-- Sample auction card for layout reference -->
                                               <VBox alignment="TOP_CENTER" prefHeight="120.0" prefWidth="467.0" styleClass="card">
                                                  <children>
                                                     <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="467.0" styleClass="card-header">
                                                        <children>
-                                                          <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%favorites.auction.title" wrappingWidth="122.13671875">
+                                                          <Text fx:id="auctionTitleText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%favorites.auction.title" wrappingWidth="122.13671875">
                                                              <HBox.margin>
                                                                 <Insets left="10.0" />
                                                              </HBox.margin>
                                                           </Text>
-                                                          <Text fill="#4a2b6l" strokeType="OUTSIDE" strokeWidth="0.0" text="%favorites.auction.expiry">
+                                                          <Text fx:id="auctionExpiryText" fill="#4a2b6l" strokeType="OUTSIDE" strokeWidth="0.0" text="%favorites.auction.expiry">
                                                              <HBox.margin>
                                                                 <Insets right="2.0" />
                                                              </HBox.margin>
@@ -152,8 +143,8 @@
                                                           </ImageView>
                                                           <VBox alignment="CENTER_LEFT" prefHeight="89.0" prefWidth="109.0">
                                                              <children>
-                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="%favorites.auction.current.bid" />
-                                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%favorites.auction.price" />
+                                                                <Text fx:id="currentBidText" strokeType="OUTSIDE" strokeWidth="0.0" text="%favorites.auction.current.bid" />
+                                                                <Text fx:id="priceText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%favorites.auction.price" />
                                                                 <HBox alignment="CENTER_LEFT" spacing="5.0">
                                                                    <children>
                                                                       <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
@@ -161,15 +152,15 @@
                                                                             <Image url="@../images/icons/check.png" />
                                                                          </image>
                                                                       </ImageView>
-                                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="%favorites.auction.your.bid" />
+                                                                      <Text fx:id="yourBidText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="status-text-success" text="%favorites.auction.your.bid" />
                                                                    </children>
                                                                 </HBox>
                                                              </children>
                                                           </VBox>
                                                           <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="271.0" spacing="10.0">
                                                              <children>
-                                                                <Button mnemonicParsing="false" text="%button.bid.again" />
-                                                                <Button mnemonicParsing="false" text="%button.view">
+                                                                <Button fx:id="bidAgainButton" mnemonicParsing="false" text="%button.bid.again" />
+                                                                <Button fx:id="viewAuctionButton" mnemonicParsing="false" text="%button.view">
                                                                    <graphic>
                                                                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                                                          <image>
@@ -200,7 +191,6 @@
                </children>
             </VBox>
          </center>
-         <!-- <bottom> ...footer... </bottom> rimosso -->
          <right>
             <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER" />
          </right>

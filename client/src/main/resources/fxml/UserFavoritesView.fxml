@@ -21,7 +21,7 @@
                <Image url="@../images/icons/favorites_remove.png" />
             </image>
          </ImageView>
-         <Label fx:id="titleLabel" styleClass="title-label" />
+         <Label fx:id="titleLabel" styleClass="title-label" text="%user.favorites.title" />
       </HBox>
    </VBox>
 
@@ -29,12 +29,12 @@
 
    <!-- User Summary -->
    <VBox spacing="15" styleClass="favorites-summary-section">
-      <Label fx:id="userNameLabel" styleClass="user-name-label" />
+      <Label fx:id="userNameLabel" styleClass="user-name-label" text="%user.favorites.unknown.user" />
       
       <HBox spacing="20" alignment="CENTER_LEFT">
-         <Label fx:id="totalFavoritesLabel" styleClass="total-count-label" />
+         <Label fx:id="totalFavoritesLabel" styleClass="total-count-label" text="%user.favorites.total.count" />
          <Region HBox.hgrow="ALWAYS" />
-         <Button fx:id="refreshButton" onAction="#handleRefresh" styleClass="primary-button">
+         <Button fx:id="refreshButton" onAction="#handleRefresh" styleClass="primary-button" text="%user.favorites.button.refresh">
             <graphic>
                <ImageView fitHeight="16" fitWidth="16" preserveRatio="true">
                   <image>
@@ -51,11 +51,11 @@
    <!-- Favorites Table -->
    <TableView fx:id="favoritesTable" VBox.vgrow="ALWAYS" styleClass="table-view">
       <columns>
-         <TableColumn fx:id="listingTitleColumn" prefWidth="220" text="Title" />
-         <TableColumn fx:id="listingTypeColumn" prefWidth="100" text="Type" />
-         <TableColumn fx:id="listingPriceColumn" prefWidth="100" text="Price" />
-         <TableColumn fx:id="listingDateColumn" prefWidth="100" text="Date Added" />
-         <TableColumn fx:id="listingActionsColumn" prefWidth="160" text="Actions" />
+         <TableColumn fx:id="listingTitleColumn" prefWidth="220" text="%user.favorites.column.title" />
+         <TableColumn fx:id="listingTypeColumn" prefWidth="100" text="%user.favorites.column.type" />
+         <TableColumn fx:id="listingPriceColumn" prefWidth="100" text="%user.favorites.column.price" />
+         <TableColumn fx:id="listingDateColumn" prefWidth="100" text="%user.favorites.column.date" />
+         <TableColumn fx:id="listingActionsColumn" prefWidth="160" text="%user.favorites.column.actions" />
       </columns>
       <placeholder>
          <VBox alignment="CENTER" spacing="10">
@@ -64,14 +64,14 @@
                   <Image url="@../images/icons/favorites_add.png" />
                </image>
             </ImageView>
-            <Label text="No favorite listings yet" styleClass="placeholder-text" />
-            <Label text="Items you favorite will appear here" styleClass="suggestion-text" />
+            <Label text="%user.favorites.empty.message" styleClass="placeholder-text" />
+            <Label text="%user.favorites.empty.suggestion" styleClass="suggestion-text" />
          </VBox>
       </placeholder>
    </TableView>
 
    <!-- Actions -->
    <HBox spacing="10" alignment="CENTER_RIGHT">
-      <Button fx:id="closeButton" onAction="#handleClose" styleClass="button" />
+      <Button fx:id="closeButton" onAction="#handleClose" styleClass="button" text="%user.favorites.button.close" />
    </HBox>
 </VBox>

@@ -28,7 +28,7 @@ import javafx.util.Duration;
 
 import java.util.List;
 
-public class FavoritesDrawerController {
+public class FavoritesDrawerController implements Refreshable {
 
     @FXML
     private HBox externalDrawerContainer;
@@ -79,6 +79,7 @@ public class FavoritesDrawerController {
         setupExpandablePanes();
         setupFavoritesObservableList();
         loadFollowing();
+        refreshUI();
 
         // Set initial state - drawer hidden
         drawerContainer.setVisible(false);
@@ -233,9 +234,6 @@ public class FavoritesDrawerController {
             Platform.runLater(() -> {
                 populateFavoritesList(userFavorites);
                 updateFavoritesCount(userFavorites.size());
-                
-                // REMOVED: Re-animate items if drawer is visible
-                // No longer calling animateDrawerItemsIn()
             });
         });
     }
@@ -296,7 +294,6 @@ public class FavoritesDrawerController {
 
     private VBox createListingItem(ListingViewModel listing) {
         VBox item = new VBox(5);
-        // REMOVED: "animate-in" class - just use the basic drawer-item class
         item.getStyleClass().add("drawer-item");
 
         // Listing image and title
@@ -327,9 +324,8 @@ public class FavoritesDrawerController {
 
         header.getChildren().addAll(thumbnail, textContainer);
 
-        // Click handler with visual feedback - keep this simple scale animation
+        // Click handler with visual feedback
         item.setOnMouseClicked(e -> {
-            // Keep only the simple click feedback animation
             ScaleTransition scaleDown = new ScaleTransition(Duration.millis(100), item);
             scaleDown.setToX(0.95);
             scaleDown.setToY(0.95);
@@ -349,7 +345,6 @@ public class FavoritesDrawerController {
 
     private VBox createUserItem(UserViewModel user) {
         VBox item = new VBox(5);
-        // REMOVED: "animate-in" class - just use the basic drawer-item class
         item.getStyleClass().add("drawer-item");
 
         HBox header = new HBox(10);
@@ -370,16 +365,15 @@ public class FavoritesDrawerController {
         Text displayName = new Text(user.getDisplayName());
         displayName.getStyleClass().add("drawer-item-title");
 
-        Text username = new Text("@" + user.getUsername());
+        Text username = new Text(localeService.getMessage("drawer.user.username.format", "@{0}").replace("{0}", user.getUsername()));
         username.getStyleClass().add("drawer-item-subtitle");
 
         textContainer.getChildren().addAll(displayName, username);
 
         header.getChildren().addAll(avatar, textContainer);
 
-        // Click handler with visual feedback - keep this simple scale animation
+        // Click handler with visual feedback
         item.setOnMouseClicked(e -> {
-            // Keep only the simple click feedback animation
             ScaleTransition scaleDown = new ScaleTransition(Duration.millis(100), item);
             scaleDown.setToX(0.95);
             scaleDown.setToY(0.95);
@@ -397,7 +391,6 @@ public class FavoritesDrawerController {
         return item;
     }
 
-    // Keep all existing methods for loading images, handling clicks, etc.
     private void loadThumbnailImage(ImageView thumbnail, ListingViewModel listing) {
         // Get the first available image path from the listing
         String imagePath = getFirstImagePath(listing);
@@ -415,7 +408,7 @@ public class FavoritesDrawerController {
                         });
                     })
                     .exceptionally(ex -> {
-                        System.err.println("Failed to load thumbnail image: " + ex.getMessage());
+                        System.err.println(localeService.getMessage("drawer.error.thumbnail.load", "Failed to load thumbnail image: {0}").replace("{0}", ex.getMessage()));
                         Platform.runLater(() -> setDefaultThumbnail(thumbnail));
                         return null;
                     });
@@ -451,7 +444,7 @@ public class FavoritesDrawerController {
                         });
                     })
                     .exceptionally(ex -> {
-                        System.err.println("Failed to load avatar image: " + ex.getMessage());
+                        System.err.println(localeService.getMessage("drawer.error.avatar.load", "Failed to load avatar image: {0}").replace("{0}", ex.getMessage()));
                         Platform.runLater(() -> setDefaultAvatar(avatar));
                         return null;
                     });
@@ -465,7 +458,7 @@ public class FavoritesDrawerController {
             Image defaultImage = new Image(getClass().getResourceAsStream("/images/icons/immagine_generica.png"));
             imageView.setImage(defaultImage);
         } catch (Exception e) {
-            System.err.println("Could not load default thumbnail: " + e.getMessage());
+            System.err.println(localeService.getMessage("drawer.error.default.thumbnail", "Could not load default thumbnail: {0}").replace("{0}", e.getMessage()));
         }
     }
 
@@ -474,7 +467,7 @@ public class FavoritesDrawerController {
             Image defaultImage = new Image(getClass().getResourceAsStream("/images/icons/default_profile.png"));
             imageView.setImage(defaultImage);
         } catch (Exception e) {
-            System.err.println("Could not load default avatar: " + e.getMessage());
+            System.err.println(localeService.getMessage("drawer.error.default.avatar", "Could not load default avatar: {0}").replace("{0}", e.getMessage()));
         }
     }
 
@@ -486,7 +479,7 @@ public class FavoritesDrawerController {
             AlertHelper.showErrorAlert(
                     localeService.getMessage("error.title", "Error"),
                     localeService.getMessage("error.navigation", "Navigation Error"),
-                    "Failed to open listing details: " + e.getMessage());
+                    localeService.getMessage("drawer.error.listing.navigation", "Failed to open listing details: {0}").replace("{0}", e.getMessage()));
         }
     }
 
@@ -498,17 +491,17 @@ public class FavoritesDrawerController {
             AlertHelper.showErrorAlert(
                     localeService.getMessage("error.title", "Error"),
                     localeService.getMessage("error.navigation", "Navigation Error"),
-                    "Failed to open user profile: " + e.getMessage());
+                    localeService.getMessage("drawer.error.profile.navigation", "Failed to open user profile: {0}").replace("{0}", e.getMessage()));
         }
     }
 
     private void updateFavoritesCount(int count) {
-        String countText = localeService.getMessage("favorites.drawer.count", count);
+        String countText = localeService.getMessage("favorites.drawer.count", "({0})").replace("{0}", String.valueOf(count));
         favoritesCountLabel.setText(countText);
     }
 
     private void updateFollowingCount(int count) {
-        String countText = localeService.getMessage("following.drawer.count", count);
+        String countText = localeService.getMessage("following.drawer.count", "({0})").replace("{0}", String.valueOf(count));
         followingCountLabel.setText(countText);
     }
 
@@ -560,5 +553,45 @@ public class FavoritesDrawerController {
 
     public void hideDrawer() {
         drawerVisible.set(false);
+    }
+
+    @Override
+    public void refreshUI() {
+        // Update section titles in titled panes
+        updateTitledPaneLabels();
+        
+        // Refresh counts with current language
+        if (userFavorites != null) {
+            updateFavoritesCount(userFavorites.size());
+        }
+        updateFollowingCount(0); // Following count when implemented
+        
+        // Refresh the favorite and following lists to update any hardcoded text
+        if (userFavorites != null && !userFavorites.isEmpty()) {
+            populateFavoritesList(userFavorites);
+        }
+        
+        // Refresh following list
+        populateFollowingList(List.of());
+    }
+
+    private void updateTitledPaneLabels() {
+        // Update Favorites section title
+        HBox favoritesGraphic = (HBox) favoritesPane.getGraphic();
+        if (favoritesGraphic != null) {
+            Label favoritesLabel = (Label) favoritesGraphic.getChildren().get(1);
+            if (favoritesLabel != null) {
+                favoritesLabel.setText(localeService.getMessage("drawer.section.favorites", "Favorites"));
+            }
+        }
+        
+        // Update Following section title
+        HBox followingGraphic = (HBox) followingPane.getGraphic();
+        if (followingGraphic != null) {
+            Label followingLabel = (Label) followingGraphic.getChildren().get(1);
+            if (followingLabel != null) {
+                followingLabel.setText(localeService.getMessage("drawer.section.following", "Following"));
+            }
+        }
     }
 }

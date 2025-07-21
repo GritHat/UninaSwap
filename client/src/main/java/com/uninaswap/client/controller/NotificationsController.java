@@ -26,6 +26,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
@@ -74,17 +76,34 @@ public class NotificationsController implements Initializable, Refreshable {
         setupNotificationTabs();
         setupEventHandlers();
         loadNotifications();
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("notifications.debug.initialized", "NotificationsController initialized"));
     }
 
     private void setupLabels() {
-        titleText.setText(localeService.getMessage("notification.center", "Notification Center"));
-        markAllReadButton.setText(localeService.getMessage("notification.mark.all.read", "Mark All as Read"));
+        if (titleText != null) {
+            titleText.setText(localeService.getMessage("notification.center", "Notification Center"));
+        }
+        if (markAllReadButton != null) {
+            markAllReadButton.setText(localeService.getMessage("notification.mark.all.read", "Mark All as Read"));
+        }
         
         // Set tab texts
-        allNotificationsTab.setText(localeService.getMessage("notification.tab.all", "All"));
-        purchasesSalesTab.setText(localeService.getMessage("notification.tab.purchases.sales", "Purchases & Sales"));
-        auctionsTab.setText(localeService.getMessage("notification.tab.auctions", "Auctions"));
-        socialTab.setText(localeService.getMessage("notification.tab.social", "Social"));
+        if (allNotificationsTab != null) {
+            allNotificationsTab.setText(localeService.getMessage("notification.tab.all", "All"));
+        }
+        if (purchasesSalesTab != null) {
+            purchasesSalesTab.setText(localeService.getMessage("notification.tab.purchases.sales", "Purchases & Sales"));
+        }
+        if (auctionsTab != null) {
+            auctionsTab.setText(localeService.getMessage("notification.tab.auctions", "Auctions"));
+        }
+        if (socialTab != null) {
+            socialTab.setText(localeService.getMessage("notification.tab.social", "Social"));
+        }
     }
 
     private void setupObservableList() {
@@ -144,8 +163,8 @@ public class NotificationsController implements Initializable, Refreshable {
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
-                        System.err.println("Failed to load notifications: " + ex.getMessage());
-                        showErrorPlaceholder("Failed to load notifications");
+                        System.err.println(localeService.getMessage("notifications.error.load.failed", "Failed to load notifications: {0}").replace("{0}", ex.getMessage()));
+                        showErrorPlaceholder(localeService.getMessage("notifications.error.load.general", "Failed to load notifications"));
                     });
                     return null;
                 });
@@ -286,24 +305,25 @@ public class NotificationsController implements Initializable, Refreshable {
         try {
             return new Image(getClass().getResourceAsStream(iconPath));
         } catch (Exception e) {
+            System.err.println(localeService.getMessage("notifications.error.icon.load", "Could not load notification icon: {0}").replace("{0}", iconPath));
             return new Image(getClass().getResourceAsStream("/images/icons/notification.png"));
         }
     }
 
-    private String formatTime(java.time.LocalDateTime timestamp) {
+    private String formatTime(LocalDateTime timestamp) {
         if (timestamp == null) return "";
 
-        java.time.LocalDateTime now = java.time.LocalDateTime.now();
-        java.time.Duration duration = java.time.Duration.between(timestamp, now);
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(timestamp, now);
 
         if (duration.toDays() > 0) {
             return timestamp.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         } else if (duration.toHours() > 0) {
-            return duration.toHours() + "h ago";
+            return localeService.getMessage("notifications.time.hours.ago", "{0}h ago").replace("{0}", String.valueOf(duration.toHours()));
         } else if (duration.toMinutes() > 0) {
-            return duration.toMinutes() + "m ago";
+            return localeService.getMessage("notifications.time.minutes.ago", "{0}m ago").replace("{0}", String.valueOf(duration.toMinutes()));
         } else {
-            return "Just now";
+            return localeService.getMessage("notifications.time.just.now", "Just now");
         }
     }
 
@@ -341,8 +361,10 @@ public class NotificationsController implements Initializable, Refreshable {
 
         errorPlaceholder.getChildren().addAll(errorText, retryButton);
 
-        allNotificationsContainer.getChildren().clear();
-        allNotificationsContainer.getChildren().add(errorPlaceholder);
+        if (allNotificationsContainer != null) {
+            allNotificationsContainer.getChildren().clear();
+            allNotificationsContainer.getChildren().add(errorPlaceholder);
+        }
     }
 
     private void markAsRead(NotificationViewModel notification) {
@@ -353,12 +375,12 @@ public class NotificationsController implements Initializable, Refreshable {
                         notification.setRead(true);
                         updateNotificationDisplays();
                         // The unread count is automatically updated via the server response
-                        System.out.println("Notification marked as read: " + notification.getTitle());
+                        System.out.println(localeService.getMessage("notifications.debug.marked.read", "Notification marked as read: {0}").replace("{0}", notification.getTitle()));
                     }
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
-                        System.err.println("Failed to mark notification as read: " + ex.getMessage());
+                        System.err.println(localeService.getMessage("notifications.error.mark.read", "Failed to mark notification as read: {0}").replace("{0}", ex.getMessage()));
                     });
                     return null;
                 });
@@ -372,12 +394,12 @@ public class NotificationsController implements Initializable, Refreshable {
                 if (success) {
                     // The observable list will automatically update via the server response
                     updateNotificationDisplays();
-                    System.out.println("All notifications marked as read");
+                    System.out.println(localeService.getMessage("notifications.debug.marked.all.read", "All notifications marked as read"));
                 }
             }))
             .exceptionally(ex -> {
                 Platform.runLater(() -> {
-                    System.err.println("Failed to mark all as read: " + ex.getMessage());
+                    System.err.println(localeService.getMessage("notifications.error.mark.all.read", "Failed to mark all as read: {0}").replace("{0}", ex.getMessage()));
                 });
                 return null;
             });
@@ -391,7 +413,7 @@ public class NotificationsController implements Initializable, Refreshable {
             case "OFFER_RECEIVED", "OFFER_ACCEPTED", "OFFER_REJECTED", "OFFER_WITHDRAWN" -> handleViewOffer(notification);
             case "AUCTION_ENDING_SOON", "AUCTION_WON", "AUCTION_OUTBID" -> handleViewAuction(notification);
             case "PICKUP_SCHEDULED", "PICKUP_REMINDER" -> handleViewPickup(notification);
-            default -> System.out.println("Clicked notification: " + notification.getTitle());
+            default -> System.out.println(localeService.getMessage("notifications.debug.clicked", "Clicked notification: {0}").replace("{0}", notification.getTitle()));
         }
     }
 
@@ -399,34 +421,37 @@ public class NotificationsController implements Initializable, Refreshable {
         try {
             navigationService.navigateToOffersView();
         } catch (Exception e) {
-            System.err.println("Failed to navigate to offers: " + e.getMessage());
+            System.err.println(localeService.getMessage("notifications.error.navigate.offers", "Failed to navigate to offers: {0}").replace("{0}", e.getMessage()));
         }
-        System.out.println("Navigate to offer from notification: " + notification.getTitle());
+        System.out.println(localeService.getMessage("notifications.debug.navigate.offer", "Navigate to offer from notification: {0}").replace("{0}", notification.getTitle()));
         // TODO: Implement navigation to specific offer
     }
 
     private void handleViewAuction(NotificationViewModel notification) {
         // Extract auction ID from notification data if available
-        System.out.println("Navigate to auction from notification: " + notification.getTitle());
+        System.out.println(localeService.getMessage("notifications.debug.navigate.auction", "Navigate to auction from notification: {0}").replace("{0}", notification.getTitle()));
         // TODO: Implement navigation to specific auction
     }
 
     private void handleViewPickup(NotificationViewModel notification) {
         // Extract pickup ID from notification data if available
-        System.out.println("Navigate to pickup from notification: " + notification.getTitle());
+        System.out.println(localeService.getMessage("notifications.debug.navigate.pickup", "Navigate to pickup from notification: {0}").replace("{0}", notification.getTitle()));
         // TODO: Implement navigation to specific pickup
     }
 
     @Override
     public void refreshUI() {
+        // Update all labels and text elements
         setupLabels();
+        
+        // Refresh the notification displays to update any localized content
         updateNotificationDisplays();
     }
 
     public void updateNotificationBadge(int unreadCount) {
         Platform.runLater(() -> {
             // Update any badge indicators
-            System.out.println("Unread notifications: " + unreadCount);
+            System.out.println(localeService.getMessage("notifications.debug.badge.update", "Unread notifications: {0}").replace("{0}", String.valueOf(unreadCount)));
         });
     }
 }

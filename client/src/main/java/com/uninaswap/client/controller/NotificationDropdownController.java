@@ -3,6 +3,7 @@ package com.uninaswap.client.controller;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.NotificationService;
+import com.uninaswap.client.service.Refreshable;
 import com.uninaswap.client.viewmodel.NotificationViewModel;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
@@ -24,7 +25,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 
-public class NotificationDropdownController {
+public class NotificationDropdownController implements Refreshable {
     
     @FXML private Text titleText;
     @FXML private Button markAllReadBtn;
@@ -43,6 +44,11 @@ public class NotificationDropdownController {
     public void initialize() {
         setupRealtimeUpdates();
         loadNotifications();
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("notification.dropdown.debug.initialized", "NotificationDropdown initialized"));
     }
     
     private void setupRealtimeUpdates() {
@@ -64,17 +70,38 @@ public class NotificationDropdownController {
         this.onCloseCallback = callback;
     }
     
+    @Override
+    public void refreshUI() {
+        // Update button texts
+        if (titleText != null) {
+            titleText.setText(localeService.getMessage("notifications.title", "Notifications"));
+        }
+        if (markAllReadBtn != null) {
+            markAllReadBtn.setText(localeService.getMessage("notifications.mark.all.read", "Mark All as Read"));
+        }
+        if (viewAllBtn != null) {
+            viewAllBtn.setText(localeService.getMessage("notifications.view.all", "View All"));
+        }
+        if (noNotificationsLabel != null) {
+            noNotificationsLabel.setText(localeService.getMessage("notifications.empty", "No new notifications"));
+        }
+        
+        // Refresh the notifications display to update any localized content
+        updateNotificationsDisplay();
+    }
+    
     @FXML
     private void handleMarkAllAsRead() {
         notificationService.markAllAsRead()
             .thenAccept(success -> Platform.runLater(() -> {
                 if (success) {
                     updateNotificationsDisplay();
+                    System.out.println(localeService.getMessage("notification.dropdown.debug.marked.all.read", "All notifications marked as read"));
                 }
             }))
             .exceptionally(ex -> {
                 Platform.runLater(() -> {
-                    System.err.println("Failed to mark all as read: " + ex.getMessage());
+                    System.err.println(localeService.getMessage("notification.dropdown.error.mark.all.read", "Failed to mark all as read: {0}").replace("{0}", ex.getMessage()));
                 });
                 return null;
             });
@@ -99,6 +126,7 @@ public class NotificationDropdownController {
         if (recentNotifications.isEmpty()) {
             noNotificationsLabel.setVisible(true);
             noNotificationsLabel.setManaged(true);
+            noNotificationsLabel.setText(localeService.getMessage("notifications.empty", "No new notifications"));
             notificationsContainer.getChildren().add(noNotificationsLabel);
         } else {
             noNotificationsLabel.setVisible(false);
@@ -172,6 +200,7 @@ public class NotificationDropdownController {
         try {
             return new Image(getClass().getResourceAsStream(iconPath));
         } catch (Exception e) {
+            System.err.println(localeService.getMessage("notification.dropdown.error.icon.load", "Could not load notification icon: {0}").replace("{0}", iconPath));
             return new Image(getClass().getResourceAsStream("/images/icons/notification.png"));
         }
     }
@@ -194,8 +223,15 @@ public class NotificationDropdownController {
                     if (success) {
                         notification.setRead(true);
                         updateNotificationsDisplay();
+                        System.out.println(localeService.getMessage("notification.dropdown.debug.marked.read", "Notification marked as read: {0}").replace("{0}", notification.getTitle()));
                     }
-                }));
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        System.err.println(localeService.getMessage("notification.dropdown.error.mark.read", "Failed to mark notification as read: {0}").replace("{0}", ex.getMessage()));
+                    });
+                    return null;
+                });
         }
     }
     
@@ -208,20 +244,20 @@ public class NotificationDropdownController {
                 try {
                     navigationService.navigateToOffersView();
                 } catch (Exception e) {
-                    System.err.println("Failed to navigate to offers: " + e.getMessage());
+                    System.err.println(localeService.getMessage("notification.dropdown.error.navigate.offers", "Failed to navigate to offers: {0}").replace("{0}", e.getMessage()));
                 }
             }
             case "AUCTION_ENDING_SOON", "AUCTION_WON", "AUCTION_OUTBID" -> {
                 // Navigate to specific auction or user's auction history
-                System.out.println("Navigate to auction: " + notification.getTitle());
+                System.out.println(localeService.getMessage("notification.dropdown.debug.navigate.auction", "Navigate to auction: {0}").replace("{0}", notification.getTitle()));
             }
             case "PICKUP_SCHEDULED", "PICKUP_REMINDER" -> {
                 // Navigate to pickup management
-                System.out.println("Navigate to pickup: " + notification.getTitle());
+                System.out.println(localeService.getMessage("notification.dropdown.debug.navigate.pickup", "Navigate to pickup: {0}").replace("{0}", notification.getTitle()));
             }
             default -> {
                 // For system notifications, just mark as read
-                System.out.println("Clicked notification: " + notification.getTitle());
+                System.out.println(localeService.getMessage("notification.dropdown.debug.clicked", "Clicked notification: {0}").replace("{0}", notification.getTitle()));
             }
         }
     }
@@ -230,7 +266,7 @@ public class NotificationDropdownController {
         try {
             navigationService.navigateToNotificationsView();
         } catch (Exception e) {
-            System.err.println("Failed to navigate to notification center: " + e.getMessage());
+            System.err.println(localeService.getMessage("notification.dropdown.error.navigate.center", "Failed to navigate to notification center: {0}").replace("{0}", e.getMessage()));
         }
     }
     

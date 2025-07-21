@@ -1,5 +1,6 @@
 package com.uninaswap.client.controller;
 
+import com.uninaswap.client.service.LocaleService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Slider;
@@ -16,7 +17,7 @@ import javafx.stage.Stage;
 
 import java.util.function.Consumer;
 
-public class ImageCropperController {
+public class ImageCropperController implements Refreshable {
 
     @FXML private ImageView sourceImageView;
     @FXML private StackPane cropperContainer;
@@ -30,6 +31,9 @@ public class ImageCropperController {
     private double imageStartY;
     private Consumer<Image> cropCallback;
     private double circleDiameter;
+    
+    // Services
+    private final LocaleService localeService = LocaleService.getInstance();
     
     @FXML
     public void initialize() {
@@ -80,10 +84,18 @@ public class ImageCropperController {
                 stage.setMaxWidth(800);
                 stage.setMaxHeight(700);
                 
+                // Set window title with i18n
+                stage.setTitle(localeService.getMessage("imagecropper.window.title", "Crop Profile Image"));
+                
                 // Center overlay after scene is loaded
                 Platform.runLater(this::centerCropOverlay);
             }
         });
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("imagecropper.debug.initialized", "Image cropper initialized"));
     }
     
     private void updateCropCircleSize() {
@@ -127,6 +139,12 @@ public class ImageCropperController {
             double widthScale = maxInitialDimension / image.getWidth();
             double heightScale = maxInitialDimension / image.getHeight();
             scale = Math.min(widthScale, heightScale);
+            
+            System.out.println(localeService.getMessage("imagecropper.debug.image.scaled", 
+                "Large image detected, scaling to fit viewport: {0}x{1} -> scale factor: {2}")
+                .replace("{0}", String.valueOf((int)image.getWidth()))
+                .replace("{1}", String.valueOf((int)image.getHeight()))
+                .replace("{2}", String.format("%.2f", scale)));
         }
         
         // Calculate how to fit the image within the container
@@ -165,6 +183,8 @@ public class ImageCropperController {
             // Additional centering for very large images
             if (image.getWidth() > 1000 || image.getHeight() > 1000) {
                 centerImageInViewport();
+                System.out.println(localeService.getMessage("imagecropper.debug.large.image.centered", 
+                    "Very large image centered in viewport"));
             }
         });
     }
@@ -207,6 +227,7 @@ public class ImageCropperController {
     
     @FXML
     private void handleCancel() {
+        System.out.println(localeService.getMessage("imagecropper.debug.cancelled", "Image cropping cancelled by user"));
         Stage stage = (Stage) sourceImageView.getScene().getWindow();
         stage.close();
     }
@@ -214,8 +235,18 @@ public class ImageCropperController {
     @FXML
     private void handleApply() {
         if (cropCallback != null) {
-            Image croppedImage = createCroppedImage();
-            cropCallback.accept(croppedImage);
+            try {
+                System.out.println(localeService.getMessage("imagecropper.debug.applying", "Applying image crop..."));
+                Image croppedImage = createCroppedImage();
+                cropCallback.accept(croppedImage);
+                System.out.println(localeService.getMessage("imagecropper.debug.crop.success", "Image cropping completed successfully"));
+            } catch (Exception e) {
+                System.err.println(localeService.getMessage("imagecropper.error.crop.failed", "Failed to crop image: {0}")
+                    .replace("{0}", e.getMessage()));
+                e.printStackTrace();
+            }
+        } else {
+            System.err.println(localeService.getMessage("imagecropper.error.no.callback", "No crop callback defined"));
         }
         
         // Close the dialog
@@ -227,6 +258,10 @@ public class ImageCropperController {
         // Get the source image
         Image sourceImage = sourceImageView.getImage();
         
+        if (sourceImage == null) {
+            throw new IllegalStateException(localeService.getMessage("imagecropper.error.no.source.image", "No source image available for cropping"));
+        }
+        
         // Get actual display dimensions and scale
         double displayedImageWidth = sourceImageView.getBoundsInLocal().getWidth();
         double displayedImageHeight = sourceImageView.getBoundsInLocal().getHeight();
@@ -235,6 +270,14 @@ public class ImageCropperController {
         // Get the actual dimensions of the original image
         double originalImageWidth = sourceImage.getWidth();
         double originalImageHeight = sourceImage.getHeight();
+        
+        System.out.println(localeService.getMessage("imagecropper.debug.crop.dimensions", 
+            "Cropping image: original={0}x{1}, displayed={2}x{3}, zoom={4}")
+            .replace("{0}", String.valueOf((int)originalImageWidth))
+            .replace("{1}", String.valueOf((int)originalImageHeight))
+            .replace("{2}", String.valueOf((int)displayedImageWidth))
+            .replace("{3}", String.valueOf((int)displayedImageHeight))
+            .replace("{4}", String.format("%.2f", zoomScale)));
         
         // Calculate the combined scale (fit + zoom)
         double fitScaleX = displayedImageWidth / originalImageWidth;
@@ -317,7 +360,8 @@ public class ImageCropperController {
         
         // If we had out-of-bounds issues, log them for debugging
         if (outOfBounds) {
-            System.out.println("Warning: Some pixels were out of bounds during cropping");
+            System.out.println(localeService.getMessage("imagecropper.warning.out.of.bounds", 
+                "Warning: Some pixels were out of bounds during cropping"));
         }
         
         return result;
@@ -325,5 +369,22 @@ public class ImageCropperController {
     
     public void setCropCallback(Consumer<Image> callback) {
         this.cropCallback = callback;
+        System.out.println(localeService.getMessage("imagecropper.debug.callback.set", "Crop callback has been set"));
+    }
+    
+    @Override
+    public void refreshUI() {
+        // The ImageCropperController doesn't have static text elements that need refreshing
+        // since it's mostly visual/interactive. However, if the window title needs updating
+        // and the stage is available, we can update it here.
+        Platform.runLater(() -> {
+            if (cropperContainer != null && cropperContainer.getScene() != null && 
+                cropperContainer.getScene().getWindow() instanceof Stage stage) {
+                stage.setTitle(localeService.getMessage("imagecropper.window.title", "Crop Profile Image"));
+            }
+        });
+        
+        // No other UI elements require localization updates in this controller
+        // as the main UI text comes from the FXML file which uses %references
     }
 }

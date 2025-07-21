@@ -29,7 +29,7 @@
                         <Image url="@../images/icons/favorites_remove.png" />
                      </image>
                   </ImageView>
-                  <Label text="Favorites" styleClass="drawer-section-title"/>
+                  <Label text="%drawer.section.favorites" styleClass="drawer-section-title"/>
                   <Label fx:id="favoritesCountLabel" styleClass="drawer-count-label" />
                </HBox>
             </graphic>
@@ -55,7 +55,7 @@
                         <Image url="@../images/icons/utenti_preferiti.png" />
                      </image>
                   </ImageView>
-                  <Label text="Following" styleClass="drawer-section-title"/>
+                  <Label text="%drawer.section.following" styleClass="drawer-section-title"/>
                   <Label fx:id="followingCountLabel" styleClass="drawer-count-label" />
                </HBox>
             </graphic>

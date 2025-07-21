@@ -7,11 +7,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<StackPane style="-fx-border-radius: 222;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.UserCardController">
+<StackPane style="-fx-border-radius: 222;" xmlns="http://javafx.com/javafx/23.0.1" 
+           xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.uninaswap.client.controller.UserCardController">
    <children>
-      <VBox fx:id="itemCard" alignment="TOP_CENTER" onMouseClicked="#openUserDetails" prefHeight="101.0" prefWidth="120.0" styleClass="card">
+      <VBox fx:id="itemCard" alignment="TOP_CENTER" onMouseClicked="#openUserDetails" 
+            prefHeight="101.0" prefWidth="120.0" styleClass="card, user-card">
          <children>
-            <ImageView fx:id="itemImage" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="itemImage" fitHeight="80.0" fitWidth="80.0" 
+                       pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
@@ -19,7 +23,9 @@
                   <Image url="@../images/icons/user_circle.png" />
                </image>
             </ImageView>
-            <Text fx:id="itemName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="item-name" text="%profile.user.name" textAlignment="CENTER" wrappingWidth="100.0">
+            <Text fx:id="itemName" strokeType="OUTSIDE" strokeWidth="0.0" 
+                  styleClass="item-name, user-name" text="%usercard.name.placeholder" 
+                  textAlignment="CENTER" wrappingWidth="100.0">
                <VBox.margin>
                   <Insets top="8.0" />
                </VBox.margin>

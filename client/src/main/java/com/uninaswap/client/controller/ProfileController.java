@@ -135,12 +135,94 @@ public class ProfileController implements Refreshable {
                 navigationService.navigateToLogin(usernameField);
                 return;
             } catch (IOException e) {
-                showStatus("error.navigation", true);
+                showStatus("profile.error.navigation", true);
             }
         }
 
         // Register message handler
         registerMessageHandler();
+        
+        // Subscribe to locale changes
+        EventBusService.getInstance().subscribe(EventTypes.LOCALE_CHANGED, _ -> {
+            Platform.runLater(this::refreshUI);
+        });
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("profile.debug.initialized", "ProfileController initialized"));
+    }
+
+    @Override
+    public void refreshUI() {
+        // Update labels based on profile ownership
+        if (isOwnProfile) {
+            if (profileTitleLabel != null) {
+                profileTitleLabel.setText(localeService.getMessage("profile.title", "User Profile"));
+            }
+            if (changeImageButton != null) {
+                changeImageButton.setText(localeService.getMessage("button.change.image", "Change Image"));
+            }
+            if (saveButton != null) {
+                saveButton.setText(localeService.getMessage("button.save", "Save"));
+            }
+            if (cancelButton != null) {
+                cancelButton.setText(localeService.getMessage("button.cancel", "Cancel"));
+            }
+        } else {
+            if (profileTitleLabel != null && viewedUser != null) {
+                profileTitleLabel.setText(localeService.getMessage("profile.title.viewing", "{0}'s Profile")
+                    .replace("{0}", viewedUser.getDisplayName()));
+            }
+        }
+
+        // Update field labels
+        if (firstNameLabel != null) {
+            firstNameLabel.setText(localeService.getMessage("profile.first.name.label", "First Name"));
+        }
+        if (lastNameLabel != null) {
+            lastNameLabel.setText(localeService.getMessage("profile.last.name.label", "Last Name"));
+        }
+        if (emailLabel != null) {
+            emailLabel.setText(localeService.getMessage("profile.email.label", "Email"));
+        }
+        if (bioLabel != null) {
+            bioLabel.setText(localeService.getMessage("profile.biography.label", "Biography"));
+        }
+
+        // Update prompt texts
+        if (firstNameField != null) {
+            firstNameField.setPromptText(localeService.getMessage("profile.first.name.prompt", "Enter your first name"));
+        }
+        if (lastNameField != null) {
+            lastNameField.setPromptText(localeService.getMessage("profile.last.name.prompt", "Enter your last name"));
+        }
+        if (emailField != null) {
+            emailField.setPromptText(localeService.getMessage("profile.email.prompt", "Enter your email address"));
+        }
+        if (bioField != null) {
+            bioField.setPromptText(localeService.getMessage("profile.biography.prompt", "Tell others about yourself..."));
+        }
+        if (addressField != null) {
+            addressField.setPromptText(localeService.getMessage("profile.address.prompt", "Enter your address"));
+        }
+        if (cityField != null) {
+            cityField.setPromptText(localeService.getMessage("profile.city.prompt", "Enter your city"));
+        }
+        if (stateProvinceField != null) {
+            stateProvinceField.setPromptText(localeService.getMessage("profile.state.prompt", "Enter your state/province"));
+        }
+        if (countryField != null) {
+            countryField.setPromptText(localeService.getMessage("profile.country.prompt", "Enter your country"));
+        }
+        if (zipPostalCodeField != null) {
+            zipPostalCodeField.setPromptText(localeService.getMessage("profile.zip.prompt", "Enter your ZIP/postal code"));
+        }
+
+        // Refresh listings section if needed
+        if (userListingsCountLabel != null && viewedUser != null) {
+            loadUserListings();
+        }
     }
 
     // Update the loadProfile method
@@ -155,6 +237,12 @@ public class ProfileController implements Refreshable {
         loadUserProfile();
         loadUserListings();
         setupProfileVisibility();
+        
+        // Refresh UI after loading profile data
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("profile.debug.profile.loaded", "Profile loaded for user: {0}")
+            .replace("{0}", user.getDisplayName()));
     }
 
     /**
@@ -173,8 +261,12 @@ public class ProfileController implements Refreshable {
             if (response.getType() == ProfileUpdateMessage.Type.UPDATE_RESPONSE) {
                 if (response.isSuccess()) {
                     showStatus("profile.save.success", false);
+                    System.out.println(localeService.getMessage("profile.debug.save.success", "Profile update successful"));
                 } else {
-                    showStatus(response.getMessage() != null ? response.getMessage() : "profile.save.error", true);
+                    String errorMessage = response.getMessage() != null ? response.getMessage() : "profile.save.error";
+                    showStatus(errorMessage, true);
+                    System.err.println(localeService.getMessage("profile.debug.save.error", "Profile update failed: {0}")
+                        .replace("{0}", response.getMessage()));
                 }
             }
         });
@@ -232,6 +324,7 @@ public class ProfileController implements Refreshable {
                         Platform.runLater(() -> {
                             profileImageView.setImage(image);
                             tempProfileImagePath = imagePath;
+                            System.out.println(localeService.getMessage("profile.debug.image.loaded", "Profile image loaded successfully"));
                         });
                     })
                     .exceptionally(ex -> {
@@ -240,7 +333,8 @@ public class ProfileController implements Refreshable {
                             profileImageView
                                     .setImage(new Image(getClass().getResourceAsStream("/images/default_profile.png")));
                             showStatus("profile.image.error.load", true);
-                            System.err.println("Error loading image: " + ex.getMessage());
+                            System.err.println(localeService.getMessage("profile.debug.image.error", "Error loading profile image: {0}")
+                                .replace("{0}", ex.getMessage()));
                         });
                         return null;
                     });
@@ -367,6 +461,9 @@ public class ProfileController implements Refreshable {
                             viewAllButtonContainer.setManaged(false);
                         }
                     }
+                    
+                    System.out.println(localeService.getMessage("profile.debug.listings.loaded", "Loaded {0} listings for user")
+                        .replace("{0}", String.valueOf(listingViewModels.size())));
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
@@ -375,6 +472,8 @@ public class ProfileController implements Refreshable {
                         );
                         errorLabel.getStyleClass().add("error-message");
                         userListingsList.getChildren().add(errorLabel);
+                        System.err.println(localeService.getMessage("profile.debug.listings.error", "Error loading user listings: {0}")
+                            .replace("{0}", ex.getMessage()));
                     });
                     return null;
                 });
@@ -437,8 +536,11 @@ public class ProfileController implements Refreshable {
         itemContainer.setOnMouseClicked(e -> {
             try {
                 navigationService.navigateToListingDetails(listing);
+                System.out.println(localeService.getMessage("profile.debug.listing.clicked", "Navigating to listing details: {0}")
+                    .replace("{0}", listing.getTitle()));
             } catch (Exception ex) {
-                System.err.println("Error navigating to listing: " + ex.getMessage());
+                System.err.println(localeService.getMessage("profile.debug.navigation.error", "Error navigating to listing: {0}")
+                    .replace("{0}", ex.getMessage()));
             }
         });
 
@@ -491,9 +593,11 @@ public class ProfileController implements Refreshable {
     @FXML
     public void handleChangeImage(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Profile Picture");
+        fileChooser.setTitle(localeService.getMessage("profile.image.chooser.title", "Select Profile Picture"));
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
+                new FileChooser.ExtensionFilter(
+                    localeService.getMessage("profile.image.filter.name", "Image Files"), 
+                    "*.png", "*.jpg", "*.jpeg"));
 
         File selectedFile = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
         if (selectedFile != null) {
@@ -508,10 +612,12 @@ public class ProfileController implements Refreshable {
 
                     // Convert the cropped image to a file for later upload
                     tempSelectedImageFile = convertImageToTempFile(croppedImage);
+                    System.out.println(localeService.getMessage("profile.debug.image.selected", "Profile image selected and cropped"));
                 });
             } catch (Exception e) {
                 showStatus("profile.image.error.load", true);
-                System.err.println("Error loading image: " + e.getMessage());
+                System.err.println(localeService.getMessage("profile.debug.image.error", "Error loading profile image: {0}")
+                    .replace("{0}", e.getMessage()));
             }
         }
     }
@@ -521,9 +627,11 @@ public class ProfileController implements Refreshable {
         try {
             // Navigate to the analytics view
             navigationService.navigateToAnalyticsView();
+            System.out.println(localeService.getMessage("profile.debug.navigate.analytics", "Navigating to analytics view"));
         } catch (IOException e) {
-            System.err.println("Error navigating to analytics: " + e.getMessage());
-            showStatus("navigation.error.load.analytics", true);
+            showStatus("profile.error.navigation.analytics", true);
+            System.err.println(localeService.getMessage("profile.debug.navigation.error", "Error navigating to listing: {0}")
+                .replace("{0}", e.getMessage()));
         }
     }
 
@@ -539,7 +647,7 @@ public class ProfileController implements Refreshable {
 
             // Create dialog
             Stage cropperStage = new Stage();
-            // cropperStage.setTitle("Crop Profile Image");
+            cropperStage.setTitle(localeService.getMessage("profile.image.cropper.title", "Crop Profile Image"));
             cropperStage.initModality(Modality.APPLICATION_MODAL);
             cropperStage.initOwner(profileImageView.getScene().getWindow());
 
@@ -555,9 +663,11 @@ public class ProfileController implements Refreshable {
 
             // Show the cropper dialog
             cropperStage.showAndWait();
+            System.out.println(localeService.getMessage("profile.debug.cropper.opened", "Image cropper dialog opened"));
         } catch (IOException e) {
             showStatus("profile.error.image.cropper", true);
-            System.err.println("Error showing image cropper: " + e.getMessage());
+            System.err.println(localeService.getMessage("profile.debug.cropper.error", "Error showing image cropper: {0}")
+                .replace("{0}", e.getMessage()));
         }
     }
 
@@ -589,10 +699,12 @@ public class ProfileController implements Refreshable {
 
             // Write to file
             javax.imageio.ImageIO.write(bufferedImage, "png", tempFile);
+            System.out.println(localeService.getMessage("profile.debug.image.converted", "Image converted to temporary file"));
 
             return tempFile;
         } catch (IOException e) {
-            System.err.println("Error converting image to file: " + e.getMessage());
+            System.err.println(localeService.getMessage("profile.debug.image.convert.error", "Error converting image to file: {0}")
+                .replace("{0}", e.getMessage()));
             return null;
         }
     }
@@ -616,6 +728,7 @@ public class ProfileController implements Refreshable {
 
         // Show "saving" status
         showStatus("profile.save.inprogress", false);
+        System.out.println(localeService.getMessage("profile.debug.save.started", "Profile save process started"));
 
         // If a new image was selected, upload it first using HTTP
         if (tempSelectedImageFile != null) {
@@ -630,12 +743,14 @@ public class ProfileController implements Refreshable {
 
                         // Notify other parts of the application about the image change
                         notifyProfileImageChange(tempProfileImagePath);
+                        System.out.println(localeService.getMessage("profile.debug.image.uploaded", "Profile image uploaded successfully"));
                     })
                     .exceptionally(ex -> {
                         Platform.runLater(() -> {
                             showStatus("profile.error.image.upload", true);
                             saveButton.setDisable(false);
-                            System.err.println("Error uploading image: " + ex.getMessage());
+                            System.err.println(localeService.getMessage("profile.debug.image.upload.error", "Error uploading image: {0}")
+                                .replace("{0}", ex.getMessage()));
                         });
                         return null;
                     });
@@ -667,7 +782,8 @@ public class ProfileController implements Refreshable {
                     .exceptionally(ex -> {
                         Platform.runLater(() -> {
                             showStatus("profile.error.connection", true);
-                            System.err.println("Error sending profile update: " + ex.getMessage());
+                            System.err.println(localeService.getMessage("profile.debug.update.error", "Error sending profile update: {0}")
+                                .replace("{0}", ex.getMessage()));
                         });
                         return null;
                     });
@@ -675,7 +791,8 @@ public class ProfileController implements Refreshable {
     }
 
     private void notifyProfileImageChange(String newImagePath) {
-        System.out.println("Publishing profile image change event: " + newImagePath);
+        System.out.println(localeService.getMessage("profile.debug.image.change.event", "Publishing profile image change event: {0}")
+            .replace("{0}", newImagePath));
         EventBusService.getInstance().publishEvent(EventTypes.PROFILE_IMAGE_CHANGED, newImagePath);
     }
 
@@ -683,33 +800,19 @@ public class ProfileController implements Refreshable {
     public void handleCancel(ActionEvent event) {
         try {
             navigationService.navigateToMainDashboard(usernameField);
+            System.out.println(localeService.getMessage("profile.debug.cancel", "Profile editing cancelled, navigating to dashboard"));
         } catch (IOException e) {
-            showStatus("error.navigation", true);
+            showStatus("profile.error.navigation", true);
+            System.err.println(localeService.getMessage("profile.debug.navigation.error", "Error navigating to listing: {0}")
+                .replace("{0}", e.getMessage()));
         }
     }
 
     private void showStatus(String messageKey, boolean isError) {
-        statusLabel.setText(localeService.getMessage(messageKey));
+        String message = localeService.getMessage(messageKey, messageKey);
+        statusLabel.setText(message);
         statusLabel.getStyleClass().clear();
         statusLabel.getStyleClass().add(isError ? "error-message" : "success-message");
-    }
-
-    @Override
-    public void refreshUI() {
-        if (isOwnProfile) {
-            profileTitleLabel.setText(localeService.getMessage("profile.title"));
-            changeImageButton.setText(localeService.getMessage("button.change"));
-            saveButton.setText(localeService.getMessage("button.save"));
-            cancelButton.setText(localeService.getMessage("button.cancel"));
-        } else {
-            profileTitleLabel.setText(viewedUser.getDisplayName() + "'s " + localeService.getMessage("profile.title"));
-        }
-
-        // Update section labels
-        if (userListingsCountLabel != null) {
-            // Refresh listings count
-            loadUserListings();
-        }
     }
 
     // Add report user handler

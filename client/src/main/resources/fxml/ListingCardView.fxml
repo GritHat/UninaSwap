@@ -34,7 +34,7 @@
                <children>
                   <HBox alignment="CENTER">
                      <children>
-                        <Label fx:id="itemName" maxWidth="190.0" minWidth="190.0" prefWidth="190.0" styleClass="item-name" text="Listing Title">
+                        <Label fx:id="itemName" maxWidth="190.0" minWidth="190.0" prefWidth="190.0" styleClass="item-name" text="%listingcard.title.placeholder">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -55,7 +55,7 @@
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Text fx:id="categoryText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="category-tag" text="Category">
+                        <Text fx:id="categoryText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="category-tag" text="%listingcard.category.placeholder">
                            <font>
                               <Font size="9.0" />
                            </font>
@@ -68,7 +68,7 @@
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Text fx:id="sellerName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="seller-name" text="Seller Name">
+                        <Text fx:id="sellerName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="seller-name" text="%listingcard.seller.placeholder">
                            <font>
                               <Font size="8.0" />
                            </font>
@@ -83,7 +83,7 @@
                      <children>
                         
                         <!-- Listing price/type -->
-                        <Text fx:id="itemPrice" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="€25.00">
+                        <Text fx:id="itemPrice" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%listingcard.price.placeholder">
                            <font>
                               <Font size="18.0" />
                            </font>

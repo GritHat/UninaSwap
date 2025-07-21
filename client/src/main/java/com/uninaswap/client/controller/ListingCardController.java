@@ -1,6 +1,7 @@
 package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.NavigationService;
+import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.viewmodel.AuctionListingViewModel;
 import com.uninaswap.client.viewmodel.ListingItemViewModel;
 import com.uninaswap.client.viewmodel.ListingViewModel;
@@ -29,7 +30,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListingCardController {
+public class ListingCardController implements Refreshable {
 
     @FXML
     private VBox itemCard;
@@ -56,6 +57,7 @@ public class ListingCardController {
     private final NavigationService navigationService = NavigationService.getInstance();
     private final FavoritesService favoritesService = FavoritesService.getInstance();
     private final ImageService imageService = ImageService.getInstance();
+    private final LocaleService localeService = LocaleService.getInstance();
 
     private Label imageCountLabel; // For showing "1/3" etc.
     private int currentImageIndex = 0;
@@ -77,6 +79,11 @@ public class ListingCardController {
             // Initialize favorite status from service
             initializeFavoriteStatus();
         }
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("listingcard.debug.initialized", "ListingCard initialized"));
     }
 
     public void setListing(ListingViewModel listing) {
@@ -112,6 +119,8 @@ public class ListingCardController {
 
             // Initialize favorite status after setting listing
             initializeFavoriteStatus();
+            
+            System.out.println(localeService.getMessage("listingcard.debug.listing.set", "Listing set for card: {0}").replace("{0}", listing.getTitle()));
         }
     }
 
@@ -160,7 +169,7 @@ public class ListingCardController {
                     });
                 })
                 .exceptionally(ex -> {
-                    System.err.println("Failed to load listing image: " + ex.getMessage());
+                    System.err.println(localeService.getMessage("listingcard.error.image.load", "Failed to load listing image: {0}").replace("{0}", ex.getMessage()));
                     Platform.runLater(this::setDefaultImage);
                     return null;
                 });
@@ -174,7 +183,7 @@ public class ListingCardController {
                 itemImage.setImage(defaultImage);
             }
         } catch (Exception e) {
-            System.err.println("Could not load default image: " + e.getMessage());
+            System.err.println(localeService.getMessage("listingcard.error.default.image", "Could not load default image: {0}").replace("{0}", e.getMessage()));
         }
     }
 
@@ -197,13 +206,13 @@ public class ListingCardController {
                     String currency = sellListing.getCurrency() != null ? sellListing.getCurrency().getSymbol() : "€";
                     return currency + " " + price;
                 }
-                return "In vendita";
+                return localeService.getMessage("listingcard.type.sell", "For Sale");
 
             case "TRADE":
-                return "Scambio";
+                return localeService.getMessage("listingcard.type.trade", "Trade");
 
             case "GIFT":
-                return "Regalo";
+                return localeService.getMessage("listingcard.type.gift", "Gift");
 
             case "AUCTION":
                 if (listing instanceof AuctionListingViewModel) {
@@ -219,10 +228,10 @@ public class ListingCardController {
                         String currency = auctionListing.getCurrency() != null
                                 ? auctionListing.getCurrency().getSymbol()
                                 : "€";
-                        return currency + " " + startingPrice + " (base)";
+                        return currency + " " + startingPrice + " " + localeService.getMessage("listingcard.auction.starting", "(starting)");
                     }
                 }
-                return "Asta";
+                return localeService.getMessage("listingcard.type.auction", "Auction");
 
             default:
                 return type;
@@ -243,13 +252,13 @@ public class ListingCardController {
         // Fallback to listing type
         switch (listing.getListingTypeValue().toUpperCase()) {
             case "SELL":
-                return "In vendita";
+                return localeService.getMessage("listingcard.type.sell", "For Sale");
             case "TRADE":
-                return "Scambio";
+                return localeService.getMessage("listingcard.type.trade", "Trade");
             case "GIFT":
-                return "Regalo";
+                return localeService.getMessage("listingcard.type.gift", "Gift");
             case "AUCTION":
-                return "Asta";
+                return localeService.getMessage("listingcard.type.auction", "Auction");
             default:
                 return listing.getListingTypeValue();
         }
@@ -266,8 +275,10 @@ public class ListingCardController {
             try {
                 Image icon = new Image(getClass().getResourceAsStream(iconPath));
                 favoriteIcon.setImage(icon);
+                
+                System.out.println(localeService.getMessage("listingcard.debug.favorite.updated", "Favorite status updated to: {0}").replace("{0}", String.valueOf(favorite)));
             } catch (Exception e) {
-                System.err.println("Could not load favorite icon: " + e.getMessage());
+                System.err.println(localeService.getMessage("listingcard.error.favorite.icon", "Could not load favorite icon: {0}").replace("{0}", e.getMessage()));
             }
         }
     }
@@ -275,7 +286,7 @@ public class ListingCardController {
     @FXML
     private void openListingDetails(MouseEvent event) {
         if (listing != null) {
-            System.out.println("Opening listing details for: " + listing.getTitle());
+            System.out.println(localeService.getMessage("listingcard.debug.opening.details", "Opening listing details for: {0}").replace("{0}", listing.getTitle()));
 
             try {
                 // Load the listing details view
@@ -287,12 +298,14 @@ public class ListingCardController {
                 controller.setListing(listing);
 
                 // Navigate to the details view using the new loadView method
-                navigationService.loadView(detailsView, "Dettagli: " + listing.getTitle());
+                navigationService.loadView(detailsView, localeService.getMessage("listingcard.details.window.title", "Details: {0}").replace("{0}", listing.getTitle()));
 
             } catch (Exception e) {
-                System.err.println("Error opening listing details: " + e.getMessage());
+                System.err.println(localeService.getMessage("listingcard.error.opening.details", "Error opening listing details: {0}").replace("{0}", e.getMessage()));
                 e.printStackTrace();
             }
+        } else {
+            System.out.println(localeService.getMessage("listingcard.debug.no.listing.details", "No listing available for details view"));
         }
     }
 
@@ -310,27 +323,29 @@ public class ListingCardController {
                 favoritesService.addFavoriteToServer(listing.getId())
                         .thenAccept(favoriteViewModel -> Platform.runLater(() -> {
                             // Server sync successful - local tracking is updated via message handler
-                            System.out.println("Successfully added listing to favorites: " + listing.getId());
+                            System.out.println(localeService.getMessage("listingcard.debug.favorite.added", "Successfully added listing to favorites: {0}").replace("{0}", listing.getId()));
                         }))
                         .exceptionally(ex -> {
                             // Revert UI on failure
                             setFavorite(false);
-                            System.err.println("Failed to add to favorites: " + ex.getMessage());
+                            System.err.println(localeService.getMessage("listingcard.error.favorite.add", "Failed to add to favorites: {0}").replace("{0}", ex.getMessage()));
                             return null;
                         });
             } else {
                 favoritesService.removeFavoriteFromServer(listing.getId())
                         .thenAccept(success -> Platform.runLater(() -> {
                             // Server sync successful - local tracking is updated via message handler
-                            System.out.println("Successfully removed listing from favorites: " + listing.getId());
+                            System.out.println(localeService.getMessage("listingcard.debug.favorite.removed", "Successfully removed listing from favorites: {0}").replace("{0}", listing.getId()));
                         }))
                         .exceptionally(ex -> {
                             // Revert UI on failure
                             setFavorite(true);
-                            System.err.println("Failed to remove from favorites: " + ex.getMessage());
+                            System.err.println(localeService.getMessage("listingcard.error.favorite.remove", "Failed to remove from favorites: {0}").replace("{0}", ex.getMessage()));
                             return null;
                         });
             }
+        } else {
+            System.out.println(localeService.getMessage("listingcard.debug.no.listing.favorite", "No listing available for favorite toggle"));
         }
     }
 
@@ -347,7 +362,7 @@ public class ListingCardController {
 
     private void createImageCountIndicator(int imageCount, StackPane imageContainer) {
         // Create a label showing current image / total images
-        imageCountLabel = new Label("1/" + imageCount);
+        imageCountLabel = new Label(localeService.getMessage("listingcard.image.count", "{0}/{1}").replace("{0}", "1").replace("{1}", String.valueOf(imageCount)));
         imageCountLabel.getStyleClass().addAll("image-count-indicator");
         imageCountLabel.setStyle(
                 "-fx-background-color: rgba(0, 0, 0, 0.7); " +
@@ -381,12 +396,6 @@ public class ListingCardController {
                 dot.getStyleClass().add("navigation-dot");
                 dotsContainer.getChildren().add(dot);
             }
-
-            // Style the dots container
-            // dotsContainer.setStyle(
-            // "-fx-background-color: rgba(0, 0, 0, 0.5); " +
-            // "-fx-background-radius: 10; " +
-            // "-fx-padding: 2 8 2 8;");
 
             // Position at bottom center
             StackPane.setAlignment(dotsContainer, Pos.BOTTOM_CENTER);
@@ -440,36 +449,52 @@ public class ListingCardController {
 
         // Update navigation dots
         updateNavigationDots();
+        
+        System.out.println(localeService.getMessage("listingcard.debug.image.cycled", "Cycled to image {0} of {1}").replace("{0}", String.valueOf(currentImageIndex + 1)).replace("{1}", String.valueOf(availableImagePaths.size())));
     }
 
     private void updateImageCountIndicator() {
         if (imageCountLabel != null) {
-            imageCountLabel.setText((currentImageIndex + 1) + "/" + availableImagePaths.size());
+            imageCountLabel.setText(localeService.getMessage("listingcard.image.count", "{0}/{1}")
+                    .replace("{0}", String.valueOf(currentImageIndex + 1))
+                    .replace("{1}", String.valueOf(availableImagePaths.size())));
         }
     }
 
     private void updateNavigationDots() {
-        /*if (itemImage.getParent() instanceof StackPane) {
-            StackPane container = (StackPane) itemImage.getParent();
+        // Navigation dots update logic would go here if implemented
+        // Currently commented out in the original code
+    }
 
-            // Find the dots container
-            container.getChildren().stream()
-                    .filter(node -> node instanceof HBox)
-                    .map(node -> (HBox) node)
-                    .filter(hbox -> hbox.getStyleClass().contains("navigation-dots") ||
-                            hbox.getChildren().stream()
-                                    .anyMatch(child -> child.getStyleClass().contains("navigation-dot")))
-                    .findFirst()
-                    .ifPresent(dotsContainer -> {
-                        // Update dot styles
-                        for (int i = 0; i < dotsContainer.getChildren().size(); i++) {
-                            Label dot = (Label) dotsContainer.getChildren().get(i);
-                            boolean isActive = i == currentImageIndex;
-                            dot.setStyle(
-                                    "-fx-text-fill: " + (isActive ? "white" : "rgba(255, 255, 255, 0.5)") + "; " +
-                                            "-fx-font-size: 12px;");
-                        }
-                    });
-        }*/
+    @Override
+    public void refreshUI() {
+        // Refresh the listing display with current locale
+        if (listing != null) {
+            // Update price text with current locale
+            if (itemPrice != null) {
+                String priceText = getPriceText(listing);
+                itemPrice.setText(priceText);
+            }
+
+            // Update category text with current locale
+            if (categoryText != null) {
+                String category = getListingCategory(listing);
+                categoryText.setText(category);
+            }
+
+            // Update image count indicator if it exists
+            if (imageCountLabel != null && availableImagePaths.size() > 1) {
+                updateImageCountIndicator();
+            }
+        }
+    }
+
+    // Getter methods for external access
+    public ListingViewModel getListing() {
+        return listing;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
     }
 }

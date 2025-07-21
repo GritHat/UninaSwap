@@ -150,7 +150,7 @@ public class ListingCreationController implements Refreshable {
 
         @Override
         public String toString() {
-            return localeService.getMessage(messageKey);
+            return localeService.getMessage(messageKey, String.valueOf(days) + " day(s)");
         }
     }
 
@@ -194,8 +194,14 @@ public class ListingCreationController implements Refreshable {
                 acceptMixedOffersCheckBox.setSelected(false);
             }
         });
+        
         // Load user's items
         itemsTable.setItems(itemService.getUserItemsList());
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("listingcreation.debug.initialized", "ListingCreation controller initialized"));
     }
 
     private void setupItemsTable() {
@@ -231,6 +237,8 @@ public class ListingCreationController implements Refreshable {
                     valueFactory.setMax(newSelection.getAvailableQuantity());
                     valueFactory.setValue(1); // Reset to 1 when selecting new item
                 }
+                
+                System.out.println(localeService.getMessage("listingcreation.debug.item.selected", "Item selected: {0}").replace("{0}", newSelection.getName()));
             } else {
                 addItemButton.setDisable(true);
             }
@@ -244,7 +252,7 @@ public class ListingCreationController implements Refreshable {
                 .setCellValueFactory(cellData -> Bindings.createObjectBinding(() -> cellData.getValue().getQuantity()));
 
         selectedActionColumn.setCellFactory(_ -> new TableCell<>() {
-            private final Button removeButton = new Button(localeService.getMessage("button.remove"));
+            private final Button removeButton = new Button(localeService.getMessage("button.remove", "Remove"));
 
             {
                 removeButton.setOnAction(_ -> {
@@ -264,6 +272,8 @@ public class ListingCreationController implements Refreshable {
                     selectedItems.remove(item);
                     updateSelectedItemsTable();
                     refreshItemsTable(); // Refresh to show updated available quantities
+                    
+                    System.out.println(localeService.getMessage("listingcreation.debug.item.removed", "Item removed from selection: {0}").replace("{0}", item.getItemName()));
                 });
             }
 
@@ -322,9 +332,9 @@ public class ListingCreationController implements Refreshable {
 
             if (quantity > effectivelyAvailable) {
                 AlertHelper.showWarningAlert(
-                        localeService.getMessage("listing.create.error.title"),
-                        localeService.getMessage("listing.create.error.header"),
-                        localeService.getMessage("listing.create.error.quantity.exceeded"));
+                        localeService.getMessage("listing.create.error.title", "Error"),
+                        localeService.getMessage("listing.create.error.header", "Invalid Input"),
+                        localeService.getMessage("listing.create.error.quantity.exceeded", "Requested quantity exceeds available stock"));
                 return;
             }
 
@@ -342,11 +352,13 @@ public class ListingCreationController implements Refreshable {
                         // Update temporary reservation
                         int currentReserved = tempReservedQuantities.getOrDefault(itemId, 0);
                         tempReservedQuantities.put(itemId, currentReserved + quantity);
+                        
+                        System.out.println(localeService.getMessage("listingcreation.debug.item.quantity.updated", "Updated item quantity: {0} (new quantity: {1})").replace("{0}", selectedItem.getName()).replace("{1}", String.valueOf(newQuantity)));
                     } else {
                         AlertHelper.showWarningAlert(
-                                localeService.getMessage("listing.create.error.title"),
-                                localeService.getMessage("listing.create.error.header"),
-                                localeService.getMessage("listing.create.error.quantity.exceeded"));
+                                localeService.getMessage("listing.create.error.title", "Error"),
+                                localeService.getMessage("listing.create.error.header", "Invalid Input"),
+                                localeService.getMessage("listing.create.error.quantity.exceeded", "Requested quantity exceeds available stock"));
                         return;
                     }
                     break;
@@ -365,10 +377,14 @@ public class ListingCreationController implements Refreshable {
                 // Track temporary reservation
                 int currentReserved = tempReservedQuantities.getOrDefault(itemId, 0);
                 tempReservedQuantities.put(itemId, currentReserved + quantity);
+                
+                System.out.println(localeService.getMessage("listingcreation.debug.item.added", "Item added to listing: {0} (quantity: {1})").replace("{0}", selectedItem.getName()).replace("{1}", String.valueOf(quantity)));
             }
 
             updateSelectedItemsTable();
             refreshItemsTable(); // Refresh to show updated available quantities
+        } else {
+            System.out.println(localeService.getMessage("listingcreation.debug.no.item.selected", "No item selected for adding"));
         }
     }
 
@@ -392,28 +408,38 @@ public class ListingCreationController implements Refreshable {
             listing = createAuctionListing();
         } else {
             AlertHelper.showErrorAlert(
-                    localeService.getMessage("listing.create.error.title"),
-                    localeService.getMessage("listing.create.error.header"),
-                    localeService.getMessage("listing.create.error.unknown.type"));
+                    localeService.getMessage("listing.create.error.title", "Error"),
+                    localeService.getMessage("listing.create.error.header", "Invalid Input"),
+                    localeService.getMessage("listing.create.error.unknown.type", "Unknown listing type selected"));
+            return;
+        }
+
+        if (listing == null) {
+            // Error already shown in create methods
             return;
         }
 
         // Save the listing
+        System.out.println(localeService.getMessage("listingcreation.debug.creating.listing", "Creating listing: {0}").replace("{0}", listing.getTitle()));
+        
         listingService.createListing(listing)
                 .thenAccept(_ -> {
+                    System.out.println(localeService.getMessage("listingcreation.debug.listing.created", "Listing created successfully"));
                     AlertHelper.showInformationAlert(
-                            localeService.getMessage("listing.create.success.title"),
-                            localeService.getMessage("listing.create.success.header"),
-                            localeService.getMessage("listing.create.success.content"));
+                            localeService.getMessage("listing.create.success.title", "Success"),
+                            localeService.getMessage("listing.create.success.header", "Listing Created"),
+                            localeService.getMessage("listing.create.success.content", "Your listing has been created successfully"));
 
                     // Close the window
-                    // ((Stage) createButton.getScene().getWindow()).close();
+                    Stage stage = (Stage) createButton.getScene().getWindow();
+                    stage.close();
                 })
                 .exceptionally(ex -> {
+                    System.err.println(localeService.getMessage("listingcreation.error.creation.failed", "Failed to create listing: {0}").replace("{0}", ex.getMessage()));
                     AlertHelper.showErrorAlert(
-                            localeService.getMessage("listing.create.error.title"),
-                            localeService.getMessage("listing.create.error.header"),
-                            ex.getMessage());
+                            localeService.getMessage("listing.create.error.title", "Error"),
+                            localeService.getMessage("listing.create.error.header", "Creation Failed"),
+                            localeService.getMessage("listingcreation.error.creation.message", "Failed to create listing: {0}").replace("{0}", ex.getMessage()));
                     return null;
                 });
     }
@@ -421,39 +447,40 @@ public class ListingCreationController implements Refreshable {
     private boolean validateCommonFields() {
         if (titleField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
-                    localeService.getMessage("listing.create.validation.title"),
-                    localeService.getMessage("listing.create.validation.header"),
-                    localeService.getMessage("listing.create.validation.title.empty"));
+                    localeService.getMessage("listing.create.validation.title", "Validation Error"),
+                    localeService.getMessage("listing.create.validation.header", "Invalid Input"),
+                    localeService.getMessage("listing.create.validation.title.empty", "Title cannot be empty"));
             titleField.requestFocus();
             return false;
         }
 
         if (descriptionArea.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
-                    localeService.getMessage("listing.create.validation.title"),
-                    localeService.getMessage("listing.create.validation.header"),
-                    localeService.getMessage("listing.create.validation.description.empty"));
+                    localeService.getMessage("listing.create.validation.title", "Validation Error"),
+                    localeService.getMessage("listing.create.validation.header", "Invalid Input"),
+                    localeService.getMessage("listing.create.validation.description.empty", "Description cannot be empty"));
             descriptionArea.requestFocus();
             return false;
         }
 
         if (selectedItems.isEmpty()) {
             AlertHelper.showWarningAlert(
-                    localeService.getMessage("listing.create.validation.title"),
-                    localeService.getMessage("listing.create.validation.header"),
-                    localeService.getMessage("listing.create.validation.items.empty"));
+                    localeService.getMessage("listing.create.validation.title", "Validation Error"),
+                    localeService.getMessage("listing.create.validation.header", "Invalid Input"),
+                    localeService.getMessage("listing.create.validation.items.empty", "You must add at least one item"));
             return false;
         }
 
+        System.out.println(localeService.getMessage("listingcreation.debug.validation.passed", "Common fields validation passed"));
         return true;
     }
 
     private SellListingDTO createSellListing() {
         if (sellPriceField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
-                    localeService.getMessage("listing.create.validation.title"),
-                    localeService.getMessage("listing.create.validation.header"),
-                    localeService.getMessage("listing.create.validation.price.empty"));
+                    localeService.getMessage("listing.create.validation.title", "Validation Error"),
+                    localeService.getMessage("listing.create.validation.header", "Invalid Input"),
+                    localeService.getMessage("listing.create.validation.price.empty", "Price cannot be empty"));
             sellPriceField.requestFocus();
             return null;
         }
@@ -461,7 +488,7 @@ public class ListingCreationController implements Refreshable {
         try {
             BigDecimal price = new BigDecimal(sellPriceField.getText().trim());
             if (price.compareTo(BigDecimal.ZERO) <= 0) {
-                throw new NumberFormatException("Price must be positive");
+                throw new NumberFormatException(localeService.getMessage("listingcreation.error.price.negative", "Price must be positive"));
             }
 
             SellListingDTO listing = new SellListingDTO();
@@ -469,12 +496,13 @@ public class ListingCreationController implements Refreshable {
             listing.setPrice(price);
             listing.setCurrency(sellCurrencyComboBox.getValue());
 
+            System.out.println(localeService.getMessage("listingcreation.debug.sell.listing.created", "Sell listing created with price: {0} {1}").replace("{0}", sellCurrencyComboBox.getValue().getSymbol()).replace("{1}", price.toString()));
             return listing;
         } catch (NumberFormatException e) {
             AlertHelper.showWarningAlert(
-                    localeService.getMessage("listing.create.validation.title"),
-                    localeService.getMessage("listing.create.validation.header"),
-                    localeService.getMessage("listing.create.validation.price.invalid"));
+                    localeService.getMessage("listing.create.validation.title", "Validation Error"),
+                    localeService.getMessage("listing.create.validation.header", "Invalid Input"),
+                    localeService.getMessage("listing.create.validation.price.invalid", "Invalid price format"));
             sellPriceField.requestFocus();
             return null;
         }
@@ -495,11 +523,13 @@ public class ListingCreationController implements Refreshable {
                 BigDecimal referencePrice = new BigDecimal(referencePriceField.getText().trim());
                 listing.setReferencePrice(referencePrice);
                 listing.setCurrency(tradeCurrencyComboBox.getValue());
+                
+                System.out.println(localeService.getMessage("listingcreation.debug.trade.reference.price", "Trade listing reference price set: {0} {1}").replace("{0}", tradeCurrencyComboBox.getValue().getSymbol()).replace("{1}", referencePrice.toString()));
             } catch (NumberFormatException e) {
                 AlertHelper.showWarningAlert(
-                        localeService.getMessage("listing.create.validation.title"),
-                        localeService.getMessage("listing.create.validation.header"),
-                        localeService.getMessage("listing.create.validation.price.invalid"));
+                        localeService.getMessage("listing.create.validation.title", "Validation Error"),
+                        localeService.getMessage("listing.create.validation.header", "Invalid Input"),
+                        localeService.getMessage("listing.create.validation.price.invalid", "Invalid price format"));
                 referencePriceField.requestFocus();
                 return null;
             }
@@ -513,8 +543,11 @@ public class ListingCreationController implements Refreshable {
                 trimmedCategories.add(category.trim());
             }
             listing.setDesiredCategories(trimmedCategories);
+            
+            System.out.println(localeService.getMessage("listingcreation.debug.trade.categories", "Trade listing categories set: {0}").replace("{0}", String.join(", ", trimmedCategories)));
         }
 
+        System.out.println(localeService.getMessage("listingcreation.debug.trade.listing.created", "Trade listing created"));
         return listing;
     }
 
@@ -527,6 +560,7 @@ public class ListingCreationController implements Refreshable {
         listing.setAllowThankYouOffers(allowThankYouOffersCheckBox.isSelected());
         listing.setRestrictions(restrictionsArea.getText().trim());
 
+        System.out.println(localeService.getMessage("listingcreation.debug.gift.listing.created", "Gift listing created (pickup only: {0}, thank you offers: {1})").replace("{0}", String.valueOf(pickupOnlyCheckBox.isSelected())).replace("{1}", String.valueOf(allowThankYouOffersCheckBox.isSelected())));
         return listing;
     }
 
@@ -534,18 +568,18 @@ public class ListingCreationController implements Refreshable {
         // Validate auction-specific fields
         if (startingPriceField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
-                    localeService.getMessage("listing.create.validation.title"),
-                    localeService.getMessage("listing.create.validation.header"),
-                    localeService.getMessage("listing.create.validation.starting.price.empty"));
+                    localeService.getMessage("listing.create.validation.title", "Validation Error"),
+                    localeService.getMessage("listing.create.validation.header", "Invalid Input"),
+                    localeService.getMessage("listing.create.validation.starting.price.empty", "Starting price cannot be empty"));
             startingPriceField.requestFocus();
             return null;
         }
 
         if (bidIncrementField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
-                    localeService.getMessage("listing.create.validation.title"),
-                    localeService.getMessage("listing.create.validation.header"),
-                    localeService.getMessage("listing.create.validation.bid.increment.empty"));
+                    localeService.getMessage("listing.create.validation.title", "Validation Error"),
+                    localeService.getMessage("listing.create.validation.header", "Invalid Input"),
+                    localeService.getMessage("listing.create.validation.bid.increment.empty", "Bid increment cannot be empty"));
             bidIncrementField.requestFocus();
             return null;
         }
@@ -553,7 +587,7 @@ public class ListingCreationController implements Refreshable {
         try {
             BigDecimal startingPrice = new BigDecimal(startingPriceField.getText().trim());
             if (startingPrice.compareTo(BigDecimal.ZERO) <= 0) {
-                throw new NumberFormatException("Starting price must be positive");
+                throw new NumberFormatException(localeService.getMessage("listingcreation.error.starting.price.negative", "Starting price must be positive"));
             }
 
             BigDecimal reservePrice = null;
@@ -561,9 +595,9 @@ public class ListingCreationController implements Refreshable {
                 reservePrice = new BigDecimal(reservePriceField.getText().trim());
                 if (reservePrice.compareTo(startingPrice) < 0) {
                     AlertHelper.showWarningAlert(
-                            localeService.getMessage("listing.create.validation.title"),
-                            localeService.getMessage("listing.create.validation.header"),
-                            localeService.getMessage("listing.create.validation.reserve.price.low"));
+                            localeService.getMessage("listing.create.validation.title", "Validation Error"),
+                            localeService.getMessage("listing.create.validation.header", "Invalid Input"),
+                            localeService.getMessage("listing.create.validation.reserve.price.low", "Reserve price must be higher than starting price"));
                     reservePriceField.requestFocus();
                     return null;
                 }
@@ -571,7 +605,7 @@ public class ListingCreationController implements Refreshable {
 
             BigDecimal bidIncrement = new BigDecimal(bidIncrementField.getText().trim());
             if (bidIncrement.compareTo(BigDecimal.ZERO) <= 0) {
-                throw new NumberFormatException("Bid increment must be positive");
+                throw new NumberFormatException(localeService.getMessage("listingcreation.error.bid.increment.negative", "Bid increment must be positive"));
             }
 
             // Calculate end time based on selected duration
@@ -589,15 +623,15 @@ public class ListingCreationController implements Refreshable {
             listing.setStartTime(now);
             listing.setEndTime(now.plusDays(days));
 
-            System.out.println("Created auction with start: " + now + ", end: " + now.plusDays(days));
+            System.out.println(localeService.getMessage("listingcreation.debug.auction.created", "Auction listing created: start={0}, end={1}, starting price={2} {3}").replace("{0}", now.toString()).replace("{1}", now.plusDays(days).toString()).replace("{2}", auctionCurrencyComboBox.getValue().getSymbol()).replace("{3}", startingPrice.toString()));
 
             return listing;
 
         } catch (NumberFormatException e) {
             AlertHelper.showWarningAlert(
-                    localeService.getMessage("listing.create.validation.title"),
-                    localeService.getMessage("listing.create.validation.header"),
-                    localeService.getMessage("listing.create.validation.price.invalid"));
+                    localeService.getMessage("listing.create.validation.title", "Validation Error"),
+                    localeService.getMessage("listing.create.validation.header", "Invalid Input"),
+                    localeService.getMessage("listing.create.validation.price.invalid", "Invalid price format"));
             return null;
         }
     }
@@ -612,17 +646,114 @@ public class ListingCreationController implements Refreshable {
 
         // Add selected items
         listing.setItems(new ArrayList<>(selectedItems));
+        
+        System.out.println(localeService.getMessage("listingcreation.debug.common.fields.set", "Common listing fields set for: {0}").replace("{0}", listing.getTitle()));
     }
 
     @FXML
     private void handleCancel() {
         // Clear temporary reservations before closing
         tempReservedQuantities.clear();
+        System.out.println(localeService.getMessage("listingcreation.debug.cancelled", "Listing creation cancelled by user"));
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
     }
 
+    @Override
     public void refreshUI() {
-        durationComboBox.setItems(FXCollections.observableArrayList(durationOptions));
+        // Update button labels
+        if (addItemButton != null) {
+            addItemButton.setText(localeService.getMessage("button.add", "Add"));
+        }
+        if (createButton != null) {
+            createButton.setText(localeService.getMessage("button.create", "Create"));
+        }
+        if (cancelButton != null) {
+            cancelButton.setText(localeService.getMessage("button.cancel", "Cancel"));
+        }
+
+        // Update table column headers
+        if (nameColumn != null) {
+            nameColumn.setText(localeService.getMessage("item.name.column", "Name"));
+        }
+        if (conditionColumn != null) {
+            conditionColumn.setText(localeService.getMessage("item.condition.column", "Condition"));
+        }
+        if (availableQuantityColumn != null) {
+            availableQuantityColumn.setText(localeService.getMessage("item.available.column", "Available"));
+        }
+        if (selectedNameColumn != null) {
+            selectedNameColumn.setText(localeService.getMessage("item.name.column", "Name"));
+        }
+        if (selectedQuantityColumn != null) {
+            selectedQuantityColumn.setText(localeService.getMessage("item.quantity.column", "Quantity"));
+        }
+        if (selectedActionColumn != null) {
+            selectedActionColumn.setText(localeService.getMessage("item.action.column", "Action"));
+        }
+
+        // Update field prompt texts
+        if (titleField != null) {
+            titleField.setPromptText(localeService.getMessage("listing.title.prompt", "Enter listing title"));
+        }
+        if (descriptionArea != null) {
+            descriptionArea.setPromptText(localeService.getMessage("listing.description.prompt", "Enter detailed description"));
+        }
+        if (sellPriceField != null) {
+            sellPriceField.setPromptText(localeService.getMessage("listing.sell.price.prompt", "Enter price"));
+        }
+        if (referencePriceField != null) {
+            referencePriceField.setPromptText(localeService.getMessage("listing.trade.reference.price.prompt", "Enter reference price"));
+        }
+        if (categoriesField != null) {
+            categoriesField.setPromptText(localeService.getMessage("listing.trade.categories.prompt", "Enter desired categories (comma separated)"));
+        }
+        if (restrictionsArea != null) {
+            restrictionsArea.setPromptText(localeService.getMessage("listing.gift.restrictions.prompt", "Enter any restrictions or requirements"));
+        }
+        if (startingPriceField != null) {
+            startingPriceField.setPromptText(localeService.getMessage("listing.auction.starting.price.prompt", "Enter starting price"));
+        }
+        if (reservePriceField != null) {
+            reservePriceField.setPromptText(localeService.getMessage("listing.auction.reserve.price.prompt", "Enter optional reserve price"));
+        }
+        if (bidIncrementField != null) {
+            bidIncrementField.setPromptText(localeService.getMessage("listing.auction.bid.increment.prompt", "Enter minimum bid increment"));
+        }
+
+        // Update duration combo box items to refresh localized strings
+        if (durationComboBox != null && durationOptions != null) {
+            DurationOption currentSelection = durationComboBox.getValue();
+            durationComboBox.setItems(FXCollections.observableArrayList(durationOptions));
+            if (currentSelection != null) {
+                // Find the equivalent option in the refreshed list
+                durationComboBox.setValue(durationOptions.stream()
+                        .filter(option -> option.getDays() == currentSelection.getDays())
+                        .findFirst()
+                        .orElse(currentSelection));
+            }
+        }
+
+        // Update checkbox labels
+        if (acceptMoneyOffersCheckBox != null) {
+            acceptMoneyOffersCheckBox.setText(localeService.getMessage("listing.trade.money.offers", "Accept money offers"));
+        }
+        if (acceptMixedOffersCheckBox != null) {
+            acceptMixedOffersCheckBox.setText(localeService.getMessage("listing.trade.mixed.offers", "Accept mixed offers (items + money)"));
+        }
+        if (acceptOtherOffersCheckBox != null) {
+            acceptOtherOffersCheckBox.setText(localeService.getMessage("listing.trade.other.offers", "Accept other items not in desired categories"));
+        }
+        if (pickupOnlyCheckBox != null) {
+            pickupOnlyCheckBox.setText(localeService.getMessage("listing.gift.pickup.only", "Pickup only"));
+        }
+        if (allowThankYouOffersCheckBox != null) {
+            allowThankYouOffersCheckBox.setText(localeService.getMessage("listing.gift.thank.you.offers", "Allow thank you offers"));
+        }
+
+        // Refresh the selected items table to update remove button text
+        if (selectedItemsTable != null) {
+            selectedItemsTable.refresh();
+        }
     }
 }

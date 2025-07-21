@@ -82,41 +82,45 @@ public class ListingsController implements Refreshable {
 
     @FXML
     public void initialize() {
-        setupLabels();
         setupFilters();
         setupObservableList();
         setupTable();
         setupSearchFilter();
         loadUserListings();
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("listings.debug.initialized", "Listings controller initialized"));
     }
 
     private void setupLabels() {
         titleLabel.setText(localeService.getMessage("listings.title", "My Listings"));
-        refreshButton.setText(localeService.getMessage("listings.refresh", "Refresh"));
-        createNewButton.setText(localeService.getMessage("listings.create.new", "Create New Listing"));
+        refreshButton.setText(localeService.getMessage("listings.button.refresh", "Refresh"));
+        createNewButton.setText(localeService.getMessage("listings.button.create.new", "Create New Listing"));
         searchField.setPromptText(localeService.getMessage("listings.search.placeholder", "Search listings..."));
     }
 
     private void setupFilters() {
-        // Status filter
+        // Status filter - using localized values
         statusFilterComboBox.setItems(FXCollections.observableArrayList(
-                "All Statuses",
-                "Active",
-                "Completed",
-                "Cancelled",
-                "Expired"
+                localeService.getMessage("listings.filter.status.all", "All Statuses"),
+                localeService.getMessage("listings.filter.status.active", "Active"),
+                localeService.getMessage("listings.filter.status.completed", "Completed"),
+                localeService.getMessage("listings.filter.status.cancelled", "Cancelled"),
+                localeService.getMessage("listings.filter.status.expired", "Expired")
         ));
-        statusFilterComboBox.setValue("All Statuses");
+        statusFilterComboBox.setValue(localeService.getMessage("listings.filter.status.all", "All Statuses"));
 
-        // Type filter
+        // Type filter - using localized values
         typeFilterComboBox.setItems(FXCollections.observableArrayList(
-                "All Types",
-                "Sale",
-                "Auction",
-                "Trade",
-                "Gift"
+                localeService.getMessage("listings.filter.type.all", "All Types"),
+                localeService.getMessage("listings.filter.type.sale", "Sale"),
+                localeService.getMessage("listings.filter.type.auction", "Auction"),
+                localeService.getMessage("listings.filter.type.trade", "Trade"),
+                localeService.getMessage("listings.filter.type.gift", "Gift")
         ));
-        typeFilterComboBox.setValue("All Types");
+        typeFilterComboBox.setValue(localeService.getMessage("listings.filter.type.all", "All Types"));
 
         // Add listeners for filter changes
         statusFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateFilters());
@@ -143,10 +147,31 @@ public class ListingsController implements Refreshable {
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
 
         // Type column
-        typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getListingTypeValue()));
+        typeColumn.setCellValueFactory(cellData -> {
+            String type = cellData.getValue().getListingTypeValue().toLowerCase();
+            String localizedType = switch (type) {
+                case "sell" -> localeService.getMessage("listings.type.sell", "Sell");
+                case "trade" -> localeService.getMessage("listings.type.trade", "Trade");
+                case "gift" -> localeService.getMessage("listings.type.gift", "Gift");
+                case "auction" -> localeService.getMessage("listings.type.auction", "Auction");
+                default -> type;
+            };
+            return new SimpleStringProperty(localizedType);
+        });
 
         // Status column
-        statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().toString()));
+        statusColumn.setCellValueFactory(cellData -> {
+            String status = cellData.getValue().getStatus().toString().toLowerCase();
+            String localizedStatus = switch (status) {
+                case "active" -> localeService.getMessage("listings.status.active", "Active");
+                case "completed" -> localeService.getMessage("listings.status.completed", "Completed");
+                case "cancelled" -> localeService.getMessage("listings.status.cancelled", "Cancelled");
+                case "expired" -> localeService.getMessage("listings.status.expired", "Expired");
+                default -> status;
+            };
+            return new SimpleStringProperty(localizedStatus);
+        });
+        
         statusColumn.setCellFactory(column -> new TableCell<ListingViewModel, String>() {
             @Override
             protected void updateItem(String status, boolean empty) {
@@ -156,8 +181,10 @@ public class ListingsController implements Refreshable {
                     setStyle("");
                 } else {
                     setText(status);
-                    // Color code the status
-                    switch (status.toUpperCase()) {
+                    // Color code the status based on the original status value
+                    ListingViewModel listing = getTableView().getItems().get(getIndex());
+                    String originalStatus = listing.getStatus().toString().toUpperCase();
+                    switch (originalStatus) {
                         case "ACTIVE" -> setStyle("-fx-text-fill: #27AE60; -fx-font-weight: bold;");
                         case "COMPLETED" -> setStyle("-fx-text-fill: #3498DB; -fx-font-weight: bold;");
                         case "CANCELLED" -> setStyle("-fx-text-fill: #E74C3C; -fx-font-weight: bold;");
@@ -178,11 +205,12 @@ public class ListingsController implements Refreshable {
                 }
             } else if (listing instanceof AuctionListingViewModel auctionListing) {
                 if (auctionListing.getStartingPrice() != null) {
-                    return new SimpleStringProperty(String.format("Starting: %.2f %s", 
-                            auctionListing.getStartingPrice(), auctionListing.getCurrency()));
+                    return new SimpleStringProperty(localeService.getMessage("listings.price.starting", "Starting: {0} {1}")
+                            .replace("{0}", String.format("%.2f", auctionListing.getStartingPrice()))
+                            .replace("{1}", auctionListing.getCurrency().toString()));
                 }
             }
-            return new SimpleStringProperty("N/A");
+            return new SimpleStringProperty(localeService.getMessage("listings.price.na", "N/A"));
         });
 
         // Date column
@@ -214,9 +242,9 @@ public class ListingsController implements Refreshable {
 
     private void setupActionsColumn() {
         actionsColumn.setCellFactory(_ -> new TableCell<>() {
-            private final Button viewButton = new Button("View");
-            private final Button editButton = new Button("Edit");
-            private final Button deleteButton = new Button("Delete");
+            private final Button viewButton = new Button();
+            private final Button editButton = new Button();
+            private final Button deleteButton = new Button();
             private final HBox actionBox = new HBox(5, viewButton, editButton, deleteButton);
 
             {
@@ -238,6 +266,15 @@ public class ListingsController implements Refreshable {
                     ListingViewModel listing = getTableView().getItems().get(getIndex());
                     handleDeleteListing(listing);
                 });
+                
+                // Set initial text
+                updateButtonText();
+            }
+
+            private void updateButtonText() {
+                viewButton.setText(localeService.getMessage("listings.button.view", "View"));
+                editButton.setText(localeService.getMessage("listings.button.edit", "Edit"));
+                deleteButton.setText(localeService.getMessage("listings.button.delete", "Delete"));
             }
 
             @Override
@@ -256,6 +293,9 @@ public class ListingsController implements Refreshable {
                     editButton.setManaged(canEdit);
                     deleteButton.setVisible(canDelete);
                     deleteButton.setManaged(canDelete);
+                    
+                    // Update button text in case locale changed
+                    updateButtonText();
                     
                     setGraphic(actionBox);
                 }
@@ -279,22 +319,50 @@ public class ListingsController implements Refreshable {
 
             // Status filter
             String statusFilter = statusFilterComboBox.getValue();
-            if (!"All Statuses".equals(statusFilter)) {
-                ListingStatus selectedStatus = ListingStatus.valueOf(statusFilter.toUpperCase());
-                if (listing.getStatus() != selectedStatus) return false;
+            String allStatusesText = localeService.getMessage("listings.filter.status.all", "All Statuses");
+            if (!allStatusesText.equals(statusFilter)) {
+                // Map localized status back to enum
+                ListingStatus selectedStatus = mapLocalizedStatusToEnum(statusFilter);
+                if (selectedStatus != null && listing.getStatus() != selectedStatus) return false;
             }
 
             // Type filter
             String typeFilter = typeFilterComboBox.getValue();
-            if (!"All Types".equals(typeFilter)) {
+            String allTypesText = localeService.getMessage("listings.filter.type.all", "All Types");
+            if (!allTypesText.equals(typeFilter)) {
                 String listingType = listing.getListingTypeValue().toUpperCase();
-                String selectedType = typeFilter.toUpperCase();
-                if ("SALE".equals(selectedType)) selectedType = "SELL";
-                if (!listingType.equals(selectedType)) return false;
+                String selectedType = mapLocalizedTypeToEnum(typeFilter);
+                if (selectedType != null && !listingType.equals(selectedType)) return false;
             }
 
             return true;
         });
+    }
+
+    private ListingStatus mapLocalizedStatusToEnum(String localizedStatus) {
+        if (localizedStatus.equals(localeService.getMessage("listings.filter.status.active", "Active"))) {
+            return ListingStatus.ACTIVE;
+        } else if (localizedStatus.equals(localeService.getMessage("listings.filter.status.completed", "Completed"))) {
+            return ListingStatus.COMPLETED;
+        } else if (localizedStatus.equals(localeService.getMessage("listings.filter.status.cancelled", "Cancelled"))) {
+            return ListingStatus.CANCELLED;
+        } else if (localizedStatus.equals(localeService.getMessage("listings.filter.status.expired", "Expired"))) {
+            return ListingStatus.EXPIRED;
+        }
+        return null;
+    }
+
+    private String mapLocalizedTypeToEnum(String localizedType) {
+        if (localizedType.equals(localeService.getMessage("listings.filter.type.sale", "Sale"))) {
+            return "SELL";
+        } else if (localizedType.equals(localeService.getMessage("listings.filter.type.auction", "Auction"))) {
+            return "AUCTION";
+        } else if (localizedType.equals(localeService.getMessage("listings.filter.type.trade", "Trade"))) {
+            return "TRADE";
+        } else if (localizedType.equals(localeService.getMessage("listings.filter.type.gift", "Gift"))) {
+            return "GIFT";
+        }
+        return null;
     }
 
     private void loadUserListings() {
@@ -318,11 +386,11 @@ public class ListingsController implements Refreshable {
         try {
             navigationService.navigateToListingDetails(listing);
         } catch (Exception e) {
-            System.err.println("Failed to navigate to listing details: " + e.getMessage());
+            System.err.println(localeService.getMessage("listings.error.view.failed", "Failed to view listing: {0}").replace("{0}", e.getMessage()));
             AlertHelper.showErrorAlert(
                     localeService.getMessage("error.title", "Error"),
                     localeService.getMessage("error.navigation", "Navigation Error"),
-                    "Failed to open listing details: " + e.getMessage());
+                    localeService.getMessage("listings.error.view.message", "Failed to open listing details: {0}").replace("{0}", e.getMessage()));
         }
     }
 
@@ -345,11 +413,11 @@ public class ListingsController implements Refreshable {
                     localeService.getMessage("listings.edit.info.message", 
                             "Listing editing functionality will be available soon."));
         } catch (Exception e) {
-            System.err.println("Failed to edit listing: " + e.getMessage());
+            System.err.println(localeService.getMessage("listings.error.edit.failed", "Failed to edit listing: {0}").replace("{0}", e.getMessage()));
             AlertHelper.showErrorAlert(
                     localeService.getMessage("error.title", "Error"),
-                    localeService.getMessage("listings.edit.error", "Edit Error"),
-                    "Failed to edit listing: " + e.getMessage());
+                    localeService.getMessage("listings.edit.error.title", "Edit Error"),
+                    localeService.getMessage("listings.error.edit.message", "Failed to edit listing: {0}").replace("{0}", e.getMessage()));
         }
     }
 
@@ -367,7 +435,7 @@ public class ListingsController implements Refreshable {
                 localeService.getMessage("listings.delete.title", "Delete Listing"),
                 localeService.getMessage("listings.delete.header", "Confirm Deletion"),
                 localeService.getMessage("listings.delete.message",
-                        "Are you sure you want to delete \"" + listing.getTitle() + "\"? This action cannot be undone."));
+                        "Are you sure you want to delete \"{0}\"? This action cannot be undone.").replace("{0}", listing.getTitle()));
 
         confirmation.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
@@ -384,8 +452,8 @@ public class ListingsController implements Refreshable {
                         .exceptionally(ex -> {
                             Platform.runLater(() -> AlertHelper.showErrorAlert(
                                     localeService.getMessage("error.title", "Error"),
-                                    localeService.getMessage("listings.delete.error", "Failed to delete listing"),
-                                    ex.getMessage()));
+                                    localeService.getMessage("listings.delete.error.title", "Delete Error"),
+                                    localeService.getMessage("listings.error.delete.message", "Failed to delete listing: {0}").replace("{0}", ex.getMessage())));
                             return null;
                         });
             }
@@ -396,6 +464,7 @@ public class ListingsController implements Refreshable {
     private void handleRefresh() {
         listingService.refreshUserListings();
         updateListingsCount();
+        System.out.println(localeService.getMessage("listings.debug.refreshed", "Listings refreshed"));
     }
 
     @FXML
@@ -403,19 +472,20 @@ public class ListingsController implements Refreshable {
         try {
             navigationService.navigateToListingCreationView();
         } catch (Exception e) {
-            System.err.println("Failed to navigate to listing creation: " + e.getMessage());
+            System.err.println(localeService.getMessage("listings.error.create.failed", "Failed to navigate to listing creation: {0}").replace("{0}", e.getMessage()));
             AlertHelper.showErrorAlert(
                     localeService.getMessage("error.title", "Error"),
                     localeService.getMessage("error.navigation", "Navigation Error"),
-                    "Failed to open listing creation: " + e.getMessage());
+                    localeService.getMessage("listings.error.create.message", "Failed to open listing creation: {0}").replace("{0}", e.getMessage()));
         }
     }
 
     @FXML
     private void handleClearFilters() {
-        statusFilterComboBox.setValue("All Statuses");
-        typeFilterComboBox.setValue("All Types");
+        statusFilterComboBox.setValue(localeService.getMessage("listings.filter.status.all", "All Statuses"));
+        typeFilterComboBox.setValue(localeService.getMessage("listings.filter.type.all", "All Types"));
         searchField.clear();
+        System.out.println(localeService.getMessage("listings.debug.filters.cleared", "Filters cleared"));
     }
 
     public boolean hasListings() {
@@ -436,7 +506,48 @@ public class ListingsController implements Refreshable {
 
     @Override
     public void refreshUI() {
+        // Update labels and button text
         setupLabels();
+        
+        // Update filter combo boxes with localized values
+        String currentStatusFilter = statusFilterComboBox.getValue();
+        String currentTypeFilter = typeFilterComboBox.getValue();
+        
+        setupFilters();
+        
+        // Try to maintain the same selection if possible
+        if (currentStatusFilter != null) {
+            statusFilterComboBox.setValue(currentStatusFilter);
+        }
+        if (currentTypeFilter != null) {
+            typeFilterComboBox.setValue(currentTypeFilter);
+        }
+        
+        // Update table column headers
+        if (titleColumn != null) {
+            titleColumn.setText(localeService.getMessage("listings.column.title", "Title"));
+        }
+        if (typeColumn != null) {
+            typeColumn.setText(localeService.getMessage("listings.column.type", "Type"));
+        }
+        if (statusColumn != null) {
+            statusColumn.setText(localeService.getMessage("listings.column.status", "Status"));
+        }
+        if (priceColumn != null) {
+            priceColumn.setText(localeService.getMessage("listings.column.price", "Price"));
+        }
+        if (dateColumn != null) {
+            dateColumn.setText(localeService.getMessage("listings.column.date", "Created"));
+        }
+        if (actionsColumn != null) {
+            actionsColumn.setText(localeService.getMessage("listings.column.actions", "Actions"));
+        }
+        
+        // Refresh table to update cell content
+        if (listingsTable != null) {
+            listingsTable.refresh();
+        }
+        
         updateListingsCount();
     }
 }

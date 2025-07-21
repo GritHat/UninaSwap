@@ -27,13 +27,13 @@
                      </image>
                   </ImageView>
                   
-                  <Text styleClass="register-title" text="%application.title">
+                  <Text fx:id="applicationTitle" styleClass="register-title" text="%application.title">
                      <VBox.margin>
                         <Insets top="20.0" />
                      </VBox.margin>
                   </Text>
                   
-                  <Text styleClass="register-subtitle" text="%application.register.tagline" wrappingWidth="300.0">
+                  <Text fx:id="applicationTagline" styleClass="register-subtitle" text="%application.register.tagline" wrappingWidth="300.0">
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
@@ -46,7 +46,7 @@
                <children>
                   <VBox styleClass="register-form-container">
                      <children>
-                        <Text styleClass="register-form-title, title-text" text="%register.title" />
+                        <Text fx:id="registerFormTitle" styleClass="register-form-title, title-text" text="%register.title" />
                         
                         <!-- Name fields -->
                         <HBox styleClass="register-name-fields">
@@ -82,7 +82,7 @@
                         <!-- Login link -->
                         <HBox styleClass="register-login-section">
                            <children>
-                              <Text styleClass="register-login-text" text="%register.have.account" />
+                              <Text fx:id="loginText" styleClass="register-login-text" text="%register.have.account" />
                               <Hyperlink fx:id="loginLink" onAction="#showLogin" styleClass="register-login-link" text="%button.login" />
                            </children>
                            <VBox.margin>
@@ -93,11 +93,13 @@
                   </VBox>
                   
                   <!-- Copyright -->
-                  <Text styleClass="register-copyright" text="%copyright">
+                  <Text fx:id="copyrightText" styleClass="register-copyright" text="%copyright">
                      <VBox.margin>
                         <Insets top="20.0" />
                      </VBox.margin>
                   </Text>
+                  
+                  <!-- Message Label -->
                   <Label fx:id="messageLabel" styleClass="message-label" visible="true" wrapText="true"/>
                </children>
             </VBox>

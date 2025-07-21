@@ -3,7 +3,6 @@ package com.uninaswap.client.controller;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.NotificationService;
-import com.uninaswap.client.service.Refreshable;
 import com.uninaswap.client.viewmodel.NotificationViewModel;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;

@@ -31,7 +31,7 @@
                <!-- Listing Information -->
                <VBox spacing="10.0" styleClass="listing-info-section">
                   <children>
-                     <Text styleClass="section-title" text="Offerta per:" />
+                     <Text fx:id="offerForLabel" styleClass="section-title" text="%offerdialog.label.offer.for" />
                      <HBox alignment="CENTER_LEFT" spacing="15.0">
                         <children>
                            <ImageView fx:id="listingImage" fitHeight="60.0" fitWidth="60.0" preserveRatio="true" styleClass="listing-thumbnail" />
@@ -51,18 +51,18 @@
                <!-- Money Offer Section -->
                <VBox fx:id="moneyOfferSection" spacing="15.0" styleClass="money-offer-section" VBox.vgrow="NEVER">
                   <children>
-                     <CheckBox fx:id="includeMoneyCheckBox" styleClass="section-checkbox" text="Includi offerta monetaria" />
+                     <CheckBox fx:id="includeMoneyCheckBox" styleClass="section-checkbox" text="%offerdialog.checkbox.include.money" />
                      
                      <VBox fx:id="moneyInputSection" spacing="10.0" visible="false">
                         <children>
                            <HBox alignment="CENTER_LEFT" spacing="10.0">
                               <children>
-                                 <Label text="Importo:" />
-                                 <TextField fx:id="moneyAmountField" prefWidth="150.0" promptText="0.00" />
+                                 <Label fx:id="amountLabel" text="%offerdialog.label.amount" />
+                                 <TextField fx:id="moneyAmountField" prefWidth="150.0" promptText="%offerdialog.prompt.amount" />
                                  <ComboBox fx:id="currencyComboBox" prefWidth="80.0" />
                               </children>
                            </HBox>
-                           <Label fx:id="priceConstraintLabel" styleClass="constraint-label" text="Deve essere inferiore al prezzo richiesto" />
+                           <Label fx:id="priceConstraintLabel" styleClass="constraint-label" text="%offerdialog.constraint.sell.price" />
                         </children>
                      </VBox>
                   </children>
@@ -71,32 +71,32 @@
                <!-- Items Offer Section (Trade Listings Only) -->
                <VBox fx:id="itemsOfferSection" spacing="15.0" styleClass="items-offer-section" visible="false" VBox.vgrow="ALWAYS">
                   <children>
-                     <Text styleClass="section-title" text="Oggetti da offrire" />
+                     <Text fx:id="itemsOfferSectionTitle" styleClass="section-title" text="%offerdialog.section.items.title" />
                      
                      <!-- Available Items Table -->
                      <VBox spacing="10.0">
                         <children>
                            <HBox alignment="CENTER_LEFT" spacing="10.0">
                               <children>
-                                 <Label text="Seleziona dai tuoi oggetti:" />
+                                 <Label fx:id="selectItemsLabel" text="%offerdialog.label.select.items" />
                                  <Region HBox.hgrow="ALWAYS" />
-                                 <Button fx:id="addNewItemButton" onAction="#handleAddNewItem" styleClass="add-item-button" text="+ Aggiungi nuovo oggetto" />
+                                 <Button fx:id="addNewItemButton" onAction="#handleAddNewItem" styleClass="add-item-button" text="%offerdialog.button.add.new.item" />
                               </children>
                            </HBox>
                            
                            <TableView fx:id="availableItemsTable" prefHeight="200.0" styleClass="compact">
                               <columns>
-                                 <TableColumn fx:id="itemNameColumn" minWidth="120.0" prefWidth="180.0" text="Nome" />
-                                 <TableColumn fx:id="itemConditionColumn" minWidth="80.0" prefWidth="120.0" text="Condizione" />
-                                 <TableColumn fx:id="itemAvailableColumn" minWidth="70.0" prefWidth="100.0" text="Disponibili" />
-                                 <TableColumn fx:id="itemQuantityColumn" minWidth="70.0" prefWidth="100.0" text="Quantità" />
-                                 <TableColumn fx:id="itemActionColumn" minWidth="80.0" prefWidth="120.0" text="Azione" />
+                                 <TableColumn fx:id="itemNameColumn" minWidth="120.0" prefWidth="180.0" text="%offerdialog.column.name" />
+                                 <TableColumn fx:id="itemConditionColumn" minWidth="80.0" prefWidth="120.0" text="%offerdialog.column.condition" />
+                                 <TableColumn fx:id="itemAvailableColumn" minWidth="70.0" prefWidth="100.0" text="%offerdialog.column.available" />
+                                 <TableColumn fx:id="itemQuantityColumn" minWidth="70.0" prefWidth="100.0" text="%offerdialog.column.quantity" />
+                                 <TableColumn fx:id="itemActionColumn" minWidth="80.0" prefWidth="120.0" text="%offerdialog.column.action" />
                               </columns>
                               <columnResizePolicy>
                                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                               </columnResizePolicy>
                               <placeholder>
-                                 <Label text="Nessun oggetto disponibile nel tuo inventario" />
+                                 <Label text="%offerdialog.placeholder.no.items" />
                               </placeholder>
                            </TableView>
                         </children>
@@ -107,19 +107,19 @@
                      <!-- Selected Items for Offer -->
                      <VBox spacing="10.0">
                         <children>
-                           <Text styleClass="subsection-title" text="Oggetti selezionati per l'offerta:" />
+                           <Text fx:id="selectedItemsSubtitle" styleClass="subsection-title" text="%offerdialog.subtitle.selected.items" />
                            <TableView fx:id="selectedItemsTable" prefHeight="150.0" styleClass="compact">
                               <columns>
-                                 <TableColumn fx:id="selectedNameColumn" minWidth="120.0" prefWidth="200.0" text="Nome" />
-                                 <TableColumn fx:id="selectedConditionColumn" minWidth="80.0" prefWidth="140.0" text="Condizione" />
-                                 <TableColumn fx:id="selectedQuantityColumn" minWidth="70.0" prefWidth="100.0" text="Quantità" />
-                                 <TableColumn fx:id="selectedRemoveColumn" minWidth="80.0" prefWidth="100.0" text="Rimuovi" />
+                                 <TableColumn fx:id="selectedNameColumn" minWidth="120.0" prefWidth="200.0" text="%offerdialog.column.name" />
+                                 <TableColumn fx:id="selectedConditionColumn" minWidth="80.0" prefWidth="140.0" text="%offerdialog.column.condition" />
+                                 <TableColumn fx:id="selectedQuantityColumn" minWidth="70.0" prefWidth="100.0" text="%offerdialog.column.quantity" />
+                                 <TableColumn fx:id="selectedRemoveColumn" minWidth="80.0" prefWidth="100.0" text="%offerdialog.column.remove" />
                               </columns>
                               <columnResizePolicy>
                                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                               </columnResizePolicy>
                               <placeholder>
-                                 <Label text="Nessun oggetto selezionato per l'offerta" />
+                                 <Label text="%offerdialog.placeholder.no.selected" />
                               </placeholder>
                            </TableView>
                         </children>
@@ -130,15 +130,15 @@
                <!-- Message Section -->
                <VBox spacing="10.0" styleClass="message-section">
                   <children>
-                     <Label text="Messaggio (opzionale):" />
-                     <TextArea fx:id="messageArea" prefRowCount="3" promptText="Aggiungi un messaggio per il venditore..." wrapText="true" />
+                     <Label fx:id="messageLabel" text="%offerdialog.label.message" />
+                     <TextArea fx:id="messageArea" prefRowCount="3" promptText="%offerdialog.prompt.message" wrapText="true" />
                   </children>
                </VBox>
                
                <!-- Offer Summary -->
                <VBox spacing="10.0" styleClass="offer-summary">
                   <children>
-                     <Text styleClass="section-title" text="Riepilogo offerta" />
+                     <Text fx:id="offerSummaryTitle" styleClass="section-title" text="%offerdialog.title.summary" />
                      <VBox fx:id="offerSummaryContent" spacing="5.0" styleClass="summary-content" />
                   </children>
                </VBox>

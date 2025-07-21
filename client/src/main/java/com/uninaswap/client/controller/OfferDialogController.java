@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class OfferDialogController {
+public class OfferDialogController implements Refreshable {
 
     // FXML Elements
     @FXML
@@ -36,6 +36,14 @@ public class OfferDialogController {
     private Text listingTitle;
     @FXML
     private Text listingPrice;
+    @FXML
+    private Text offerForLabel;
+    @FXML
+    private Text itemsOfferSectionTitle;
+    @FXML
+    private Text selectedItemsSubtitle;
+    @FXML
+    private Text offerSummaryTitle;
 
     @FXML
     private VBox moneyOfferSection;
@@ -49,6 +57,8 @@ public class OfferDialogController {
     private ComboBox<Currency> currencyComboBox;
     @FXML
     private Label priceConstraintLabel;
+    @FXML
+    private Label amountLabel;
 
     @FXML
     private VBox itemsOfferSection;
@@ -66,6 +76,8 @@ public class OfferDialogController {
     private TableColumn<ItemViewModel, Void> itemQuantityColumn;
     @FXML
     private TableColumn<ItemViewModel, Void> itemActionColumn;
+    @FXML
+    private Label selectItemsLabel;
 
     @FXML
     private TableView<OfferItemViewModel> selectedItemsTable;
@@ -84,6 +96,8 @@ public class OfferDialogController {
     private VBox offerSummaryContent;
     @FXML
     private ComboBox<DeliveryType> deliveryMethodComboBox;
+    @FXML
+    private Label messageLabel;
 
     // Services
     private final ItemService itemService = ItemService.getInstance();
@@ -112,8 +126,102 @@ public class OfferDialogController {
             if (itemViewModel instanceof ItemViewModel) {
                 addItemToOffer((ItemViewModel) itemViewModel, 1);
             }
-
         });
+
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("offerdialog.debug.initialized", "OfferDialog initialized"));
+    }
+
+    @Override
+    public void refreshUI() {
+        // Update static labels and text elements
+        if (offerForLabel != null) {
+            offerForLabel.setText(localeService.getMessage("offerdialog.label.offer.for", "Offer for:"));
+        }
+        if (includeMoneyCheckBox != null) {
+            includeMoneyCheckBox.setText(localeService.getMessage("offerdialog.checkbox.include.money", "Include money offer"));
+        }
+        if (amountLabel != null) {
+            amountLabel.setText(localeService.getMessage("offerdialog.label.amount", "Amount:"));
+        }
+        if (itemsOfferSectionTitle != null) {
+            itemsOfferSectionTitle.setText(localeService.getMessage("offerdialog.section.items.title", "Items to offer"));
+        }
+        if (selectItemsLabel != null) {
+            selectItemsLabel.setText(localeService.getMessage("offerdialog.label.select.items", "Select from your items:"));
+        }
+        if (addNewItemButton != null) {
+            addNewItemButton.setText(localeService.getMessage("offerdialog.button.add.new.item", "+ Add new item"));
+        }
+        if (selectedItemsSubtitle != null) {
+            selectedItemsSubtitle.setText(localeService.getMessage("offerdialog.subtitle.selected.items", "Selected items for offer:"));
+        }
+        if (messageLabel != null) {
+            messageLabel.setText(localeService.getMessage("offerdialog.label.message", "Message (optional):"));
+        }
+        if (offerSummaryTitle != null) {
+            offerSummaryTitle.setText(localeService.getMessage("offerdialog.title.summary", "Offer Summary"));
+        }
+
+        // Update field prompts
+        if (moneyAmountField != null) {
+            moneyAmountField.setPromptText(localeService.getMessage("offerdialog.prompt.amount", "0.00"));
+        }
+        if (messageArea != null) {
+            messageArea.setPromptText(localeService.getMessage("offerdialog.prompt.message", "Add a message for the seller..."));
+        }
+
+        // Update table column headers
+        if (itemNameColumn != null) {
+            itemNameColumn.setText(localeService.getMessage("offerdialog.column.name", "Name"));
+        }
+        if (itemConditionColumn != null) {
+            itemConditionColumn.setText(localeService.getMessage("offerdialog.column.condition", "Condition"));
+        }
+        if (itemAvailableColumn != null) {
+            itemAvailableColumn.setText(localeService.getMessage("offerdialog.column.available", "Available"));
+        }
+        if (itemQuantityColumn != null) {
+            itemQuantityColumn.setText(localeService.getMessage("offerdialog.column.quantity", "Quantity"));
+        }
+        if (itemActionColumn != null) {
+            itemActionColumn.setText(localeService.getMessage("offerdialog.column.action", "Action"));
+        }
+        if (selectedNameColumn != null) {
+            selectedNameColumn.setText(localeService.getMessage("offerdialog.column.name", "Name"));
+        }
+        if (selectedConditionColumn != null) {
+            selectedConditionColumn.setText(localeService.getMessage("offerdialog.column.condition", "Condition"));
+        }
+        if (selectedQuantityColumn != null) {
+            selectedQuantityColumn.setText(localeService.getMessage("offerdialog.column.quantity", "Quantity"));
+        }
+        if (selectedRemoveColumn != null) {
+            selectedRemoveColumn.setText(localeService.getMessage("offerdialog.column.remove", "Remove"));
+        }
+
+        // Update table placeholders
+        if (availableItemsTable != null) {
+            Label placeholder = new Label(localeService.getMessage("offerdialog.placeholder.no.items", "No items available in your inventory"));
+            availableItemsTable.setPlaceholder(placeholder);
+        }
+        if (selectedItemsTable != null) {
+            Label placeholder = new Label(localeService.getMessage("offerdialog.placeholder.no.selected", "No items selected for offer"));
+            selectedItemsTable.setPlaceholder(placeholder);
+        }
+
+        // Update price constraint if listing is set
+        if (currentListing != null) {
+            updatePriceConstraintLabel();
+        }
+
+        // Update listing price display
+        updateListingPriceDisplay();
+
+        // Refresh the offer summary to update any localized content
+        updateOfferSummary();
     }
 
     public void setListing(ListingViewModel listing) {
@@ -124,6 +232,7 @@ public class OfferDialogController {
                 populateListingInfo();
                 configureOfferSections();
                 loadAvailableItems();
+                refreshUI(); // Refresh UI after setting listing
             });
         }
     }
@@ -204,7 +313,7 @@ public class OfferDialogController {
 
         // Add button column
         itemActionColumn.setCellFactory(col -> new TableCell<ItemViewModel, Void>() {
-            private final Button addButton = new Button("Aggiungi");
+            private final Button addButton = new Button();
 
             {
                 addButton.setOnAction(e -> {
@@ -213,6 +322,7 @@ public class OfferDialogController {
                     addItemToOffer(item, quantity);
                 });
                 addButton.getStyleClass().add("add-to-offer-button");
+                addButton.setText(localeService.getMessage("offerdialog.button.add", "Add"));
             }
 
             @Override
@@ -225,6 +335,7 @@ public class OfferDialogController {
                     int available = currentItem.getAvailableQuantity() -
                             tempReservedQuantities.getOrDefault(currentItem.getId(), 0);
                     addButton.setDisable(available <= 0);
+                    addButton.setText(localeService.getMessage("offerdialog.button.add", "Add"));
                     setGraphic(addButton);
                 }
             }
@@ -248,7 +359,7 @@ public class OfferDialogController {
 
         // Remove button column
         selectedRemoveColumn.setCellFactory(col -> new TableCell<OfferItemViewModel, Void>() {
-            private final Button removeButton = new Button("Rimuovi");
+            private final Button removeButton = new Button();
 
             {
                 removeButton.setOnAction(e -> {
@@ -256,12 +367,18 @@ public class OfferDialogController {
                     removeItemFromOffer(item);
                 });
                 removeButton.getStyleClass().add("remove-from-offer-button");
+                removeButton.setText(localeService.getMessage("offerdialog.button.remove", "Remove"));
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : removeButton);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    removeButton.setText(localeService.getMessage("offerdialog.button.remove", "Remove"));
+                    setGraphic(removeButton);
+                }
             }
         });
 
@@ -274,21 +391,7 @@ public class OfferDialogController {
 
     private void populateListingInfo() {
         listingTitle.setText(currentListing.getTitle());
-
-        // Set listing price info
-        if (currentListing instanceof SellListingViewModel) {
-            SellListingViewModel sellListing = (SellListingViewModel) currentListing;
-            String currency = sellListing.getCurrency() != null ? sellListing.getCurrency().getSymbol() : "€";
-            listingPrice.setText(currency + " " + sellListing.getPrice());
-        } else if (currentListing instanceof TradeListingViewModel) {
-            TradeListingViewModel tradeListing = (TradeListingViewModel) currentListing;
-            if (tradeListing.isAcceptMoneyOffers() && tradeListing.getReferencePrice() != null) {
-                String currency = tradeListing.getCurrency() != null ? tradeListing.getCurrency().getSymbol() : "€";
-                listingPrice.setText("Rif: " + currency + " " + tradeListing.getReferencePrice());
-            } else {
-                listingPrice.setText("Solo scambio");
-            }
-        }
+        updateListingPriceDisplay();
 
         // Load listing image
         if (currentListing.getItems() != null && !currentListing.getItems().isEmpty()) {
@@ -301,7 +404,14 @@ public class OfferDialogController {
                             } else {
                                 setDefaultListingImage();
                             }
-                        }));
+                        }))
+                        .exceptionally(ex -> {
+                            Platform.runLater(() -> {
+                                System.err.println(localeService.getMessage("offerdialog.error.image.load", "Failed to load listing image: {0}").replace("{0}", ex.getMessage()));
+                                setDefaultListingImage();
+                            });
+                            return null;
+                        });
             } else {
                 setDefaultListingImage();
             }
@@ -310,12 +420,33 @@ public class OfferDialogController {
         }
     }
 
+    private void updateListingPriceDisplay() {
+        if (currentListing == null) return;
+
+        // Set listing price info
+        if (currentListing instanceof SellListingViewModel) {
+            SellListingViewModel sellListing = (SellListingViewModel) currentListing;
+            String currency = sellListing.getCurrency() != null ? sellListing.getCurrency().getSymbol() : "€";
+            listingPrice.setText(currency + " " + sellListing.getPrice());
+        } else if (currentListing instanceof TradeListingViewModel) {
+            TradeListingViewModel tradeListing = (TradeListingViewModel) currentListing;
+            if (tradeListing.isAcceptMoneyOffers() && tradeListing.getReferencePrice() != null) {
+                String currency = tradeListing.getCurrency() != null ? tradeListing.getCurrency().getSymbol() : "€";
+                listingPrice.setText(localeService.getMessage("offerdialog.price.reference", "Ref: {0} {1}")
+                    .replace("{0}", currency)
+                    .replace("{1}", tradeListing.getReferencePrice().toString()));
+            } else {
+                listingPrice.setText(localeService.getMessage("offerdialog.price.trade.only", "Trade only"));
+            }
+        }
+    }
+
     private void setDefaultListingImage() {
         try {
             Image defaultImage = new Image(getClass().getResourceAsStream("/images/icons/immagine_generica.png"));
             listingImage.setImage(defaultImage);
         } catch (Exception e) {
-            System.err.println("Could not load default listing image: " + e.getMessage());
+            System.err.println(localeService.getMessage("offerdialog.error.default.image", "Could not load default listing image: {0}").replace("{0}", e.getMessage()));
         }
     }
 
@@ -329,11 +460,7 @@ public class OfferDialogController {
                 itemsOfferSection.setVisible(false);
                 includeMoneyCheckBox.setSelected(true);
                 includeMoneyCheckBox.setDisable(true); // Force money offer for sell listings
-
-                // Set constraint label for sell listings
-                SellListingViewModel sellListing = (SellListingViewModel) currentListing;
-                String constraintText = localeService.getMessage("offer.constraint.sell.price");
-                priceConstraintLabel.setText(constraintText);
+                updatePriceConstraintLabel();
                 break;
 
             case "TRADE":
@@ -344,14 +471,7 @@ public class OfferDialogController {
 
                 // Always show items section for trade listings
                 itemsOfferSection.setVisible(true);
-
-                if (tradeListing.isAcceptMoneyOffers() && tradeListing.getReferencePrice() != null) {
-                    String refPriceText = localeService.getMessage("offer.constraint.trade.reference",
-                            tradeListing.getCurrency().getSymbol() + " " + tradeListing.getReferencePrice());
-                    priceConstraintLabel.setText(refPriceText);
-                } else {
-                    priceConstraintLabel.setText(localeService.getMessage("offer.constraint.trade.no.limit"));
-                }
+                updatePriceConstraintLabel();
                 break;
 
             default:
@@ -359,6 +479,22 @@ public class OfferDialogController {
                 moneyOfferSection.setVisible(false);
                 itemsOfferSection.setVisible(false);
                 break;
+        }
+    }
+
+    private void updatePriceConstraintLabel() {
+        if (currentListing instanceof SellListingViewModel) {
+            String constraintText = localeService.getMessage("offerdialog.constraint.sell.price", "Must be less than the asking price");
+            priceConstraintLabel.setText(constraintText);
+        } else if (currentListing instanceof TradeListingViewModel) {
+            TradeListingViewModel tradeListing = (TradeListingViewModel) currentListing;
+            if (tradeListing.isAcceptMoneyOffers() && tradeListing.getReferencePrice() != null) {
+                String refPriceText = localeService.getMessage("offerdialog.constraint.trade.reference", "Reference price: {0}")
+                    .replace("{0}", tradeListing.getCurrency().getSymbol() + " " + tradeListing.getReferencePrice());
+                priceConstraintLabel.setText(refPriceText);
+            } else {
+                priceConstraintLabel.setText(localeService.getMessage("offerdialog.constraint.trade.no.limit", "No price limit"));
+            }
         }
     }
 
@@ -389,9 +525,9 @@ public class OfferDialogController {
                         tempReservedQuantities.getOrDefault(item.getId(), 0) + quantity);
             } else {
                 AlertHelper.showWarningAlert(
-                        "Quantità non disponibile",
-                        "Quantità insufficiente",
-                        "Non puoi aggiungere più oggetti di quelli disponibili.");
+                        localeService.getMessage("offerdialog.warning.quantity.title", "Quantity not available"),
+                        localeService.getMessage("offerdialog.warning.quantity.header", "Insufficient quantity"),
+                        localeService.getMessage("offerdialog.warning.quantity.message", "You cannot add more items than available."));
                 return;
             }
         } else {
@@ -411,9 +547,9 @@ public class OfferDialogController {
                         tempReservedQuantities.getOrDefault(item.getId(), 0) + quantity);
             } else {
                 AlertHelper.showWarningAlert(
-                        "Quantità non disponibile",
-                        "Quantità insufficiente",
-                        "Non puoi aggiungere più oggetti di quelli disponibili.");
+                        localeService.getMessage("offerdialog.warning.quantity.title", "Quantity not available"),
+                        localeService.getMessage("offerdialog.warning.quantity.header", "Insufficient quantity"),
+                        localeService.getMessage("offerdialog.warning.quantity.message", "You cannot add more items than available."));
                 return;
             }
         }
@@ -447,8 +583,9 @@ public class OfferDialogController {
                 BigDecimal amount = new BigDecimal(moneyAmountField.getText().trim());
                 Currency currency = currencyComboBox.getValue();
 
-                String moneyOfferText = localeService.getMessage("offer.summary.money.offer",
-                        currency.getSymbol(), amount);
+                String moneyOfferText = localeService.getMessage("offerdialog.summary.money.offer", "Money offer: {0} {1}")
+                        .replace("{0}", currency.getSymbol())
+                        .replace("{1}", amount.toString());
                 Text moneyText = new Text(moneyOfferText);
                 moneyText.getStyleClass().add("summary-item");
                 offerSummaryContent.getChildren().add(moneyText);
@@ -457,14 +594,13 @@ public class OfferDialogController {
                 if (currentListing instanceof SellListingViewModel) {
                     SellListingViewModel sellListing = (SellListingViewModel) currentListing;
                     if (amount.compareTo(sellListing.getPrice()) >= 0) {
-                        Text warningText = new Text(
-                                "⚠ " + localeService.getMessage("offer.validation.amount.too.high"));
+                        Text warningText = new Text("⚠ " + localeService.getMessage("offerdialog.validation.amount.too.high", "Offer must be less than asking price"));
                         warningText.getStyleClass().add("warning-text");
                         offerSummaryContent.getChildren().add(warningText);
                     }
                 }
             } catch (NumberFormatException e) {
-                Text errorText = new Text("⚠ " + localeService.getMessage("offer.validation.amount.invalid"));
+                Text errorText = new Text("⚠ " + localeService.getMessage("offerdialog.validation.amount.invalid", "Invalid amount format"));
                 errorText.getStyleClass().add("error-text");
                 offerSummaryContent.getChildren().add(errorText);
             }
@@ -472,13 +608,14 @@ public class OfferDialogController {
 
         // Items offer summary
         if (!selectedItems.isEmpty()) {
-            Text itemsTitle = new Text(localeService.getMessage("offer.summary.items.title"));
+            Text itemsTitle = new Text(localeService.getMessage("offerdialog.summary.items.title", "Offered items:"));
             itemsTitle.getStyleClass().add("summary-title");
             offerSummaryContent.getChildren().add(itemsTitle);
 
             for (OfferItemViewModel item : selectedItems) {
-                String itemText = localeService.getMessage("offer.summary.item.entry",
-                        item.getItemName(), item.getQuantity());
+                String itemText = localeService.getMessage("offerdialog.summary.item.entry", "{0} (x{1})")
+                        .replace("{0}", item.getItemName())
+                        .replace("{1}", String.valueOf(item.getQuantity()));
                 Text itemEntry = new Text("• " + itemText);
                 itemEntry.getStyleClass().add("summary-item");
                 offerSummaryContent.getChildren().add(itemEntry);
@@ -487,7 +624,7 @@ public class OfferDialogController {
 
         // Empty offer warning
         if (!includeMoneyCheckBox.isSelected() && selectedItems.isEmpty()) {
-            Text warningText = new Text("⚠ " + localeService.getMessage("offer.validation.empty"));
+            Text warningText = new Text("⚠ " + localeService.getMessage("offerdialog.validation.empty", "Select at least a money offer or items"));
             warningText.getStyleClass().add("warning-text");
             offerSummaryContent.getChildren().add(warningText);
         }
@@ -534,7 +671,8 @@ public class OfferDialogController {
         OfferViewModel offer = new OfferViewModel();
         offer.setListingId(currentListing.getId());
         offer.setMessage(messageArea.getText().trim());
-        System.out.println("delivery type " + currentListing.getDeliveryType(deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
+        System.out.println(localeService.getMessage("offerdialog.debug.delivery.type", "delivery type {0}")
+            .replace("{0}", String.valueOf(currentListing.getDeliveryType(deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null))));
         offer.setDeliveryType(currentListing.getDeliveryType(deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
 
         // Set money offer
@@ -554,8 +692,14 @@ public class OfferDialogController {
         }
 
         return offerService.createOffer(offer)
-                .thenApply(createdOffer -> true)
-                .exceptionally(ex -> false);
+                .thenApply(createdOffer -> {
+                    System.out.println(localeService.getMessage("offerdialog.debug.offer.created", "Offer created successfully"));
+                    return true;
+                })
+                .exceptionally(ex -> {
+                    System.err.println(localeService.getMessage("offerdialog.error.offer.creation", "Failed to create offer: {0}").replace("{0}", ex.getMessage()));
+                    return false;
+                });
     }
 
     public void cleanup() {

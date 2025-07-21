@@ -44,7 +44,7 @@
               <children>
                 <Text styleClass="details-title" text="%offers.details.title" />
                 <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="closeDetailsButton" onAction="#handleCloseDetails" styleClass="close-details-button" text="✕" />
+                <Button fx:id="closeDetailsButton" onAction="#handleCloseDetails" styleClass="close-details-button" text="%button.close" />
               </children>
             </HBox>
           </children>

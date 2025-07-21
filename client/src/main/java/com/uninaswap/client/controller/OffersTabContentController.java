@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class OffersTabContentController {
+public class OffersTabContentController implements Refreshable {
 
     // Main split pane
     @FXML
@@ -164,6 +164,133 @@ public class OffersTabContentController {
         
         // Initially show empty state
         showEmptyState();
+        
+        // Initial UI refresh
+        refreshUI();
+        
+        System.out.println(localeService.getMessage("offerstab.debug.initialized", "OffersTabContent initialized for tab: {0}").replace("{0}", tabType));
+    }
+
+    @Override
+    public void refreshUI() {
+        // Update table column headers based on tab type
+        if (listingTitleColumn != null) {
+            listingTitleColumn.setText(localeService.getMessage("offers.column.listing", "Listing"));
+        }
+        if (fromToColumn != null) {
+            if ("received".equals(tabType)) {
+                fromToColumn.setText(localeService.getMessage("offers.column.from", "From"));
+            } else {
+                fromToColumn.setText(localeService.getMessage("offers.column.to", "To"));
+            }
+        }
+        if (typeColumn != null) {
+            typeColumn.setText(localeService.getMessage("offers.column.type", "Type"));
+        }
+        if (amountColumn != null) {
+            amountColumn.setText(localeService.getMessage("offers.column.amount", "Amount"));
+        }
+        if (statusColumn != null) {
+            statusColumn.setText(localeService.getMessage("offers.column.status", "Status"));
+        }
+        if (dateColumn != null) {
+            dateColumn.setText(localeService.getMessage("offers.column.date", "Date"));
+        }
+        if (actionsColumn != null) {
+            actionsColumn.setText(localeService.getMessage("offers.column.actions", "Actions"));
+        }
+
+        // Update button texts
+        if (acceptOfferButton != null) {
+            acceptOfferButton.setText(localeService.getMessage("offers.button.accept", "Accept"));
+        }
+        if (rejectOfferButton != null) {
+            rejectOfferButton.setText(localeService.getMessage("offers.button.reject", "Reject"));
+        }
+        if (counterOfferButton != null) {
+            counterOfferButton.setText(localeService.getMessage("offers.button.counter", "Counter Offer"));
+        }
+        if (closeDetailsButton != null) {
+            closeDetailsButton.setText(localeService.getMessage("button.close", "✕"));
+        }
+        if (schedulePickupButton != null) {
+            schedulePickupButton.setText(localeService.getMessage("pickup.button.schedule", "Schedule Pickup"));
+        }
+        if (selectPickupTimeButton != null) {
+            selectPickupTimeButton.setText(localeService.getMessage("pickup.button.select.time", "Select Time"));
+        }
+        if (reschedulePickupButton != null) {
+            reschedulePickupButton.setText(localeService.getMessage("pickup.button.reschedule", "Reschedule"));
+        }
+        if (confirmTransactionButton != null) {
+            confirmTransactionButton.setText(localeService.getMessage("transaction.button.confirm", "Confirm"));
+        }
+        if (cancelTransactionButton != null) {
+            cancelTransactionButton.setText(localeService.getMessage("transaction.button.cancel", "Cancel"));
+        }
+        if (writeReviewButton != null) {
+            writeReviewButton.setText(localeService.getMessage("review.button.write", "Write Review"));
+        }
+
+        // Update table placeholder
+        if (offersTable != null) {
+            VBox placeholder = createTablePlaceholder();
+            offersTable.setPlaceholder(placeholder);
+        }
+
+        // Refresh current offer details display if one is selected
+        if (currentOffer != null) {
+            refreshCurrentOfferDetails();
+        }
+    }
+
+    private VBox createTablePlaceholder() {
+        VBox placeholder = new VBox(15);
+        placeholder.setAlignment(javafx.geometry.Pos.CENTER);
+        placeholder.getStyleClass().add("table-placeholder");
+
+        Text titleText = new Text();
+        titleText.getStyleClass().add("placeholder-title");
+        
+        Text subtitleText = new Text();
+        subtitleText.getStyleClass().add("placeholder-subtitle");
+
+        // Set appropriate placeholder text based on tab type
+        switch (tabType) {
+            case "received" -> {
+                titleText.setText(localeService.getMessage("offers.empty.received.title", "No Received Offers"));
+                subtitleText.setText(localeService.getMessage("offers.empty.received.subtitle", "You haven't received any offers yet"));
+            }
+            case "sent" -> {
+                titleText.setText(localeService.getMessage("offers.empty.sent.title", "No Sent Offers"));
+                subtitleText.setText(localeService.getMessage("offers.empty.sent.subtitle", "You haven't made any offers yet"));
+            }
+            case "history" -> {
+                titleText.setText(localeService.getMessage("offers.empty.history.title", "No Offer History"));
+                subtitleText.setText(localeService.getMessage("offers.empty.history.subtitle", "No completed offers to display"));
+            }
+            default -> {
+                titleText.setText(localeService.getMessage("offers.empty.title", "No Offers"));
+                subtitleText.setText(localeService.getMessage("offers.empty.subtitle", "No offers to display"));
+            }
+        }
+
+        placeholder.getChildren().addAll(titleText, subtitleText);
+        return placeholder;
+    }
+
+    private void refreshCurrentOfferDetails() {
+        // Refresh the details display with current locale
+        if (currentOffer != null) {
+            // Update type display
+            offerTypeLabel.setText(getOfferTypeDisplayName(currentOffer));
+            
+            // Update amount display
+            offerAmountLabel.setText(formatOfferAmount(currentOffer));
+            
+            // Update date display (though this shouldn't change with locale for this format)
+            // But other formats might need updating in the future
+        }
     }
 
     private void setupTable() {
@@ -189,7 +316,7 @@ public class OffersTabContentController {
             new SimpleStringProperty(formatOfferAmount(cellData.getValue())));
         
         statusColumn.setCellValueFactory(cellData -> 
-            new SimpleStringProperty(cellData.getValue().getStatus().getDisplayName()));
+            new SimpleStringProperty(getLocalizedStatus(cellData.getValue().getStatus())));
         
         dateColumn.setCellValueFactory(cellData -> 
             new SimpleStringProperty(formatDate(cellData.getValue())));
@@ -230,6 +357,25 @@ public class OffersTabContentController {
             });
             return row;
         });
+    }
+
+    private String getLocalizedStatus(OfferStatus status) {
+        return switch (status) {
+            case PENDING -> localeService.getMessage("offers.status.pending", "Pending");
+            case ACCEPTED -> localeService.getMessage("offers.status.accepted", "Accepted");
+            case CONFIRMED -> localeService.getMessage("offers.status.confirmed", "Confirmed");
+            case SELLERVERIFIED -> localeService.getMessage("offers.status.sellerverified", "Seller Verified");
+            case BUYERVERIFIED -> localeService.getMessage("offers.status.buyerverified", "Buyer Verified");
+            case PICKUPSCHEDULING -> localeService.getMessage("offers.status.pickupscheduling", "Pickup Scheduling");
+            case PICKUPRESCHEDULING -> localeService.getMessage("offers.status.pickuprescheduling", "Pickup Rescheduling");
+            case CANCELLED -> localeService.getMessage("offers.status.cancelled", "Cancelled");
+            case REJECTED -> localeService.getMessage("offers.status.rejected", "Rejected");
+            case WITHDRAWN -> localeService.getMessage("offers.status.withdrawn", "Withdrawn");
+            case COMPLETED -> localeService.getMessage("offers.status.completed", "Completed");
+            case REVIEWED -> localeService.getMessage("offers.status.reviewed", "Reviewed");
+            case EXPIRED -> localeService.getMessage("offers.status.expired", "Expired");
+            default -> status.name();
+        };
     }
     
     private void setupDetailsPanel() {
@@ -383,7 +529,7 @@ public class OffersTabContentController {
         itemName.getStyleClass().add("offer-item-name");
         
         // Quantity badge
-        Label quantityBadge = new Label("x" + item.getQuantity());
+        Label quantityBadge = new Label(localeService.getMessage("offers.item.quantity.badge", "x{0}").replace("{0}", String.valueOf(item.getQuantity())));
         quantityBadge.getStyleClass().add("offer-quantity-badge");
         
         nameQuantityRow.getChildren().addAll(itemName, quantityBadge);
@@ -391,7 +537,7 @@ public class OffersTabContentController {
         
         // Add condition if available
         if (item.getCondition() != null) {
-            Label conditionLabel = new Label(item.getCondition().getDisplayName());
+            Label conditionLabel = new Label(getLocalizedCondition(item.getCondition()));
             conditionLabel.getStyleClass().add("offer-item-condition");
             itemMainInfo.getChildren().add(conditionLabel);
         }
@@ -401,6 +547,18 @@ public class OffersTabContentController {
         
         return itemContainer;
     }
+
+    private String getLocalizedCondition(com.uninaswap.common.enums.ItemCondition condition) {
+        return switch (condition) {
+            case NEW -> localeService.getMessage("condition.new", "New");
+            case LIKE_NEW -> localeService.getMessage("condition.like.new", "Like New");
+            case VERY_GOOD -> localeService.getMessage("condition.very.good", "Very Good");
+            case GOOD -> localeService.getMessage("condition.good", "Good");
+            case ACCEPTABLE -> localeService.getMessage("condition.acceptable", "Acceptable");
+            case FOR_PARTS -> localeService.getMessage("condition.for.parts", "For Parts");
+            default -> condition.getDisplayName();
+        };
+    }
     
     private void setDefaultOfferItemImage(ImageView imageView) {
         try {
@@ -408,7 +566,7 @@ public class OffersTabContentController {
                     .getResourceAsStream("/images/icons/immagine_generica.png"));
             imageView.setImage(defaultImage);
         } catch (Exception e) {
-            System.err.println("Could not load default offer item image: " + e.getMessage());
+            System.err.println(localeService.getMessage("offerstab.error.image.load", "Could not load default offer item image: {0}").replace("{0}", e.getMessage()));
         }
     }
     
@@ -439,20 +597,19 @@ public class OffersTabContentController {
         // Hide all buttons first
         hideAllActionButtons();
         
-        System.out.println("=== RECEIVED OFFER BUTTONS DEBUG ===");
-        System.out.println("Offer ID: " + offer.getId());
-        System.out.println("Offer Status: " + offer.getStatus());
-        System.out.println("Delivery Type: " + offer.getDeliveryType());
-        System.out.println("Is Listing Owner: " + isListingOwner);
-        System.out.println("Tab Type: " + tabType);
-        System.out.println("=====================================");
+        System.out.println(localeService.getMessage("offerstab.debug.received.buttons", "=== RECEIVED OFFER BUTTONS DEBUG ==="));
+        System.out.println(localeService.getMessage("offerstab.debug.offer.id", "Offer ID: {0}").replace("{0}", String.valueOf(offer.getId())));
+        System.out.println(localeService.getMessage("offerstab.debug.offer.status", "Offer Status: {0}").replace("{0}", offer.getStatus().toString()));
+        System.out.println(localeService.getMessage("offerstab.debug.delivery.type", "Delivery Type: {0}").replace("{0}", String.valueOf(offer.getDeliveryType())));
+        System.out.println(localeService.getMessage("offerstab.debug.is.listing.owner", "Is Listing Owner: {0}").replace("{0}", String.valueOf(isListingOwner)));
+        System.out.println(localeService.getMessage("offerstab.debug.tab.type", "Tab Type: {0}").replace("{0}", tabType));
         
         switch (offer.getStatus()) {
             case PENDING:
                 if (isListingOwner) {
                     // Listing owner can accept/reject pending offers
                     showActionButtons(true, true, true, false, false, false, false, false, false);
-                    System.out.println("PENDING - showing accept/reject/counter buttons for listing owner");
+                    System.out.println(localeService.getMessage("offerstab.debug.pending.owner", "PENDING - showing accept/reject/counter buttons for listing owner"));
                 }
                 break;
                 
@@ -460,7 +617,7 @@ public class OffersTabContentController {
                 if (isListingOwner && offer.getDeliveryType() == DeliveryType.PICKUP) {
                     // Show schedule pickup button for listing owner after accepting pickup offer
                     showActionButtons(false, false, false, true, false, false, false, false, false);
-                    System.out.println("ACCEPTED - showing schedule pickup button for listing owner");
+                    System.out.println(localeService.getMessage("offerstab.debug.accepted.pickup", "ACCEPTED - showing schedule pickup button for listing owner"));
                 }
                 break;
                 
@@ -468,7 +625,7 @@ public class OffersTabContentController {
                 if (!isListingOwner && offer.getDeliveryType() == DeliveryType.PICKUP) {
                     // Show select pickup time button for offer creator when pickup is being scheduled
                     showActionButtons(false, false, false, false, true, false, false, false, false);
-                    System.out.println("PICKUPSCHEDULING - showing select time button for offer creator");
+                    System.out.println(localeService.getMessage("offerstab.debug.pickup.scheduling", "PICKUPSCHEDULING - showing select time button for offer creator"));
                 }
                 break;
                 
@@ -477,11 +634,11 @@ public class OffersTabContentController {
                     if (isListingOwner) {
                         // FIXED: Listing owner should SELECT from the proposed times, not reschedule
                         showActionButtons(false, false, false, false, true, false, false, false, false);
-                        System.out.println("PICKUPRESCHEDULING - showing SELECT TIME button for listing owner");
+                        System.out.println(localeService.getMessage("offerstab.debug.pickup.rescheduling.owner", "PICKUPRESCHEDULING - showing SELECT TIME button for listing owner"));
                     } else {
                         // Offer creator can propose new times (reschedule)
                         showActionButtons(false, false, false, false, false, true, false, false, false);
-                        System.out.println("PICKUPRESCHEDULING - showing RESCHEDULE button for offer creator");
+                        System.out.println(localeService.getMessage("offerstab.debug.pickup.rescheduling.creator", "PICKUPRESCHEDULING - showing RESCHEDULE button for offer creator"));
                     }
                 }
                 break;
@@ -491,11 +648,11 @@ public class OffersTabContentController {
                 if (offer.getDeliveryType() == DeliveryType.PICKUP) {
                     // Both seller (listing owner) and buyer (offer creator) can confirm/cancel
                     showActionButtons(false, false, false, false, false, false, true, true, false);
-                    System.out.println("CONFIRMED - showing transaction buttons for both parties (pickup)");
+                    System.out.println(localeService.getMessage("offerstab.debug.confirmed.pickup", "CONFIRMED - showing transaction buttons for both parties (pickup)"));
                 } else if (offer.getDeliveryType() == DeliveryType.SHIPPING && !isListingOwner) {
                     // Only buyer can confirm/cancel for shipping
                     showActionButtons(false, false, false, false, false, false, true, true, false);
-                    System.out.println("CONFIRMED - showing transaction buttons for buyer only (shipping)");
+                    System.out.println(localeService.getMessage("offerstab.debug.confirmed.shipping", "CONFIRMED - showing transaction buttons for buyer only (shipping)"));
                 }
                 break;
                 
@@ -503,10 +660,10 @@ public class OffersTabContentController {
                 // Only buyer can confirm now (to complete transaction)
                 if (!isListingOwner) {
                     showActionButtons(false, false, false, false, false, false, true, true, false);
-                    System.out.println("SELLERVERIFIED - showing transaction buttons for buyer to complete");
+                    System.out.println(localeService.getMessage("offerstab.debug.seller.verified", "SELLERVERIFIED - showing transaction buttons for buyer to complete"));
                 } else {
                     hideAllActionButtons();
-                    System.out.println("SELLERVERIFIED - seller already verified, waiting for buyer");
+                    System.out.println(localeService.getMessage("offerstab.debug.seller.verified.waiting", "SELLERVERIFIED - seller already verified, waiting for buyer"));
                 }
                 break;
                 
@@ -514,10 +671,10 @@ public class OffersTabContentController {
                 // Only seller can confirm now (to complete transaction)
                 if (isListingOwner) {
                     showActionButtons(false, false, false, false, false, false, true, true, false);
-                    System.out.println("BUYERVERIFIED - showing transaction buttons for seller to complete");
+                    System.out.println(localeService.getMessage("offerstab.debug.buyer.verified", "BUYERVERIFIED - showing transaction buttons for seller to complete"));
                 } else {
                     hideAllActionButtons();
-                    System.out.println("BUYERVERIFIED - buyer already verified, waiting for seller");
+                    System.out.println(localeService.getMessage("offerstab.debug.buyer.verified.waiting", "BUYERVERIFIED - buyer already verified, waiting for seller"));
                 }
                 break;
                 
@@ -525,13 +682,13 @@ public class OffersTabContentController {
                 // NO review button for sellers in received offers
                 // Only buyers can review sellers, not the other way around
                 hideAllActionButtons();
-                System.out.println("COMPLETED - no review option for sellers (only buyers can review sellers)");
+                System.out.println(localeService.getMessage("offerstab.debug.completed.no.review", "COMPLETED - no review option for sellers (only buyers can review sellers)"));
                 break;
                 
             case REVIEWED:
                 // Review has been submitted - no more actions available
                 hideAllActionButtons();
-                System.out.println("REVIEWED - review already submitted, no actions available");
+                System.out.println(localeService.getMessage("offerstab.debug.reviewed", "REVIEWED - review already submitted, no actions available"));
                 break;
                 
             case CANCELLED:
@@ -540,13 +697,13 @@ public class OffersTabContentController {
             case EXPIRED:
                 // Terminal states - no actions available
                 hideAllActionButtons();
-                System.out.println("Terminal status - hiding all buttons");
+                System.out.println(localeService.getMessage("offerstab.debug.terminal.status", "Terminal status - hiding all buttons"));
                 break;
                 
             default:
                 // Unknown status
                 hideAllActionButtons();
-                System.out.println("Unknown status - hiding all buttons");
+                System.out.println(localeService.getMessage("offerstab.debug.unknown.status", "Unknown status - hiding all buttons"));
                 break;
         }
     }
@@ -555,23 +712,22 @@ public class OffersTabContentController {
         // For sent offers (offers the current user made)
         hideAllActionButtons();
         
-        System.out.println("=== SENT OFFER BUTTONS DEBUG ===");
-        System.out.println("Offer ID: " + offer.getId());
-        System.out.println("Offer Status: " + offer.getStatus());
-        System.out.println("Delivery Type: " + offer.getDeliveryType());
-        System.out.println("Tab Type: " + tabType);
-        System.out.println("================================");
+        System.out.println(localeService.getMessage("offerstab.debug.sent.buttons", "=== SENT OFFER BUTTONS DEBUG ==="));
+        System.out.println(localeService.getMessage("offerstab.debug.offer.id", "Offer ID: {0}").replace("{0}", String.valueOf(offer.getId())));
+        System.out.println(localeService.getMessage("offerstab.debug.offer.status", "Offer Status: {0}").replace("{0}", offer.getStatus().toString()));
+        System.out.println(localeService.getMessage("offerstab.debug.delivery.type", "Delivery Type: {0}").replace("{0}", String.valueOf(offer.getDeliveryType())));
+        System.out.println(localeService.getMessage("offerstab.debug.tab.type", "Tab Type: {0}").replace("{0}", tabType));
         
         switch (offer.getStatus()) {
             case PENDING:
                 // User can withdraw their pending offer
-                System.out.println("PENDING sent offer - no special actions");
+                System.out.println(localeService.getMessage("offerstab.debug.pending.sent", "PENDING sent offer - no special actions"));
                 break;
                 
             case ACCEPTED:
                 if (offer.getDeliveryType() == DeliveryType.PICKUP) {
                     // For accepted pickup offers, the seller will schedule first
-                    System.out.println("ACCEPTED pickup offer - waiting for seller to schedule");
+                    System.out.println(localeService.getMessage("offerstab.debug.accepted.pickup.sent", "ACCEPTED pickup offer - waiting for seller to schedule"));
                 }
                 break;
                 
@@ -579,7 +735,7 @@ public class OffersTabContentController {
                 if (offer.getDeliveryType() == DeliveryType.PICKUP) {
                     // Show select pickup time button for the offer creator (buyer)
                     showActionButtons(false, false, false, false, true, false, false, false, false);
-                    System.out.println("PICKUPSCHEDULING - showing SELECT TIME button for buyer");
+                    System.out.println(localeService.getMessage("offerstab.debug.pickup.scheduling.buyer", "PICKUPSCHEDULING - showing SELECT TIME button for buyer"));
                 }
                 break;
                 
@@ -587,26 +743,26 @@ public class OffersTabContentController {
                 if (offer.getDeliveryType() == DeliveryType.PICKUP) {
                     // Offer creator (buyer) can propose new times or select from existing ones
                     showActionButtons(false, false, false, false, true, true, false, false, false);
-                    System.out.println("PICKUPRESCHEDULING - showing SELECT TIME and RESCHEDULE buttons for buyer");
+                    System.out.println(localeService.getMessage("offerstab.debug.pickup.rescheduling.buyer", "PICKUPRESCHEDULING - showing SELECT TIME and RESCHEDULE buttons for buyer"));
                 }
                 break;
                 
             case CONFIRMED:
                 // Buyer can verify transaction for both PICKUP and SHIPPING
                 showActionButtons(false, false, false, false, false, false, true, true, false);
-                System.out.println("CONFIRMED - showing transaction verification buttons for buyer");
+                System.out.println(localeService.getMessage("offerstab.debug.confirmed.buyer", "CONFIRMED - showing transaction verification buttons for buyer"));
                 break;
                 
             case SELLERVERIFIED:
                 // Only buyer can confirm now (to complete transaction)
                 showActionButtons(false, false, false, false, false, false, true, true, false);
-                System.out.println("SELLERVERIFIED - showing transaction verification buttons for buyer to complete");
+                System.out.println(localeService.getMessage("offerstab.debug.seller.verified.buyer", "SELLERVERIFIED - showing transaction verification buttons for buyer to complete"));
                 break;
                 
             case BUYERVERIFIED:
                 // Buyer already verified, waiting for seller - NO BUTTONS FOR BUYER
                 hideAllActionButtons();
-                System.out.println("BUYERVERIFIED - buyer already verified, waiting for seller");
+                System.out.println(localeService.getMessage("offerstab.debug.buyer.verified.waiting.sent", "BUYERVERIFIED - buyer already verified, waiting for seller"));
                 break;
                 
             case COMPLETED:
@@ -615,17 +771,17 @@ public class OffersTabContentController {
                 boolean canReview = canOfferBeReviewed(offer);
                 if (canReview) {
                     showActionButtons(false, false, false, false, false, false, false, false, true);
-                    System.out.println("COMPLETED - showing WRITE REVIEW button for buyer to review seller");
+                    System.out.println(localeService.getMessage("offerstab.debug.completed.review", "COMPLETED - showing WRITE REVIEW button for buyer to review seller"));
                 } else {
                     hideAllActionButtons();
-                    System.out.println("COMPLETED - no review option for gift listing");
+                    System.out.println(localeService.getMessage("offerstab.debug.completed.no.review.gift", "COMPLETED - no review option for gift listing"));
                 }
                 break;
                 
             case REVIEWED:
                 // Review has been submitted - no more actions available
                 hideAllActionButtons();
-                System.out.println("REVIEWED - review already submitted, no actions available");
+                System.out.println(localeService.getMessage("offerstab.debug.reviewed", "REVIEWED - review already submitted, no actions available"));
                 break;
                 
             case CANCELLED:
@@ -634,13 +790,13 @@ public class OffersTabContentController {
             case EXPIRED:
                 // Terminal states - no actions available
                 hideAllActionButtons();
-                System.out.println("Terminal status - hiding all buttons");
+                System.out.println(localeService.getMessage("offerstab.debug.terminal.status", "Terminal status - hiding all buttons"));
                 break;
                 
             default:
                 // Other statuses don't need special actions
                 hideAllActionButtons();
-                System.out.println("Unknown status - hiding all buttons");
+                System.out.println(localeService.getMessage("offerstab.debug.unknown.status", "Unknown status - hiding all buttons"));
                 break;
         }
     }
@@ -671,7 +827,7 @@ public class OffersTabContentController {
         setButtonVisibility(cancelTransactionButton, showCancelTransaction);
         setButtonVisibility(writeReviewButton, showWriteReview);
         
-        System.out.println("Showing buttons - review: " + showWriteReview);
+        System.out.println(localeService.getMessage("offerstab.debug.showing.buttons", "Showing buttons - review: {0}").replace("{0}", String.valueOf(showWriteReview)));
     }
     
     private void setButtonVisibility(Button button, boolean visible) {
@@ -734,8 +890,8 @@ public class OffersTabContentController {
     
     @FXML
     private void handleConfirmTransaction() {
-        System.out.println("=== CONFIRM TRANSACTION CLICKED ===");
-        System.out.println("Current offer: " + (currentOffer != null ? currentOffer.getId() : "null"));
+        System.out.println(localeService.getMessage("offerstab.debug.confirm.clicked", "=== CONFIRM TRANSACTION CLICKED ==="));
+        System.out.println(localeService.getMessage("offerstab.debug.current.offer", "Current offer: {0}").replace("{0}", currentOffer != null ? String.valueOf(currentOffer.getId()) : "null"));
         
         if (currentOffer != null) {
             Alert confirmation = AlertHelper.createConfirmationDialog(
@@ -753,14 +909,14 @@ public class OffersTabContentController {
                 }
             });
         } else {
-            System.out.println("ERROR: No current offer set!");
+            System.out.println(localeService.getMessage("offerstab.error.no.offer", "ERROR: No current offer set!"));
         }
     }
 
     @FXML
     private void handleCancelTransaction() {
-        System.out.println("=== CANCEL TRANSACTION CLICKED ===");
-        System.out.println("Current offer: " + (currentOffer != null ? currentOffer.getId() : "null"));
+        System.out.println(localeService.getMessage("offerstab.debug.cancel.clicked", "=== CANCEL TRANSACTION CLICKED ==="));
+        System.out.println(localeService.getMessage("offerstab.debug.current.offer", "Current offer: {0}").replace("{0}", currentOffer != null ? String.valueOf(currentOffer.getId()) : "null"));
         
         if (currentOffer != null) {
             Alert confirmation = AlertHelper.createConfirmationDialog(
@@ -778,19 +934,19 @@ public class OffersTabContentController {
                 }
             });
         } else {
-            System.out.println("ERROR: No current offer set!");
+            System.out.println(localeService.getMessage("offerstab.error.no.offer", "ERROR: No current offer set!"));
         }
     }
     
     @FXML
     private void handleWriteReview() {
-        System.out.println("=== WRITE REVIEW CLICKED ===");
-        System.out.println("Current offer: " + (currentOffer != null ? currentOffer.getId() : "null"));
+        System.out.println(localeService.getMessage("offerstab.debug.review.clicked", "=== WRITE REVIEW CLICKED ==="));
+        System.out.println(localeService.getMessage("offerstab.debug.current.offer", "Current offer: {0}").replace("{0}", currentOffer != null ? String.valueOf(currentOffer.getId()) : "null"));
         
         if (currentOffer != null && onWriteReview != null) {
             onWriteReview.accept(currentOffer);
         } else {
-            System.out.println("ERROR: No current offer set or callback null!");
+            System.out.println(localeService.getMessage("offerstab.error.no.offer.or.callback", "ERROR: No current offer set or callback null!"));
         }
     }
     

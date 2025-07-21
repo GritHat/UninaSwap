@@ -1,0 +1,74 @@
+package com.uninaswap.client.controller;
+
+import com.uninaswap.common.dto.UserDTO;
+import com.uninaswap.client.service.NavigationService;
+import com.fasterxml.jackson.databind.node.ContainerNode;
+import com.uninaswap.client.service.LocaleService;
+import com.uninaswap.client.util.AlertHelper;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import java.io.IOException;
+import java.util.List;
+
+public class UserCardController {
+
+    @FXML
+    private VBox itemCard;
+    @FXML
+    private ImageView itemImage;
+    @FXML
+    private Text itemName;
+
+    private UserDTO user;
+
+    // TODO: Load list from database
+    private List<UserDTO> users;
+
+    private final NavigationService navigationService = NavigationService.getInstance();
+    private final LocaleService localeService = LocaleService.getInstance();
+
+    // TODO: Check if it works
+    public UserCardController() {
+    }
+
+    public UserCardController(UserDTO user) {
+        this.user = user;
+    }
+
+    //TODO: Test if it works
+    public <T extends Pane> void loadUserCardsIntoTab(T container) {
+        container.getChildren().clear();
+        try {
+            for (UserDTO user : users) {
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserCardView.fxml"));
+                    loader.setResources(localeService.getResourceBundle());
+                    loader.setController(new UserCardController(user));
+                    container.getChildren().add(loader.load());
+                } catch (IOException e) {
+                    AlertHelper.showErrorAlert(
+                            localeService.getMessage("user.card.load.error.title"),
+                            localeService.getMessage("user.card.load.error.header"),
+                            e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("La lista è vuota o non inizializzata");
+        }
+
+    }
+
+    @FXML
+    private void openUserDetails(MouseEvent event) {
+        if (user != null) {
+            // TODO: open user profile detail
+        }
+    }
+}

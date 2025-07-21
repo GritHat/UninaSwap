@@ -19,6 +19,8 @@ public class SellListingEntity extends ListingEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Currency currency;
+
+    private String pickupLocation;
     
     // Default constructor
     public SellListingEntity() {
@@ -27,13 +29,14 @@ public class SellListingEntity extends ListingEntity {
     
     // Constructor with required fields
     public SellListingEntity(String title, String description, UserEntity creator,
-                      BigDecimal price, Currency currency) {
+                      BigDecimal price, Currency currency, String pickupLocation) {
         super();
         this.setTitle(title);
         this.setDescription(description);
         this.setCreator(creator);
         this.price = price;
         this.currency = currency;
+        this.pickupLocation = pickupLocation;
     }
     
     /**
@@ -80,5 +83,15 @@ public class SellListingEntity extends ListingEntity {
     
     public void setCurrency(Currency currency) {
         this.currency = currency;
+    }
+    
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation;
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
     }
 }

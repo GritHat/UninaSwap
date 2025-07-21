@@ -1,7 +1,10 @@
 package com.uninaswap.client.service;
 
 import com.uninaswap.client.websocket.WebSocketClient;
-import com.uninaswap.client.util.WebSocketManager;
+import com.uninaswap.client.constants.EventTypes;
+import com.uninaswap.client.mapper.ViewModelMapper;
+import com.uninaswap.client.util.AlertHelper;
+import com.uninaswap.client.viewmodel.ItemViewModel;
 import com.uninaswap.common.dto.ItemDTO;
 import com.uninaswap.common.message.ItemMessage;
 
@@ -14,134 +17,203 @@ import javafx.collections.ObservableList;
 
 public class ItemService {
     private static ItemService instance;
+    private final LocaleService localeService = LocaleService.getInstance();
+    private final EventBusService eventBus = EventBusService.getInstance();
     private final WebSocketClient webSocketClient;
     private final ObservableList<ItemDTO> userItems = FXCollections.observableArrayList();
-    
+    private final ObservableList<ItemViewModel> userItemViewModels = FXCollections.observableArrayList();
+    private boolean needsRefresh = false;
+
     private ItemService() {
-        this.webSocketClient = WebSocketManager.getClient();
+        this.webSocketClient = WebSocketClient.getInstance();
         this.webSocketClient.registerMessageHandler(ItemMessage.class, this::handleItemMessage);
+        eventBus.subscribe(EventTypes.USER_LOGGED_OUT, _ -> {
+            System.out.println("ItemService: Received USER_LOGGED_OUT event");
+            clearAllData();
+        });
     }
-    
+
     public static synchronized ItemService getInstance() {
         if (instance == null) {
             instance = new ItemService();
         }
         return instance;
     }
-    
+
+    private void clearAllData() {
+        Platform.runLater(() -> {
+            System.out.println("ItemService: Clearing all cached data...");
+            System.out.println("ItemService: Before clear - userItems size: " + userItems.size() +
+                    ", userItemViewModels size: " + userItemViewModels.size());
+            userItems.clear();
+            userItemViewModels.clear();
+            needsRefresh = true;
+
+            // Cancel any pending futures
+            if (futureToComplete != null) {
+                futureToComplete.cancel(true);
+                futureToComplete = null;
+            }
+
+            System.out.println("ItemService: Cleared all cached data on logout");
+        });
+
+        System.out.println("ItemService: After clear - userItems size: " + userItems.size() +
+                ", userItemViewModels size: " + userItemViewModels.size());
+        System.out.println("ItemService: Cleared all cached data on logout");
+    }
+
     // Get all items for the current user
     public CompletableFuture<List<ItemDTO>> getUserItems() {
         CompletableFuture<List<ItemDTO>> future = new CompletableFuture<>();
-        
+
         ItemMessage message = new ItemMessage();
         message.setType(ItemMessage.Type.GET_ITEMS_REQUEST);
-        
+
         // Set the future to complete when response arrives
         this.futureToComplete = future;
-        
+
         webSocketClient.sendMessage(message)
-            .exceptionally(ex -> {
-                future.completeExceptionally(ex);
-                this.futureToComplete = null; // Reset on exception
-                return null;
-            });
-        
+                .exceptionally(ex -> {
+                    future.completeExceptionally(ex);
+                    this.futureToComplete = null; // Reset on exception
+                    return null;
+                });
+
         return future;
     }
-    
+
     // Add a new item
     public CompletableFuture<ItemDTO> addItem(ItemDTO item) {
         CompletableFuture<ItemDTO> future = new CompletableFuture<>();
-        
+
         ItemMessage message = new ItemMessage();
         message.setType(ItemMessage.Type.ADD_ITEM_REQUEST);
         message.setItem(item);
-        
+
         // Set the future to complete when response arrives
         this.futureToComplete = future;
-        
+
         webSocketClient.sendMessage(message)
-            .exceptionally(ex -> {
-                future.completeExceptionally(ex);
-                this.futureToComplete = null; // Reset on exception
-                return null;
-            });
-        
+                .exceptionally(ex -> {
+                    future.completeExceptionally(ex);
+                    this.futureToComplete = null; // Reset on exception
+                    return null;
+                });
+
         return future;
     }
-    
+
     // Update an existing item
     public CompletableFuture<ItemDTO> updateItem(ItemDTO item) {
         CompletableFuture<ItemDTO> future = new CompletableFuture<>();
-        
+
         ItemMessage message = new ItemMessage();
         message.setType(ItemMessage.Type.UPDATE_ITEM_REQUEST);
         message.setItem(item);
-        
+
         // Set the future to complete when response arrives
         this.futureToComplete = future;
-        
+
         webSocketClient.sendMessage(message)
-            .exceptionally(ex -> {
-                future.completeExceptionally(ex);
-                this.futureToComplete = null; // Reset on exception
-                return null;
-            });
-        
+                .exceptionally(ex -> {
+                    future.completeExceptionally(ex);
+                    this.futureToComplete = null; // Reset on exception
+                    return null;
+                });
+
         return future;
     }
-    
+
     // Delete an item
     public CompletableFuture<Boolean> deleteItem(String itemId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        
+
         ItemMessage message = new ItemMessage();
         message.setType(ItemMessage.Type.DELETE_ITEM_REQUEST);
-        
+
         ItemDTO item = new ItemDTO();
         item.setId(itemId);
         message.setItem(item);
-        
+
         // Set the future to complete when response arrives
         this.futureToComplete = future;
-        
+
         webSocketClient.sendMessage(message)
-            .exceptionally(ex -> {
-                future.completeExceptionally(ex);
-                this.futureToComplete = null; // Reset on exception
-                return null;
-            });
-        
+                .exceptionally(ex -> {
+                    future.completeExceptionally(ex);
+                    this.futureToComplete = null; // Reset on exception
+                    return null;
+                });
+
         return future;
     }
-    
+
     // Get observable list of user items for UI binding
     public ObservableList<ItemDTO> getUserItemsList() {
-        if (userItems.isEmpty()) {
+        if (userItems.isEmpty() || needsRefresh) {
             refreshUserItems();
+            needsRefresh = false;
         }
         return userItems;
     }
-    
+
     // Refresh the user's items
     public void refreshUserItems() {
         getUserItems()
-            .thenAccept(items -> {
-                Platform.runLater(() -> {
-                    userItems.clear();
-                    userItems.addAll(items);
+                .thenAccept(items -> {
+                    Platform.runLater(() -> {
+                        userItems.clear();
+                        userItems.addAll(items);
+                    });
+                })
+                .exceptionally(ex -> {
+                    System.err.println("Error refreshing user items: " + ex.getMessage());
+                    return null;
                 });
-            })
-            .exceptionally(ex -> {
-                System.err.println("Error refreshing user items: " + ex.getMessage());
-                return null;
-            });
     }
-    
+
+    /**
+     * Get user's items as ViewModels for UI binding (cached and auto-updating)
+     * 
+     * @return ObservableList of ItemViewModels that automatically updates
+     */
+    public ObservableList<ItemViewModel> getUserItemsListAsViewModel() {
+        // If we need initial load
+        if (userItemViewModels.isEmpty() || needsRefresh) {
+            loadUserItemsAsViewModels();
+        }
+
+        return userItemViewModels;
+    }
+
+    private void loadUserItemsAsViewModels() {
+        needsRefresh = false;
+
+        getUserItems()
+                .thenAccept(items -> {
+                    Platform.runLater(() -> {
+                        // Update both lists
+                        userItems.clear();
+                        userItems.addAll(items);
+
+                        userItemViewModels.clear();
+                        items.forEach(itemDTO -> {
+                            ItemViewModel itemViewModel = ViewModelMapper.getInstance().toViewModel(itemDTO);
+                            userItemViewModels.add(itemViewModel);
+                        });
+                    });
+                })
+                .exceptionally(ex -> {
+                    System.err.println("Error loading user items: " + ex.getMessage());
+                    return null;
+                });
+    }
+
     // Handle incoming item messages
     private CompletableFuture<?> futureToComplete;
     private Consumer<ItemMessage> messageCallback;
-    
+
     @SuppressWarnings("unchecked")
     private void handleItemMessage(ItemMessage message) {
         switch (message.getType()) {
@@ -150,6 +222,14 @@ public class ItemService {
                     if (message.isSuccess()) {
                         userItems.clear();
                         userItems.addAll(message.getItems());
+
+                        // Also update ViewModels
+                        userItemViewModels.clear();
+                        message.getItems().forEach(itemDTO -> {
+                            ItemViewModel itemViewModel = ViewModelMapper.getInstance().toViewModel(itemDTO);
+                            userItemViewModels.add(itemViewModel);
+                        });
+
                         if (futureToComplete != null) {
                             ((CompletableFuture<List<ItemDTO>>) futureToComplete).complete(message.getItems());
                             futureToComplete = null;
@@ -157,17 +237,22 @@ public class ItemService {
                     } else {
                         if (futureToComplete != null) {
                             futureToComplete.completeExceptionally(
-                                new Exception("Failed to get items: " + message.getErrorMessage()));
+                                    new Exception("Failed to get items: " + message.getErrorMessage()));
                             futureToComplete = null;
                         }
                     }
                 });
                 break;
-                
+
             case ADD_ITEM_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
                         userItems.add(message.getItem());
+
+                        // Also add to ViewModels
+                        ItemViewModel itemViewModel = ViewModelMapper.getInstance().toViewModel(message.getItem());
+                        userItemViewModels.add(itemViewModel);
+
                         if (futureToComplete != null) {
                             ((CompletableFuture<ItemDTO>) futureToComplete).complete(message.getItem());
                             futureToComplete = null;
@@ -175,24 +260,29 @@ public class ItemService {
                     } else {
                         if (futureToComplete != null) {
                             futureToComplete.completeExceptionally(
-                                new Exception("Failed to add item: " + message.getErrorMessage()));
+                                    new Exception("Failed to add item: " + message.getErrorMessage()));
                             futureToComplete = null;
                         }
                     }
                 });
                 break;
-                
+
             case UPDATE_ITEM_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
-                        // Update the item in the list
+                        // Update in both lists
                         for (int i = 0; i < userItems.size(); i++) {
                             if (userItems.get(i).getId().equals(message.getItem().getId())) {
                                 userItems.set(i, message.getItem());
+
+                                // Update ViewModel too
+                                ItemViewModel updatedViewModel = ViewModelMapper.getInstance()
+                                        .toViewModel(message.getItem());
+                                userItemViewModels.set(i, updatedViewModel);
                                 break;
                             }
                         }
-                        
+
                         if (futureToComplete != null) {
                             ((CompletableFuture<ItemDTO>) futureToComplete).complete(message.getItem());
                             futureToComplete = null;
@@ -200,19 +290,20 @@ public class ItemService {
                     } else {
                         if (futureToComplete != null) {
                             futureToComplete.completeExceptionally(
-                                new Exception("Failed to update item: " + message.getErrorMessage()));
+                                    new Exception("Failed to update item: " + message.getErrorMessage()));
                             futureToComplete = null;
                         }
                     }
                 });
                 break;
-                
+
             case DELETE_ITEM_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
-                        // Remove the item from the list
+                        // Remove from both lists
                         userItems.removeIf(item -> item.getId().equals(message.getItem().getId()));
-                        
+                        userItemViewModels.removeIf(item -> item.getId().equals(message.getItem().getId()));
+
                         if (futureToComplete != null) {
                             ((CompletableFuture<Boolean>) futureToComplete).complete(true);
                             futureToComplete = null;
@@ -220,26 +311,65 @@ public class ItemService {
                     } else {
                         if (futureToComplete != null) {
                             futureToComplete.completeExceptionally(
-                                new Exception("Failed to delete item: " + message.getErrorMessage()));
+                                    new Exception("Failed to delete item: " + message.getErrorMessage()));
                             futureToComplete = null;
                         }
                     }
                 });
                 break;
-                
+
             default:
                 System.out.println("Unknown item message type: " + message.getType());
                 break;
         }
-        
+
         // Call any registered callback
         if (messageCallback != null) {
             messageCallback.accept(message);
         }
     }
-    
-    // Set a callback for incoming messages
+
+    public void saveItem(ItemDTO item) {
+        // Determine if this is a new or existing item
+        if (item.getId() == null || item.getId().isEmpty()) {
+            // Add new item
+            addItem(item)
+                    .thenAccept(_ -> {
+                        publishItemUpdatedEvent(item);
+                    })
+                    .exceptionally(ex -> {
+                        AlertHelper.showErrorAlert(
+                                localeService.getMessage("item.add.error.title"),
+                                localeService.getMessage("item.add.error.header"),
+                                ex.getMessage());
+                        return null;
+                    });
+        } else {
+            // Update existing item
+            updateItem(item)
+                    .thenAccept(_ -> {
+                        publishItemUpdatedEvent(item);
+                    })
+                    .exceptionally(ex -> {
+                        AlertHelper.showErrorAlert(
+                                localeService.getMessage("item.edit.error.title"),
+                                localeService.getMessage("item.edit.error.header"),
+                                ex.getMessage());
+                        return null;
+                    });
+        }
+    }
+
+    private void publishItemUpdatedEvent(ItemDTO item) {
+        // Publish an event to notify other parts of the application
+        eventBus.publishEvent(EventTypes.ITEM_UPDATED, ViewModelMapper.getInstance().toViewModel(item));
+    }
+
     public void setMessageCallback(Consumer<ItemMessage> callback) {
         this.messageCallback = callback;
+    }
+
+    public void setNeedsRefresh(boolean needsRefresh) {
+        this.needsRefresh = needsRefresh;
     }
 }

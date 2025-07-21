@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="640.0" styleClass="main-content-background" stylesheets="@../css/styles.css" vbarPolicy="AS_NEEDED" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.ReviewCreateController">
+  <content>
+    <VBox spacing="20.0" styleClass="review-main-container">
+      <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      </padding>
+      
+      <!-- Header Section -->
+      <VBox spacing="15.0" styleClass="review-header-section">
+        <children>
+          <!-- Title and Icon -->
+          <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <children>
+              <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@../images/icons/review.png" />
+                </image>
+              </ImageView>
+              <Label fx:id="titleLabel" styleClass="page-title-label" text="%review.create.title" />
+            </children>
+          </HBox>
+          
+          <!-- Instructions -->
+          <VBox spacing="5.0" styleClass="review-instructions-section">
+            <children>
+              <Label fx:id="instructionsLabel" styleClass="section-subtitle" text="%review.create.instructions" />
+            </children>
+          </VBox>
+        </children>
+      </VBox>
+      
+      <!-- Main Content Area -->
+      <VBox spacing="20.0" VBox.vgrow="ALWAYS">
+        <children>
+          <!-- Transaction Details Section -->
+          <VBox spacing="15.0" styleClass="review-section-card">
+            <children>
+              <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                <children>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                      <Image url="@../images/icons/transaction.png" />
+                    </image>
+                  </ImageView>
+                  <Text styleClass="section-title" text="%review.create.transaction.details" />
+                </children>
+              </HBox>
+              
+              <VBox spacing="12.0">
+                <children>
+                  <!-- Reviewing User -->
+                  <VBox spacing="8.0">
+                    <children>
+                      <Label styleClass="field-label" text="%review.create.reviewing.user" />
+                      <Label fx:id="reviewingUserLabel" styleClass="review-info-display" text="" wrapText="true" />
+                    </children>
+                  </VBox>
+                  
+                  <!-- Offer Details -->
+                  <VBox spacing="8.0">
+                    <children>
+                      <Label styleClass="field-label" text="%review.create.transaction.info" />
+                      <Label fx:id="offerDetailsLabel" styleClass="review-info-display" text="" wrapText="true" />
+                    </children>
+                  </VBox>
+                </children>
+              </VBox>
+            </children>
+            <padding>
+              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+          </VBox>
+          
+          <!-- Rating Section -->
+          <VBox spacing="15.0" styleClass="review-section-card review-required-section">
+            <children>
+              <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                <children>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                      <Image url="@../images/icons/star.png" />
+                    </image>
+                  </ImageView>
+                  <Text styleClass="section-title" text="%review.create.rating.title" />
+                  <Text styleClass="required-indicator" text="%required.indicator" />
+                </children>
+              </HBox>
+              
+              <VBox spacing="15.0">
+                <children>
+                  <!-- Star Rating Container -->
+                  <VBox alignment="CENTER" spacing="12.0" styleClass="star-rating-container">
+                    <children>
+                      <HBox fx:id="starsContainer" alignment="CENTER" spacing="8.0" styleClass="stars-display" />
+                      <Label fx:id="scoreLabel" styleClass="score-display-label" text="%review.create.no.rating" />
+                    </children>
+                  </VBox>
+                  
+                  <Text styleClass="help-text" text="%review.create.rating.help" textAlignment="CENTER" />
+                </children>
+              </VBox>
+            </children>
+            <padding>
+              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+          </VBox>
+          
+          <!-- Comment Section -->
+          <VBox spacing="15.0" styleClass="review-section-card">
+            <children>
+              <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                <children>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                      <Image url="@../images/icons/comment.png" />
+                    </image>
+                  </ImageView>
+                  <Text styleClass="section-title" text="%review.create.comment.title" />
+                  <Text styleClass="optional-indicator" text="%review.create.optional" />
+                </children>
+              </HBox>
+              
+              <VBox spacing="12.0" VBox.vgrow="ALWAYS">
+                <children>
+                  <VBox spacing="8.0" VBox.vgrow="ALWAYS">
+                    <children>
+                      <Label styleClass="field-label" text="%review.create.comment.label" />
+                      <TextArea fx:id="commentTextArea" prefRowCount="6" promptText="%review.create.comment.prompt" styleClass="review-text-area" wrapText="true" VBox.vgrow="ALWAYS" />
+                    </children>
+                  </VBox>
+                  
+                  <!-- Character Count and Help -->
+                  <VBox spacing="5.0">
+                    <children>
+                      <HBox alignment="CENTER_RIGHT">
+                        <children>
+                          <Label fx:id="characterCountLabel" styleClass="character-count-label" text="0/1000" />
+                        </children>
+                      </HBox>
+                      <Text styleClass="help-text" text="%review.create.comment.help" />
+                    </children>
+                  </VBox>
+                </children>
+              </VBox>
+            </children>
+            <padding>
+              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+          </VBox>
+          
+          <!-- Action Buttons Section -->
+          <HBox alignment="CENTER_RIGHT" spacing="15.0" styleClass="review-action-buttons">
+            <children>
+              <Button fx:id="cancelButton" onAction="#handleCancel" styleClass="secondary-button" text="%button.cancel" />
+              <Button fx:id="submitButton" onAction="#handleSubmit" styleClass="primary-button" text="%review.create.submit" />
+            </children>
+            <padding>
+              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+          </HBox>
+        </children>
+      </VBox>
+    </VBox>
+  </content>
+</ScrollPane>

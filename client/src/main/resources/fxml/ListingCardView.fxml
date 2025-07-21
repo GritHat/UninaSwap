@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="listingCardContainer" maxWidth="240.0" minWidth="240.0" prefWidth="240.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <!-- Card principale (cliccabile) -->
+      <VBox fx:id="itemCard" onMouseClicked="#openListingDetails" prefHeight="360.0" prefWidth="240.0" styleClass="card">
+         <children>
+            <!-- Image container - ALWAYS wrapped in StackPane -->
+            <StackPane fx:id="imageContainer" maxHeight="280.0" maxWidth="240.0" minHeight="280.0" minWidth="240.0" prefHeight="280.0" prefWidth="240.0">
+               <children>
+                  <ImageView fx:id="itemImage" fitHeight="280.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icons/immagine_generica.png" />
+                     </image>
+                  </ImageView>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </StackPane>
+            
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Label fx:id="itemName" maxWidth="190.0" minWidth="190.0" prefWidth="190.0" styleClass="item-name" text="Listing Title">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <ImageView fx:id="favoriteIcon" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#toggleFavorite" pickOnBounds="true" preserveRatio="true" styleClass="favorite-icon">
+                           <image>
+                              <Image url="@../images/favorites_add.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets top="2.0" />
+                           </HBox.margin>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Text fx:id="categoryText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="category-tag" text="Category">
+                           <font>
+                              <Font size="9.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Text>
+                        <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Text fx:id="sellerName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="seller-name" text="Seller Name">
+                           <font>
+                              <Font size="8.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Text>
+                        <Pane prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        
+                        <!-- Listing price/type -->
+                        <Text fx:id="itemPrice" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="€25.00">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Text>
+                        <Pane prefHeight="200.0" prefWidth="200.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</StackPane>

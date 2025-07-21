@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Region?>
+
+<VBox fx:id="sidebar" alignment="TOP_CENTER" maxWidth="72.0" minWidth="72.0" prefHeight="484.0" prefWidth="72.0" spacing="15.0" styleClass="sidebar" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.SidebarController">
+   <padding>
+      <Insets top="10" />
+   </padding>
+   <children>
+      <VBox fx:id="homeButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showHome" pickOnBounds="true">
+         <ImageView fx:id="homeIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/home.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%home.caption"/>
+      </VBox>
+
+      <VBox fx:id="listingButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showListings" pickOnBounds="true">
+         <ImageView fx:id="listingIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/listings.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%listings.caption" wrappingWidth="50.0" textAlignment="CENTER"/>
+      </VBox>
+
+      <VBox fx:id="offersButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showOffers" pickOnBounds="true">
+         <ImageView fx:id="offersIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/offers.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%offers.caption"/>
+      </VBox>
+
+      <VBox fx:id="inventoryButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showInventory" pickOnBounds="true">
+         <ImageView fx:id="inventoryIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/inventory.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%inventory.caption"/>
+      </VBox>
+
+      <VBox fx:id="notificationsButton" styleClass="sidebar-button" alignment="CENTER" spacing="0" onMouseClicked="#showNotifications" pickOnBounds="true">
+         <ImageView fx:id="notificationsIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/notification.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%notification.caption"/>
+      </VBox>
+
+      <VBox fx:id="profileButton" styleClass="sidebar-button" alignment="CENTER" onMouseClicked="#showProfile" pickOnBounds="true" spacing="0">
+         <ImageView fx:id="ProfileImageIcon" fitHeight="32.0" fitWidth="32.0" preserveRatio="true">
+            <image>
+               <Image url="@../images/icons/default_profile.png" />
+            </image>
+            <viewport>
+               <Rectangle2D />
+            </viewport>
+         </ImageView>
+         <Text styleClass="button-caption" text="%user.caption"/>
+      </VBox>
+   </children>
+</VBox>

@@ -69,10 +69,11 @@
 
     <build>
         <plugins>
+            <!-- Aggiungi questo plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version> <!-- Use latest stable -->
+                <version>0.0.8</version>
                 <configuration>
                     <mainClass>com.uninaswap.client.UninaSwapApp</mainClass>
                 </configuration>

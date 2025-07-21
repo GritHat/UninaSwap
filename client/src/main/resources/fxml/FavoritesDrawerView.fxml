@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox fx:id="externalDrawerContainer" alignment="CENTER_RIGHT" stylesheets="@../css/styles.css" maxWidth="250.0" spacing="0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.FavoritesDrawerController">
+
+   <!-- Drawer Container -->
+   <VBox fx:id="drawerContainer" maxWidth="250.0" minWidth="250.0" prefWidth="250.0" styleClass="favorites-drawer" VBox.vgrow="ALWAYS">
+
+      <Separator />
+
+      <!-- Expandable Sections -->
+      <VBox spacing="0" VBox.vgrow="ALWAYS">
+         
+         <!-- Favorite Listings Section -->
+         <TitledPane fx:id="favoritesPane" animated="true" collapsible="true" styleClass="drawer-titled-pane">
+            <graphic>
+               <HBox alignment="CENTER_LEFT" spacing="5">
+                  <ImageView fitHeight="16.0" fitWidth="16.0" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icons/favorites_remove.png" />
+                     </image>
+                  </ImageView>
+                  <Label text="Favorites" styleClass="drawer-section-title"/>
+                  <Label fx:id="favoritesCountLabel" styleClass="drawer-count-label" />
+               </HBox>
+            </graphic>
+            <content>
+               <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="drawer-scroll-pane" vbarPolicy="AS_NEEDED">
+                  <content>
+                     <VBox fx:id="favoritesContainer" spacing="5">
+                        <padding>
+                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </padding>
+                     </VBox>
+                  </content>
+               </ScrollPane>
+            </content>
+         </TitledPane>
+
+         <!-- Following Users Section -->
+         <TitledPane fx:id="followingPane" animated="true" collapsible="true" styleClass="drawer-titled-pane">
+            <graphic>
+               <HBox alignment="CENTER_LEFT" spacing="5">
+                  <ImageView fitHeight="16.0" fitWidth="16.0" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/icons/utenti_preferiti.png" />
+                     </image>
+                  </ImageView>
+                  <Label text="Following" styleClass="drawer-section-title"/>
+                  <Label fx:id="followingCountLabel" styleClass="drawer-count-label" />
+               </HBox>
+            </graphic>
+            <content>
+               <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="drawer-scroll-pane" vbarPolicy="AS_NEEDED">
+                  <content>
+                     <VBox fx:id="followingContainer" spacing="5">
+                        <padding>
+                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                        </padding>
+                     </VBox>
+                  </content>
+               </ScrollPane>
+            </content>
+         </TitledPane>
+         
+      </VBox>
+
+   </VBox>
+</HBox>

@@ -41,7 +41,13 @@ public class ProfileWebSocketHandler extends TextWebSocketHandler {
                     user.setLastName(updateMessage.getLastName());
                     user.setBio(updateMessage.getBio());
                     user.setProfileImagePath(updateMessage.getProfileImagePath());
+                    user.setZipPostalCode(updateMessage.getZipPostalCode());
+                    user.setStateProvince(updateMessage.getStateProvince());
+                    user.setAddress(updateMessage.getAddress());
+                    user.setCountry(updateMessage.getCountry());
+                    user.setCity(updateMessage.getCity());
                     
+
                     // Save updated user
                     userRepository.save(user);
                     

@@ -1,92 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.image.*?>
-<?import javafx.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane prefWidth="1600" prefHeight="900" 
-      xmlns="http://javafx.com/javafx/24" 
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.uninaswap.client.controller.MainController"
-      stylesheets="@../css/styles.css"
-      minWidth="800" minHeight="640">
-      
-   <!-- Top Navigation Bar -->
-   <top>
-      <HBox spacing="10" styleClass="header-bar">
-         <padding>
-            <Insets top="10" right="15" bottom="10" left="15" />
-         </padding>
-         
-         <!-- Include the language selector -->
-         <fx:include source="LanguageSelector.fxml" />
-         
-         <Label text="%dashboard.title" styleClass="header-label" />
-         <Region HBox.hgrow="ALWAYS" />
-         <Label fx:id="usernameLabel" />
-         <StackPane styleClass="profile-image-container" maxHeight="32" maxWidth="32" minHeight="32" minWidth="32">
-            <ImageView fx:id="headerProfileImageView" fitHeight="32" fitWidth="32" preserveRatio="true" />
-            <StackPane.margin>
-               <Insets left="5" right="5" />
-            </StackPane.margin>
-         </StackPane>
-         <Button fx:id="logoutButton" text="%button.logout" onAction="#handleLogout" />
-      </HBox>
-   </top>
-   
-   <!-- Left Sidebar Navigation -->
-   <left>
-      <VBox spacing="5" styleClass="sidebar" prefWidth="200">
-         <padding>
-            <Insets top="10" right="10" bottom="10" left="10" />
-         </padding>
-         <Label text="%dashboard.navigation" styleClass="sidebar-header" />
-         <Separator />
-         <Button fx:id="dashboardMenuItem" text="%dashboard.menu.dashboard" styleClass="sidebar-button" onAction="#showDashboard" />
-         <Button fx:id="marketsMenuItem" text="%dashboard.menu.markets" styleClass="sidebar-button" onAction="#showMarkets" />
-         <Button fx:id="portfolioMenuItem" text="%dashboard.menu.portfolio" styleClass="sidebar-button" onAction="#showPortfolio" />
-         <Button fx:id="tradeMenuItem" text="%dashboard.menu.trade" styleClass="sidebar-button" onAction="#showTrade" />
-         <Button fx:id="settingsMenuItem" text="%dashboard.menu.settings" styleClass="sidebar-button" onAction="#showSettings" />
-         <Button fx:id="profileMenuItem" text="%dashboard.menu.profile" styleClass="sidebar-button" onAction="#showProfile" />
-         <Button fx:id="inventoryMenuItem" text="%dashboard.menu.inventory" styleClass="sidebar-button" onAction="#showInventory"/>
-         <Button fx:id="createListingMenuItem" text="%dashboard.menu.create.listing" styleClass="sidebar-button" onAction="#showCreateListing"/>
-
-         <Region VBox.vgrow="ALWAYS" />
-         <Separator />
-         <Label text="%app.version" styleClass="sidebar-footer" />
-      </VBox>
-   </left>
-   
-   <!-- Main Content Area -->
-   <center>
-      <StackPane fx:id="contentArea">
-         <padding>
-            <Insets top="15" right="15" bottom="15" left="15" />
-         </padding>
-         <!-- Default welcome screen -->
-         <VBox alignment="CENTER" spacing="20">
-            <Label fx:id="contentAreaTitleLabel" text="%dashboard.contentaread.title" styleClass="welcome-header" />
-            <Label fx:id="contentAreaSubtitleLabel" text="%dashboard.contentaread.subtitle" />
-            <HBox alignment="CENTER" spacing="20">
-               <Button fx:id="quickTradeButton" text="%button.quicktrade" onAction="#showTrade" />
-               <Button fx:id="viewMarketsButton" text="%button.view.markets" onAction="#showMarkets" />
+<StackPane stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.MainController">
+  <children>
+    <BorderPane minHeight="600.0" minWidth="800.0">
+         <center>
+            <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox alignment="CENTER" minHeight="600.0" minWidth="800.0" HBox.hgrow="ALWAYS">
+                     <children>
+                    <VBox alignment="CENTER" styleClass="header-container" VBox.vgrow="NEVER">
+                      <children>
+                        <!-- Top header bar with logo and user info -->
+                        <HBox alignment="CENTER" maxHeight="66.0" minHeight="66.0" prefHeight="66.0" spacing="20.0" styleClass="header-top-bar">
+                          <children>
+                            <!-- Logo and app name -->
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                              <children>
+                                <ImageView fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true" styleClass="header-logo">
+                                  <image>
+                                    <Image url="@../images/logo/logo_480x480.png" />
+                                  </image>
+                                </ImageView>
+                              </children>
+                            </HBox>
+                            <!-- Flexible spacer -->
+                            <Region HBox.hgrow="ALWAYS" />
+                                    <VBox alignment="CENTER" maxWidth="700.0" minWidth="450.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                  <!-- Search container with category filter -->
+                                  <HBox alignment="CENTER" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" spacing="5.0" styleClass="header-search-container" VBox.vgrow="NEVER">
+                                    <children>
+                                      <!-- Category selector -->
+                                      <ComboBox fx:id="categoryComboBox" maxHeight="28.0" maxWidth="156.0" minHeight="28.0" minWidth="156.0" prefHeight="28.0" prefWidth="156.0" promptText="%header.category.all" styleClass="header-category-combo" translateX="-16.0" />
+                                      <TextField fx:id="searchField" promptText="%header.search.placeholder" styleClass="header-search-field" HBox.hgrow="ALWAYS" />
+                                      <Button fx:id="searchButton" maxHeight="28.0" minHeight="28.0" onAction="#handleSearch" prefHeight="28.0" styleClass="header-search-button" translateX="15.0">
+                                        <graphic>
+                                          <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                              <Image url="@../images/icons/search.png" />
+                                            </image>
+                                          </ImageView>
+                                        </graphic>
+                                      </Button>
+                                    </children>
+                                             <VBox.margin>
+                                                <Insets top="2.0" />
+                                             </VBox.margin>
+                                  </HBox>
+                                  <!-- Quick filter buttons -->
+                                  <HBox alignment="CENTER" minWidth="150.0" spacing="5.0" styleClass="header-filters" VBox.vgrow="NEVER">
+                                    <children>
+                                      <Button fx:id="allItemsButton" maxHeight="25.0" minHeight="25.0" onAction="#filterAll" prefHeight="25.0" styleClass="header-filter-button, active" text="%header.filter.all" />
+                                      <Button fx:id="salesButton" maxHeight="25.0" minHeight="25.0" onAction="#filterSales" prefHeight="25.0" styleClass="header-filter-button, active" text="%header.filter.sales" />
+                                      <Button fx:id="auctionsButton" maxHeight="25.0" minHeight="25.0" onAction="#filterAuctions" prefHeight="25.0" styleClass="header-filter-button" text="%header.filter.auctions" />
+                                      <Button fx:id="tradesButton" maxHeight="25.0" minHeight="25.0" onAction="#filterTrades" prefHeight="25.0" styleClass="header-filter-button" text="%header.filter.trades" />
+                                      <Button fx:id="giftsButton" maxHeight="25.0" minHeight="25.0" onAction="#filterGifts" prefHeight="25.0" styleClass="header-filter-button, active" text="%header.filter.gifts" />
+                                    </children>
+                                             <VBox.margin>
+                                                <Insets top="5.0" />
+                                             </VBox.margin>
+                                  </HBox>
+                                       </children>
+                                    </VBox>
+                            <!-- Flexible spacer -->
+                            <Region HBox.hgrow="ALWAYS" />
+                            <!-- User info section -->
+                            <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="header-user-section">
+                              <children>
+                                <Button fx:id="addListingButton" styleClass="header-icon-button">
+                                  <graphic>
+                                    <ImageView fx:id="addListingIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/add.png" />
+                                      </image>
+                                    </ImageView>
+                                  </graphic>
+                                </Button>
+                                <Button fx:id="favoritesButton" styleClass="header-icon-button">
+                                    <graphic>
+                                      <ImageView fx:id="favoritesIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                            <Image url="@../images/icons/favorites_add.png" />
+                                          </image>
+                                      </ImageView>
+                                    </graphic>
+                                </Button>
+                                <!-- Quick actions -->
+                                <Button fx:id="notificationsButton" styleClass="header-icon-button">
+                                  <graphic>
+                                    <ImageView fx:id="notificationsIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                        <Image url="@../images/icons/notification.png" />
+                                      </image>
+                                    </ImageView>
+                                  </graphic>
+                                </Button>
+                                <Button fx:id="userMenuButton" styleClass="header-icon-button">
+                                  <graphic>
+                                    <ImageView fx:id="userAvatarImage" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true" styleClass="header-user-avatar">
+                                      <image>
+                                        <Image url="@../images/icons/default_profile.png" />
+                                      </image>
+                                    </ImageView>
+                                  </graphic>
+                                </Button>
+                              </children>
+                            </HBox>
+                          </children>
+                          <padding>
+                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                          </padding>
+                        </HBox>
+                      </children>
+                    </VBox>
+                    <HBox alignment="CENTER" minWidth="800.0" spacing="0.0" VBox.vgrow="ALWAYS">
+                      <children>
+                        <!-- Sidebar with responsive width -->
+                        <fx:include fx:id="sidebarInclude" source="SidebarView.fxml" />
+                              <StackPane prefHeight="150.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                                <children>
+                                  <!-- Content area that grows to fill remaining space -->
+                                  <StackPane fx:id="contentArea" minWidth="400.0" />                                                <!-- Favorites Drawer on the right -->
+                                  <fx:include fx:id="favoritesDrawerInclude" source="FavoritesDrawerView.fxml" StackPane.alignment="TOP_RIGHT" />
+                                </children>
+                              </StackPane>
+                      </children>
+                    </HBox>
+                     </children>
+                  </VBox>
+               </children>
             </HBox>
-         </VBox>
-      </StackPane>
-   </center>
-   
-   <!-- Status Bar -->
-   <bottom>
-      <HBox spacing="10" styleClass="status-bar">
-         <padding>
-            <Insets top="5" right="15" bottom="5" left="15" />
-         </padding>
-         <Label fx:id="statusLabel" text="%label.ready" />
-         <Region HBox.hgrow="ALWAYS" />
-         <Label fx:id="connectionStatusLabel" text="%label.connected" />
-      </HBox>
-   </bottom>
-   
-</BorderPane>
+         </center>
+    </BorderPane>
+  </children>
+</StackPane>

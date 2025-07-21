@@ -2,7 +2,6 @@ package com.uninaswap.client.service;
 
 import com.uninaswap.common.dto.UserDTO;
 import com.uninaswap.common.message.ProfileUpdateMessage;
-import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.client.websocket.WebSocketClient;
 
 import java.util.concurrent.CompletableFuture;
@@ -13,7 +12,7 @@ public class ProfileService {
     private final WebSocketClient webSocketClient;
     
     public ProfileService() {
-        this.webSocketClient = WebSocketManager.getClient();
+        this.webSocketClient = WebSocketClient.getInstance();
     }
     
     /**
@@ -37,6 +36,11 @@ public class ProfileService {
         message.setLastName(user.getLastName());
         message.setBio(user.getBio());
         message.setProfileImagePath(user.getProfileImagePath());
+        message.setZipPostalCode(user.getZipPostalCode());
+        message.setStateProvince(user.getStateProvince());
+        message.setAddress(user.getAddress());
+        message.setCountry(user.getCountry());
+        message.setCity(user.getCity());
         
         return webSocketClient.sendMessage(message);
     }

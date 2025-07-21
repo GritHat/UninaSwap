@@ -2,13 +2,16 @@ package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.LocaleService;
+import com.uninaswap.client.service.CategoryService;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.common.dto.ItemDTO;
 import com.uninaswap.common.enums.ItemCondition;
+import com.uninaswap.common.enums.Category;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,7 +25,7 @@ public class ItemDialogController {
     @FXML private TextField nameField;
     @FXML private TextArea descriptionField;
     @FXML private ComboBox<ItemCondition> conditionComboBox;
-    @FXML private TextField categoryField;
+    @FXML private ComboBox<Category> categoryComboBox; // Changed from TextField to ComboBox<Category>
     @FXML private TextField brandField;
     @FXML private TextField modelField;
     @FXML private Spinner<Integer> yearSpinner;
@@ -34,6 +37,7 @@ public class ItemDialogController {
     
     private final ImageService imageService = ImageService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
+    private final CategoryService categoryService = CategoryService.getInstance(); // Add this
     
     private ItemDTO item;
     private boolean isNewItem;
@@ -58,6 +62,9 @@ public class ItemDialogController {
             }
         });
         
+        // Set up the category combo box
+        setupCategoryComboBox();
+        
         // Set up the year spinner
         SpinnerValueFactory.IntegerSpinnerValueFactory yearFactory = 
             new SpinnerValueFactory.IntegerSpinnerValueFactory(1900, 2030, 2023);
@@ -67,6 +74,31 @@ public class ItemDialogController {
         SpinnerValueFactory.IntegerSpinnerValueFactory stockFactory = 
             new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 9999, 1);
         stockSpinner.setValueFactory(stockFactory);
+    }
+    
+    private void setupCategoryComboBox() {
+        // Get categories excluding ALL (which is only for search/filtering)
+        categoryComboBox.setItems(FXCollections.observableArrayList(categoryService.getSelectableCategories()));
+        
+        // Set up string converter to show localized names but work with Category objects
+        categoryComboBox.setConverter(new StringConverter<Category>() {
+            @Override
+            public String toString(Category category) {
+                if (category == null) {
+                    return "";
+                }
+                return categoryService.getLocalizedCategoryName(category);
+            }
+            
+            @Override
+            public Category fromString(String string) {
+                // This won't be used for ComboBox selection, but needed for interface
+                return categoryService.getCategoryByDisplayName(string);
+            }
+        });
+        
+        // Set default to OTHER
+        categoryComboBox.setValue(Category.OTHER);
     }
     
     public void setItem(ItemDTO item) {
@@ -84,7 +116,15 @@ public class ItemDialogController {
         nameField.setText(item.getName() != null ? item.getName() : "");
         descriptionField.setText(item.getDescription() != null ? item.getDescription() : "");
         conditionComboBox.setValue(item.getCondition());
-        categoryField.setText(item.getCategory() != null ? item.getCategory() : "");
+        
+        // Set category from existing item data
+        if (item.getCategory() != null && !item.getCategory().isEmpty()) {
+            Category category = Category.fromString(item.getCategory());
+            categoryComboBox.setValue(category);
+        } else {
+            categoryComboBox.setValue(Category.OTHER);
+        }
+        
         brandField.setText(item.getBrand() != null ? item.getBrand() : "");
         modelField.setText(item.getModel() != null ? item.getModel() : "");
         
@@ -135,12 +175,30 @@ public class ItemDialogController {
                 .thenAccept(image -> {
                     Platform.runLater(() -> {
                         imagePreview.setImage(image);
+                        updateImagePreviewVisibility();
                     });
                 })
                 .exceptionally(ex -> { 
                     System.err.println("Failed to load item image: " + ex.getMessage());
                     return null;
                 });
+        } else {
+            // Ensure placeholder is visible for new items
+            updateImagePreviewVisibility();
+        }
+    }
+    
+    private void updateImagePreviewVisibility() {
+        boolean hasImage = imagePreview.getImage() != null;
+        
+        // Find the upload placeholder and update its visibility
+        Node uploadPlaceholder = imagePreview.getParent().lookup(".upload-placeholder");
+        if (uploadPlaceholder != null) {
+            if (hasImage) {
+                uploadPlaceholder.getStyleClass().add("has-image");
+            } else {
+                uploadPlaceholder.getStyleClass().remove("has-image");
+            }
         }
     }
     
@@ -161,6 +219,10 @@ public class ItemDialogController {
                 // Show preview
                 Image image = new Image(file.toURI().toString());
                 imagePreview.setImage(image);
+                
+                // Update visibility
+                updateImagePreviewVisibility();
+                
             } catch (Exception ex) {
                 AlertHelper.showErrorAlert(
                     localeService.getMessage("item.image.error.title"),
@@ -176,7 +238,12 @@ public class ItemDialogController {
         item.setName(nameField.getText());
         item.setDescription(descriptionField.getText());
         item.setCondition(conditionComboBox.getValue());
-        item.setCategory(categoryField.getText());
+        
+        // Store the unlocalized category string for server consistency
+        Category selectedCategory = categoryComboBox.getValue();
+        String categoryToStore = selectedCategory != null ? selectedCategory.name() : Category.OTHER.name();
+        item.setCategory(categoryToStore); // This sends the enum name (e.g., "ELECTRONICS") to server
+        
         item.setBrand(brandField.getText());
         item.setModel(modelField.getText());
         item.setYearOfProduction(yearSpinner.getValue());

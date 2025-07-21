@@ -1,6 +1,4 @@
 package com.uninaswap.client.service;
-
-import com.uninaswap.client.util.WebSocketManager;
 import com.uninaswap.client.websocket.WebSocketClient;
 import com.uninaswap.common.message.ImageMessage;
 
@@ -18,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -30,6 +28,9 @@ public class ImageService {
     private final WebSocketClient webSocketClient;
     private final Map<String, Image> imageCache = new HashMap<>();
     
+    // Replace single handler with a map of pending requests
+    private final Map<String, CompletableFuture<Image>> pendingRequests = new ConcurrentHashMap<>();
+    
     // Singleton pattern
     public static ImageService getInstance() {
         if (instance == null) {
@@ -39,7 +40,7 @@ public class ImageService {
     }
     
     private ImageService() {
-        this.webSocketClient = WebSocketManager.getClient();
+        this.webSocketClient = WebSocketClient.getInstance();
         this.webSocketClient.registerMessageHandler(ImageMessage.class, this::handleImageResponse);
     }
     
@@ -92,13 +93,20 @@ public class ImageService {
      * @return A CompletableFuture with the Image on success
      */
     public CompletableFuture<Image> fetchImage(String imageId) {
-        CompletableFuture<Image> future = new CompletableFuture<>();
-        
         // Check cache first
         if (imageCache.containsKey(imageId)) {
-            future.complete(imageCache.get(imageId));
-            return future;
+            return CompletableFuture.completedFuture(imageCache.get(imageId));
         }
+        
+        // Check if there's already a pending request for this image
+        CompletableFuture<Image> existingRequest = pendingRequests.get(imageId);
+        if (existingRequest != null) {
+            return existingRequest;
+        }
+        
+        // Create new request
+        CompletableFuture<Image> future = new CompletableFuture<>();
+        pendingRequests.put(imageId, future);
         
         // If not in cache, request from server
         try {
@@ -106,50 +114,56 @@ public class ImageService {
             fetchMessage.setType(ImageMessage.Type.FETCH_REQUEST);
             fetchMessage.setImageId(imageId);
             
-            // Set up completion handler
-            setImageFetchHandler(response -> {
-                if (response.isSuccess() && response.getType() == ImageMessage.Type.FETCH_RESPONSE) {
-                    try {
-                        byte[] imageBytes = Base64.getDecoder().decode(response.getImageData());
-                        Image image = new Image(new ByteArrayInputStream(imageBytes));
-                        
-                        // Cache the image
-                        imageCache.put(imageId, image);
-                        
-                        future.complete(image);
-                    } catch (Exception e) {
-                        future.completeExceptionally(
-                                new IOException("Error decoding image data: " + e.getMessage()));
-                    }
-                } else {
-                    future.completeExceptionally(new IOException(response.getMessage()));
-                }
-            });
-            
             // Send the message
             webSocketClient.sendMessage(fetchMessage)
                 .exceptionally(ex -> {
+                    // Remove from pending and complete with error
+                    pendingRequests.remove(imageId);
                     future.completeExceptionally(ex);
                     return null;
                 });
                 
         } catch (Exception e) {
+            pendingRequests.remove(imageId);
             future.completeExceptionally(e);
         }
         
         return future;
     }
     
-    private Consumer<ImageMessage> fetchHandler;
-    
-    private void setImageFetchHandler(Consumer<ImageMessage> handler) {
-        this.fetchHandler = handler;
+    private void handleImageResponse(ImageMessage message) {
+        if (message.getType() == ImageMessage.Type.FETCH_RESPONSE) {
+            String imageId = message.getImageId();
+            CompletableFuture<Image> pendingRequest = pendingRequests.remove(imageId);
+            
+            if (pendingRequest != null) {
+                if (message.isSuccess() && message.getImageData() != null) {
+                    try {
+                        byte[] imageBytes = Base64.getDecoder().decode(message.getImageData());
+                        Image image = new Image(new ByteArrayInputStream(imageBytes));
+                        
+                        // Cache the image
+                        imageCache.put(imageId, image);
+                        
+                        // Complete the specific request
+                        pendingRequest.complete(image);
+                    } catch (Exception e) {
+                        pendingRequest.completeExceptionally(
+                                new IOException("Error decoding image data: " + e.getMessage()));
+                    }
+                } else {
+                    pendingRequest.completeExceptionally(
+                            new IOException(message.getMessage() != null ? message.getMessage() : "Image fetch failed"));
+                }
+            } else {
+                System.err.println("Received image response for unknown request: " + imageId);
+            }
+        }
     }
     
-    private void handleImageResponse(ImageMessage message) {
-        if (message.getType() == ImageMessage.Type.FETCH_RESPONSE && fetchHandler != null) {
-            fetchHandler.accept(message);
-        }
+    // Add method to clear pending requests if needed
+    public void clearPendingRequests() {
+        pendingRequests.clear();
     }
     
     // Clear the cache when needed

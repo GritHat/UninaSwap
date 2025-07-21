@@ -7,6 +7,7 @@ import com.uninaswap.common.enums.Currency;
 public class SellListingDTO extends ListingDTO {
     private BigDecimal price;
     private Currency currency;
+    private String pickupLocation;
     
     // Default constructor
     public SellListingDTO() {}
@@ -36,5 +37,15 @@ public class SellListingDTO extends ListingDTO {
     
     public void setCurrency(Currency currency) {
         this.currency = currency;
+    }
+
+    @Override
+    public String getPickupLocation() {
+        return pickupLocation;
+    }
+
+    @Override
+    public void setPickupLocation(String pickupLocation) {
+        this.pickupLocation = pickupLocation;
     }
 }

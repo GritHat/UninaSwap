@@ -10,7 +10,7 @@ public class ItemMapper {
         if (entity == null) {
             return null;
         }
-        
+
         ItemDTO dto = new ItemDTO();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
@@ -23,11 +23,15 @@ public class ItemMapper {
         dto.setYearOfProduction(entity.getYearOfProduction());
         dto.setStockQuantity(entity.getStockQuantity());
         dto.setAvailableQuantity(entity.getAvailableQuantity());
-        
+        dto.setCreatedAt(entity.getCreatedAt());
+        dto.setUpdatedAt(entity.getUpdatedAt());
+        dto.setAvailable(entity.isAvailable());
+        dto.setVisible(entity.isVisible());
+
         if (entity.getOwner() != null) {
             dto.setOwnerId(entity.getOwner().getId());
         }
-        
+
         return dto;
     }
 }

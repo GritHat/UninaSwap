@@ -4,10 +4,31 @@ package com.uninaswap.common.enums;
  * Represents the status of an offer
  */
 public enum OfferStatus {
-    PENDING,    // Offer is awaiting a response
-    ACCEPTED,   // Offer has been accepted
-    REJECTED,   // Offer has been rejected
-    WITHDRAWN,  // Offer has been withdrawn by the user
-    EXPIRED,    // Offer has expired (time limit)
-    COMPLETED   // Transaction has been completed
+    PENDING("offer.status.pending"),
+    ACCEPTED("offer.status.accepted"),
+    PICKUPSCHEDULING("offer.status.pickupscheduling"),
+    PICKUPRESCHEDULING("offer.status.pickuprescheduling"),
+    CONFIRMED("offer.status.confirmed"),
+    SELLERVERIFIED("offer.status.sellerverified"),
+    BUYERVERIFIED("offer.status.buyerverified"),
+    CANCELLED("offer.status.cancelled"),
+    REJECTED("offer.status.rejected"),
+    WITHDRAWN("offer.status.withdrawn"),
+    EXPIRED("offer.status.expired"),
+    COMPLETED("offer.status.completed"),
+    REVIEWED("offer.status.reviewed");
+
+    private final String messageKey;
+
+    OfferStatus(String messageKey) {
+        this.messageKey = messageKey;
+    }
+
+    public String getMessageKey() {
+        return messageKey;
+    }
+
+    public String getDisplayName() {
+        return messageKey;
+    }
 }

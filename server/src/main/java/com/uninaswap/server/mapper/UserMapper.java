@@ -11,7 +11,7 @@ public class UserMapper {
         if (entity == null) {
             return null;
         }
-        
+
         UserDTO dto = new UserDTO();
         dto.setId(entity.getId());
         dto.setUsername(entity.getUsername());
@@ -20,7 +20,16 @@ public class UserMapper {
         dto.setLastName(entity.getLastName());
         dto.setBio(entity.getBio());
         dto.setProfileImagePath(entity.getProfileImagePath());
-        
+        dto.setCreatedAt(entity.getCreatedAt());
+        dto.setLastLoginAt(entity.getLastLoginAt());
+        dto.setActive(entity.isActive());
+        dto.setPhoneNumber(entity.getPhoneNumber());
+        dto.setAddress(entity.getAddress());
+        dto.setCity(entity.getCity());
+        dto.setCountry(entity.getCountry());
+        dto.setZipPostalCode(entity.getZipPostalCode());
+        dto.setStateProvince(entity.getStateProvince());
+
         return dto;
     }
 }

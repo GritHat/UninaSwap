@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.uninaswap.client.controller.UserReviewsController"
+      spacing="15" prefWidth="800" prefHeight="700">
+   <padding>
+      <Insets top="20" right="20" bottom="20" left="20" />
+   </padding>
+
+   <!-- Header -->
+   <VBox spacing="5">
+      <Label fx:id="titleLabel" styleClass="title-label" />
+   </VBox>
+
+   <Separator />
+
+   <!-- User Rating Summary -->
+   <VBox spacing="15" styleClass="rating-summary-section">
+      <Label fx:id="userNameLabel" styleClass="user-name-label" />
+      
+      <HBox spacing="20" alignment="CENTER_LEFT">
+         <!-- Overall Rating -->
+         <VBox spacing="5" alignment="CENTER">
+            <Label fx:id="averageRatingLabel" styleClass="average-rating-label" />
+            <HBox fx:id="ratingStarsBox" spacing="2" alignment="CENTER" />
+            <Label fx:id="totalReviewsLabel" styleClass="total-reviews-label" />
+         </VBox>
+         
+         <!-- Rating Bar -->
+         <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Overall Rating" styleClass="section-subtitle" />
+            <ProgressBar fx:id="ratingBar" prefWidth="200" styleClass="rating-progress-bar" />
+         </VBox>
+         
+         <!-- Refresh Button -->
+         <Button fx:id="refreshButton" onAction="#handleRefresh" />
+      </HBox>
+   </VBox>
+
+   <Separator />
+
+   <!-- Reviews Tabs -->
+   <TabPane fx:id="reviewsTabPane" VBox.vgrow="ALWAYS">
+      <tabs>
+         <!-- Received Reviews Tab -->
+         <Tab text="Received Reviews" closable="false">
+            <content>
+               <VBox spacing="10">
+                  <TableView fx:id="receivedReviewsTable" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn fx:id="receivedReviewerColumn" prefWidth="150" text="Reviewer" />
+                        <TableColumn fx:id="receivedScoreColumn" prefWidth="80" text="Rating" />
+                        <TableColumn fx:id="receivedCommentColumn" prefWidth="300" text="Comment" />
+                        <TableColumn fx:id="receivedDateColumn" prefWidth="120" text="Date" />
+                     </columns>
+                     <placeholder>
+                        <Label text="No reviews received yet" />
+                     </placeholder>
+                  </TableView>
+               </VBox>
+            </content>
+         </Tab>
+         
+         <!-- Given Reviews Tab -->
+         <Tab text="Given Reviews" closable="false">
+            <content>
+               <VBox spacing="10">
+                  <TableView fx:id="givenReviewsTable" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn fx:id="givenReviewedUserColumn" prefWidth="150" text="Reviewed User" />
+                        <TableColumn fx:id="givenScoreColumn" prefWidth="80" text="Rating" />
+                        <TableColumn fx:id="givenCommentColumn" prefWidth="300" text="Comment" />
+                        <TableColumn fx:id="givenDateColumn" prefWidth="120" text="Date" />
+                     </columns>
+                     <placeholder>
+                        <Label text="No reviews given yet" />
+                     </placeholder>
+                  </TableView>
+               </VBox>
+            </content>
+         </Tab>
+      </tabs>
+   </TabPane>
+
+   <!-- Review Details Section -->
+   <VBox fx:id="reviewDetailsSection" spacing="10" styleClass="review-details-section" visible="false">
+      <Separator />
+      
+      <Label text="Review Details" styleClass="section-label" />
+      
+      <GridPane hgap="15" vgap="10">
+         <columnConstraints>
+            <ColumnConstraints minWidth="100" prefWidth="120" />
+            <ColumnConstraints hgrow="ALWAYS" />
+         </columnConstraints>
+         
+         <Label text="Reviewer:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+         <Label fx:id="detailReviewerLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+         
+         <Label text="Rating:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+         <HBox spacing="10" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label fx:id="detailScoreLabel" />
+            <HBox fx:id="detailStarsBox" spacing="2" />
+         </HBox>
+         
+         <Label text="Date:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+         <Label fx:id="detailDateLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         
+         <Label text="Comment:" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.valignment="TOP" />
+         <TextArea fx:id="detailCommentArea" editable="false" prefRowCount="3" 
+                   GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      </GridPane>
+   </VBox>
+
+   <!-- Actions -->
+   <HBox spacing="10" alignment="CENTER_RIGHT">
+      <Button fx:id="closeButton" onAction="#handleClose" />
+   </HBox>
+</VBox>

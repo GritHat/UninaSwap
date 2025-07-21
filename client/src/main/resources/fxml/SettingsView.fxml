@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane styleClass="standard-window" stylesheets="@../css/styles.css" 
+            xmlns="http://javafx.com/javafx/23.0.1" 
+            xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.uninaswap.client.controller.SettingsController">
+   <children>
+      <BorderPane prefHeight="599.0" prefWidth="749.0" 
+                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" 
+                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+               <content>
+                  <VBox spacing="15.0" style="-fx-background-color: #F8F8F8;">
+                     <children>
+                        <!-- Header -->
+                        <HBox alignment="CENTER_LEFT" styleClass="section-header">
+                           <children>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/icons/Settings.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets left="15.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.title">
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" top="10.0" />
+                           </padding>
+                        </HBox>
+                        
+                        <!-- Account Settings Section -->
+                        <VBox spacing="15.0" styleClass="card">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/icons/user_profile.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.account">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </HBox>
+                              <Separator prefWidth="200.0" />
+                              
+                              <VBox spacing="15.0">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                       <children>
+                                          <Label prefWidth="150.0" text="%label.email" />
+                                          <TextField fx:id="emailField" prefWidth="250.0" promptText="%label.email" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                       <children>
+                                          <Label prefWidth="150.0" text="%label.current.password" />
+                                          <PasswordField fx:id="currentPasswordField" prefWidth="250.0" promptText="%label.current.password" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                       <children>
+                                          <Label prefWidth="150.0" text="%label.new.password" />
+                                          <PasswordField fx:id="newPasswordField" prefWidth="250.0" promptText="%label.new.password" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                       <children>
+                                          <Label prefWidth="150.0" text="%label.new.password.confirm" />
+                                          <PasswordField fx:id="confirmPasswordField" prefWidth="250.0" promptText="%label.new.password.confirm" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT">
+                                       <children>
+                                          <Button fx:id="changePasswordButton" mnemonicParsing="false" onAction="#handleChangePassword" text="%settings.button.change.password" />
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                        
+                        <!-- Notification Settings Section -->
+                        <VBox spacing="15.0" styleClass="card">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/icons/notification.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.notifications">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </HBox>
+                              <Separator prefWidth="200.0" />
+                              
+                              <VBox spacing="10.0">
+                                 <children>
+                                    <CheckBox fx:id="emailNotificationsCheckBox" mnemonicParsing="false" text="%settings.notifications.email" />
+                                    <CheckBox fx:id="appNotificationsCheckBox" mnemonicParsing="false" text="%settings.notifications.app" />
+                                    <CheckBox fx:id="offerNotificationsCheckBox" mnemonicParsing="false" text="%settings.notifications.offers" />
+                                    <CheckBox fx:id="messageNotificationsCheckBox" mnemonicParsing="false" text="%settings.notifications.messages" />
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                        
+                        <!-- Application Settings Section -->
+                        <VBox spacing="15.0" styleClass="card">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/icons/Settings.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%settings.application">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </HBox>
+                              <Separator prefWidth="200.0" />
+                              
+                              <VBox spacing="15.0">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                       <children>
+                                          <Label prefWidth="150.0" text="%settings.language" />
+                                          <ComboBox fx:id="languageComboBox" prefWidth="250.0" promptText="%settings.language.select" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                       <children>
+                                          <Label prefWidth="150.0" text="%settings.theme" />
+                                          <ComboBox fx:id="themeComboBox" prefWidth="250.0" promptText="%settings.theme.select" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                       <children>
+                                          <Label prefWidth="150.0" text="%settings.font.size" />
+                                          <Slider fx:id="fontSizeSlider" prefWidth="250.0" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                        
+                        <!-- Save/Cancel Buttons -->
+                        <VBox styleClass="card">
+                           <children>
+                              <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                                 <children>
+                                    <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="%button.cancel" />
+                                    <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" onAction="#handleSave" text="%button.save" />
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="20.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </center>
+         <right>
+            <Separator orientation="VERTICAL" prefHeight="486.0" prefWidth="0.0" 
+                       style="-fx-background-color: #4A2B6B;" BorderPane.alignment="CENTER" />
+         </right>
+      </BorderPane>
+   </children>
+</AnchorPane>

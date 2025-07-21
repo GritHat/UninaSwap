@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="main-content-background" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.OffersController">
+  <content>
+    <VBox spacing="20.0" styleClass="offers-main-container">
+      <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      </padding>
+      
+      <!-- Header Section -->
+      <VBox spacing="15.0" styleClass="offers-header-section">
+        <children>
+          <!-- Title and Icon -->
+          <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <children>
+              <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@../images/icons/offers.png" />
+                </image>
+              </ImageView>
+              <Text styleClass="page-title-label" text="%offers.title">
+                <font>
+                  <Font size="24.0" />
+                </font>
+              </Text>
+              <Region HBox.hgrow="ALWAYS" />
+              <Button fx:id="refreshButton" onAction="#handleRefreshOffers" styleClass="primary-button" text="%button.refresh">
+                <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                      <Image url="@../images/icons/refresh.png"/>
+                    </image>
+                  </ImageView>
+                </graphic>
+              </Button>
+            </children>
+          </HBox>
+          
+          <!-- Filters Section -->
+          <VBox spacing="10.0" styleClass="offers-filters-section">
+            <children>
+              <!-- First row: Search and filters -->
+              <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <children>
+                  <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                    <children>
+                      <Label styleClass="filter-label" text="%offers.filter.search" />
+                      <TextField fx:id="searchField" promptText="%offers.filter.search.placeholder" styleClass="filter-search-field" />
+                    </children>
+                  </VBox>
+                  
+                  <VBox spacing="5.0">
+                    <children>
+                      <Label styleClass="filter-label" text="%offers.filter.status" />
+                      <ComboBox fx:id="statusFilterComboBox" prefWidth="150.0" promptText="%offers.filter.all.statuses" styleClass="filter-combo-box" />
+                    </children>
+                  </VBox>
+                  
+                  <VBox spacing="5.0">
+                    <children>
+                      <Label styleClass="filter-label" text="%offers.filter.type" />
+                      <ComboBox fx:id="typeFilterComboBox" prefWidth="120.0" promptText="%offers.filter.all.types" styleClass="filter-combo-box" />
+                    </children>
+                  </VBox>
+                  
+                  <VBox spacing="5.0">
+                    <children>
+                      <Label text=" " />
+                      <Button fx:id="clearFiltersButton" onAction="#handleClearFilters" styleClass="clear-filters-button" text="%offers.filter.clear" />
+                    </children>
+                  </VBox>
+                </children>
+              </HBox>
+            </children>
+          </VBox>
+        </children>
+      </VBox>
+      
+      <!-- Main Content Area with TabPane -->
+      <VBox spacing="0.0" VBox.vgrow="ALWAYS">
+        <children>
+          <TabPane fx:id="offersTabPane" styleClass="offers-tab-pane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+            <tabs>
+              <!-- Received Offers Tab -->
+              <Tab fx:id="receivedTab" text="%offers.tab.received">
+                <content>
+                  <fx:include fx:id="receivedOffersContent" source="OffersTabContent.fxml" />
+                </content>
+              </Tab>
+              
+              <!-- Sent Offers Tab -->
+              <Tab fx:id="sentTab" text="%offers.tab.sent">
+                <content>
+                  <fx:include fx:id="sentOffersContent" source="OffersTabContent.fxml" />
+                </content>
+              </Tab>
+              
+              <!-- History Tab -->
+              <Tab fx:id="historyTab" text="%offers.tab.history">
+                <content>
+                  <fx:include fx:id="historyOffersContent" source="OffersTabContent.fxml" />
+                </content>
+              </Tab>
+            </tabs>
+          </TabPane>
+        </children>
+      </VBox>
+    </VBox>
+  </content>
+</ScrollPane>

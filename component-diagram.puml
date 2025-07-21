@@ -1,0 +1,211 @@
+@startuml UninaSwap_Component_Architecture
+
+!define CLIENT_COLOR #E8F4FD
+!define SERVER_COLOR #FFF2E8
+!define SHARED_COLOR #F0F8FF
+!define INTERFACE_COLOR #E6F3FF
+
+title UninaSwap - Component Architecture Diagram
+
+skinparam component {
+    BackgroundColor #FFFFFF
+    BorderColor #333333
+    BorderThickness 2
+    FontSize 12
+}
+
+skinparam interface {
+    BackgroundColor #E6F3FF
+    BorderColor #4A90E2
+    BorderThickness 2
+}
+
+skinparam package {
+    BackgroundColor transparent
+    BorderColor #666666
+    BorderThickness 1
+    FontStyle bold
+}
+
+package "CLIENT DOMAIN" as ClientDomain #E8F4FD {
+    
+    [FXML Views] as FXML
+    [Controllers] as Controllers
+    [Client Services] as ClientServices
+    [ViewModels] as ViewModels
+    [WebSocket Client] as WSClient
+    [Navigation Service] as NavService
+    [Image Service] as ImgService
+    
+    note right of FXML
+        ProfileView.fxml
+        OffersView.fxml
+        ListingDetailsView.fxml
+        ItemDialogView.fxml
+        etc.
+    end note
+    
+    note right of Controllers
+        ProfileController
+        OffersController
+        ListingDetailsController
+        ItemDialogController
+        etc.
+    end note
+    
+    note right of ClientServices
+        ListingService
+        OfferService
+        ItemService
+        NotificationService
+        ProfileService
+        FavoritesService
+        SearchService
+    end note
+    
+    note right of ViewModels
+        UserViewModel
+        ListingViewModel
+        OfferViewModel
+        ItemViewModel
+        etc.
+    end note
+}
+
+package "SHARED LAYER" as SharedLayer #FFF2E8 {
+    
+    [DTOs] as DTOs
+    [Enums] as Enums
+    [Messages] as Messages
+    [ViewModelMapper] as VMMapper
+    
+    note right of DTOs
+        UserDTO
+        ListingDTO
+        OfferDTO
+        ItemDTO
+        etc.
+    end note
+    
+    note right of Enums
+        ListingStatus
+        OfferStatus
+        Currency
+        Category
+        ItemCondition
+        etc.
+    end note
+    
+    note right of Messages
+        ProfileUpdateMessage
+        ListingMessage
+        OfferMessage
+        etc.
+    end note
+}
+
+package "SERVER DOMAIN" as ServerDomain #F0F8FF {
+    
+    [WebSocket Handlers] as WSHandlers
+    [Server Services] as ServerServices
+    [Mappers] as Mappers
+    [JPA Entities] as Entities
+    [Repositories] as Repositories
+    
+    note right of WSHandlers
+        ListingWebSocketHandler
+        OfferWebSocketHandler
+        ProfileWebSocketHandler
+        ItemWebSocketHandler
+        etc.
+    end note
+    
+    note right of ServerServices
+        ListingService
+        OfferService
+        UserService
+        ItemService
+        NotificationService
+        etc.
+    end note
+    
+    note right of Mappers
+        ListingMapper
+        OfferMapper
+        UserMapper
+        ItemMapper
+        CommonListingMapper
+        etc.
+    end note
+    
+    note right of Entities
+        UserEntity
+        ListingEntity
+        OfferEntity
+        ItemEntity
+        etc.
+    end note
+    
+    note right of Repositories
+        UserRepository
+        ListingRepository
+        OfferRepository
+        ItemRepository
+        etc.
+    end note
+}
+
+' WebSocket Communication Interface
+interface "WebSocket\nCommunication" as WSInterface
+
+' Client Domain Internal Relationships
+FXML --> Controllers : "binds to"
+Controllers --> ClientServices : "uses"
+Controllers --> ViewModels : "manages"
+Controllers --> NavService : "navigates with"
+Controllers --> ImgService : "loads images"
+ClientServices --> WSClient : "communicates via"
+ClientServices --> VMMapper : "converts data"
+
+' Shared Layer Usage
+Controllers ..> DTOs : "transfers data"
+ClientServices ..> DTOs : "processes"
+ViewModels ..> Enums : "uses types"
+ClientServices ..> Messages : "sends/receives"
+VMMapper --> DTOs : "converts from"
+VMMapper --> ViewModels : "converts to"
+
+' WebSocket Communication
+WSClient --> WSInterface : "sends"
+WSInterface --> WSHandlers : "receives"
+
+' Server Domain Internal Relationships
+WSHandlers --> ServerServices : "delegates to"
+ServerServices --> Mappers : "converts with"
+ServerServices --> Repositories : "persists via"
+Mappers --> Entities : "maps from"
+Mappers --> DTOs : "maps to"
+Repositories --> Entities : "manages"
+
+' Cross-Domain Data Flow
+WSHandlers ..> Messages : "handles"
+ServerServices ..> DTOs : "processes"
+Entities ..> Enums : "uses types"
+
+' Additional Service Dependencies
+NavService ..> Controllers : "loads"
+ImgService ..> ClientServices : "serves"
+
+legend bottom left
+    |Color |Domain |
+    |#E8F4FD | Client Domain |
+    |#F0F8FF | Shared Layer |
+    |#FFF2E8 | Server Domain |
+    |#E6F3FF | Interfaces |
+    
+    |Line Type |Relationship |
+    |——————— | Direct Dependency |
+    |·········· | Data Usage |
+endlegend
+
+@enduml

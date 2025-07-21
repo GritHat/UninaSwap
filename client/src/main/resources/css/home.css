@@ -1,0 +1,107 @@
+/* HomeView specific styles */
+.home-content-container {
+    -fx-alignment: TOP_CENTER;
+    -fx-spacing: 20px;
+}
+
+.home-section {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    /*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);*/
+    -fx-padding: 15px;
+}
+
+.section-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.section-scroll .viewport {
+    -fx-background-color: transparent;
+}
+
+.placeholder-text {
+    -fx-fill: #888;
+    -fx-font-style: italic;
+    -fx-font-size: 14px;
+    -fx-text-alignment: center;
+}
+
+/* Dynamic listing card marker */
+.dynamic-listing-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
+/* Loading animation */
+.loading-container {
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+}
+
+.loading-text {
+    -fx-fill: #666;
+    -fx-font-size: 16px;
+}
+
+/* Responsive behavior for different screen sizes */
+@media screen and (max-width: 1000px) {
+    .home-content-container {
+        -fx-min-width: 500px;
+        -fx-max-width: 900px;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .home-content-container {
+        -fx-min-width: 400px;
+        -fx-max-width: 700px;
+    }
+
+    .home-section {
+        -fx-padding: 10px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .home-content-container {
+        -fx-min-width: 350px;
+        -fx-max-width: 500px;
+    }
+}
+
+/* Grid layout for listings */
+.section-scroll .flow-pane {
+    -fx-alignment: top-left;
+    -fx-column-halignment: center;
+    -fx-row-valignment: center;
+}
+
+/* Ensure listing cards have consistent size in grid */
+.listing-card {
+    -fx-pref-width: 280px;
+    -fx-pref-height: 320px;
+    -fx-max-width: 280px;
+    -fx-max-height: 320px;
+}
+
+/* Loading indicator */
+.loading-indicator {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-padding: 20;
+}
+
+.loading-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+
+/* Placeholder styling */
+.placeholder-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #999999;
+    -fx-text-alignment: center;
+}

@@ -15,56 +15,47 @@ public class ItemMessage extends Message {
         DELETE_ITEM_REQUEST,
         DELETE_ITEM_RESPONSE
     }
-    
+
     private Type type;
     private ItemDTO item;
     private List<ItemDTO> items;
     private String errorMessage;
-    private boolean success;
-    
+
     // Default constructor
     public ItemMessage() {
-        setMessageType("ITEM");
+        setMessageType("item");
     }
-    
+
     // Getters and setters
     public Type getType() {
         return type;
     }
-    
+
     public void setType(Type type) {
         this.type = type;
     }
-    
+
     public ItemDTO getItem() {
         return item;
     }
-    
+
     public void setItem(ItemDTO item) {
         this.item = item;
     }
-    
+
     public List<ItemDTO> getItems() {
         return items;
     }
-    
+
     public void setItems(List<ItemDTO> items) {
         this.items = items;
     }
-    
+
     public String getErrorMessage() {
         return errorMessage;
     }
-    
+
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
-    }
-    
-    public boolean isSuccess() {
-        return success;
-    }
-    
-    public void setSuccess(boolean success) {
-        this.success = success;
     }
 }

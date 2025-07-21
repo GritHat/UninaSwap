@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.uninaswap.client.controller.ReportDialogController"
+      spacing="20" prefWidth="450" prefHeight="500">
+   <padding>
+      <Insets top="20" right="20" bottom="20" left="20" />
+   </padding>
+
+   <!-- Header -->
+   <VBox spacing="5">
+      <Label fx:id="titleLabel" styleClass="title-label" />
+      <Label fx:id="instructionsLabel" styleClass="subtitle-label" wrapText="true" />
+   </VBox>
+
+   <Separator />
+
+   <!-- Target Information -->
+   <VBox spacing="10">
+      <Label fx:id="targetLabel" styleClass="section-label" wrapText="true" />
+   </VBox>
+
+   <!-- Reason Selection -->
+   <VBox spacing="10">
+      <Label text="Reason for Report" styleClass="section-label" />
+      
+      <!-- User Report Reason -->
+      <ComboBox fx:id="userReasonComboBox" maxWidth="Infinity" 
+                promptText="Select a reason..." />
+      
+      <!-- Listing Report Reason -->
+      <ComboBox fx:id="listingReasonComboBox" maxWidth="Infinity" 
+                promptText="Select a reason..." />
+   </VBox>
+
+   <!-- Description Section -->
+   <VBox spacing="10" VBox.vgrow="ALWAYS">
+      <Label text="Additional Details (Optional)" styleClass="section-label" />
+      
+      <TextArea fx:id="descriptionTextArea" 
+                prefRowCount="6" 
+                VBox.vgrow="ALWAYS" />
+      
+      <HBox alignment="CENTER_RIGHT">
+         <Label fx:id="characterCountLabel" styleClass="character-count" />
+      </HBox>
+      
+      <Label text="Please provide any additional context that might help us review this report" 
+             styleClass="help-text" wrapText="true" />
+   </VBox>
+
+   <!-- Actions -->
+   <HBox spacing="10" alignment="CENTER_RIGHT">
+      <Button fx:id="cancelButton" onAction="#handleCancel" />
+      <Button fx:id="submitButton" onAction="#handleSubmit" 
+              styleClass="primary-button" />
+   </HBox>
+</VBox>

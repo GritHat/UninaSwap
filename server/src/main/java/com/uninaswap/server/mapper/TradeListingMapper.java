@@ -11,45 +11,46 @@ import java.util.stream.Collectors;
 
 @Component
 public class TradeListingMapper {
-    
-    private final ListingMapper listingMapper;
+
+    private final CommonListingMapper commonListingMapper;
     private final ItemMapper itemMapper;
-    
+
     @Autowired
-    public TradeListingMapper(ListingMapper listingMapper, ItemMapper itemMapper) {
-        this.listingMapper = listingMapper;
+    public TradeListingMapper(CommonListingMapper commonListingMapper, ItemMapper itemMapper) {
+        this.commonListingMapper = commonListingMapper;
         this.itemMapper = itemMapper;
     }
-    
+
     public TradeListingDTO toDto(TradeListingEntity entity) {
         if (entity == null) {
             return null;
         }
-        
+
         TradeListingDTO dto = new TradeListingDTO();
-        
-        // Map common fields from base class
-        listingMapper.mapCommonFields(entity, dto);
-        
+
+        // Map common fields using the utility
+        commonListingMapper.mapCommonFields(entity, dto);
+
         // Map trade-specific fields
         dto.setDesiredCategories(entity.getDesiredCategories());
         dto.setAcceptMoneyOffers(entity.isAcceptMoneyOffers());
         dto.setAcceptMixedOffers(entity.isAcceptMixedOffers());
         dto.setAcceptOtherOffers(entity.isAcceptOtherOffers());
-        
+        dto.setPickupLocation(entity.getPickupLocation());
+
         if (entity.isAcceptMoneyOffers()) {
             dto.setReferencePrice(entity.getReferencePrice());
             dto.setCurrency(entity.getCurrency());
         }
-        
+
         // Map desired items
         if (entity.getDesiredItems() != null && !entity.getDesiredItems().isEmpty()) {
             List<ItemDTO> desiredItemDtos = entity.getDesiredItems().stream()
-                .map(itemMapper::toDto)
-                .collect(Collectors.toList());
+                    .map(itemMapper::toDto)
+                    .collect(Collectors.toList());
             dto.setDesiredItems(desiredItemDtos);
         }
-        
+
         return dto;
     }
 }

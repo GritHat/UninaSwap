@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="com.uninaswap.client.controller.UserFollowersController"
+      spacing="15" prefWidth="700" prefHeight="600">
+   <padding>
+      <Insets top="20" right="20" bottom="20" left="20" />
+   </padding>
+
+   <!-- Header -->
+   <VBox spacing="5">
+      <Label fx:id="titleLabel" styleClass="title-label" />
+   </VBox>
+
+   <Separator />
+
+   <!-- User Summary -->
+   <VBox spacing="15" styleClass="user-summary-section">
+      <Label fx:id="userNameLabel" styleClass="user-name-label" />
+      
+      <HBox spacing="30" alignment="CENTER_LEFT">
+         <!-- Following Count -->
+         <VBox spacing="5" alignment="CENTER">
+            <Label fx:id="followingCountLabel" styleClass="count-label" />
+            <Label text="Following" styleClass="count-description" />
+         </VBox>
+         
+         <!-- Followers Count -->
+         <VBox spacing="5" alignment="CENTER">
+            <Label fx:id="followersCountLabel" styleClass="count-label" />
+            <Label text="Followers" styleClass="count-description" />
+         </VBox>
+         
+         <!-- Refresh Button -->
+         <Button fx:id="refreshButton" onAction="#handleRefresh" />
+      </HBox>
+   </VBox>
+
+   <Separator />
+
+   <!-- Followers/Following Tabs -->
+   <TabPane fx:id="followersTabPane" VBox.vgrow="ALWAYS">
+      <tabs>
+         <!-- Following Tab -->
+         <Tab text="Following" closable="false">
+            <content>
+               <VBox spacing="10">
+                  <TableView fx:id="followingTable" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn fx:id="followingNameColumn" prefWidth="150" text="Name" />
+                        <TableColumn fx:id="followingUsernameColumn" prefWidth="120" text="Username" />
+                        <TableColumn fx:id="followingDateColumn" prefWidth="100" text="Since" />
+                        <TableColumn fx:id="followingActionsColumn" prefWidth="150" text="Actions" />
+                     </columns>
+                     <placeholder>
+                        <Label text="Not following anyone yet" />
+                     </placeholder>
+                  </TableView>
+               </VBox>
+            </content>
+         </Tab>
+         
+         <!-- Followers Tab -->
+         <Tab text="Followers" closable="false">
+            <content>
+               <VBox spacing="10">
+                  <TableView fx:id="followersTable" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn fx:id="followersNameColumn" prefWidth="150" text="Name" />
+                        <TableColumn fx:id="followersUsernameColumn" prefWidth="120" text="Username" />
+                        <TableColumn fx:id="followersDateColumn" prefWidth="100" text="Since" />
+                        <TableColumn fx:id="followersActionsColumn" prefWidth="150" text="Actions" />
+                     </columns>
+                     <placeholder>
+                        <Label text="No followers yet" />
+                     </placeholder>
+                  </TableView>
+               </VBox>
+            </content>
+         </Tab>
+      </tabs>
+   </TabPane>
+
+   <!-- Actions -->
+   <HBox spacing="10" alignment="CENTER_RIGHT">
+      <Button fx:id="closeButton" onAction="#handleClose" />
+   </HBox>
+</VBox>

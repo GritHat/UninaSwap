@@ -20,51 +20,56 @@ import java.util.Optional;
 
 @Component
 public class AuthWebSocketHandler extends TextWebSocketHandler {
-    
+
     private final AuthService authService;
     private final SessionService sessionService;
     private final UserMapper userMapper;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    
+    private final ObjectMapper objectMapper;
+
     @Autowired
-    public AuthWebSocketHandler(AuthService authService, SessionService sessionService, UserMapper userMapper) {
+    public AuthWebSocketHandler(
+            AuthService authService,
+            SessionService sessionService,
+            UserMapper userMapper,
+            ObjectMapper objectMapper) {
         this.authService = authService;
         this.sessionService = sessionService;
         this.userMapper = userMapper;
+        this.objectMapper = objectMapper;
     }
-    
+
     @Override
     public void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) throws Exception {
         try {
             AuthMessage authMessage = objectMapper.readValue(message.getPayload(), AuthMessage.class);
-            
-            System.out.println("SERVER RECEIVED: " + message.getPayload());
-            System.out.println("Message type: " + authMessage.getType() + ", Username: " + authMessage.getUsername());
-            
             AuthMessage response = new AuthMessage();
-            
+
             switch (authMessage.getType()) {
-                case LOGIN_REQUEST: processUserAuthentication(authMessage, response, session); break;
-                case REGISTER_REQUEST: processUserRegistration(authMessage, response); break;
+                case LOGIN_REQUEST:
+                    processUserAuthentication(authMessage, response, session);
+                    break;
+                case REGISTER_REQUEST:
+                    processUserRegistration(authMessage, response);
+                    break;
                 default:
                     response.setSuccess(false);
                     response.setMessage("Unknown message type: " + authMessage.getType());
                     System.out.println("Unknown message type: " + authMessage.getType());
             }
-            
+
             String responseJson = objectMapper.writeValueAsString(response);
             System.out.println("SERVER SENDING: " + responseJson);
             session.sendMessage(new TextMessage(responseJson));
-            
+
         } catch (Exception e) {
             System.err.println("Error processing auth message: " + e.getMessage());
             e.printStackTrace();
-            
+
             AuthMessage errorResponse = new AuthMessage();
             errorResponse.setType(AuthMessage.Type.LOGIN_RESPONSE); // Use LOGIN_RESPONSE as fallback
             errorResponse.setSuccess(false);
             errorResponse.setMessage("Server error: " + e.getMessage());
-            
+
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(errorResponse)));
         }
     }
@@ -74,9 +79,9 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
         newUser.setUsername(authMessage.getUsername());
         newUser.setEmail(authMessage.getEmail());
         newUser.setPassword(authMessage.getPassword());
-        
+
         boolean registered = authService.register(newUser);
-        
+
         response.setType(AuthMessage.Type.REGISTER_RESPONSE);
         response.setSuccess(registered);
         response.setMessage(registered ? "Registration successful" : "Username or email already exists");
@@ -84,16 +89,15 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
 
     private void processUserAuthentication(AuthMessage authMessage, AuthMessage response, WebSocketSession session) {
         Optional<UserEntity> userOpt = authService.authenticateAndGetUser(
-            authMessage.getUsername(), 
-            authMessage.getPassword()
-        );
-        
+                authMessage.getUsername(),
+                authMessage.getPassword());
+
         if (userOpt.isPresent()) {
             UserEntity user = userOpt.get();
-            
+            sessionService.InvalidateTokenAndSessionForUser(user);
             // Create authenticated session and get token
             String token = sessionService.createAuthenticatedSession(session, user);
-            
+
             response.setType(AuthMessage.Type.LOGIN_RESPONSE);
             response.setSuccess(true);
             response.setMessage("Authentication successful");

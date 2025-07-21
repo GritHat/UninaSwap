@@ -11,5 +11,16 @@
             "path": "/usr/lib/jvm/jdk-24-oracle-x64",
             "default": true
         }
-    ]
+    ],
+    "java.jdt.ls.vmargs": "-Xms4G -Xmx48G -XX:+UseZGC -XX:+UseStringDeduplication -Dsun.zip.disableMemoryMapping=true",
+    "java.completion.filteredTypes": ["java.awt.*", "com.sun.*"],
+    "java.referencesCodeLens.enabled": false,
+    "java.format.enabled": false,
+    "java.completion.enabled": true,
+    "java.symbols.includeSourceMethodDeclarations": false,
+    "java.import.gradle.enabled": false,
+    "java.import.maven.enabled": true, // assuming you use Maven, disable if not needed
+    "java.project.importHint.enabled": false,
+    "java.contentProvider.preferred": "standard",
+    "java.autobuild.enabled": false
 }

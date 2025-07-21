@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="popup-window, alert-popup" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.TermsAndConditionsController">
+   <children>
+      <!-- Header with icon -->
+      <HBox alignment="CENTER" spacing="10.0">
+         <children>
+            <ImageView fx:id="alertIcon" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/icons/warning.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="titleLabel" styleClass="alert-title" text="%terms.section1.title">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="996.0" prefWidth="1382.0" spacing="10.0">
+         <children>
+            <ImageView fx:id="alertIcon1" fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/icons/warning.png" />
+               </image>
+            </ImageView>
+           
+            <GridPane alignment="CENTER" hgap="0" vgap="0">
+               <children>
+                  <Label styleClass="ascii-art" text="░░░░░░░░░░░░▄▄▄▄▄▄▄▄▄▄▄▄▄░░░░░░░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                  <Label styleClass="ascii-art" text="░░░░░░▄▄████▀▀▀▀▀░░░░░░▀▀█▄▄░░░░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                  <Label styleClass="ascii-art" text="░░░▄██▀▀░░░░░░░░░░░░░░░░░░▀██▄░░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  <Label styleClass="ascii-art" text="░░▄█▀░░░░░░░░░░░░░░░░░░░░░░░░▀█▄░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                  <Label styleClass="ascii-art" text="░██░░░░░░░░░░░░░░░░░░░░░░░░░░░▀█▄░░░░" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                  <Label styleClass="ascii-art" text="██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▀█▄░░░" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                  <Label styleClass="ascii-art" text="██░░░░░░░░░░░░░░░░░░░░░░░░░▄▄▄░░▀█░░░" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                  <Label styleClass="ascii-art" text="█░░░░░░░░░░░░░░░░░░░░░░░░░░▀██▄░░██░░" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                  <Label styleClass="ascii-art" text="█░░░░░████░░░░░░░░░░░░░░░░░░░░░░░░█▄░" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                  <Label styleClass="ascii-art" text="█░░░░░▀▀▀█░░░░░░░░░░░░░░░░░░░░░░░░██░" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                  <Label styleClass="ascii-art" text="█░░░░░░░░░░░░░░░░░░░░░░░▄▄▄▄█████▀░█▄" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                  <Label styleClass="ascii-art" text="█░░░░░░░░░░▄▄▄▄▄██████▀▀▀▀▀▀░░░░░░░██" GridPane.columnIndex="0" GridPane.rowIndex="11" />
+                  <Label styleClass="ascii-art" text="█░░░░▄█████▀▀▀▀▀░▄▄▄████░░░░░░░░░░░██" GridPane.columnIndex="0" GridPane.rowIndex="12" />
+                  <Label styleClass="ascii-art" text="██░░░░░░░░░░░░░░░░▀░░░░░░░░░░░░░░░░██" GridPane.columnIndex="0" GridPane.rowIndex="13" />
+                  <Label styleClass="ascii-art" text="▀█▄░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█▀" GridPane.columnIndex="0" GridPane.rowIndex="14" />
+                  <Label styleClass="ascii-art" text="░▀█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▄█░" GridPane.columnIndex="0" GridPane.rowIndex="15" />
+                  <Label styleClass="ascii-art" text="░░██░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██░" GridPane.columnIndex="0" GridPane.rowIndex="16" />
+                  <Label styleClass="ascii-art" text="░░░██░░░░░░░░░░░░░░░░░░░░░░░░░░░░▄█░░" GridPane.columnIndex="0" GridPane.rowIndex="17" />
+                  <Label styleClass="ascii-art" text="░░░░▀██▄░░░░░░░░░░░░░░░░░░░░░░▄▄█▀░░░" GridPane.columnIndex="0" GridPane.rowIndex="18" />
+                  <Label styleClass="ascii-art" text="░░░░░░▀██▄░░░░░░░░░░░░░░░░░▄▄█▀░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="19" />
+                  <Label styleClass="ascii-art" text="░░░░░░░░░▀██▄░░░░░░░░░░░▄▄█▀░░░░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="20" />
+                  <Label styleClass="ascii-art" text="░░░░░░░░░░░░▀██▄▄▄▄▄▄▄▄█▀░░░░░░░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="21" />
+                  <Label styleClass="ascii-art" text="░░░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="22" />
+                  <Label styleClass="ascii-art" text="░░░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="23" />
+                  <Label styleClass="ascii-art" text="░░░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="24" />
+                  <Label styleClass="ascii-art" text="░░░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="25" />
+                  <Label styleClass="ascii-art" text="░░░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="26" />
+                  <Label styleClass="ascii-art" text="░░░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░░░" GridPane.columnIndex="0" GridPane.rowIndex="27" />
+               </children>
+            </GridPane>
+         </children>
+      </HBox>
+      
+      <!-- Message content -->
+      <Label fx:id="messageLabel" alignment="CENTER" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      
+      <!-- Buttons -->
+      <HBox alignment="CENTER" spacing="10.0">
+         <children>
+            <Button fx:id="primaryButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#handlePrimaryAction" text="%label.ok" />
+            <Button fx:id="secondaryButton" cancelButton="true" mnemonicParsing="false" onAction="#handleSecondaryAction" text="%button.cancel" visible="false" />
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

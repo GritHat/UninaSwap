@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="640.0" styleClass="main-content-background" stylesheets="@../css/styles.css" vbarPolicy="AS_NEEDED" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.uninaswap.client.controller.PickupSelectionController">
+  <content>
+    <VBox spacing="20.0" styleClass="pickup-main-container">
+      <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      </padding>
+      
+      <!-- Header Section -->
+      <VBox spacing="15.0" styleClass="pickup-header-section">
+        <children>
+          <!-- Title and Icon -->
+          <HBox alignment="CENTER_LEFT" spacing="15.0">
+            <children>
+              <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@../images/icons/pickup_selection.png" />
+                </image>
+              </ImageView>
+              <Label fx:id="titleLabel" styleClass="page-title-label" text="%pickup.selection.title" />
+            </children>
+          </HBox>
+          
+          <!-- Instructions -->
+          <VBox spacing="5.0" styleClass="pickup-instructions-section">
+            <children>
+              <Label fx:id="instructionsLabel" styleClass="section-subtitle" text="%pickup.selection.instructions" />
+            </children>
+          </VBox>
+        </children>
+      </VBox>
+      
+      <!-- Main Content Area -->
+      <VBox spacing="20.0" VBox.vgrow="ALWAYS">
+        <children>
+          <!-- Available Dates Section -->
+          <VBox fx:id="availableDatesSection" spacing="15.0" styleClass="pickup-section-card">
+            <children>
+              <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                <children>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                      <Image url="@../images/icons/calendar.png" />
+                    </image>
+                  </ImageView>
+                  <Text styleClass="section-title" text="%pickup.available.dates.title" />
+                </children>
+              </HBox>
+              
+              <VBox spacing="15.0">
+                <children>
+                  <!-- Available Dates Display -->
+                  <VBox spacing="8.0">
+                    <children>
+                      <Text styleClass="subsection-title" text="%pickup.available.dates.subtitle" />
+                      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="120.0" styleClass="available-dates-scroll" vbarPolicy="AS_NEEDED">
+                        <content>
+                          <FlowPane fx:id="availableDatesPane" hgap="8.0" styleClass="available-dates-container" vgap="8.0" />
+                        </content>
+                      </ScrollPane>
+                      <Text styleClass="help-text" text="%pickup.available.dates.help" />
+                    </children>
+                  </VBox>
+                  
+                  <!-- Time Range Display -->
+                  <VBox spacing="8.0">
+                    <children>
+                      <Text styleClass="subsection-title" text="%pickup.time.range.available" />
+                      <Label fx:id="timeRangeLabel" styleClass="time-range-display" text="09:00 - 18:00" />
+                    </children>
+                  </VBox>
+                </children>
+              </VBox>
+            </children>
+            <padding>
+              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+          </VBox>
+          
+          <!-- Selected Date and Time Section -->
+          <VBox fx:id="selectedDateTimeSection" spacing="15.0" styleClass="pickup-section-card">
+            <children>
+              <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                <children>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                      <Image url="@../images/icons/time.png" />
+                    </image>
+                  </ImageView>
+                  <Text styleClass="section-title" text="%pickup.selection.preferred.time" />
+                </children>
+              </HBox>
+              
+              <VBox spacing="15.0">
+                <children>
+                  <GridPane hgap="20.0" vgap="15.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="NEVER" minWidth="120.0" prefWidth="120.0" />
+                      <ColumnConstraints hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints />
+                      <RowConstraints />
+                    </rowConstraints>
+                    
+                    <Label styleClass="field-label" text="%pickup.selection.date.label" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <DatePicker fx:id="selectedDatePicker" styleClass="pickup-date-picker" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    
+                    <Label styleClass="field-label" text="%pickup.selection.time.label" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                      <children>
+                        <Spinner fx:id="selectedHourSpinner" prefWidth="70.0" styleClass="time-spinner" />
+                        <Label styleClass="time-separator" text=":" />
+                        <Spinner fx:id="selectedMinuteSpinner" prefWidth="70.0" styleClass="time-spinner" />
+                      </children>
+                    </HBox>
+                  </GridPane>
+                </children>
+              </VBox>
+            </children>
+            <padding>
+              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+          </VBox>
+          
+          <!-- Pickup Details Section -->
+          <VBox spacing="15.0" styleClass="pickup-section-card">
+            <children>
+              <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                <children>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                      <Image url="@../images/icons/location.png" />
+                    </image>
+                  </ImageView>
+                  <Text styleClass="section-title" text="%pickup.details.title" />
+                </children>
+              </HBox>
+              
+              <VBox spacing="15.0">
+                <children>
+                  <!-- Location -->
+                  <VBox spacing="8.0">
+                    <children>
+                      <Label styleClass="field-label" text="%pickup.location.label" />
+                      <Label fx:id="locationLabel" styleClass="pickup-location-display" text="" wrapText="true" />
+                    </children>
+                  </VBox>
+                  
+                  <!-- Additional Details -->
+                  <VBox spacing="8.0">
+                    <children>
+                      <Label styleClass="field-label" text="%pickup.details.label" />
+                      <TextArea fx:id="detailsArea" editable="false" prefRowCount="3" styleClass="pickup-details-display" wrapText="true" />
+                    </children>
+                  </VBox>
+                </children>
+              </VBox>
+            </children>
+            <padding>
+              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+          </VBox>
+          
+          <!-- Counter Proposal Section (initially hidden) -->
+          <VBox fx:id="counterProposalSection" managed="false" spacing="15.0" styleClass="pickup-section-card counter-proposal-section" visible="false">
+            <children>
+              <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="section-header">
+                <children>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                      <Image url="@../images/icons/counter_proposal.png" />
+                    </image>
+                  </ImageView>
+                  <Text styleClass="section-title" text="%pickup.counter.proposal.title" />
+                </children>
+              </HBox>
+              
+              <VBox spacing="20.0">
+                <children>
+                  <!-- Counter Location -->
+                  <VBox spacing="8.0">
+                    <children>
+                      <Label styleClass="field-label" text="%pickup.counter.location.label" />
+                      <TextField fx:id="counterLocationField" promptText="%pickup.counter.location.prompt" styleClass="pickup-text-field" />
+                      <Text styleClass="help-text" text="%pickup.counter.location.help" />
+                    </children>
+                  </VBox>
+                  
+                  <!-- Counter Time Range -->
+                  <VBox spacing="15.0">
+                    <children>
+                      <Label styleClass="field-label" text="%pickup.counter.time.range.label" />
+                      
+                      <HBox alignment="CENTER_LEFT" spacing="15.0">
+                        <children>
+                          <VBox spacing="8.0">
+                            <children>
+                              <Label styleClass="field-label" text="%pickup.time.from.label" />
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                <children>
+                                  <Spinner fx:id="counterStartHourSpinner" prefWidth="70.0" styleClass="time-spinner" />
+                                  <Label styleClass="time-separator" text=":" />
+                                  <Spinner fx:id="counterStartMinuteSpinner" prefWidth="70.0" styleClass="time-spinner" />
+                                </children>
+                              </HBox>
+                            </children>
+                          </VBox>
+                          
+                          <VBox spacing="8.0">
+                            <children>
+                              <Label styleClass="field-label" text="%pickup.time.to.label" />
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                <children>
+                                  <Spinner fx:id="counterEndHourSpinner" prefWidth="70.0" styleClass="time-spinner" />
+                                  <Label styleClass="time-separator" text=":" />
+                                  <Spinner fx:id="counterEndMinuteSpinner" prefWidth="70.0" styleClass="time-spinner" />
+                                </children>
+                              </HBox>
+                            </children>
+                          </VBox>
+                        </children>
+                      </HBox>
+                    </children>
+                  </VBox>
+                  
+                  <!-- Counter Date Selection -->
+                  <VBox spacing="15.0">
+                    <children>
+                      <Label styleClass="field-label" text="%pickup.counter.dates.label" />
+                      
+                      <!-- Date Range Selector -->
+                      <VBox spacing="10.0" styleClass="date-range-selector">
+                        <children>
+                          <Text styleClass="subsection-title" text="%pickup.dates.range.title" />
+                          
+                          <HBox alignment="CENTER_LEFT" spacing="15.0">
+                            <children>
+                              <VBox spacing="8.0">
+                                <children>
+                                  <Label styleClass="field-label" text="%pickup.dates.start.label" />
+                                  <DatePicker fx:id="counterStartDatePicker" styleClass="pickup-date-picker" />
+                                </children>
+                              </VBox>
+                              
+                              <VBox spacing="8.0">
+                                <children>
+                                  <Label styleClass="field-label" text="%pickup.dates.end.label" />
+                                  <DatePicker fx:id="counterEndDatePicker" styleClass="pickup-date-picker" />
+                                </children>
+                              </VBox>
+                              
+                              <VBox spacing="8.0">
+                                <children>
+                                  <Label text=" " />
+                                  <Button fx:id="addCounterDateRangeButton" onAction="#handleAddCounterDateRange" styleClass="primary-button" text="%pickup.dates.add.button">
+                                    <graphic>
+                                      <ImageView fitHeight="16.0" fitWidth="16.0" preserveRatio="true">
+                                        <image>
+                                          <Image url="@../images/icons/add_w.png" />
+                                        </image>
+                                      </ImageView>
+                                    </graphic>
+                                  </Button>
+                                </children>
+                              </VBox>
+                            </children>
+                          </HBox>
+                        </children>
+                      </VBox>
+                      
+                      <!-- Selected Counter Dates Summary -->
+                      <VBox spacing="10.0" styleClass="selected-dates-summary">
+                        <children>
+                          <HBox alignment="CENTER_LEFT" spacing="10.0">
+                            <children>
+                              <Label fx:id="counterSelectedDatesCountLabel" styleClass="dates-count-label" text="%pickup.dates.selected.count" />
+                              <Region HBox.hgrow="ALWAYS" />
+                              <Button fx:id="clearCounterDatesButton" onAction="#handleClearCounterDates" styleClass="secondary-button" text="%pickup.dates.clear.button" />
+                            </children>
+                          </HBox>
+                          
+                          <!-- Counter Selected Dates Display -->
+                          <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="120.0" styleClass="selected-dates-scroll" vbarPolicy="AS_NEEDED">
+                            <content>
+                              <FlowPane fx:id="counterSelectedDatesPane" hgap="8.0" styleClass="selected-dates-container" vgap="8.0" />
+                            </content>
+                          </ScrollPane>
+                        </children>
+                      </VBox>
+                    </children>
+                  </VBox>
+                  
+                  <!-- Counter Details -->
+                  <VBox spacing="8.0">
+                    <children>
+                      <Label styleClass="field-label" text="%pickup.counter.details.label" />
+                      <TextArea fx:id="counterDetailsArea" prefRowCount="4" promptText="%pickup.counter.details.prompt" styleClass="pickup-text-area" wrapText="true" />
+                      <Text styleClass="help-text" text="%pickup.counter.details.help" />
+                    </children>
+                  </VBox>
+                </children>
+              </VBox>
+            </children>
+            <padding>
+              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+          </VBox>
+          
+          <!-- Action Buttons Section -->
+          <HBox alignment="CENTER_RIGHT" spacing="15.0" styleClass="pickup-action-buttons">
+            <children>
+              <!-- Counter Proposal Actions (hidden initially) -->
+              <HBox fx:id="counterProposalButtons" managed="false" spacing="10.0" visible="false">
+                <children>
+                  <Button fx:id="cancelCounterProposalButton" onAction="#handleCancelCounterProposal" styleClass="secondary-button" text="%pickup.counter.cancel" />
+                  <Button fx:id="submitCounterProposalButton" onAction="#handleSubmitCounterProposal" styleClass="primary-button" text="%pickup.counter.submit" />
+                </children>
+              </HBox>
+              
+              <!-- Main Actions -->
+              <HBox fx:id="mainActionButtons" spacing="10.0">
+                <children>
+                  <Button fx:id="cancelButton" onAction="#handleCancel" styleClass="secondary-button" text="%button.cancel" />
+                  <Button fx:id="rejectButton" onAction="#handleReject" styleClass="danger-button" text="%pickup.selection.reject" />
+                  <Button fx:id="counterProposeButton" onAction="#handleCounterPropose" styleClass="secondary-button" text="%pickup.selection.counter" />
+                  <Button fx:id="acceptButton" onAction="#handleAccept" styleClass="primary-button" text="%pickup.selection.accept" />
+                </children>
+              </HBox>
+            </children>
+            <padding>
+              <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+          </HBox>
+        </children>
+      </VBox>
+    </VBox>
+  </content>
+</ScrollPane>

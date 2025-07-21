@@ -17,7 +17,7 @@
             <!-- Header della card coerente con la home -->
             <HBox alignment="CENTER_LEFT" prefHeight="30.0" styleClass="card-header">
                <children>
-                  <Text fx:id="categoryText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="category-tag" text="%item.category.label">
+                  <Text fx:id="categoryText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="category-tag" text="%itemcard.category.placeholder">
                      <font>
                         <Font size="9.0" />
                      </font>
@@ -39,7 +39,7 @@
             </ImageView>
             
             <!-- Item name with drop shadow -->
-            <Text fx:id="itemName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="item-name" text="%item.name.label" textAlignment="CENTER" wrappingWidth="100.0">
+            <Text fx:id="itemName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="item-name" text="%itemcard.name.placeholder" textAlignment="CENTER" wrappingWidth="100.0">
                <VBox.margin>
                   <Insets top="8.0" />
                </VBox.margin>
@@ -53,7 +53,7 @@
                         <Image url="@../images/streamline-ultimate-colors---free--24x24-PNG/Single-Neutral-Circle--Streamline-Ultimate.png" />
                      </image>
                   </ImageView>
-                  <Text fx:id="sellerName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="seller-name" text="%profile.user.name">
+                  <Text fx:id="sellerName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="seller-name" text="%itemcard.seller.placeholder">
                      <font>
                         <Font size="8.0" />
                      </font>
@@ -65,7 +65,7 @@
             </HBox>
             
             <!-- Item price -->
-            <Text fx:id="itemPrice" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="€25.00">
+            <Text fx:id="itemPrice" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="price-text" text="%itemcard.price.placeholder">
                <VBox.margin>
                   <Insets bottom="5.0" top="5.0" />
                </VBox.margin>

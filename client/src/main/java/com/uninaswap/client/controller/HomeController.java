@@ -3,6 +3,7 @@ package com.uninaswap.client.controller;
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.FavoritesService;
 import com.uninaswap.client.service.ListingService;
+import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NotificationService;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 
@@ -29,7 +30,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class HomeController {
+public class HomeController implements Refreshable {
 
     // Containers from FXML
     @FXML
@@ -48,16 +49,19 @@ public class HomeController {
     private VBox allListingsSection; // The entire all listings section
     @FXML
     private ScrollPane allListingsContainerWrapper;
+    
     // Add pagination fields
     private static final int LISTINGS_PER_PAGE = 50;
     private int currentPage = 0;
     private boolean isLoadingMore = false;
     private boolean hasMoreListings = true;
 
+    // Services
     private final UserCardController userCard = new UserCardController();
     private final ListingService listingService = ListingService.getInstance();
     private final FavoritesService favoritesService = FavoritesService.getInstance();
     private final NotificationService notificationService = NotificationService.getInstance();
+    private final LocaleService localeService = LocaleService.getInstance();
 
     // Add flag to track listener registration
     private boolean listenerRegistered = false;
@@ -74,9 +78,9 @@ public class HomeController {
 
     @FXML
     public void initialize() {
-        System.out.println("Home view initialized.");
+        System.out.println(localeService.getMessage("home.debug.initialized", "Home view initialized."));
         setupFavoritesListener();
-        setupAllListingsScrollListener(); // NEW METHOD
+        setupAllListingsScrollListener();
 
         // Load listings and set up data binding
         loadHomeData();
@@ -87,6 +91,9 @@ public class HomeController {
                 updateFavoritesContainer();
             });
         });
+        
+        // Initial UI refresh
+        refreshUI();
     }
 
     private void setupFavoritesListener() {
@@ -105,7 +112,7 @@ public class HomeController {
             // Add scroll listener for pagination
             allListingsContainerWrapper.vvalueProperty().addListener((observable, oldValue, newValue) -> {
                 // Check if we're near the bottom (95% scrolled)
-                System.out.println("loading more listings");
+                System.out.println(localeService.getMessage("home.debug.loading.more", "Loading more listings"));
                 if (newValue.doubleValue() > 0.95 && !isLoadingMore && hasMoreListings) {
                     loadMoreListings();
                 }
@@ -130,16 +137,16 @@ public class HomeController {
 
         // Only refresh if the list is actually empty
         if (allListings.isEmpty()) {
-            System.out.println("List is empty, refreshing from server...");
+            System.out.println(localeService.getMessage("home.debug.list.empty", "List is empty, refreshing from server..."));
             listingService.refreshAllListings();
         } else {
-            System.out.println("List already has " + allListings.size() + " items, updating view...");
+            System.out.println(localeService.getMessage("home.debug.list.has.items", "List already has {0} items, updating view...").replace("{0}", String.valueOf(allListings.size())));
             updateHomeViewWithListings(allListings);
         }
 
         // ALSO refresh favorites if empty
         if (favoriteListingViewModels.isEmpty()) {
-            System.out.println("Favorites list is empty, refreshing from server...");
+            System.out.println(localeService.getMessage("home.debug.favorites.empty", "Favorites list is empty, refreshing from server..."));
             favoritesService.refreshUserFavorites();
         } else {
             updateFavoritesContainer();
@@ -156,7 +163,7 @@ public class HomeController {
         showLoadingIndicator();
         currentPage++;
 
-        System.out.println("Loading more listings - page: " + currentPage);
+        System.out.println(localeService.getMessage("home.debug.pagination.loading", "Loading more listings - page: {0}").replace("{0}", String.valueOf(currentPage)));
 
         // Set the flag in ListingService to indicate this is pagination
         listingService.setLoadingMore(true);
@@ -166,17 +173,17 @@ public class HomeController {
                     hideLoadingIndicator();
                     if (newListings == null || newListings.isEmpty()) {
                         hasMoreListings = false;
-                        System.out.println("No more listings available");
+                        System.out.println(localeService.getMessage("home.debug.no.more.listings", "No more listings available"));
                     } else {
                         // The service will automatically append the listings due to the flag
                         // No need to manually add them here
 
-                        System.out.println("Loaded " + newListings.size() + " more listings");
+                        System.out.println(localeService.getMessage("home.debug.loaded.more", "Loaded {0} more listings").replace("{0}", String.valueOf(newListings.size())));
 
                         // Check if we got less than requested (indicates last page)
                         if (newListings.size() < LISTINGS_PER_PAGE) {
                             hasMoreListings = false;
-                            System.out.println("Reached end of listings");
+                            System.out.println(localeService.getMessage("home.debug.reached.end", "Reached end of listings"));
                         }
                     }
                     isLoadingMore = false;
@@ -185,7 +192,7 @@ public class HomeController {
                     Platform.runLater(() -> {
                         hideLoadingIndicator();
                         listingService.setLoadingMore(false); // Reset flag on error
-                        System.err.println("Error loading more listings: " + ex.getMessage());
+                        System.err.println(localeService.getMessage("home.error.loading.more", "Error loading more listings: {0}").replace("{0}", ex.getMessage()));
                         isLoadingMore = false;
                         currentPage--; // Reset page counter on error
                     });
@@ -199,7 +206,7 @@ public class HomeController {
             loadingBox.setAlignment(Pos.CENTER);
             loadingBox.getStyleClass().add("loading-indicator");
 
-            Text loadingText = new Text("Caricamento...");
+            Text loadingText = new Text(localeService.getMessage("home.loading.text", "Loading..."));
             loadingText.getStyleClass().add("loading-text");
 
             loadingBox.getChildren().add(loadingText);
@@ -222,7 +229,7 @@ public class HomeController {
         // Create new timer that will fire after a short delay
         updateTimeline = new Timeline(new KeyFrame(DEBOUNCE_DELAY, e -> {
             Platform.runLater(() -> {
-                System.out.println("Debounced update: List now has " + listings.size() + " listings");
+                System.out.println(localeService.getMessage("home.debug.debounced.update", "Debounced update: List now has {0} listings").replace("{0}", String.valueOf(listings.size())));
                 updateHomeViewWithListings(listings);
             });
         }));
@@ -252,13 +259,13 @@ public class HomeController {
                     Node favoriteCard = createListingCard(listing);
                     favoriteListingsContainer.getChildren().add(favoriteCard);
                 } catch (IOException e) {
-                    System.err.println("Error creating favorite card: " + e.getMessage());
+                    System.err.println(localeService.getMessage("home.error.creating.favorite.card", "Error creating favorite card: {0}").replace("{0}", e.getMessage()));
                 }
             }
 
             // Add placeholder if no favorites
             if (favoriteListingsContainer.getChildren().isEmpty()) {
-                javafx.scene.text.Text placeholder = new javafx.scene.text.Text("Nessun preferito trovato");
+                javafx.scene.text.Text placeholder = new javafx.scene.text.Text(localeService.getMessage("home.favorites.empty", "No favorites found"));
                 placeholder.getStyleClass().add("placeholder-text");
                 favoriteListingsContainer.getChildren().add(placeholder);
             }
@@ -304,7 +311,7 @@ public class HomeController {
                         Node listingCard = createListingCard(listing);
                         allListingsContainer.getChildren().add(listingCard);
                     } catch (Exception e) {
-                        System.err.println("Error creating search result card for: " + listing.getTitle());
+                        System.err.println(localeService.getMessage("home.error.creating.search.card", "Error creating search result card for: {0}").replace("{0}", listing.getTitle()));
                         e.printStackTrace();
                     }
                 }
@@ -317,11 +324,11 @@ public class HomeController {
         noResultsContainer.setAlignment(Pos.CENTER);
         noResultsContainer.getStyleClass().add("no-results-container");
         
-        Text noResultsText = new Text("Nessun risultato trovato");
+        Text noResultsText = new Text(localeService.getMessage("home.search.no.results", "No results found"));
         noResultsText.getStyleClass().add("no-results-text");
         noResultsText.setStyle("-fx-font-size: 18px; -fx-fill: #666666; -fx-font-weight: bold;");
         
-        Text suggestionText = new Text("Prova a modificare i filtri o la ricerca");
+        Text suggestionText = new Text(localeService.getMessage("home.search.suggestion", "Try modifying your search or filters"));
         suggestionText.getStyleClass().add("suggestion-text");
         suggestionText.setStyle("-fx-font-size: 14px; -fx-fill: #888888;");
         
@@ -380,7 +387,7 @@ public class HomeController {
                 }
 
             } catch (Exception e) {
-                System.err.println("Error creating listing card for: " + listing.getTitle());
+                System.err.println(localeService.getMessage("home.error.creating.listing.card", "Error creating listing card for: {0}").replace("{0}", listing.getTitle()));
                 e.printStackTrace();
             }
         }
@@ -408,7 +415,7 @@ public class HomeController {
                 allListingsSection.setMaxHeight(Double.MAX_VALUE);
             }
             
-            System.out.println("Auction section visibility: " + hasAuctions);
+            System.out.println(localeService.getMessage("home.debug.auction.visibility", "Auction section visibility: {0}").replace("{0}", String.valueOf(hasAuctions)));
         }
     }
 
@@ -432,13 +439,13 @@ public class HomeController {
     private void addPlaceholdersIfEmpty() {
         // Add placeholder text if no listings found
         if (allListingsContainer != null && allListingsContainer.getChildren().isEmpty() && !isLoadingMore) {
-            javafx.scene.text.Text placeholder = new javafx.scene.text.Text("Nessuna inserzione disponibile");
+            javafx.scene.text.Text placeholder = new javafx.scene.text.Text(localeService.getMessage("home.listings.empty", "No listings available"));
             placeholder.getStyleClass().add("placeholder-text");
             allListingsContainer.getChildren().add(placeholder);
         }
 
         if (favoriteListingsContainer != null && favoriteListingsContainer.getChildren().size() <= 1) {
-            javafx.scene.text.Text placeholder = new javafx.scene.text.Text("Nessun preferito trovato");
+            javafx.scene.text.Text placeholder = new javafx.scene.text.Text(localeService.getMessage("home.favorites.empty", "No favorites found"));
             placeholder.getStyleClass().add("placeholder-text");
             favoriteListingsContainer.getChildren().add(placeholder);
         }
@@ -448,6 +455,30 @@ public class HomeController {
     }
 
     public void handleUserAction() {
-        System.out.println("User action handled in home view.");
+        System.out.println(localeService.getMessage("home.debug.user.action", "User action handled in home view."));
+    }
+
+    @Override
+    public void refreshUI() {
+        // No direct UI text elements to update in HomeController since it's mostly dynamic content
+        // However, we need to refresh any existing placeholder texts
+        if (!isDisplayingSearchResults) {
+            // Refresh favorites container to update any placeholder text
+            updateFavoritesContainer();
+            
+            // If we have current listings, refresh the main view to update placeholders
+            ObservableList<ListingViewModel> currentListings = listingService.getAllListingsObservable();
+            if (!currentListings.isEmpty()) {
+                addPlaceholdersIfEmpty(); // This will update placeholder texts with current locale
+            }
+        } else {
+            // If showing search results, refresh the no results placeholder if it exists
+            if (allListingsContainer != null && allListingsContainer.getChildren().stream()
+                    .anyMatch(node -> node.getStyleClass().contains("no-results-container"))) {
+                // Clear and re-add the no results placeholder with updated text
+                allListingsContainer.getChildren().removeIf(node -> node.getStyleClass().contains("no-results-container"));
+                addNoResultsPlaceholder();
+            }
+        }
     }
 }

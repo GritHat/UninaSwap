@@ -37,7 +37,7 @@
                             <Insets left="15.0" />
                           </HBox.margin>
                         </ImageView>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%auctions.participating">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%home.section.auctions">
                           <HBox.margin>
                             <Insets left="5.0" />
                           </HBox.margin>
@@ -73,6 +73,11 @@
                                   <Insets left="15.0" />
                                 </HBox.margin>
                             </ImageView>
+                            <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="title-text" text="%home.section.all.listings">
+                              <HBox.margin>
+                                <Insets left="5.0" />
+                              </HBox.margin>
+                            </Text>
                           </children>
                       </HBox>
                       

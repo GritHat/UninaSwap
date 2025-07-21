@@ -13,8 +13,8 @@
 
    <!-- Header -->
    <VBox spacing="5">
-      <Label fx:id="titleLabel" styleClass="title-label" />
-      <Label fx:id="instructionsLabel" styleClass="subtitle-label" wrapText="true" />
+      <Label fx:id="titleLabel" styleClass="title-label" text="%report.dialog.title" />
+      <Label fx:id="instructionsLabel" styleClass="subtitle-label" wrapText="true" text="%report.dialog.instructions" />
    </VBox>
 
    <Separator />
@@ -26,37 +26,38 @@
 
    <!-- Reason Selection -->
    <VBox spacing="10">
-      <Label text="Reason for Report" styleClass="section-label" />
+      <Label fx:id="reasonLabel" text="%report.dialog.reason.label" styleClass="section-label" />
       
       <!-- User Report Reason -->
       <ComboBox fx:id="userReasonComboBox" maxWidth="Infinity" 
-                promptText="Select a reason..." />
+                promptText="%report.dialog.reason.prompt" />
       
       <!-- Listing Report Reason -->
       <ComboBox fx:id="listingReasonComboBox" maxWidth="Infinity" 
-                promptText="Select a reason..." />
+                promptText="%report.dialog.reason.prompt" />
    </VBox>
 
    <!-- Description Section -->
    <VBox spacing="10" VBox.vgrow="ALWAYS">
-      <Label text="Additional Details (Optional)" styleClass="section-label" />
+      <Label fx:id="detailsLabel" text="%report.dialog.details.label" styleClass="section-label" />
       
       <TextArea fx:id="descriptionTextArea" 
                 prefRowCount="6" 
+                promptText="%report.dialog.description.prompt"
                 VBox.vgrow="ALWAYS" />
       
       <HBox alignment="CENTER_RIGHT">
-         <Label fx:id="characterCountLabel" styleClass="character-count" />
+         <Label fx:id="characterCountLabel" styleClass="character-count" text="%report.dialog.character.count" />
       </HBox>
       
-      <Label text="Please provide any additional context that might help us review this report" 
+      <Label fx:id="helpLabel" text="%report.dialog.help.text" 
              styleClass="help-text" wrapText="true" />
    </VBox>
 
    <!-- Actions -->
    <HBox spacing="10" alignment="CENTER_RIGHT">
-      <Button fx:id="cancelButton" onAction="#handleCancel" />
+      <Button fx:id="cancelButton" onAction="#handleCancel" text="%report.dialog.cancel" />
       <Button fx:id="submitButton" onAction="#handleSubmit" 
-              styleClass="primary-button" />
+              styleClass="primary-button" text="%report.dialog.submit" />
    </HBox>
 </VBox>

@@ -101,17 +101,18 @@ public class AnalyticsController implements Refreshable {
         setupCharts();
         setupTables();
         setupEventHandlers();
+        refreshUI();
         loadAnalytics();
     }
     
     private void setupControls() {
-        // Period combo box
+        // Period combo box - using internal keys that will be converted by StringConverter
         periodComboBox.setItems(FXCollections.observableArrayList(
             "week", "month", "quarter", "year", "all"
         ));
         periodComboBox.setValue("month");
         
-        // Category combo box
+        // Category combo box - using internal keys
         categoryComboBox.setItems(FXCollections.observableArrayList(
             "all", "electronics", "books", "clothing", "home", "sports", "toys", "other"
         ));
@@ -144,6 +145,29 @@ public class AnalyticsController implements Refreshable {
             @Override
             public String fromString(String string) {
                 // Reverse mapping if needed
+                return string;
+            }
+        });
+        
+        // Setup category combo box converter
+        categoryComboBox.setConverter(new StringConverter<String>() {
+            @Override
+            public String toString(String category) {
+                return switch (category) {
+                    case "all" -> localeService.getMessage("analytics.category.all", "All Categories");
+                    case "electronics" -> localeService.getMessage("category.electronics", "Electronics");
+                    case "books" -> localeService.getMessage("category.books", "Books");
+                    case "clothing" -> localeService.getMessage("category.clothing", "Clothing");
+                    case "home" -> localeService.getMessage("category.home", "Home & Garden");
+                    case "sports" -> localeService.getMessage("category.sports", "Sports");
+                    case "toys" -> localeService.getMessage("category.toys.games", "Toys & Games");
+                    case "other" -> localeService.getMessage("category.other", "Other");
+                    default -> category;
+                };
+            }
+            
+            @Override
+            public String fromString(String string) {
                 return string;
             }
         });
@@ -192,7 +216,7 @@ public class AnalyticsController implements Refreshable {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(String.format("€%.2f", item.doubleValue()));
+                    setText(localeService.getMessage("analytics.currency.format", "€%.2f").formatted(item.doubleValue()));
                 }
             }
         });
@@ -205,7 +229,7 @@ public class AnalyticsController implements Refreshable {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(String.format("%.1f/5.0", item.doubleValue()));
+                    setText(localeService.getMessage("analytics.rating.format", "%.1f/5.0").formatted(item.doubleValue()));
                 }
             }
         });
@@ -228,7 +252,7 @@ public class AnalyticsController implements Refreshable {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(String.format("€%.2f", item.doubleValue()));
+                    setText(localeService.getMessage("analytics.currency.format", "€%.2f").formatted(item.doubleValue()));
                 }
             }
         });
@@ -241,7 +265,7 @@ public class AnalyticsController implements Refreshable {
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(String.format("%.1f/5.0", item.doubleValue()));
+                    setText(localeService.getMessage("analytics.rating.format", "%.1f/5.0").formatted(item.doubleValue()));
                 }
             }
         });
@@ -304,7 +328,7 @@ public class AnalyticsController implements Refreshable {
         .exceptionally(ex -> {
             Platform.runLater(() -> {
                 showLoading(false);
-                showError("Failed to load analytics: " + ex.getMessage());
+                showError(localeService.getMessage("analytics.error.load.failed", "Failed to load analytics: {0}"), ex.getMessage());
             });
             return null;
         });
@@ -339,7 +363,7 @@ public class AnalyticsController implements Refreshable {
             }))
             .exceptionally(ex -> {
                 Platform.runLater(() -> {
-                    showError("Failed to export analytics: " + ex.getMessage());
+                    showError(localeService.getMessage("analytics.error.export.failed", "Failed to export analytics: {0}"), ex.getMessage());
                 });
                 return null;
             });
@@ -356,15 +380,15 @@ public class AnalyticsController implements Refreshable {
         totalListingsValue.setText(String.valueOf(analytics.getTotalListings()));
         activeListingsValue.setText(String.valueOf(analytics.getActiveListings()));
         completedListingsValue.setText(String.valueOf(analytics.getCompletedListings()));
-        totalEarningsValue.setText(String.format("€%.2f", analytics.getTotalEarnings()));
-        averageRatingValue.setText(String.format("%.1f/5.0", analytics.getAverageRating()));
+        totalEarningsValue.setText(localeService.getMessage("analytics.currency.format", "€%.2f").formatted(analytics.getTotalEarnings()));
+        averageRatingValue.setText(localeService.getMessage("analytics.rating.format", "%.1f/5.0").formatted(analytics.getAverageRating()));
         totalReviewsValue.setText(String.valueOf(analytics.getTotalReviews()));
         totalViewsValue.setText(String.valueOf(analytics.getTotalViews()));
         totalFavoritesValue.setText(String.valueOf(analytics.getTotalFavorites()));
         
         if (analytics.getMemberSince() != null) {
             memberSinceValue.setText(analytics.getMemberSince().format(
-                DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                DateTimeFormatter.ofPattern(localeService.getMessage("analytics.date.format", "dd/MM/yyyy"))));
         }
     }
     
@@ -372,24 +396,26 @@ public class AnalyticsController implements Refreshable {
         // Success Rate
         double successRate = analytics.getListingSuccessRate() / 100.0;
         successRateProgress.setProgress(successRate);
-        successRateValue.setText(String.format("%.1f%%", analytics.getListingSuccessRate()));
+        successRateValue.setText(localeService.getMessage("analytics.percentage.format", "%.1f%%").formatted(analytics.getListingSuccessRate()));
         
         // Acceptance Rate
         double acceptanceRate = analytics.getOfferAcceptanceRate() / 100.0;
         acceptanceRateProgress.setProgress(acceptanceRate);
-        acceptanceRateValue.setText(String.format("%.1f%%", analytics.getOfferAcceptanceRate()));
+        acceptanceRateValue.setText(localeService.getMessage("analytics.percentage.format", "%.1f%%").formatted(analytics.getOfferAcceptanceRate()));
         
         // Average Time to Sell
-        averageTimeToSellValue.setText(String.format("%.1f days", analytics.getAverageTimeToSell()));
+        averageTimeToSellValue.setText(localeService.getMessage("analytics.days.format", "%.1f days").formatted(analytics.getAverageTimeToSell()));
         
         // Satisfaction Rate
         double satisfactionRate = analytics.getCustomerSatisfactionRate() / 100.0;
         satisfactionRateProgress.setProgress(satisfactionRate);
-        satisfactionRateValue.setText(String.format("%.1f%%", analytics.getCustomerSatisfactionRate()));
+        satisfactionRateValue.setText(localeService.getMessage("analytics.percentage.format", "%.1f%%").formatted(analytics.getCustomerSatisfactionRate()));
         
         // Rating Trend
         double trend = analytics.getRatingTrend();
-        String trendText = trend > 0 ? String.format("+%.2f", trend) : String.format("%.2f", trend);
+        String trendText = trend > 0 ? 
+            localeService.getMessage("analytics.trend.positive.format", "+%.2f").formatted(trend) : 
+            localeService.getMessage("analytics.trend.format", "%.2f").formatted(trend);
         ratingTrendValue.setText(trendText);
         ratingTrendValue.getStyleClass().removeAll("positive-trend", "negative-trend", "neutral-trend");
         if (trend > 0) {
@@ -448,8 +474,9 @@ public class AnalyticsController implements Refreshable {
         
         analytics.getCategoryBreakdown().forEach(category -> {
             if (category.getTotalListings() > 0) {
+                String categoryName = getCategoryDisplayName(category.getCategory());
                 PieChart.Data slice = new PieChart.Data(
-                    category.getCategory() + " (" + category.getTotalListings() + ")",
+                    localeService.getMessage("analytics.pie.slice.format", "{0} ({1})").replace("{0}", categoryName).replace("{1}", String.valueOf(category.getTotalListings())),
                     category.getTotalListings()
                 );
                 categoryPieChart.getData().add(slice);
@@ -480,7 +507,8 @@ public class AnalyticsController implements Refreshable {
         contentArea.setDisable(show);
     }
     
-    private void showError(String message) {
+    private void showError(String messageTemplate, String... params) {
+        String message = params.length > 0 ? messageTemplate.replace("{0}", params[0]) : messageTemplate;
         AlertHelper.showErrorAlert(
             localeService.getMessage("analytics.error.title", "Analytics Error"),
             localeService.getMessage("analytics.error.message", "Error loading analytics"),
@@ -488,8 +516,82 @@ public class AnalyticsController implements Refreshable {
         );
     }
     
+    private String getCategoryDisplayName(String categoryKey) {
+        return switch (categoryKey) {
+            case "electronics" -> localeService.getMessage("category.electronics", "Electronics");
+            case "books" -> localeService.getMessage("category.books", "Books");
+            case "clothing" -> localeService.getMessage("category.clothing", "Clothing");
+            case "home" -> localeService.getMessage("category.home", "Home & Garden");
+            case "sports" -> localeService.getMessage("category.sports", "Sports");
+            case "toys" -> localeService.getMessage("category.toys.games", "Toys & Games");
+            case "other" -> localeService.getMessage("category.other", "Other");
+            default -> categoryKey;
+        };
+    }
+    
     @Override
     public void refreshUI() {
-        loadAnalytics();
+        // Update button labels
+        if (refreshButton != null) {
+            refreshButton.setText(localeService.getMessage("analytics.refresh", "Refresh"));
+        }
+        if (exportButton != null) {
+            exportButton.setText(localeService.getMessage("analytics.export", "Export"));
+        }
+        
+        // Update tab labels
+        if (overviewTab != null) {
+            overviewTab.setText(localeService.getMessage("analytics.tab.overview", "Overview"));
+        }
+        if (chartsTab != null) {
+            chartsTab.setText(localeService.getMessage("analytics.tab.charts", "Charts"));
+        }
+        if (detailsTab != null) {
+            detailsTab.setText(localeService.getMessage("analytics.tab.details", "Details"));
+        }
+        
+        // Update table column headers
+        if (categoryNameColumn != null) {
+            categoryNameColumn.setText(localeService.getMessage("analytics.table.category", "Category"));
+        }
+        if (categoryListingsColumn != null) {
+            categoryListingsColumn.setText(localeService.getMessage("analytics.table.listings", "Listings"));
+        }
+        if (categoryEarningsColumn != null) {
+            categoryEarningsColumn.setText(localeService.getMessage("analytics.table.earnings", "Earnings"));
+        }
+        if (categoryRatingColumn != null) {
+            categoryRatingColumn.setText(localeService.getMessage("analytics.table.rating", "Avg Rating"));
+        }
+        if (monthColumn != null) {
+            monthColumn.setText(localeService.getMessage("analytics.table.month", "Month"));
+        }
+        if (monthlyListingsColumn != null) {
+            monthlyListingsColumn.setText(localeService.getMessage("analytics.table.listings", "Listings"));
+        }
+        if (monthlyEarningsColumn != null) {
+            monthlyEarningsColumn.setText(localeService.getMessage("analytics.table.earnings", "Earnings"));
+        }
+        if (monthlyRatingColumn != null) {
+            monthlyRatingColumn.setText(localeService.getMessage("analytics.table.rating", "Avg Rating"));
+        }
+        
+        // Refresh chart titles
+        setupCharts();
+        
+        // Refresh combo box display values
+        if (periodComboBox != null) {
+            String currentPeriod = periodComboBox.getValue();
+            periodComboBox.setConverter(periodComboBox.getConverter()); // This will trigger refresh
+        }
+        if (categoryComboBox != null) {
+            String currentCategory = categoryComboBox.getValue();
+            categoryComboBox.setConverter(categoryComboBox.getConverter()); // This will trigger refresh
+        }
+        
+        // If we have current analytics, update the display
+        if (currentAnalytics != null) {
+            updateUI(currentAnalytics);
+        }
     }
 }

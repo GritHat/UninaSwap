@@ -17,7 +17,6 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
@@ -26,8 +25,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class OffersController {
-
-    // Filter controls
     @FXML
     private TextField searchField;
     @FXML
@@ -36,8 +33,6 @@ public class OffersController {
     private ComboBox<String> typeFilterComboBox;
     @FXML
     private Button clearFiltersButton;
-
-    // Tab controls
     @FXML
     private TabPane offersTabPane;
     @FXML
@@ -46,26 +41,18 @@ public class OffersController {
     private Tab sentTab;
     @FXML
     private Tab historyTab;
-
-    // Received offers content
     @FXML
-    private SplitPane receivedOffersContent;  // Changed from VBox to SplitPane
+    private SplitPane receivedOffersContent;
     @FXML
     private OffersTabContentController receivedOffersContentController;
-
-    // Sent offers content
     @FXML
-    private SplitPane sentOffersContent;  // Changed from VBox to SplitPane
+    private SplitPane sentOffersContent;
     @FXML
     private OffersTabContentController sentOffersContentController;
-
-    // History offers content
     @FXML
-    private SplitPane historyOffersContent;  // Changed from VBox to SplitPane
+    private SplitPane historyOffersContent;
     @FXML
     private OffersTabContentController historyOffersContentController;
-
-    // Action buttons
     @FXML
     private Button refreshButton;
     @FXML
@@ -75,15 +62,11 @@ public class OffersController {
     @FXML
     private Button counterOfferButton;
 
-    // Services
     private final OfferService offerService = OfferService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
     private final EventBusService eventBus = EventBusService.getInstance();
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
     private final NavigationService navigationService = NavigationService.getInstance();
-    private final ImageService imageService = ImageService.getInstance();
-
-    // Current selected offer
     private OfferViewModel selectedOffer;
 
     @FXML
@@ -91,8 +74,6 @@ public class OffersController {
         setupFilters();
         setupTabControllers();
         setupTabChangeHandlers();
-
-        // Subscribe to events
         eventBus.subscribe(EventTypes.OFFER_UPDATED, _ -> refreshOffers());
         eventBus.subscribe(EventTypes.USER_LOGGED_OUT, _ -> {
             Platform.runLater(() -> {
@@ -100,13 +81,10 @@ public class OffersController {
                 System.out.println("OffersController: Cleared view on logout");
             });
         });
-
-        // Load offers
         refreshOffers();
     }
 
     private void setupFilters() {
-        // Status filter with localized values including new statuses
         statusFilterComboBox.setItems(FXCollections.observableArrayList(
                 localeService.getMessage("offers.filter.all.statuses", "All Statuses"),
                 localeService.getMessage("offers.status.pending", "Pending"),
@@ -122,8 +100,6 @@ public class OffersController {
                 localeService.getMessage("offers.status.completed", "Completed")
         ));
         statusFilterComboBox.setValue(localeService.getMessage("offers.filter.all.statuses", "All Statuses"));
-
-        // Type filter with localized values
         typeFilterComboBox.setItems(FXCollections.observableArrayList(
                 localeService.getMessage("offers.filter.all.types", "All Types"),
                 localeService.getMessage("offers.type.money", "Money"),
@@ -131,8 +107,6 @@ public class OffersController {
                 localeService.getMessage("offers.type.mixed", "Mixed")
         ));
         typeFilterComboBox.setValue(localeService.getMessage("offers.filter.all.types", "All Types"));
-
-        // Add listeners for filter changes
         statusFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
         typeFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
         searchField.textProperty().addListener((_, _, _) -> updateFilters());
@@ -140,8 +114,6 @@ public class OffersController {
 
     private void showOfferDetails(OfferViewModel offer) {
     selectedOffer = offer;
-    
-    // Get the current tab controller
     OffersTabContentController currentController = getCurrentTabController();
         if (currentController != null) {
             currentController.showOfferDetails(offer);
@@ -184,7 +156,6 @@ public class OffersController {
                 } else {
                     OfferViewModel offer = getTableView().getItems().get(getIndex());
                     
-                    // Show/hide buttons based on offer status
                     boolean canAcceptReject = offer.getStatus() == OfferStatus.PENDING;
                     acceptButton.setVisible(canAcceptReject);
                     acceptButton.setManaged(canAcceptReject);
@@ -225,8 +196,6 @@ public class OffersController {
                     setGraphic(null);
                 } else {
                     OfferViewModel offer = getTableView().getItems().get(getIndex());
-                    
-                    // Show/hide buttons based on offer status  
                     boolean canWithdraw = offer.getStatus() == OfferStatus.PENDING;
                     withdrawButton.setVisible(canWithdraw);
                     withdrawButton.setManaged(canWithdraw);
@@ -238,7 +207,6 @@ public class OffersController {
     }
 
     private void setupTabControllers() {
-        // Setup received offers tab
         if (receivedOffersContentController != null) {
             receivedOffersContentController.initialize(
                 offerService.getReceivedOffersList(), 
@@ -253,8 +221,6 @@ public class OffersController {
                 this::handleWriteReview
             );
         }
-        
-        // Setup sent offers tab
         if (sentOffersContentController != null) {
             sentOffersContentController.initialize(
                 offerService.getUserOffersList(), 
@@ -269,14 +235,12 @@ public class OffersController {
                 this::handleWriteReview
             );
         }
-        
-        // Setup history tab
         if (historyOffersContentController != null) {
             historyOffersContentController.initialize(
                 FXCollections.observableArrayList(), 
                 "history",
                 this::showOfferDetails,
-                null, // No actions for history
+                null,
                 null, null, null, null, null, null // No action handlers for history
             );
         }
@@ -284,10 +248,7 @@ public class OffersController {
 
     private void setupTabChangeHandlers() {
         offersTabPane.getSelectionModel().selectedItemProperty().addListener((_, oldTab, newTab) -> {
-            // Clear details when switching tabs
             clearOfferDetails();
-            
-            // Update filters when tab changes
             updateFilters();
         });
     }
@@ -297,9 +258,7 @@ public class OffersController {
         String statusFilter = statusFilterComboBox.getValue();
         String typeFilter = typeFilterComboBox.getValue();
 
-        // Create predicate for filtering
         Predicate<OfferViewModel> predicate = offer -> {
-            // Search filter
             if (!searchText.isEmpty()) {
                 boolean matchesSearch = 
                     (offer.getListingTitle() != null && offer.getListingTitle().toLowerCase().contains(searchText)) ||
@@ -308,7 +267,6 @@ public class OffersController {
                 if (!matchesSearch) return false;
             }
 
-            // Status filter
             if (!localeService.getMessage("offers.filter.all.statuses", "All Statuses").equals(statusFilter)) {
                 OfferStatus selectedStatus = mapStatusFilterToEnum(statusFilter);
                 if (selectedStatus != null && offer.getStatus() != selectedStatus) {
@@ -316,7 +274,6 @@ public class OffersController {
                 }
             }
 
-            // Type filter
             if (!localeService.getMessage("offers.filter.all.types", "All Types").equals(typeFilter)) {
                 String offerType = getOfferTypeDisplayName(offer);
                 if (!typeFilter.equals(offerType)) {
@@ -327,7 +284,6 @@ public class OffersController {
             return true;
         };
 
-        // Apply filters to all tab controllers
         if (receivedOffersContentController != null) {
             receivedOffersContentController.applyFilter(predicate);
         }
@@ -394,8 +350,7 @@ public class OffersController {
     private void handleAcceptOffer(OfferViewModel offer) {
         if (offer == null) return;
         
-        selectedOffer = offer; // Set the selected offer for other methods that might need it
-        
+        selectedOffer = offer;
         Alert confirmation = AlertHelper.createConfirmationDialog(
                 localeService.getMessage("offers.accept.title", "Accept Offer"),
                 localeService.getMessage("offers.accept.header", "Accept Offer"),
@@ -412,9 +367,7 @@ public class OffersController {
                                     localeService.getMessage("offers.accept.success.message",
                                             "Offer accepted successfully"));
 
-                            // Check if this is a pickup delivery offer
                             if (offer.getDeliveryType() == DeliveryType.PICKUP) {
-                                // Ask if user wants to schedule pickup immediately
                                 Alert pickupDialog = AlertHelper.createConfirmationDialog(
                                         localeService.getMessage("pickup.schedule.title", "Schedule Pickup"),
                                         localeService.getMessage("pickup.schedule.header",
@@ -428,7 +381,6 @@ public class OffersController {
                                     }
                                 });
                             } else {
-                                // For shipping delivery, offer is already confirmed
                                 AlertHelper.showInformationAlert(
                                         localeService.getMessage("offers.confirmed.title", "Offer Confirmed"),
                                         localeService.getMessage("offers.confirmed.header", "Ready for Shipping"),
@@ -508,8 +460,6 @@ public class OffersController {
         if (offer == null) return;
         
         selectedOffer = offer;
-
-        // TODO: Implement counter offer functionality
         AlertHelper.showInformationAlert(
                 localeService.getMessage("offers.counter.title", "Counter Offer"),
                 localeService.getMessage("offers.counter.header", "Feature Coming Soon"),
@@ -554,13 +504,11 @@ public class OffersController {
     }
 
     private void handleSchedulePickup(OfferViewModel offer) {
-        // Get the window from the tab pane instead of the button
         Stage stage = (Stage) offersTabPane.getScene().getWindow();
         navigationService.openPickupScheduling(offer, stage);
     }
 
     private void handleCreateReview(OfferViewModel offer) {
-        // Same fix for review creation
         Stage stage = (Stage) offersTabPane.getScene().getWindow();
         navigationService.openReviewCreate(offer, stage);
     }
@@ -570,15 +518,12 @@ public class OffersController {
             .thenCompose(_ -> offerService.getSentOffers())
             .thenCompose(_ -> offerService.getOfferHistory())
             .thenAccept(historyOffers -> Platform.runLater(() -> {
-                // Update history tab with fetched data
                 if (historyOffersContentController != null) {
                     var historyViewModels = historyOffers.stream()
                             .map(viewModelMapper::toViewModel)
                             .collect(Collectors.toList());
                     historyOffersContentController.updateOffersList(historyViewModels);
                 }
-                
-                // Reapply filters after loading data
                 updateFilters();
             }))
             .exceptionally(ex -> {
@@ -588,7 +533,6 @@ public class OffersController {
     }
 
     private OfferStatus mapStatusFilterToEnum(String statusFilter) {
-        // Get localized strings for comparison
         String pendingText = localeService.getMessage("offers.status.pending", "Pending");
         String acceptedText = localeService.getMessage("offers.status.accepted", "Accepted");
         String rejectedText = localeService.getMessage("offers.status.rejected", "Rejected");
@@ -613,7 +557,7 @@ public class OffersController {
         if (statusFilter.equals(sellerVerifiedText)) return OfferStatus.SELLERVERIFIED;
         if (statusFilter.equals(buyerVerifiedText)) return OfferStatus.BUYERVERIFIED;
         
-        return null; // "All Statuses" or unknown
+        return null;
     }
 
     private String getOfferTypeDisplayName(OfferViewModel offer) {
@@ -646,15 +590,10 @@ public class OffersController {
         return "-";
     }
 
-    // Update the refreshFilters method
     public void refreshFilters() {
         String currentStatusValue = statusFilterComboBox.getValue();
         String currentTypeValue = typeFilterComboBox.getValue();
-        
-        // Refresh items
         setupFilters();
-        
-        // Try to maintain selection if possible, otherwise default to "All"
         statusFilterComboBox.setValue(localeService.getMessage("offers.filter.all.statuses", "All Statuses"));
         typeFilterComboBox.setValue(localeService.getMessage("offers.filter.all.types", "All Types"));
     }
@@ -730,8 +669,6 @@ public class OffersController {
         if (offer == null) return;
         
         selectedOffer = offer;
-        
-        // Check if this offer can be reviewed
         if (!canOfferBeReviewed(offer)) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("review.error.title", "Cannot Review"),
@@ -740,25 +677,18 @@ public class OffersController {
                             "This offer cannot be reviewed. Reviews are only available for completed non-gift transactions."));
             return;
         }
-        
-        // Open the review creation dialog
         Stage stage = (Stage) offersTabPane.getScene().getWindow();
         navigationService.openReviewCreate(offer, stage);
     }
 
-    // Helper method to check if an offer can be reviewed
     private boolean canOfferBeReviewed(OfferViewModel offer) {
         if (offer == null || offer.getListing() == null) {
             return false;
         }
-        
-        // Don't allow reviews for gift listings
         String listingType = offer.getListing().getListingTypeValue();
         if ("GIFT".equalsIgnoreCase(listingType)) {
             return false;
         }
-        
-        // Only allow reviews for completed offers
         return offer.getStatus() == OfferStatus.COMPLETED;
     }
 }

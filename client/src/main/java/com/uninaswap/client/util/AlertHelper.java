@@ -21,7 +21,17 @@ import java.util.concurrent.CountDownLatch;
 public class AlertHelper {
 
     /**
+     * Default constructor
+     */
+    public AlertHelper() {
+    }
+
+    /**
      * Show an information alert with the provided title and message
+     * 
+     * @param title   The title of the alert
+     * @param header  The header text of the alert
+     * @param content The content text of the alert
      */
     public static void showInformationAlert(String title, String header, String content) {
         Platform.runLater(() -> {
@@ -35,6 +45,10 @@ public class AlertHelper {
 
     /**
      * Show a warning alert with the provided title and message
+     * 
+     * @param title   The title of the alert
+     * @param header  The header text of the alert
+     * @param content The content text of the alert
      */
     public static void showWarningAlert(String title, String header, String content) {
         Platform.runLater(() -> {
@@ -48,6 +62,10 @@ public class AlertHelper {
 
     /**
      * Show an error alert with the provided title and message
+     * 
+     * @param title   The title of the alert
+     * @param header  The header text of the alert
+     * @param content The content text of the alert
      */
     public static void showErrorAlert(String title, String header, String content) {
         Platform.runLater(() -> {
@@ -61,6 +79,10 @@ public class AlertHelper {
 
     /**
      * Show an error alert for an exception, with a stack trace
+     * 
+     * @param title   The title of the alert
+     * @param header  The header text of the alert
+     * @param ex      The exception to show
      */
     public static void showExceptionAlert(String title, String header, Throwable ex) {
         Platform.runLater(() -> {
@@ -68,8 +90,6 @@ public class AlertHelper {
             alert.setTitle(title);
             alert.setHeaderText(header);
             alert.setContentText(ex.getMessage());
-
-            // Create expandable Exception.
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             ex.printStackTrace(pw);
@@ -86,8 +106,6 @@ public class AlertHelper {
 
             GridPane expContent = new GridPane();
             expContent.add(textArea, 0, 0);
-
-            // Set expandable Exception into the dialog pane.
             alert.getDialogPane().setExpandableContent(expContent);
             alert.getDialogPane().setExpanded(false);
 
@@ -98,6 +116,9 @@ public class AlertHelper {
     /**
      * Create a confirmation dialog that returns a standard Alert object
      * 
+     * @param title   The title of the alert
+     * @param header  The header text of the alert
+     * @param content The content text of the alert
      * @return An Alert of type CONFIRMATION that the caller can use with
      *         showAndWait()
      */
@@ -112,6 +133,9 @@ public class AlertHelper {
     /**
      * Shows a confirmation dialog and returns true if OK was pressed
      * 
+     * @param title   The title of the alert
+     * @param header  The header text of the alert
+     * @param content The content text of the alert
      * @return true if the user clicked OK, false otherwise
      */
     public static boolean showConfirmationDialog(String title, String header, String content) {
@@ -121,6 +145,11 @@ public class AlertHelper {
 
     /**
      * Show an information alert on a specific window
+     * 
+     * @param owner   The owner window for the alert
+     * @param title   The title of the alert
+     * @param header  The header text of the alert
+     * @param content The content text of the alert
      */
     public static void showInformationAlert(Window owner, String title, String header, String content) {
         Platform.runLater(() -> {
@@ -145,19 +174,15 @@ public class AlertHelper {
         final boolean[] result = { false };
 
         if (Platform.isFxApplicationThread()) {
-            // Already on JavaFX Application Thread
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle(title);
             alert.setHeaderText(header);
             alert.setContentText(content);
-
-            // Customize button types if needed
             alert.getButtonTypes().setAll(ButtonType.OK, ButtonType.CANCEL);
 
             Optional<ButtonType> buttonClicked = alert.showAndWait();
             return buttonClicked.isPresent() && buttonClicked.get() == ButtonType.OK;
         } else {
-            // Need to run on JavaFX Application Thread
             CountDownLatch latch = new CountDownLatch(1);
 
             Platform.runLater(() -> {
@@ -177,7 +202,7 @@ public class AlertHelper {
             });
 
             try {
-                latch.await(); // Wait for the dialog to close
+                latch.await();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return false;
@@ -206,8 +231,6 @@ public class AlertHelper {
             alert.setTitle(title);
             alert.setHeaderText(header);
             alert.setContentText(content);
-
-            // Create custom button types
             ButtonType confirmButton = new ButtonType(confirmText);
             ButtonType cancelButton = new ButtonType(cancelText, ButtonBar.ButtonData.CANCEL_CLOSE);
 
@@ -250,6 +273,12 @@ public class AlertHelper {
 
     /**
      * Show a confirmation alert on a specific window
+     * 
+     * @param owner   The owner window for the alert
+     * @param title   The title of the alert
+     * @param header  The header text of the alert
+     * @param content The content text of the alert
+     * @return true if the user clicked OK, false otherwise
      */
     public static boolean showConfirmationAlert(Window owner, String title, String header, String content) {
         final boolean[] result = { false };

@@ -17,6 +17,8 @@ public class ProfileService {
     
     /**
      * Set the handler for profile update responses and register it with WebSocketClient
+     * 
+     * @param handler The handler to process profile update messages
      */
     public void setUpdateResponseHandler(Consumer<ProfileUpdateMessage> handler) {
         // Register the handler with the WebSocketClient
@@ -25,6 +27,7 @@ public class ProfileService {
     
     /**
      * Send a profile update request to the server
+     * 
      * @param user The user object containing updated profile information
      * @return CompletableFuture that completes when the update is sent
      */

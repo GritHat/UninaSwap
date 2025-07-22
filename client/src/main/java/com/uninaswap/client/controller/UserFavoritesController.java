@@ -7,7 +7,6 @@ import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -53,12 +52,9 @@ public class UserFavoritesController {
     @FXML
     private Button closeButton;
 
-    // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final FavoritesService favoritesService = FavoritesService.getInstance();
     private final NavigationService navigationService = NavigationService.getInstance();
-
-    // Data - Use the same observable list as FavoritesService
     private UserViewModel currentUser;
     private ObservableList<ListingViewModel> favoriteListings;
     private ObservableList<FavoriteViewModel> userFavorites;
@@ -78,20 +74,15 @@ public class UserFavoritesController {
     }
 
     private void setupObservableLists() {
-        // Get the observable lists from FavoritesService (same as FavoritesDrawer)
         favoriteListings = favoritesService.getFavoriteListingViewModels();
         userFavorites = favoritesService.getUserFavoritesList();
-
-        // Set up listener for automatic updates (like FavoritesDrawer)
-        favoriteListings.addListener((ListChangeListener<ListingViewModel>) change -> {
+        favoriteListings.addListener((ListChangeListener<ListingViewModel>) _ -> {
             Platform.runLater(() -> {
                 updateCounts();
-                // Table is already bound to favoriteListings, so it will update automatically
             });
         });
 
-        // Additional listener for user favorites to catch any changes
-        userFavorites.addListener((ListChangeListener<FavoriteViewModel>) change -> {
+        userFavorites.addListener((ListChangeListener<FavoriteViewModel>) _ -> {
             Platform.runLater(() -> {
                 updateCounts();
             });
@@ -121,11 +112,7 @@ public class UserFavoritesController {
             }
             return new SimpleStringProperty("");
         });
-
-        // Setup actions column
         setupActionsColumn();
-
-        // Bind table directly to the FavoritesService observable list
         favoritesTable.setItems(favoriteListings);
     }
 
@@ -139,12 +126,12 @@ public class UserFavoritesController {
                 viewButton.getStyleClass().add("primary-button");
                 removeButton.getStyleClass().add("danger-button");
 
-                viewButton.setOnAction(e -> {
+                viewButton.setOnAction(_ -> {
                     ListingViewModel listing = getTableView().getItems().get(getIndex());
                     handleViewListing(listing);
                 });
 
-                removeButton.setOnAction(e -> {
+                removeButton.setOnAction(_ -> {
                     ListingViewModel listing = getTableView().getItems().get(getIndex());
                     handleRemoveFavorite(listing);
                 });
@@ -164,8 +151,6 @@ public class UserFavoritesController {
         if (user != null) {
             Platform.runLater(() -> {
                 updateUserInfo();
-                // No need to call loadFavorites() since we're using observable lists
-                // If the list is empty, trigger a refresh
                 if (favoriteListings.isEmpty()) {
                     favoritesService.refreshUserFavorites();
                 }
@@ -185,8 +170,6 @@ public class UserFavoritesController {
                 localeService.getMessage("favorites.total.count", "%d favorites"),
                 favoriteListings.size()));
     }
-
-    // Remove the old loadFavorites method since we're using observable lists
 
     private void handleViewListing(ListingViewModel listing) {
         try {
@@ -209,12 +192,8 @@ public class UserFavoritesController {
 
         confirmation.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                // Use the FavoritesService to remove (same as other controllers)
                 favoritesService.removeFavoriteFromServer(listing.getId())
-                        .thenAccept(success -> Platform.runLater(() -> {
-                            // No need to manually remove from list - the observable list will update automatically
-                            // via the FavoritesService message handler
-
+                        .thenAccept(_ -> Platform.runLater(() -> {
                             AlertHelper.showInformationAlert(
                                     localeService.getMessage("favorites.remove.success.title", "Success"),
                                     localeService.getMessage("favorites.remove.success.header", "Favorite Removed"),
@@ -234,7 +213,6 @@ public class UserFavoritesController {
 
     @FXML
     private void handleRefresh() {
-        // Simply trigger refresh via FavoritesService - observable lists will update automatically
         favoritesService.refreshUserFavorites();
         updateCounts();
     }
@@ -245,17 +223,14 @@ public class UserFavoritesController {
         stage.close();
     }
 
-    // Add method to check if favorites are loaded
     public boolean hasFavorites() {
         return !favoriteListings.isEmpty();
     }
-
-    // Add method to get favorites count
+    
     public int getFavoritesCount() {
         return favoriteListings.size();
     }
 
-    // Add method to refresh data (can be called externally)
     public void refreshData() {
         favoritesService.refreshUserFavorites();
     }

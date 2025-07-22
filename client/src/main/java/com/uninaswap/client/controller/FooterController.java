@@ -39,11 +39,7 @@ public class FooterController {
     public void initialize() {    
         connectionStatusLabel.setText(localeService.getMessage("dashboard.status.connected"));
         updateConnectionStatus(true);
-
-        // Populate ComboBox with language options
         languageComboBox.setItems(FXCollections.observableArrayList(SUPPORTED_LANGUAGES.values()));
-        
-        // Set a custom string converter to display language names
         languageComboBox.setConverter(new StringConverter<Locale>() {
             @Override
             public String toString(Locale locale) {
@@ -52,14 +48,10 @@ public class FooterController {
             
             @Override
             public Locale fromString(String string) {
-                return null; // Not needed for ComboBox
+                return null;
             }
         });
-        
-        // Set current locale
         languageComboBox.setValue(localeService.getCurrentLocale());
-        
-        // Add listener to change language when selection changes
         languageComboBox.valueProperty().addListener((_, oldValue, newValue) -> {
             if (newValue != null && !newValue.equals(oldValue)) {
                 localeService.setLocale(newValue);

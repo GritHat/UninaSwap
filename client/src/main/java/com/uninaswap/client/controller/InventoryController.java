@@ -8,12 +8,9 @@ import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.ItemViewModel;
-import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.common.enums.ItemCondition;
-
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -27,8 +24,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class InventoryController {
-
-    // Update table to use ItemViewModel instead of ItemDTO
     @FXML
     private TableView<ItemViewModel> itemsTable;
     @FXML
@@ -43,7 +38,6 @@ public class InventoryController {
     private TableColumn<ItemViewModel, Integer> reservedColumn;
     @FXML
     private TableColumn<ItemViewModel, Integer> availableColumn;
-
     @FXML
     private Button addButton;
     @FXML
@@ -52,14 +46,12 @@ public class InventoryController {
     private Button deleteButton;
     @FXML
     private Button refreshButton;
-
     @FXML
     private ImageView itemImageView;
     @FXML
     private Label itemNameLabel;
     @FXML
     private Label itemDescriptionLabel;
-
     @FXML
     private TextField searchField;
     @FXML
@@ -76,23 +68,16 @@ public class InventoryController {
     private final LocaleService localeService = LocaleService.getInstance();
     private final EventBusService eventBus = EventBusService.getInstance();
     private final NavigationService navigationService = NavigationService.getInstance();
-    private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
-
-    // Add field for filtered list
     private FilteredList<ItemViewModel> filteredItems;
 
     @FXML
     public void initialize() {
         setupFilters();
         setupTableColumns();
-
-        // Get the observable list from ItemService and create filtered list
         ObservableList<ItemViewModel> allItems = itemService.getUserItemsListAsViewModel();
         FilteredList<ItemViewModel> filteredItems = new FilteredList<>(allItems);
         itemsTable.setItems(filteredItems);
-
         setupSearchFilter(filteredItems);
-
         itemsTable.getSelectionModel().selectedItemProperty().addListener((_, _, newSelection) -> {
             if (newSelection != null) {
                 showItemDetails(newSelection);
@@ -100,30 +85,21 @@ public class InventoryController {
                 clearItemDetails();
             }
         });
-
-        // Enable buttons only when item is selected
         editButton.disableProperty().bind(itemsTable.getSelectionModel().selectedItemProperty().isNull());
         deleteButton.disableProperty().bind(itemsTable.getSelectionModel().selectedItemProperty().isNull());
-
-        // Load user's items
         refreshItems();
-
         eventBus.subscribe(EventTypes.ITEM_UPDATED, _ -> {
             refreshItems();
         });
         eventBus.subscribe(EventTypes.USER_LOGGED_OUT, _ -> {
             Platform.runLater(() -> {
-                // Clear the table and details
                 itemsTable.getItems().clear();
                 clearItemDetails();
                 System.out.println("InventoryController: Cleared view on logout");
             });
         });
     }
-
-    // Add new method to setup filters
     private void setupFilters() {
-        // Category filter
         categoryFilterComboBox.setItems(FXCollections.observableArrayList(
                 localeService.getMessage("inventory.filter.all.categories", "All Categories"),
                 localeService.getMessage("category.electronics", "Electronics"),
@@ -134,8 +110,6 @@ public class InventoryController {
                 localeService.getMessage("category.other", "Other")
         ));
         categoryFilterComboBox.setValue(localeService.getMessage("inventory.filter.all.categories", "All Categories"));
-
-        // Condition filter
         conditionFilterComboBox.setItems(FXCollections.observableArrayList(
                 localeService.getMessage("inventory.filter.all.conditions", "All Conditions"),
                 localeService.getMessage("condition.new", "New"),
@@ -146,8 +120,6 @@ public class InventoryController {
                 localeService.getMessage("condition.for_parts", "For Parts")
         ));
         conditionFilterComboBox.setValue(localeService.getMessage("inventory.filter.all.conditions", "All Conditions"));
-
-        // Availability filter
         availabilityFilterComboBox.setItems(FXCollections.observableArrayList(
                 localeService.getMessage("inventory.filter.all.availability", "All Items"),
                 localeService.getMessage("inventory.filter.available", "Available"),
@@ -155,27 +127,20 @@ public class InventoryController {
                 localeService.getMessage("inventory.filter.out_of_stock", "Out of Stock")
         ));
         availabilityFilterComboBox.setValue(localeService.getMessage("inventory.filter.all.availability", "All Items"));
-
-        // Add listeners for filter changes
         categoryFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
         conditionFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
         availabilityFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
     }
 
-    // Add new method to setup search filter
     private void setupSearchFilter(FilteredList<ItemViewModel> filteredItems) {
         searchField.textProperty().addListener((_, _, _) -> updateFilters());
-
-        // Store reference to filtered list for filter updates
         this.filteredItems = filteredItems;
     }
 
-    // Add method to update filters
     private void updateFilters() {
         if (filteredItems == null) return;
 
         filteredItems.setPredicate(item -> {
-            // Search filter
             String searchText = searchField.getText().toLowerCase().trim();
             if (!searchText.isEmpty()) {
                 if (!item.getName().toLowerCase().contains(searchText) &&
@@ -185,8 +150,6 @@ public class InventoryController {
                     return false;
                 }
             }
-
-            // Category filter
             String categoryFilter = categoryFilterComboBox.getValue();
             if (!localeService.getMessage("inventory.filter.all.categories", "All Categories").equals(categoryFilter)) {
                 String itemCategory = item.getItemCategory();
@@ -194,8 +157,6 @@ public class InventoryController {
                     return false;
                 }
             }
-
-            // Condition filter
             String conditionFilter = conditionFilterComboBox.getValue();
             if (!localeService.getMessage("inventory.filter.all.conditions", "All Conditions").equals(conditionFilter)) {
                 ItemCondition itemCondition = item.getCondition();
@@ -203,8 +164,6 @@ public class InventoryController {
                     return false;
                 }
             }
-
-            // Availability filter
             String availabilityFilter = availabilityFilterComboBox.getValue();
             if (!localeService.getMessage("inventory.filter.all.availability", "All Items").equals(availabilityFilter)) {
                 if (localeService.getMessage("inventory.filter.available", "Available").equals(availabilityFilter)) {
@@ -226,7 +185,6 @@ public class InventoryController {
         });
     }
 
-    // Helper method to get localized category display name
     private String getCategoryDisplayName(String categoryName) {
         try {
             Category category = Category.valueOf(categoryName.toUpperCase());
@@ -238,7 +196,6 @@ public class InventoryController {
 
     @FXML
     private void handleAddItem() {
-        // Create a new empty ItemViewModel for adding
         ItemViewModel newItem = new ItemViewModel();
         navigationService.openItemDialog(newItem);
     }
@@ -247,7 +204,6 @@ public class InventoryController {
     private void handleEditItem() {
         ItemViewModel selectedItem = itemsTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
-            // Pass the ItemViewModel directly to the navigation service
             navigationService.openItemDialog(selectedItem);
         }
     }
@@ -283,7 +239,6 @@ public class InventoryController {
         refreshItems();
     }
 
-    // Add clear filters handler
     @FXML
     private void handleClearFilters() {
         searchField.clear();
@@ -293,7 +248,6 @@ public class InventoryController {
     }
 
     private void refreshItems() {
-        // Convert ItemDTOs from service to ItemViewModels
         itemsTable.setItems(itemService.getUserItemsListAsViewModel());
     }
 
@@ -302,7 +256,6 @@ public class InventoryController {
         itemDescriptionLabel.setText(item.getDescription());
 
         if (item.hasImage()) {
-            // Load image using the ImageService
             imageService.fetchImage(item.getImagePath())
                     .thenAccept(image -> {
                         Platform.runLater(() -> {
@@ -310,7 +263,6 @@ public class InventoryController {
                         });
                     })
                     .exceptionally(ex -> {
-                        // If loading fails, set default image
                         System.err.println("Failed to load item image: " + ex.getMessage());
                         Platform.runLater(() -> {
                             itemImageView.setImage(new Image("/images/no_image.png"));
@@ -328,7 +280,6 @@ public class InventoryController {
         itemImageView.setImage(null);
     }
 
-    // Update the setupTableColumns method name (if it doesn't exist, add it)
     private void setupTableColumns() {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         categoryColumn.setCellValueFactory(cellData ->

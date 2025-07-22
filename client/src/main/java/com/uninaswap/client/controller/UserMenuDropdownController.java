@@ -30,7 +30,7 @@ public class UserMenuDropdownController {
     @FXML private Button settingsBtn;
     @FXML private Button supportBtn;
     @FXML private ComboBox<String> themeCombo;
-    @FXML private ComboBox<Locale> languageCombo; // Add language ComboBox
+    @FXML private ComboBox<Locale> languageCombo;
     @FXML private Button logoutBtn;
     
     private final LocaleService localeService = LocaleService.getInstance();
@@ -39,8 +39,6 @@ public class UserMenuDropdownController {
     private final ImageService imageService = ImageService.getInstance();
     
     private Consumer<Void> onCloseCallback;
-    
-    // Supported languages (same as FooterController)
     private static final Map<String, Locale> SUPPORTED_LANGUAGES = Map.of(
         "English", Locale.ENGLISH,
         "Italiano", Locale.ITALIAN
@@ -50,7 +48,7 @@ public class UserMenuDropdownController {
     public void initialize() {
         setupUserInfo();
         setupThemeComboBox();
-        setupLanguageComboBox(); // Add language setup
+        setupLanguageComboBox();
     }
     
     public void setOnCloseCallback(Consumer<Void> callback) {
@@ -61,8 +59,6 @@ public class UserMenuDropdownController {
         if (userSessionService.isLoggedIn()) {
             displayNameText.setText(userSessionService.getUser().getUsername());
             usernameText.setText("@" + userSessionService.getUser().getUsername());
-            
-            // Load user avatar
             String imagePath = userSessionService.getUser().getProfileImagePath();
             if (imagePath != null && !imagePath.isEmpty()) {
                 imageService.fetchImage(imagePath)
@@ -94,11 +90,7 @@ public class UserMenuDropdownController {
     }
     
     private void setupLanguageComboBox() {
-        // Populate ComboBox with language options
-        languageCombo.setItems(FXCollections.observableArrayList(SUPPORTED_LANGUAGES.values()));
-        
-        // Set a custom string converter to display language names
-        languageCombo.setConverter(new StringConverter<Locale>() {
+        languageCombo.setItems(FXCollections.observableArrayList(SUPPORTED_LANGUAGES.values()));        languageCombo.setConverter(new StringConverter<Locale>() {
             @Override
             public String toString(Locale locale) {
                 if (locale == null) return null;
@@ -107,19 +99,13 @@ public class UserMenuDropdownController {
             
             @Override
             public Locale fromString(String string) {
-                return null; // Not needed for ComboBox
+                return null;
             }
         });
-        
-        // Set current locale
         languageCombo.setValue(localeService.getCurrentLocale());
-        
-        // Add listener to change language when selection changes
         languageCombo.valueProperty().addListener((_, oldValue, newValue) -> {
             if (newValue != null && !newValue.equals(oldValue)) {
                 localeService.setLocale(newValue);
-                
-                // Refresh the dropdown labels after language change
                 Platform.runLater(() -> {
                     refreshLocalizedLabels();
                 });
@@ -128,15 +114,12 @@ public class UserMenuDropdownController {
     }
     
     private void refreshLocalizedLabels() {
-        // Refresh theme ComboBox items
         String currentTheme = themeCombo.getValue();
         themeCombo.setItems(FXCollections.observableArrayList(
             localeService.getMessage("theme.light", "Light"),
             localeService.getMessage("theme.dark", "Dark"),
             localeService.getMessage("theme.system", "System")
         ));
-        
-        // Restore theme selection (find equivalent in new language)
         if (currentTheme != null) {
             if (currentTheme.contains("Light") || currentTheme.contains("Chiaro")) {
                 themeCombo.setValue(localeService.getMessage("theme.light", "Light"));
@@ -231,8 +214,6 @@ public class UserMenuDropdownController {
     @FXML
     private void handleLogout() {
         closeDropdown();
-        
-        // Show confirmation dialog
         Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
         confirmDialog.setTitle(localeService.getMessage("logout.confirm.title", "Confirm Logout"));
         confirmDialog.setHeaderText(localeService.getMessage("logout.confirm.header", "Are you sure you want to logout?"));
@@ -251,7 +232,6 @@ public class UserMenuDropdownController {
     
     private void applyTheme(String theme) {
         try {
-            // TODO: Implement theme switching when ThemeService is available
             System.out.println("Applying theme: " + theme);
         } catch (Exception e) {
             System.err.println("Failed to apply theme: " + e.getMessage());

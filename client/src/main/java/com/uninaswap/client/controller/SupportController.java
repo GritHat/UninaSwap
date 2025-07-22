@@ -16,22 +16,16 @@ public class SupportController {
    
     @FXML
     public void initialize() {
-        // Inizializzazione del controller
     }
     
     @FXML
     public void handleSendMessage(ActionEvent event) {
         if (validateForm()) {
-            // Qui implementare la logica per inviare il messaggio al servizio di supporto
-            
-            // Mostra un messaggio di conferma
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.setTitle("Richiesta inviata");
             alert.setHeaderText("La tua richiesta è stata inviata");
             alert.setContentText("Ti risponderemo al più presto all'indirizzo email associato al tuo account.");
             alert.showAndWait();
-            
-            // Pulisci il form
             subjectField.clear();
             messageField.clear();
         }

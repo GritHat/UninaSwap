@@ -3,9 +3,11 @@ package com.uninaswap.common.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * DTO for Analytics data, encapsulating various statistics and metrics.
+ */
 public class AnalyticsDTO {
     
-    // Overall Stats
     private UserStatsDTO userStats;
     private List<TimeSeriesDataDTO> listingStats;
     private List<TimeSeriesDataDTO> offerStats;
@@ -14,13 +16,10 @@ public class AnalyticsDTO {
     private List<CategoryStatsDTO> categoryBreakdown;
     private List<MonthlyStatsDTO> monthlyBreakdown;
     
-    // Performance Metrics
     private PerformanceMetricsDTO performanceMetrics;
     
-    // Constructors
     public AnalyticsDTO() {}
     
-    // Getters and setters
     public UserStatsDTO getUserStats() { return userStats; }
     public void setUserStats(UserStatsDTO userStats) { this.userStats = userStats; }
     
@@ -45,7 +44,6 @@ public class AnalyticsDTO {
     public PerformanceMetricsDTO getPerformanceMetrics() { return performanceMetrics; }
     public void setPerformanceMetrics(PerformanceMetricsDTO performanceMetrics) { this.performanceMetrics = performanceMetrics; }
     
-    // Inner classes for specific analytics data
     public static class UserStatsDTO {
         private int totalListings;
         private int activeListings;
@@ -60,7 +58,6 @@ public class AnalyticsDTO {
         private int totalViews;
         private int totalFavorites;
         
-        // Constructors, getters and setters
         public UserStatsDTO() {}
         
         public int getTotalListings() { return totalListings; }
@@ -184,10 +181,10 @@ public class AnalyticsDTO {
     public static class PerformanceMetricsDTO {
         private double listingSuccessRate;
         private double offerAcceptanceRate;
-        private double averageTimeToSell; // in days
+        private double averageTimeToSell;
         private double customerSatisfactionRate;
         private double repeatCustomerRate;
-        private double ratingTrend; // positive/negative trend
+        private double ratingTrend;
         
         public PerformanceMetricsDTO() {}
         

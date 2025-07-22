@@ -67,11 +67,8 @@ public class PickupSchedulingController {
     @FXML
     private Button cancelButton;
 
-    // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final PickupService pickupService = PickupService.getInstance();
-
-    // Data
     private String offerId;
     private OfferViewModel offer;
     private List<LocalDate> selectedDates = new ArrayList<>();
@@ -86,36 +83,25 @@ public class PickupSchedulingController {
     }
 
     private void setupTimeSpinners() {
-        // Start time spinners
         startHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9));
         startMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15));
-
-        // End time spinners
         endHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 18));
         endMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15));
-
-        // Make spinners editable
         startHourSpinner.setEditable(true);
         startMinuteSpinner.setEditable(true);
         endHourSpinner.setEditable(true);
         endMinuteSpinner.setEditable(true);
-
-        // Add validation listeners
-        startHourSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateTimeRange());
-        startMinuteSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateTimeRange());
-        endHourSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateTimeRange());
-        endMinuteSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateTimeRange());
+        startHourSpinner.valueProperty().addListener((_, _, _) -> validateTimeRange());
+        startMinuteSpinner.valueProperty().addListener((_, _, _) -> validateTimeRange());
+        endHourSpinner.valueProperty().addListener((_, _, _) -> validateTimeRange());
+        endMinuteSpinner.valueProperty().addListener((_, _, _) -> validateTimeRange());
     }
 
     private void setupDatePickers() {
         LocalDate today = LocalDate.now();
-
-        // Set minimum dates to today
         startDatePicker.setValue(today);
         endDatePicker.setValue(today.plusDays(7));
-
-        // Disable past dates
-        startDatePicker.setDayCellFactory(picker -> new DateCell() {
+        startDatePicker.setDayCellFactory(_ -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
@@ -123,7 +109,7 @@ public class PickupSchedulingController {
             }
         });
 
-        endDatePicker.setDayCellFactory(picker -> new DateCell() {
+        endDatePicker.setDayCellFactory(_ -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
@@ -132,9 +118,7 @@ public class PickupSchedulingController {
                         (startDate != null && date.isBefore(startDate)));
             }
         });
-
-        // Update end date picker when start date changes
-        startDatePicker.valueProperty().addListener((obs, oldDate, newDate) -> {
+        startDatePicker.valueProperty().addListener((_, _, newDate) -> {
             if (newDate != null && endDatePicker.getValue() != null &&
                     endDatePicker.getValue().isBefore(newDate)) {
                 endDatePicker.setValue(newDate);
@@ -156,8 +140,6 @@ public class PickupSchedulingController {
         cancelButton.setText(localeService.getMessage("button.cancel", "Cancel"));
         addDateRangeButton.setText(localeService.getMessage("pickup.dates.add.button", "Add Range"));
         clearDatesButton.setText(localeService.getMessage("pickup.dates.clear.button", "Clear All"));
-        
-        // Update selected dates count display
         updateSelectedDatesDisplay();
     }
 
@@ -174,13 +156,11 @@ public class PickupSchedulingController {
 
         Platform.runLater(() -> {
             if (reschedulingMode) {
-                // Update UI for rescheduling
                 titleLabel.setText(localeService.getMessage("pickup.reschedule.title", "Reschedule Pickup"));
                 instructionsLabel.setText(localeService.getMessage("pickup.reschedule.instructions",
                         "Propose new available dates and time range for pickup"));
                 confirmButton.setText(localeService.getMessage("pickup.reschedule.confirm", "Propose New Schedule"));
             } else {
-                // Keep original scheduling UI
                 titleLabel.setText(localeService.getMessage("pickup.scheduling.title", "Schedule Pickup"));
                 instructionsLabel.setText(localeService.getMessage("pickup.scheduling.instructions",
                         "Select your available dates and time range for pickup"));
@@ -211,8 +191,6 @@ public class PickupSchedulingController {
                             "Start date must be before or equal to end date"));
             return;
         }
-
-        // Add all dates in the range
         List<LocalDate> datesToAdd = new ArrayList<>();
         LocalDate current = startDate;
         while (!current.isAfter(endDate)) {
@@ -225,8 +203,6 @@ public class PickupSchedulingController {
         selectedDates.addAll(datesToAdd);
         selectedDates.sort(LocalDate::compareTo);
         updateSelectedDatesDisplay();
-
-        // Show confirmation
         AlertHelper.showInformationAlert(
                 localeService.getMessage("pickup.dates.added.title", "Dates Added"),
                 localeService.getMessage("pickup.dates.added.header", "Success"),
@@ -272,13 +248,11 @@ public class PickupSchedulingController {
                 endTime,
                 offer.getListing().getPickupLocation(),
                 detailsArea.getText().trim(),
-                null // createdByUserId will be set by the service
-        );
+                null);
 
         confirmButton.setDisable(true);
 
         if (isReschedulingMode) {
-            // Handle rescheduling - create new pickup proposal
             pickupService.createPickup(pickupDTO)
                     .thenAccept(success -> Platform.runLater(() -> {
                         if (success) {
@@ -308,7 +282,6 @@ public class PickupSchedulingController {
                         return null;
                     });
         } else {
-            // Handle original scheduling
             pickupService.createPickup(pickupDTO)
                     .thenAccept(success -> Platform.runLater(() -> {
                         if (success) {
@@ -350,7 +323,6 @@ public class PickupSchedulingController {
         LocalTime endTime = LocalTime.of(endHourSpinner.getValue(), endMinuteSpinner.getValue());
 
         if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
-            // Visual feedback - could add styling here
             confirmButton.setDisable(true);
         } else {
             confirmButton.setDisable(false);
@@ -358,7 +330,6 @@ public class PickupSchedulingController {
     }
 
     private boolean validateForm() {
-        // Check location
         if (locationField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("pickup.validation.title", "Validation Error"),
@@ -367,8 +338,6 @@ public class PickupSchedulingController {
             locationField.requestFocus();
             return false;
         }
-
-        // Check time range
         LocalTime startTime = LocalTime.of(startHourSpinner.getValue(), startMinuteSpinner.getValue());
         LocalTime endTime = LocalTime.of(endHourSpinner.getValue(), endMinuteSpinner.getValue());
 
@@ -380,8 +349,6 @@ public class PickupSchedulingController {
             startHourSpinner.requestFocus();
             return false;
         }
-
-        // Check selected dates
         if (selectedDates.isEmpty()) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("pickup.validation.title", "Validation Error"),
@@ -407,7 +374,7 @@ public class PickupSchedulingController {
 
             Button removeButton = new Button("×");
             removeButton.getStyleClass().add("date-chip-remove");
-            removeButton.setOnAction(e -> {
+            removeButton.setOnAction(_ -> {
                 selectedDates.remove(date);
                 updateSelectedDatesDisplay();
             });

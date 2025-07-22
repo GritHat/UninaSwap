@@ -23,8 +23,6 @@ public class SidebarController {
     private ImageView notificationsIcon;
     @FXML
     private ImageView listingIcon;
-
-    // Add FXML references to the button containers
     @FXML
     private VBox homeButton;
     @FXML
@@ -46,11 +44,6 @@ public class SidebarController {
     private final UserSessionService userSessionService = UserSessionService.getInstance();
 
     private MainController mainController;
-
-    // Track currently selected button
-    private VBox currentlySelected;
-
-    // Add these fields to track icon references
     @FXML
     private ImageView offersIcon;
 
@@ -60,24 +53,18 @@ public class SidebarController {
 
     @FXML
     public void initialize() {
-        // Set home as initially selected
         setSelectedButton(homeButton);
     }
 
     private void setSelectedButton(VBox selectedButton) {
-        // Remove selected class from all buttons and reset icons
         clearAllSelections();
-        
-        // Add selected class to the new button and set white icon
         if (selectedButton != null) {
             selectedButton.getStyleClass().add("selected");
-            currentlySelected = selectedButton;
             setWhiteIcon(selectedButton);
         }
     }
 
     public void clearAllSelections() {
-        // Remove selected class from all sidebar buttons and reset to normal icons
         if (homeButton != null) {
             homeButton.getStyleClass().remove("selected");
             setNormalIcon(homeButton, homeIcon, "/images/icons/home.png");
@@ -102,9 +89,6 @@ public class SidebarController {
             profileButton.getStyleClass().remove("selected");
             setNormalIcon(profileButton, ProfileImageIcon, "/images/icons/default_profile.png");
         }
-        
-        // Reset the currently selected tracker
-        currentlySelected = null;
     }
 
     private void setWhiteIcon(VBox button) {
@@ -169,8 +153,6 @@ public class SidebarController {
         try {
             Parent homeView = navigationService.loadHomeView();
             mainController.setContent(homeView);
-            
-            // Update header buttons when leaving listing creation
             mainController.updateHeaderButtonSelection("refresh");
         } catch (java.io.IOException e) {
             e.printStackTrace();
@@ -183,8 +165,6 @@ public class SidebarController {
         try {
             Parent inventoryView = navigationService.loadInventoryView();
             mainController.setContent(inventoryView);
-            
-            // Update header buttons when leaving listing creation
             mainController.updateHeaderButtonSelection("refresh");
         } catch (java.io.IOException e) {
             e.printStackTrace();
@@ -197,8 +177,6 @@ public class SidebarController {
         try {
             Parent listingsView = navigationService.loadListingsView();
             mainController.setContent(listingsView);
-            
-            // Update header buttons when navigating
             mainController.updateHeaderButtonSelection("refresh");
         } catch (java.io.IOException e) {
             e.printStackTrace();
@@ -210,7 +188,6 @@ public class SidebarController {
         setSelectedButton(notificationsButton);
         try {
             navigationService.navigateToNotificationsView();
-            // Update header buttons when leaving listing creation
             mainController.updateHeaderButtonSelection("refresh");
         } catch (java.io.IOException e) {
             e.printStackTrace();
@@ -219,7 +196,6 @@ public class SidebarController {
 
     @FXML
     public void showSettings(MouseEvent event) {
-        // Settings might not need to be selected since it's accessed from user menu
         try {
             Parent settingsView = navigationService.loadSettingsView();
             mainController.setContent(settingsView);
@@ -244,8 +220,6 @@ public class SidebarController {
         try {
             Parent offersView = navigationService.loadOffersView();
             mainController.setContent(offersView);
-            
-            // Update header buttons when leaving listing creation
             mainController.updateHeaderButtonSelection("refresh");
         } catch (java.io.IOException e) {
             e.printStackTrace();
@@ -263,7 +237,6 @@ public class SidebarController {
         }
     }
 
-    // Public method to allow external selection updates
     public void selectHomeButton() {
         setSelectedButton(homeButton);
     }

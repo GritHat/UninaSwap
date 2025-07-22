@@ -13,30 +13,22 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class OfferDialogController {
-
-    // FXML Elements
     @FXML
     private ImageView listingImage;
     @FXML
     private Text listingTitle;
     @FXML
     private Text listingPrice;
-
     @FXML
     private VBox moneyOfferSection;
     @FXML
@@ -49,7 +41,6 @@ public class OfferDialogController {
     private ComboBox<Currency> currencyComboBox;
     @FXML
     private Label priceConstraintLabel;
-
     @FXML
     private VBox itemsOfferSection;
     @FXML
@@ -66,7 +57,6 @@ public class OfferDialogController {
     private TableColumn<ItemViewModel, Void> itemQuantityColumn;
     @FXML
     private TableColumn<ItemViewModel, Void> itemActionColumn;
-
     @FXML
     private TableView<OfferItemViewModel> selectedItemsTable;
     @FXML
@@ -77,7 +67,6 @@ public class OfferDialogController {
     private TableColumn<OfferItemViewModel, Integer> selectedQuantityColumn;
     @FXML
     private TableColumn<OfferItemViewModel, Void> selectedRemoveColumn;
-
     @FXML
     private TextArea messageArea;
     @FXML
@@ -85,7 +74,6 @@ public class OfferDialogController {
     @FXML
     private ComboBox<DeliveryType> deliveryMethodComboBox;
 
-    // Services
     private final ItemService itemService = ItemService.getInstance();
     private final ImageService imageService = ImageService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
@@ -93,8 +81,6 @@ public class OfferDialogController {
     private final NavigationService navigationService = NavigationService.getInstance();
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
     private final EventBusService eventBus = EventBusService.getInstance();
-
-    // State
     private ListingViewModel currentListing;
     private final ObservableList<OfferItemViewModel> selectedItems = FXCollections.observableArrayList();
     private final Map<String, Integer> tempReservedQuantities = new HashMap<>();
@@ -135,16 +121,16 @@ public class OfferDialogController {
     }
 
     private void setupMoneyOfferHandlers() {
-        includeMoneyCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+        includeMoneyCheckBox.selectedProperty().addListener((_, _, newVal) -> {
             moneyInputSection.setVisible(newVal);
             updateOfferSummary();
         });
 
-        moneyAmountField.textProperty().addListener((obs, oldVal, newVal) -> {
+        moneyAmountField.textProperty().addListener((_, _, _) -> {
             updateOfferSummary();
         });
 
-        currencyComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+        currencyComboBox.valueProperty().addListener((_, _, _) -> {
             updateOfferSummary();
         });
     }
@@ -164,9 +150,7 @@ public class OfferDialogController {
             int effectiveAvailable = Math.max(0, actualAvailable - tempReserved);
             return javafx.beans.binding.Bindings.createObjectBinding(() -> effectiveAvailable);
         });
-
-        // Quantity spinner column
-        itemQuantityColumn.setCellFactory(col -> new TableCell<ItemViewModel, Void>() {
+        itemQuantityColumn.setCellFactory(_ -> new TableCell<ItemViewModel, Void>() {
             private final Spinner<Integer> spinner = new Spinner<>();
 
             {
@@ -203,11 +187,11 @@ public class OfferDialogController {
         });
 
         // Add button column
-        itemActionColumn.setCellFactory(col -> new TableCell<ItemViewModel, Void>() {
+        itemActionColumn.setCellFactory(_ -> new TableCell<ItemViewModel, Void>() {
             private final Button addButton = new Button("Aggiungi");
 
             {
-                addButton.setOnAction(e -> {
+                addButton.setOnAction(_ -> {
                     ItemViewModel item = getTableView().getItems().get(getIndex());
                     int quantity = getQuantityFromRow(getIndex());
                     addItemToOffer(item, quantity);
@@ -245,26 +229,22 @@ public class OfferDialogController {
         });
 
         selectedQuantityColumn.setCellValueFactory(cellData -> cellData.getValue().quantityProperty().asObject());
-
-        // Remove button column
-        selectedRemoveColumn.setCellFactory(col -> new TableCell<OfferItemViewModel, Void>() {
+        selectedRemoveColumn.setCellFactory(_ -> new TableCell<OfferItemViewModel, Void>() {
             private final Button removeButton = new Button("Rimuovi");
 
             {
-                removeButton.setOnAction(e -> {
+                removeButton.setOnAction(_ -> {
                     OfferItemViewModel item = getTableView().getItems().get(getIndex());
                     removeItemFromOffer(item);
                 });
                 removeButton.getStyleClass().add("remove-from-offer-button");
             }
-
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 setGraphic(empty ? null : removeButton);
             }
         });
-
         selectedItemsTable.setItems(selectedItems);
     }
 
@@ -274,8 +254,6 @@ public class OfferDialogController {
 
     private void populateListingInfo() {
         listingTitle.setText(currentListing.getTitle());
-
-        // Set listing price info
         if (currentListing instanceof SellListingViewModel) {
             SellListingViewModel sellListing = (SellListingViewModel) currentListing;
             String currency = sellListing.getCurrency() != null ? sellListing.getCurrency().getSymbol() : "€";
@@ -289,8 +267,6 @@ public class OfferDialogController {
                 listingPrice.setText("Solo scambio");
             }
         }
-
-        // Load listing image
         if (currentListing.getItems() != null && !currentListing.getItems().isEmpty()) {
             String imagePath = currentListing.getItems().get(0).getItem().getImagePath();
             if (imagePath != null && !imagePath.isEmpty()) {
@@ -324,27 +300,19 @@ public class OfferDialogController {
 
         switch (listingType) {
             case "SELL":
-                // For sell listings, only money offers are allowed
                 moneyOfferSection.setVisible(true);
                 itemsOfferSection.setVisible(false);
                 includeMoneyCheckBox.setSelected(true);
-                includeMoneyCheckBox.setDisable(true); // Force money offer for sell listings
+                includeMoneyCheckBox.setDisable(true);
 
-                // Set constraint label for sell listings
-                SellListingViewModel sellListing = (SellListingViewModel) currentListing;
                 String constraintText = localeService.getMessage("offer.constraint.sell.price");
                 priceConstraintLabel.setText(constraintText);
                 break;
 
             case "TRADE":
                 TradeListingViewModel tradeListing = (TradeListingViewModel) currentListing;
-
-                // Show money section only if trade accepts money offers
                 moneyOfferSection.setVisible(tradeListing.isAcceptMoneyOffers());
-
-                // Always show items section for trade listings
                 itemsOfferSection.setVisible(true);
-
                 if (tradeListing.isAcceptMoneyOffers() && tradeListing.getReferencePrice() != null) {
                     String refPriceText = localeService.getMessage("offer.constraint.trade.reference",
                             tradeListing.getCurrency().getSymbol() + " " + tradeListing.getReferencePrice());
@@ -355,7 +323,6 @@ public class OfferDialogController {
                 break;
 
             default:
-                // For other listing types, hide offer sections
                 moneyOfferSection.setVisible(false);
                 itemsOfferSection.setVisible(false);
                 break;
@@ -363,7 +330,6 @@ public class OfferDialogController {
     }
 
     private void loadAvailableItems() {
-        // Convert ItemDTOs from service to ItemViewModels
         ObservableList<ItemViewModel> itemViewModels = FXCollections.observableArrayList();
         itemService.getUserItemsList().forEach(itemDTO -> {
             itemViewModels.add(viewModelMapper.toViewModel(itemDTO));
@@ -372,17 +338,14 @@ public class OfferDialogController {
     }
 
     private void addItemToOffer(ItemViewModel item, int quantity) {
-        // Check if item is already in the offer
         Optional<OfferItemViewModel> existingItem = selectedItems.stream()
                 .filter(offerItem -> offerItem.getItemId().equals(item.getId()))
                 .findFirst();
 
         if (existingItem.isPresent()) {
-            // Update quantity
             OfferItemViewModel existing = existingItem.get();
             int newQuantity = existing.getQuantity() + quantity;
             int available = item.getAvailableQuantity() - tempReservedQuantities.getOrDefault(item.getId(), 0);
-
             if (newQuantity <= available) {
                 existing.setQuantity(newQuantity);
                 tempReservedQuantities.put(item.getId(),
@@ -395,9 +358,7 @@ public class OfferDialogController {
                 return;
             }
         } else {
-            // Add new item
             int available = item.getAvailableQuantity() - tempReservedQuantities.getOrDefault(item.getId(), 0);
-
             if (quantity <= available) {
                 OfferItemViewModel offerItem = new OfferItemViewModel(
                         item.getId(),
@@ -424,8 +385,6 @@ public class OfferDialogController {
 
     private void removeItemFromOffer(OfferItemViewModel offerItem) {
         selectedItems.remove(offerItem);
-
-        // Update temp reserved quantities
         int currentReserved = tempReservedQuantities.getOrDefault(offerItem.getItemId(), 0);
         int newReserved = Math.max(0, currentReserved - offerItem.getQuantity());
         if (newReserved == 0) {
@@ -440,8 +399,6 @@ public class OfferDialogController {
 
     private void updateOfferSummary() {
         offerSummaryContent.getChildren().clear();
-
-        // Money offer summary
         if (includeMoneyCheckBox.isSelected() && !moneyAmountField.getText().trim().isEmpty()) {
             try {
                 BigDecimal amount = new BigDecimal(moneyAmountField.getText().trim());
@@ -452,8 +409,6 @@ public class OfferDialogController {
                 Text moneyText = new Text(moneyOfferText);
                 moneyText.getStyleClass().add("summary-item");
                 offerSummaryContent.getChildren().add(moneyText);
-
-                // Validate money offer constraints
                 if (currentListing instanceof SellListingViewModel) {
                     SellListingViewModel sellListing = (SellListingViewModel) currentListing;
                     if (amount.compareTo(sellListing.getPrice()) >= 0) {
@@ -469,8 +424,6 @@ public class OfferDialogController {
                 offerSummaryContent.getChildren().add(errorText);
             }
         }
-
-        // Items offer summary
         if (!selectedItems.isEmpty()) {
             Text itemsTitle = new Text(localeService.getMessage("offer.summary.items.title"));
             itemsTitle.getStyleClass().add("summary-title");
@@ -484,8 +437,6 @@ public class OfferDialogController {
                 offerSummaryContent.getChildren().add(itemEntry);
             }
         }
-
-        // Empty offer warning
         if (!includeMoneyCheckBox.isSelected() && selectedItems.isEmpty()) {
             Text warningText = new Text("⚠ " + localeService.getMessage("offer.validation.empty"));
             warningText.getStyleClass().add("warning-text");
@@ -501,16 +452,12 @@ public class OfferDialogController {
         if (!hasMoneyOffer && !hasItemOffer) {
             return false;
         }
-
-        // Validate money offer amount
         if (hasMoneyOffer) {
             try {
                 BigDecimal amount = new BigDecimal(moneyAmountField.getText().trim());
                 if (amount.compareTo(BigDecimal.ZERO) <= 0) {
                     return false;
                 }
-
-                // Check constraints for sell listings
                 if (currentListing instanceof SellListingViewModel) {
                     SellListingViewModel sellListing = (SellListingViewModel) currentListing;
                     if (amount.compareTo(sellListing.getPrice()) >= 0) {
@@ -529,15 +476,11 @@ public class OfferDialogController {
         if (!isValidOffer()) {
             return CompletableFuture.completedFuture(false);
         }
-
-        // Create OfferViewModel instead of OfferDTO
         OfferViewModel offer = new OfferViewModel();
         offer.setListingId(currentListing.getId());
         offer.setMessage(messageArea.getText().trim());
         System.out.println("delivery type " + currentListing.getDeliveryType(deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
         offer.setDeliveryType(currentListing.getDeliveryType(deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
-
-        // Set money offer
         if (includeMoneyCheckBox.isSelected() && !moneyAmountField.getText().trim().isEmpty()) {
             try {
                 BigDecimal amount = new BigDecimal(moneyAmountField.getText().trim());
@@ -547,21 +490,17 @@ public class OfferDialogController {
                 return CompletableFuture.completedFuture(false);
             }
         }
-
-        // Set item offers
         if (!selectedItems.isEmpty()) {
             offer.getOfferItems().setAll(selectedItems);
         }
 
         return offerService.createOffer(offer)
-                .thenApply(createdOffer -> true)
-                .exceptionally(ex -> false);
+                .thenApply(_ -> true)
+                .exceptionally(_ -> false);
     }
 
     public void cleanup() {
-        // Reset temp reserved quantities
         tempReservedQuantities.clear();
-        // Clear spinner references
         rowSpinners.clear();
     }
 

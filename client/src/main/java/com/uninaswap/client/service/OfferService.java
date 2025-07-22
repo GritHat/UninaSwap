@@ -24,12 +24,10 @@ public class OfferService {
     private CompletableFuture<?> futureToComplete;
     private Consumer<OfferMessage> messageCallback;
 
-    // Observable lists for UI binding - now using ViewModels
     private final ObservableList<OfferViewModel> userOffers = FXCollections.observableArrayList();
     private final ObservableList<OfferViewModel> receivedOffers = FXCollections.observableArrayList();
 
     private OfferService() {
-        // Register message handler using your existing pattern
         this.webSocketClient.registerMessageHandler(OfferMessage.class, this::handleOfferMessage);
     }
 
@@ -42,11 +40,13 @@ public class OfferService {
 
     /**
      * Create a new offer - accepts ViewModel, converts to DTO internally
+     * 
+     * @param offerViewModel The offer to create
+     * @return CompletableFuture with the created OfferViewModel
      */
     public CompletableFuture<OfferViewModel> createOffer(OfferViewModel offerViewModel) {
         CompletableFuture<OfferViewModel> future = new CompletableFuture<>();
 
-        // Convert ViewModel to DTO for service communication
         OfferDTO offerDTO = viewModelMapper.toDTO(offerViewModel);
 
         OfferMessage message = new OfferMessage();
@@ -67,6 +67,9 @@ public class OfferService {
 
     /**
      * Get offers for a specific listing - returns ViewModels
+     * 
+     * @param listingId The ID of the listing to get offers for
+     * @return CompletableFuture with a list of OfferViewModels
      */
     public CompletableFuture<List<OfferViewModel>> getListingOffers(String listingId) {
         CompletableFuture<List<OfferViewModel>> future = new CompletableFuture<>();
@@ -89,6 +92,10 @@ public class OfferService {
 
     /**
      * Update offer status
+     * 
+     * @param offerId The ID of the offer to update
+     * @param status The new status for the offer
+     * @return CompletableFuture with the updated OfferViewModel
      */
     public CompletableFuture<OfferViewModel> updateOfferStatus(String offerId, OfferStatus status) {
         CompletableFuture<OfferViewModel> future = new CompletableFuture<>();
@@ -115,6 +122,8 @@ public class OfferService {
 
     /**
      * Get received offers for the current user
+     * 
+     * @return CompletableFuture with a list of OfferDTOs
      */
     public CompletableFuture<List<OfferDTO>> getReceivedOffers() {
         CompletableFuture<List<OfferDTO>> future = new CompletableFuture<>();
@@ -136,6 +145,8 @@ public class OfferService {
 
     /**
      * Get sent offers for the current user
+     * 
+     * @return CompletableFuture with a list of OfferDTOs
      */
     public CompletableFuture<List<OfferDTO>> getSentOffers() {
         CompletableFuture<List<OfferDTO>> future = new CompletableFuture<>();
@@ -157,6 +168,8 @@ public class OfferService {
 
     /**
      * Get offer history for the current user
+     * 
+     * @return CompletableFuture with a list of OfferDTOs
      */
     public CompletableFuture<List<OfferDTO>> getOfferHistory() {
         CompletableFuture<List<OfferDTO>> future = new CompletableFuture<>();
@@ -178,6 +191,9 @@ public class OfferService {
 
     /**
      * Accept an offer
+     * 
+     * @param offerId The ID of the offer to accept
+     * @return CompletableFuture with true if successful
      */
     public CompletableFuture<Boolean> acceptOffer(String offerId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -200,6 +216,9 @@ public class OfferService {
 
     /**
      * Reject an offer
+     * 
+     * @param offerId The ID of the offer to reject
+     * @return CompletableFuture with true if successful
      */
     public CompletableFuture<Boolean> rejectOffer(String offerId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -222,6 +241,9 @@ public class OfferService {
 
     /**
      * Withdraw an offer
+     * 
+     * @param offerId The ID of the offer to withdraw
+     * @return CompletableFuture with true if successful
      */
     public CompletableFuture<Boolean> withdrawOffer(String offerId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -244,6 +266,9 @@ public class OfferService {
 
     /**
      * Confirm a transaction (buyer or seller verification)
+     * 
+     * @param offerId The ID of the offer to confirm
+     * @return CompletableFuture with true if successful
      */
     public CompletableFuture<Boolean> confirmTransaction(String offerId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -266,6 +291,9 @@ public class OfferService {
 
     /**
      * Cancel a transaction
+     * 
+     * @param offerId The ID of the offer to cancel
+     * @return CompletableFuture with true if successful
      */
     public CompletableFuture<Boolean> cancelTransaction(String offerId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -286,7 +314,6 @@ public class OfferService {
         return future;
     }
 
-    // Handle incoming messages - convert DTOs to ViewModels
     @SuppressWarnings("unchecked")
     private void handleOfferMessage(OfferMessage message) {
         if (message.getType() == null) {
@@ -346,7 +373,6 @@ public class OfferService {
                     if (message.isSuccess()) {
                         List<OfferDTO> offers = message.getOffers() != null ? message.getOffers() : new ArrayList<>();
 
-                        // Convert DTOs to ViewModels and update the observable list - THIS WAS MISSING
                         List<OfferViewModel> offerViewModels = offers.stream()
                                 .map(viewModelMapper::toViewModel)
                                 .collect(Collectors.toList());
@@ -430,8 +456,6 @@ public class OfferService {
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
                         OfferViewModel updatedOffer = viewModelMapper.toViewModel(message.getOffer());
-
-                        // Update offer in local lists
                         updateOfferInList(userOffers, updatedOffer);
                         updateOfferInList(receivedOffers, updatedOffer);
 
@@ -471,8 +495,6 @@ public class OfferService {
                 System.out.println("Unknown offer message type: " + message.getType());
                 break;
         }
-
-        // Call any registered callback
         if (messageCallback != null) {
             messageCallback.accept(message);
         }
@@ -487,7 +509,6 @@ public class OfferService {
         }
     }
 
-    // Getters for observable lists - now return ViewModels
     public ObservableList<OfferViewModel> getUserOffersList() {
         return userOffers;
     }
@@ -495,8 +516,7 @@ public class OfferService {
     public ObservableList<OfferViewModel> getReceivedOffersList() {
         return receivedOffers;
     }
-
-    // Set a callback for incoming messages
+    
     public void setMessageCallback(Consumer<OfferMessage> callback) {
         this.messageCallback = callback;
     }

@@ -32,16 +32,12 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public class ListingDetailsController {
-
-    // Header elements
     @FXML
     private Button backButton;
     @FXML
     private Button favoriteButton;
     @FXML
     private ImageView favoriteIcon;
-
-    // Image gallery elements
     @FXML
     private ImageView mainImage;
     @FXML
@@ -56,8 +52,6 @@ public class ListingDetailsController {
     private ScrollPane thumbnailScrollPane;
     @FXML
     private HBox thumbnailContainer;
-
-    // Listing details elements
     @FXML
     private Text listingTitle;
     @FXML
@@ -70,32 +64,24 @@ public class ListingDetailsController {
     private VBox itemsSection;
     @FXML
     private VBox itemsList;
-
-    // Seller information
     @FXML
     private ImageView sellerAvatar;
     @FXML
     private Text sellerName;
     @FXML
     private Text sellerRating;
-
-    // Price/Action section
     @FXML
     private Text priceValue;
     @FXML
     private Text priceDetails;
     @FXML
     private VBox actionButtonsSection;
-
-    // Sell listing actions
     @FXML
     private VBox sellActions;
     @FXML
     private Button buyNowButton;
     @FXML
     private Button makeOfferButton;
-
-    // Trade listing actions
     @FXML
     private VBox tradeActions;
     @FXML
@@ -110,8 +96,6 @@ public class ListingDetailsController {
     private TextField moneyAmountField;
     @FXML
     private ComboBox<Currency> currencyComboBox;
-
-    // Gift listing actions
     @FXML
     private VBox giftActions;
     @FXML
@@ -122,8 +106,6 @@ public class ListingDetailsController {
     private CheckBox offerThankYouCheckBox;
     @FXML
     private TextArea thankYouMessageArea;
-
-    // Auction listing actions
     @FXML
     private VBox auctionActions;
     @FXML
@@ -138,14 +120,10 @@ public class ListingDetailsController {
     private Text minimumBidLabel;
     @FXML
     private Button placeBidButton;
-
-    // Common actions
     @FXML
     private Button contactSellerButton;
     @FXML
     private Button reportListingButton;
-
-    // Delivery options
     @FXML
     private HBox deliveryOptionsSection;
     @FXML
@@ -153,14 +131,11 @@ public class ListingDetailsController {
     @FXML
     private ComboBox<String> deliveryMethodComboBox;
 
-    // Services
     private final NavigationService navigationService = NavigationService.getInstance();
     private final FavoritesService favoritesService = FavoritesService.getInstance();
     private final ImageService imageService = ImageService.getInstance();
     private final LocaleService localeService = LocaleService.getInstance();
     private final UserSessionService sessionService = UserSessionService.getInstance();
-
-    // State
     private ListingViewModel currentListing;
     private List<String> imageUrls = new ArrayList<>();
     private int currentImageIndex = 0;
@@ -174,35 +149,26 @@ public class ListingDetailsController {
     }
 
     private void setupCurrencyComboBoxes() {
-        // Setup currency options
         List<Currency> currencies = List.of(Currency.EUR, Currency.USD, Currency.GBP);
         currencyComboBox.setItems(FXCollections.observableArrayList(currencies));
         bidCurrencyComboBox.setItems(FXCollections.observableArrayList(currencies));
-
-        // Set default currency
         currencyComboBox.setValue(Currency.EUR);
         bidCurrencyComboBox.setValue(Currency.EUR);
     }
 
     private void setupDeliveryMethodComboBox() {
-        // Setup delivery method options
         deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
             localeService.getMessage("delivery.method.pickup", "Pickup"),
             localeService.getMessage("delivery.method.shipping", "Shipping"),
             localeService.getMessage("delivery.method.both", "Pickup or Shipping")
         ));
-        
-        // Set default selection
         deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
     }
 
     private void setupEventHandlers() {
-        // Money offer checkbox handler
         includeMoneyCheckBox.selectedProperty().addListener((_, _, newVal) -> {
             setVisibleAndManaged(moneyOfferSection, newVal);
         });
-
-        // Thank you offer checkbox handler
         offerThankYouCheckBox.selectedProperty().addListener((_, _, newVal) -> {
             setVisibleAndManaged(thankYouMessageArea, newVal);
         });
@@ -222,38 +188,23 @@ public class ListingDetailsController {
     }
 
     private void populateListingDetails() {
-        // Basic listing information
         listingTitle.setText(currentListing.getTitle());
         descriptionArea.setText(currentListing.getDescription());
-
-        // Category and status
         categoryLabel.setText(getListingCategory());
         statusLabel.setText(currentListing.getStatus().toString());
-
-        // Seller information
         if (currentListing.getUser() != null) {
             sellerName.setText(currentListing.getUser().getUsername());
-            
-            // Load seller rating (use actual rating from UserViewModel)
             UserViewModel seller = currentListing.getUser();
             if (seller.getReviewCount() > 0) {
                 sellerRating.setText(seller.getFormattedRating());
             } else {
                 sellerRating.setText("Nuovo venditore");
             }
-            
-            // Load seller profile image
             loadSellerAvatar(seller);
             setupSellerAvatarClickHandler();
         }
-
-        // Price information
         setupPriceSection();
-
-        // Items list
         populateItemsList();
-        
-        // Setup delivery options (add this near the end of the method)
         setupDeliveryOptions();
     }
 
@@ -261,30 +212,19 @@ public class ListingDetailsController {
         String pickupLocation = getPickupLocationFromListing();
         
         if (pickupLocation != null && !pickupLocation.trim().isEmpty()) {
-            // Show the delivery options section
             setVisibleAndManaged(deliveryOptionsSection, true);
-            
-            // Set the pickup location text
             pickupLocationLabel.setText(pickupLocation);
-            
-            // Set up delivery method based on listing type and settings
             setupDeliveryMethodForListing();
         } else {
-            // Hide the delivery options section
             setVisibleAndManaged(deliveryOptionsSection, false);
         }
     }
 
-    // Helper method to get pickup location from the current listing
     private String getPickupLocationFromListing() {
         if (currentListing == null) {
             return null;
         }
-        
-        // Get pickup location based on listing type
         String pickupLocation = currentListing.getPickupLocation();
-        
-        // If the base method doesn't return anything, try type-specific methods
         if (pickupLocation == null || pickupLocation.trim().isEmpty()) {
             String listingType = currentListing.getListingTypeValue();
             switch (listingType.toUpperCase()) {
@@ -319,29 +259,21 @@ public class ListingDetailsController {
         String selectedMethod = deliveryMethodComboBox.getValue();
         if (selectedMethod != null) {
             System.out.println("Selected delivery method: " + selectedMethod);
-            // You can add logic here to update shipping costs, availability, etc.
         }
     }
-
-    // Helper method to setup delivery method options based on listing
     private void setupDeliveryMethodForListing() {
         if (currentListing == null) {
             return;
         }
-        
-        // Check if listing supports shipping (this would depend on your business logic)
         boolean supportsShipping = doesListingSupportShipping();
         boolean isPickupOnly = isListingPickupOnly();
-        
         if (isPickupOnly) {
-            // Only pickup available
             deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
                 localeService.getMessage("delivery.method.pickup", "Pickup")
             ));
             deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
             deliveryMethodComboBox.setDisable(true);
         } else if (supportsShipping) {
-            // Both pickup and shipping available
             deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
                 localeService.getMessage("delivery.method.pickup", "Pickup"),
                 localeService.getMessage("delivery.method.shipping", "Shipping"),
@@ -350,7 +282,6 @@ public class ListingDetailsController {
             deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
             deliveryMethodComboBox.setDisable(false);
         } else {
-            // Default to pickup only
             deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
                 localeService.getMessage("delivery.method.pickup", "Pickup")
             ));
@@ -359,28 +290,21 @@ public class ListingDetailsController {
         }
     }
 
-    // Helper method to check if listing supports shipping
     private boolean doesListingSupportShipping() {
         if (currentListing == null) {
             return false;
         }
         
-        // This would depend on your business logic
-        // For example, you might check listing settings, item types, seller preferences, etc.
         String listingType = currentListing.getListingTypeValue();
         
         switch (listingType.toUpperCase()) {
             case "SELL":
-                // Sell listings might support shipping
                 return true;
             case "AUCTION":
-                // Auction listings might support shipping
                 return true;
             case "TRADE":
-                // Trade listings might be pickup only by default
                 return false;
             case "GIFT":
-                // Check if gift listing allows shipping
                 if (currentListing instanceof GiftListingViewModel giftListing) {
                     return !giftListing.isPickupOnly();
                 }
@@ -390,7 +314,6 @@ public class ListingDetailsController {
         }
     }
 
-    // Helper method to check if listing is pickup only
     private boolean isListingPickupOnly() {
         if (currentListing == null) {
             return true;
@@ -401,9 +324,6 @@ public class ListingDetailsController {
         if ("GIFT".equals(listingType.toUpperCase()) && currentListing instanceof GiftListingViewModel giftListing) {
             return giftListing.isPickupOnly();
         }
-        
-        // Add logic for other listing types if they have pickup-only flags
-        // For now, default to allowing shipping unless explicitly pickup-only
         return false;
     }
 
@@ -517,16 +437,10 @@ public class ListingDetailsController {
             priceValue.setText(currency + " " + auctionListing.getStartingPrice());
             priceDetails.setText("Prezzo di partenza");
         }
-
-        // Update auction-specific elements
         currentBidValue.setText(currency + " " +
                 (currentBid != null ? currentBid : auctionListing.getStartingPrice()));
-
-        // Calculate minimum bid
         BigDecimal minimumBid = auctionListing.getMinimumNextBid();
         minimumBidLabel.setText("Offerta minima: " + currency + " " + minimumBid);
-
-        // Calculate time remaining
         updateTimeRemaining(auctionListing);
     }
 
@@ -561,108 +475,21 @@ public class ListingDetailsController {
         }
     }
 
-    private VBox createItemRow(ListingItemViewModel item) {
-        VBox itemContainer = new VBox(8);
-        itemContainer.getStyleClass().add("item-row");
-        
-        // Main item header row
-        HBox headerRow = new HBox(10);
-        headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        headerRow.getStyleClass().add("item-header-row");
-        
-        // Item image thumbnail
-        ImageView itemImage = new ImageView();
-        itemImage.setFitHeight(50);
-        itemImage.setFitWidth(50);
-        itemImage.setPreserveRatio(true);
-        itemImage.getStyleClass().add("item-thumbnail");
-        
-        // Load item image
-        if (item.getItem().getImagePath() != null && !item.getItem().getImagePath().isEmpty()) {
-            imageService.fetchImage(item.getItem().getImagePath())
-                    .thenAccept(image -> Platform.runLater(() -> {
-                        if (image != null && !image.isError()) {
-                            itemImage.setImage(image);
-                        } else {
-                            setDefaultItemImage(itemImage);
-                        }
-                    }));
-        } else {
-            setDefaultItemImage(itemImage);
-        }
-        
-        // Main item info
-        VBox itemMainInfo = new VBox(3);
-        itemMainInfo.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        HBox.setHgrow(itemMainInfo, javafx.scene.layout.Priority.ALWAYS);
-        
-        // Item name and quantity row
-        HBox nameQuantityRow = new HBox(10);
-        nameQuantityRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        
-        Text itemName = new Text(item.getName());
-        itemName.getStyleClass().add("item-name");
-        
-        // Quantity badge
-        Label quantityBadge = new Label("x" + item.getQuantity());
-        quantityBadge.getStyleClass().add("quantity-badge");
-        
-        nameQuantityRow.getChildren().addAll(itemName, quantityBadge);
-        
-        // Category and condition row (if available)
-        HBox categoryConditionRow = new HBox(10);
-        categoryConditionRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        
-        if (item.getItem().getItemCategory() != null && !item.getItem().getItemCategory().isEmpty()) {
-            Label categoryLabel = new Label(item.getItem().getItemCategory());
-            categoryLabel.getStyleClass().add("item-category");
-            categoryConditionRow.getChildren().add(categoryLabel);
-        }
-        
-        if (item.getItem().getCondition() != null) {
-            Label conditionLabel = new Label(item.getItem().getConditionDisplayName());
-            conditionLabel.getStyleClass().add("item-condition");
-            categoryConditionRow.getChildren().add(conditionLabel);
-        }
-        
-        itemMainInfo.getChildren().addAll(nameQuantityRow);
-        if (!categoryConditionRow.getChildren().isEmpty()) {
-            itemMainInfo.getChildren().add(categoryConditionRow);
-        }
-        
-        headerRow.getChildren().addAll(itemImage, itemMainInfo);
-        itemContainer.getChildren().add(headerRow);
-        
-        // Additional details section (expandable)
-        VBox detailsSection = createItemDetailsSection(item);
-        if (detailsSection != null) {
-            itemContainer.getChildren().add(detailsSection);
-        }
-        
-        return itemContainer;
-    }
-
     private VBox createItemDetailsSection(ListingItemViewModel item) {
         ItemViewModel itemData = item.getItem();
-        
-        // Check if we have any additional details to show
         boolean hasDescription = itemData.getDescription() != null && !itemData.getDescription().trim().isEmpty();
         boolean hasBrand = itemData.getBrand() != null && !itemData.getBrand().trim().isEmpty();
         boolean hasModel = itemData.getModel() != null && !itemData.getModel().trim().isEmpty();
         boolean hasYear = itemData.getYear() > 0;
         
         if (!hasDescription && !hasBrand && !hasModel && !hasYear) {
-            return null; // No additional details to show
+            return null;
         }
         
         VBox detailsContainer = new VBox(5);
         detailsContainer.getStyleClass().add("item-details-section");
-        
-        // Product information grid
         VBox productInfo = new VBox(3);
         productInfo.getStyleClass().add("product-info-grid");
-        
-        // Brand and Model row
         if (hasBrand || hasModel) {
             HBox brandModelRow = new HBox(15);
             brandModelRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
@@ -689,8 +516,7 @@ public class ListingDetailsController {
             
             productInfo.getChildren().add(brandModelRow);
         }
-        
-        // Year row
+
         if (hasYear) {
             HBox yearRow = new HBox(10);
             yearRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
@@ -710,7 +536,6 @@ public class ListingDetailsController {
             detailsContainer.getChildren().add(productInfo);
         }
         
-        // Description section
         if (hasDescription) {
             VBox descriptionBox = new VBox(5);
             descriptionBox.getStyleClass().add("item-description-section");
@@ -720,7 +545,7 @@ public class ListingDetailsController {
             
             Text descriptionText = new Text(itemData.getDescription());
             descriptionText.getStyleClass().add("item-description-text");
-            descriptionText.setWrappingWidth(250); // Adjust based on your layout
+            descriptionText.setWrappingWidth(250);
             
             descriptionBox.getChildren().addAll(descLabel, descriptionText);
             detailsContainer.getChildren().add(descriptionBox);
@@ -740,7 +565,6 @@ public class ListingDetailsController {
     }
 
     private void setupImageGallery() {
-        // Collect all image URLs from listing items
         imageUrls.clear();
         if (currentListing.getItems() != null) {
             for (ListingItemViewModel item : currentListing.getItems()) {
@@ -759,13 +583,11 @@ public class ListingDetailsController {
                 setupImageNavigation();
                 createThumbnails();
             } else {
-                // Hide navigation and thumbnails for single images
                 setVisibleAndManaged(imageNavigation, false);
                 setVisibleAndManaged(thumbnailScrollPane, false);
             }
         } else {
             setDefaultMainImage();
-            // Hide navigation and thumbnails when no images
             setVisibleAndManaged(imageNavigation, false);
             setVisibleAndManaged(thumbnailScrollPane, false);
         }
@@ -796,6 +618,9 @@ public class ListingDetailsController {
 
     /**
      * Helper method to set both visible and managed properties together
+     * 
+     * @param node The node to modify
+     * @param visible Whether the node should be visible and managed
      */
     private void setVisibleAndManaged(Node node, boolean visible) {
         node.setVisible(visible);
@@ -804,6 +629,9 @@ public class ListingDetailsController {
 
     /**
      * Helper method to set multiple nodes visible and managed together
+     * 
+     * @param visible Whether the nodes should be visible and managed
+     * @param nodes The nodes to modify
      */
     private void setVisibleAndManaged(boolean visible, Node... nodes) {
         for (Node node : nodes) {
@@ -811,7 +639,6 @@ public class ListingDetailsController {
         }
     }
 
-    // Update setupImageNavigation method
     private void setupImageNavigation() {
         boolean hasMultipleImages = imageUrls.size() > 1;
         setVisibleAndManaged(imageNavigation, hasMultipleImages);
@@ -835,7 +662,6 @@ public class ListingDetailsController {
         }
     }
 
-    // Update createThumbnails method
     private void createThumbnails() {
         thumbnailContainer.getChildren().clear();
 
@@ -843,7 +669,7 @@ public class ListingDetailsController {
         setVisibleAndManaged(thumbnailScrollPane, hasMultipleImages);
 
         if (!hasMultipleImages) {
-            return; // Don't create thumbnails if we don't have multiple images
+            return;
         }
 
         for (int i = 0; i < imageUrls.size(); i++) {
@@ -853,17 +679,13 @@ public class ListingDetailsController {
             thumbnail.setFitWidth(60);
             thumbnail.setPreserveRatio(true);
             thumbnail.getStyleClass().add("thumbnail");
-
-            // Load thumbnail image
             imageService.fetchImage(imageUrls.get(i))
                     .thenAccept(image -> Platform.runLater(() -> {
                         if (image != null && !image.isError()) {
                             thumbnail.setImage(image);
                         }
                     }));
-
-            // Add click handler
-            thumbnail.setOnMouseClicked(e -> {
+            thumbnail.setOnMouseClicked(_ -> {
                 currentImageIndex = index;
                 loadMainImage(imageUrls.get(index));
                 updateImageNavigation();
@@ -888,32 +710,22 @@ public class ListingDetailsController {
     }
 
     private void setupActionButtons() {
-        // Hide all action sections first (both visible and managed)
         setVisibleAndManaged(false, sellActions, tradeActions, giftActions, auctionActions);
-        
-        // Also hide sub-sections
         setVisibleAndManaged(tradeOptionsSection, false);
         setVisibleAndManaged(moneyOfferSection, false);
         setVisibleAndManaged(thankYouMessageArea, false);
-
-        // Check if user is the owner
         boolean isOwner = currentListing.getUser() != null &&
                 sessionService.getUser() != null &&
                 currentListing.getUser().getId().equals(sessionService.getUser().getId());
-
-        // Show appropriate actions based on listing type
         String listingType = currentListing.getListingTypeValue();
         switch (listingType.toUpperCase()) {
             case "SELL":
                 setVisibleAndManaged(sellActions, true);
-                // For sell listings owned by current user, hide the make offer button
                 if (isOwner) {
                     setVisibleAndManaged(makeOfferButton, false);
-                    // Keep buy now button visible but disabled with different text
                     buyNowButton.setDisable(true);
                     buyNowButton.setText("La tua inserzione");
                 } else {
-                    // For listings not owned by user, show both buttons
                     setVisibleAndManaged(makeOfferButton, true);
                     buyNowButton.setDisable(false);
                     buyNowButton.setText("Acquista ora");
@@ -940,7 +752,6 @@ public class ListingDetailsController {
         }
     }
 
-    // Remove the old disableAllActionButtons method and replace with specific methods
     private void disableTradeActions() {
         proposeTradeButton.setDisable(true);
         proposeTradeButton.setText("La tua inserzione");
@@ -973,10 +784,9 @@ public class ListingDetailsController {
         }
     }
 
-    // Add this to the initialize() method or create a separate setup method
     private void setupSellerAvatarClickHandler() {
         if (sellerAvatar != null) {
-            sellerAvatar.setOnMouseClicked(event -> {
+            sellerAvatar.setOnMouseClicked(_ -> {
                 if (currentListing != null && currentListing.getUser() != null) {
                     handleViewSellerProfile();
                 }
@@ -984,16 +794,13 @@ public class ListingDetailsController {
         }
     }
 
-    // Add this new method
     private void handleViewSellerProfile() {
         if (currentListing != null && currentListing.getUser() != null) {
             UserViewModel seller = currentListing.getUser();
             try {
-                // Navigate to seller's profile or show seller info dialog
                 navigationService.navigateToProfileView(seller);
             } catch (Exception e) {
                 System.err.println("Failed to open seller profile: " + e.getMessage());
-                // Fallback: show seller info in an alert
                 AlertHelper.showInformationAlert(
                     "Profilo Venditore",
                     seller.getDisplayName(),
@@ -1004,7 +811,6 @@ public class ListingDetailsController {
         }
     }
 
-    // Event Handlers
     @FXML
     private void handleBack() {
         navigationService.goBack();
@@ -1013,20 +819,15 @@ public class ListingDetailsController {
     @FXML
     private void toggleFavorite() {
         if (currentListing != null) {
-            // Optimistic UI update
             boolean newFavoriteState = !isFavorite;
             isFavorite = newFavoriteState;
             updateFavoriteIcon();
-
-            // Sync with server
             if (newFavoriteState) {
                 favoritesService.addFavoriteToServer(currentListing.getId())
                         .thenAccept(_ -> Platform.runLater(() -> {
-                            // Server sync successful - observable lists updated via message handler
                             System.out.println("Successfully added listing to favorites: " + currentListing.getId());
                         }))
                         .exceptionally(ex -> {
-                            // Revert UI on failure
                             isFavorite = false;
                             updateFavoriteIcon();
                             System.err.println("Failed to add to favorites: " + ex.getMessage());
@@ -1035,11 +836,9 @@ public class ListingDetailsController {
             } else {
                 favoritesService.removeFavoriteFromServer(currentListing.getId())
                         .thenAccept(_ -> Platform.runLater(() -> {
-                            // Server sync successful - observable lists updated via message handler
                             System.out.println("Successfully removed listing from favorites: " + currentListing.getId());
                         }))
                         .exceptionally(ex -> {
-                            // Revert UI on failure
                             isFavorite = true;
                             updateFavoriteIcon();
                             System.err.println("Failed to remove from favorites: " + ex.getMessage());
@@ -1069,7 +868,6 @@ public class ListingDetailsController {
         }
     }
 
-    // Action button handlers
     @FXML
     private void handleBuyNow() {
         if (currentListing instanceof SellListingViewModel) {
@@ -1086,7 +884,6 @@ public class ListingDetailsController {
                     message);
 
             if (confirmed) {
-                // TODO: Implement purchase logic
                 AlertHelper.showInformationAlert(
                         "Acquisto confermato",
                         "Il tuo acquisto è stato registrato",
@@ -1117,8 +914,6 @@ public class ListingDetailsController {
             dialog.setTitle(localeService.getMessage("offer.dialog.title"));
             dialog.setHeaderText(localeService.getMessage("offer.dialog.header", currentListing.getTitle()));
             dialog.setDialogPane(dialogPane);
-
-            // Enable/disable confirm button based on offer validity
             Button confirmButton = (Button) dialogPane.lookupButton(confirmButtonType);
             confirmButton.disableProperty().bind(
                     javafx.beans.binding.Bindings.createBooleanBinding(
@@ -1130,7 +925,6 @@ public class ListingDetailsController {
             Optional<ButtonType> result = dialog.showAndWait();
 
             if (result.isPresent() && result.get() == confirmButtonType) {
-                // Now using the ViewModel-based service
                 controller.createOffer()
                         .thenAccept(success -> Platform.runLater(() -> {
                             if (success) {
@@ -1153,8 +947,6 @@ public class ListingDetailsController {
                             return null;
                         });
             }
-
-            // Clean up temporary reservations
             controller.cleanup();
 
         } catch (IOException e) {
@@ -1167,7 +959,6 @@ public class ListingDetailsController {
 
     @FXML
     private void handleProposeTrade() {
-        // Only allow for trade listings
         if (!(currentListing instanceof TradeListingViewModel)) {
             AlertHelper.showErrorAlert(
                     localeService.getMessage("trade.propose.error.title"),
@@ -1197,8 +988,6 @@ public class ListingDetailsController {
             dialog.setHeaderText(localeService.getMessage("trade.dialog.header",
                     "Proponi uno scambio per: " + currentListing.getTitle()));
             dialog.setDialogPane(dialogPane);
-
-            // Enable/disable confirm button based on offer validity
             Button confirmButton = (Button) dialogPane.lookupButton(confirmButtonType);
             confirmButton.disableProperty().bind(
                     javafx.beans.binding.Bindings.createBooleanBinding(
@@ -1210,7 +999,6 @@ public class ListingDetailsController {
             Optional<ButtonType> result = dialog.showAndWait();
 
             if (result.isPresent() && result.get() == confirmButtonType) {
-                // Now using the ViewModel-based service - same pattern as handleMakeOffer
                 controller.createOffer()
                         .thenAccept(success -> Platform.runLater(() -> {
                             if (success) {
@@ -1238,8 +1026,6 @@ public class ListingDetailsController {
                             return null;
                         });
             }
-
-            // Clean up temporary reservations
             controller.cleanup();
 
         } catch (IOException e) {
@@ -1254,7 +1040,7 @@ public class ListingDetailsController {
     private void handleRequestGift() {
         if (currentListing instanceof GiftListingViewModel) {
             boolean offerThankYou = offerThankYouCheckBox.isSelected();
-            String thankYouMessage = offerThankYou ? thankYouMessageArea.getText() : "";
+            //String thankYouMessage = offerThankYou ? thankYouMessageArea.getText() : "";
 
             String message = "Confermi la richiesta per il regalo '" + currentListing.getTitle() + "'?";
             if (offerThankYou) {
@@ -1267,7 +1053,6 @@ public class ListingDetailsController {
                     message);
 
             if (confirmed) {
-                // TODO: Implement gift request logic
                 AlertHelper.showInformationAlert(
                         "Richiesta inviata",
                         "La tua richiesta è stata inviata",
@@ -1303,13 +1088,10 @@ public class ListingDetailsController {
                                 currentListing.getTitle()));
 
                 if (confirmed) {
-                    // TODO: Implement bid placement logic
                     AlertHelper.showInformationAlert(
                             "Offerta piazzata",
                             "La tua offerta è stata registrata",
                             "Ti aggiorneremo se qualcuno supera la tua offerta.");
-
-                    // Clear bid field
                     bidAmountField.clear();
                 }
 
@@ -1324,7 +1106,6 @@ public class ListingDetailsController {
 
     @FXML
     private void handleContactSeller() {
-        // TODO: Open chat/message dialog
         AlertHelper.showInformationAlert(
                 "Contatta venditore",
                 "Funzionalità in sviluppo",
@@ -1346,36 +1127,24 @@ public class ListingDetailsController {
         }
     }
 
-    // Add this method to ListingDetailsController for expandable items
-
     private VBox createExpandableItemRow(ListingItemViewModel item) {
         VBox itemContainer = new VBox(0);
         itemContainer.getStyleClass().add("item-row");
-        
-        // Create the main item row (always visible)
         HBox mainRow = createMainItemRow(item);
-        
-        // Create the details section (expandable)
         VBox detailsSection = createItemDetailsSection(item);
         
         if (detailsSection != null) {
-            // Make details initially hidden
             detailsSection.setVisible(false);
             detailsSection.setManaged(false);
-            
-            // Add expand/collapse functionality
             Button expandButton = new Button("▼");
             expandButton.getStyleClass().add("expand-button");
-            expandButton.setOnAction(e -> {
+            expandButton.setOnAction(_ -> {
                 boolean isExpanded = detailsSection.isVisible();
                 detailsSection.setVisible(!isExpanded);
                 detailsSection.setManaged(!isExpanded);
                 expandButton.setText(isExpanded ? "▼" : "▲");
             });
-            
-            // Add expand button to main row
             mainRow.getChildren().add(expandButton);
-            
             itemContainer.getChildren().addAll(mainRow, detailsSection);
         } else {
             itemContainer.getChildren().add(mainRow);
@@ -1385,21 +1154,14 @@ public class ListingDetailsController {
     }
 
     private HBox createMainItemRow(ListingItemViewModel item) {
-        // Extract the main row creation logic from createItemRow
-        // This would be the header row code from the previous implementation
-        
         HBox headerRow = new HBox(10);
         headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         headerRow.getStyleClass().add("item-header-row");
-        
-        // Item image thumbnail
         ImageView itemImage = new ImageView();
         itemImage.setFitHeight(50);
         itemImage.setFitWidth(50);
         itemImage.setPreserveRatio(true);
         itemImage.getStyleClass().add("item-thumbnail");
-        
-        // Load item image
         if (item.getItem().getImagePath() != null && !item.getItem().getImagePath().isEmpty()) {
             imageService.fetchImage(item.getItem().getImagePath())
                     .thenAccept(image -> Platform.runLater(() -> {
@@ -1412,26 +1174,16 @@ public class ListingDetailsController {
         } else {
             setDefaultItemImage(itemImage);
         }
-        
-        // Main item info
         VBox itemMainInfo = new VBox(3);
         itemMainInfo.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         HBox.setHgrow(itemMainInfo, javafx.scene.layout.Priority.ALWAYS);
-        
-        // Item name and quantity row
         HBox nameQuantityRow = new HBox(10);
         nameQuantityRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        
         Label itemName = new Label(item.getName());
         itemName.getStyleClass().add("item-name");
-        
-        // Quantity badge
         Label quantityBadge = new Label("x" + item.getQuantity());
         quantityBadge.getStyleClass().add("quantity-badge");
-        
         nameQuantityRow.getChildren().addAll(itemName, quantityBadge);
-        
-        // Category and condition row (if available)
         HBox categoryConditionRow = new HBox(10);
         categoryConditionRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         

@@ -15,11 +15,9 @@ import java.util.List;
 public class EventBusService {
     private static EventBusService instance;
     
-    // Using thread-safe collections since events may be published from different threads
     private final Map<String, CopyOnWriteArrayList<Consumer<Object>>> subscribers = new ConcurrentHashMap<>();
     
     private EventBusService() {
-        // Private constructor for singleton
     }
     
     public static synchronized EventBusService getInstance() {
@@ -94,14 +92,11 @@ public class EventBusService {
      * @param controllerClass The class of the controller being destroyed
      */
     public void clearSubscriptionsForController(Class<?> controllerClass) {
-        // Iterate through all event types and subscribers
         for (String eventType : new ArrayList<>(subscribers.keySet())) {
             List<Consumer<Object>> handlers = subscribers.get(eventType);
             if (handlers != null) {
-                // Create a copy to avoid concurrent modification
                 List<Consumer<Object>> copy = new ArrayList<>(handlers);
                 for (Consumer<Object> handler : copy) {
-                    // Check if this handler came from the controller class
                     if (handler.toString().contains(controllerClass.getName())) {
                         unsubscribe(eventType, handler);
                     }

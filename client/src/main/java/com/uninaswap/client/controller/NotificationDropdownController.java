@@ -1,6 +1,5 @@
 package com.uninaswap.client.controller;
 
-import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.NotificationService;
 import com.uninaswap.client.viewmodel.NotificationViewModel;
@@ -33,7 +32,6 @@ public class NotificationDropdownController {
     @FXML private Label noNotificationsLabel;
     @FXML private Button viewAllBtn;
     
-    private final LocaleService localeService = LocaleService.getInstance();
     private final NavigationService navigationService = NavigationService.getInstance();
     private final NotificationService notificationService = NotificationService.getInstance();
     
@@ -46,15 +44,11 @@ public class NotificationDropdownController {
     }
     
     private void setupRealtimeUpdates() {
-        // Listen for changes to recent notifications
-        notificationService.getRecentNotifications().addListener((ListChangeListener<NotificationViewModel>) change -> {
+        notificationService.getRecentNotifications().addListener((ListChangeListener<NotificationViewModel>) _ -> {
             Platform.runLater(this::updateNotificationsDisplay);
         });
-        
-        // Set up callback for new notifications
-        notificationService.setNewNotificationCallback(notification -> {
+        notificationService.setNewNotificationCallback(_ -> {
             Platform.runLater(() -> {
-                // Show brief highlight or animation for new notification
                 updateNotificationsDisplay();
             });
         });
@@ -115,31 +109,22 @@ public class NotificationDropdownController {
         VBox item = new VBox(5);
         item.getStyleClass().addAll("notification-item", notification.isRead() ? "read" : "unread");
         item.setPadding(new Insets(10));
-        item.setOnMouseClicked(e -> {
+        item.setOnMouseClicked(_ -> {
             markAsRead(notification);
             handleNotificationClick(notification);
         });
-        
-        // Header with title and time
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
-        
-        // Notification icon based on type
         ImageView icon = new ImageView(getNotificationIcon(notification.getType()));
         icon.setFitWidth(16);
         icon.setFitHeight(16);
-        
         Text title = new Text(notification.getTitle());
         title.getStyleClass().add("notification-title");
         title.setFont(Font.font("System", FontWeight.BOLD, 12));
-        
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        
         Text time = new Text(formatTime(notification.getCreatedAt()));
         time.getStyleClass().add("notification-time");
-        
-        // Unread indicator
         if (!notification.isRead()) {
             Region unreadDot = new Region();
             unreadDot.getStyleClass().add("unread-dot");
@@ -149,12 +134,9 @@ public class NotificationDropdownController {
         } else {
             header.getChildren().addAll(icon, title, spacer, time);
         }
-        
-        // Message
         Text message = new Text(notification.getMessage());
         message.getStyleClass().add("notification-message");
         message.setWrappingWidth(300);
-        
         item.getChildren().addAll(header, message);
         return item;
     }
@@ -201,8 +183,6 @@ public class NotificationDropdownController {
     
     private void handleNotificationClick(NotificationViewModel notification) {
         closeDropdown();
-        
-        // Navigate based on notification type
         switch (notification.getType()) {
             case "OFFER_RECEIVED", "OFFER_ACCEPTED", "OFFER_REJECTED", "OFFER_WITHDRAWN" -> {
                 try {
@@ -212,15 +192,12 @@ public class NotificationDropdownController {
                 }
             }
             case "AUCTION_ENDING_SOON", "AUCTION_WON", "AUCTION_OUTBID" -> {
-                // Navigate to specific auction or user's auction history
                 System.out.println("Navigate to auction: " + notification.getTitle());
             }
             case "PICKUP_SCHEDULED", "PICKUP_REMINDER" -> {
-                // Navigate to pickup management
                 System.out.println("Navigate to pickup: " + notification.getTitle());
             }
             default -> {
-                // For system notifications, just mark as read
                 System.out.println("Clicked notification: " + notification.getTitle());
             }
         }

@@ -6,8 +6,6 @@ import javafx.collections.ObservableList;
 import java.time.LocalDateTime;
 
 public class AnalyticsViewModel {
-    
-    // User Stats Properties
     private final IntegerProperty totalListings = new SimpleIntegerProperty();
     private final IntegerProperty activeListings = new SimpleIntegerProperty();
     private final IntegerProperty completedListings = new SimpleIntegerProperty();
@@ -20,24 +18,18 @@ public class AnalyticsViewModel {
     private final ObjectProperty<LocalDateTime> memberSince = new SimpleObjectProperty<>();
     private final IntegerProperty totalViews = new SimpleIntegerProperty();
     private final IntegerProperty totalFavorites = new SimpleIntegerProperty();
-    
-    // Performance Metrics Properties
     private final DoubleProperty listingSuccessRate = new SimpleDoubleProperty();
     private final DoubleProperty offerAcceptanceRate = new SimpleDoubleProperty();
     private final DoubleProperty averageTimeToSell = new SimpleDoubleProperty();
     private final DoubleProperty customerSatisfactionRate = new SimpleDoubleProperty();
     private final DoubleProperty repeatCustomerRate = new SimpleDoubleProperty();
     private final DoubleProperty ratingTrend = new SimpleDoubleProperty();
-    
-    // Chart Data
     private final ObservableList<TimeSeriesData> listingStats = FXCollections.observableArrayList();
     private final ObservableList<TimeSeriesData> offerStats = FXCollections.observableArrayList();
     private final ObservableList<TimeSeriesData> reviewStats = FXCollections.observableArrayList();
     private final ObservableList<TimeSeriesData> earningsStats = FXCollections.observableArrayList();
     private final ObservableList<CategoryStats> categoryBreakdown = FXCollections.observableArrayList();
     private final ObservableList<MonthlyStats> monthlyBreakdown = FXCollections.observableArrayList();
-    
-    // Property getters
     public IntegerProperty totalListingsProperty() { return totalListings; }
     public IntegerProperty activeListingsProperty() { return activeListings; }
     public IntegerProperty completedListingsProperty() { return completedListings; }
@@ -57,8 +49,6 @@ public class AnalyticsViewModel {
     public DoubleProperty customerSatisfactionRateProperty() { return customerSatisfactionRate; }
     public DoubleProperty repeatCustomerRateProperty() { return repeatCustomerRate; }
     public DoubleProperty ratingTrendProperty() { return ratingTrend; }
-    
-    // Value getters and setters
     public int getTotalListings() { return totalListings.get(); }
     public void setTotalListings(int totalListings) { this.totalListings.set(totalListings); }
     
@@ -112,8 +102,6 @@ public class AnalyticsViewModel {
     
     public double getRatingTrend() { return ratingTrend.get(); }
     public void setRatingTrend(double ratingTrend) { this.ratingTrend.set(ratingTrend); }
-    
-    // Observable lists getters
     public ObservableList<TimeSeriesData> getListingStats() { return listingStats; }
     public ObservableList<TimeSeriesData> getOfferStats() { return offerStats; }
     public ObservableList<TimeSeriesData> getReviewStats() { return reviewStats; }
@@ -121,7 +109,6 @@ public class AnalyticsViewModel {
     public ObservableList<CategoryStats> getCategoryBreakdown() { return categoryBreakdown; }
     public ObservableList<MonthlyStats> getMonthlyBreakdown() { return monthlyBreakdown; }
     
-    // Helper classes for chart data
     public static class TimeSeriesData {
         private final LocalDateTime timestamp;
         private final double value;

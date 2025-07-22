@@ -17,15 +17,11 @@ public class SearchService {
     private static SearchService instance;
     private final WebSocketClient webSocketClient;
     private final ObservableList<ListingViewModel> searchResults = FXCollections.observableArrayList();
-    
-    // State management
     private CompletableFuture<SearchResult> currentSearchFuture;
     private boolean isSearching = false;
     private String lastQuery = "";
     private String lastListingType = "all";
     private Category lastCategory = Category.ALL;
-    
-    // Search result wrapper
     public static class SearchResult {
         private final ObservableList<ListingViewModel> results;
         private final long totalResults;
@@ -56,6 +52,12 @@ public class SearchService {
     
     /**
      * Perform search with given parameters
+     * 
+     * @param query The search query string
+     * @param listingType The type of listing to search for (e.g., "all", "offer", "request")
+     * @param category The category to filter results by
+     * @return CompletableFuture with SearchResult containing search results
+     *         or an exception if the search fails
      */
     public CompletableFuture<SearchResult> search(String query, String listingType, Category category) {
         return search(query, listingType, category, 0, 50); // Default pagination
@@ -63,18 +65,21 @@ public class SearchService {
     
     /**
      * Perform search with pagination
+     * 
+     * @param query The search query string
+     * @param listingType The type of listing to search for (e.g., "all", "offer", "request")
+     * @param category The category to filter results by
+     * @param page The page number to retrieve (0-based)
+     * @param size The number of results per page
+     * @return CompletableFuture with SearchResult containing search results
+     *         or an exception if the search fails
      */
     public CompletableFuture<SearchResult> search(String query, String listingType, Category category, int page, int size) {
-        // Cancel any existing search
         if (currentSearchFuture != null && !currentSearchFuture.isDone()) {
             currentSearchFuture.cancel(true);
         }
-        
-        // Create new search future
         currentSearchFuture = new CompletableFuture<>();
         isSearching = true;
-        
-        // Store search parameters
         lastQuery = query != null ? query.trim() : "";
         lastListingType = listingType != null ? listingType : "all";
         lastCategory = category != null ? category : Category.ALL;
@@ -131,6 +136,8 @@ public class SearchService {
     
     /**
      * Get current search results
+     * 
+     * @return ObservableList of ListingViewModel containing current search results
      */
     public ObservableList<ListingViewModel> getSearchResults() {
         return searchResults;
@@ -150,21 +157,14 @@ public class SearchService {
                 isSearching = false;
                 
                 if (message.isSuccess()) {
-                    // Convert DTOs to ViewModels
                     ObservableList<ListingViewModel> results = FXCollections.observableArrayList();
                     if (message.getResults() != null) {
                         for (ListingDTO dto : message.getResults()) {
                             results.add(ViewModelMapper.getInstance().toViewModel(dto));
                         }
                     }
-                    
-                    // Update search results
                     searchResults.setAll(results);
-                    
-                    // Create search result wrapper
                     SearchResult searchResult = new SearchResult(results, message.getTotalElements(), message.isHasMore());
-                    
-                    // Complete the future
                     if (currentSearchFuture != null && !currentSearchFuture.isDone()) {
                         currentSearchFuture.complete(searchResult);
                     }
@@ -172,7 +172,6 @@ public class SearchService {
                     System.out.println("Search completed: " + results.size() + " results, total: " + message.getTotalElements());
                     
                 } else {
-                    // Handle search error
                     String errorMessage = message.getErrorMessage() != null ? message.getErrorMessage() : "Search failed";
                     Exception searchException = new Exception(errorMessage);
                     

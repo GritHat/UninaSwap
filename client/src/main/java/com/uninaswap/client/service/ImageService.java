@@ -28,7 +28,6 @@ public class ImageService {
     private final WebSocketClient webSocketClient;
     private final Map<String, Image> imageCache = new HashMap<>();
     
-    // Replace single handler with a map of pending requests
     private final Map<String, CompletableFuture<Image>> pendingRequests = new ConcurrentHashMap<>();
     
     // Singleton pattern
@@ -51,28 +50,18 @@ public class ImageService {
      */
     public CompletableFuture<String> uploadImageViaHttp(File imageFile) {
         CompletableFuture<String> future = new CompletableFuture<>();
-        
-        // Create a thread for the upload to avoid blocking the UI
         new Thread(() -> {
             try {
-                // Prepare the HTTP client
                 HttpClient client = HttpClient.newHttpClient();
-                
-                // Create a simplified multipart form implementation
                 MultipartFormData formData = new MultipartFormData();
                 formData.addFilePart("file", imageFile);
-                
-                // Create the request
                 HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080/api/images/upload"))
                     .header("Content-Type", "multipart/form-data; boundary=" + formData.getBoundary())
                     .POST(formData.getBodyPublisher())
                     .build();
-                
-                // Send the request
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                // Process the response
                 if (response.statusCode() == 200) {
                     future.complete(response.body());
                 } else {
@@ -93,31 +82,23 @@ public class ImageService {
      * @return A CompletableFuture with the Image on success
      */
     public CompletableFuture<Image> fetchImage(String imageId) {
-        // Check cache first
         if (imageCache.containsKey(imageId)) {
             return CompletableFuture.completedFuture(imageCache.get(imageId));
         }
         
-        // Check if there's already a pending request for this image
         CompletableFuture<Image> existingRequest = pendingRequests.get(imageId);
         if (existingRequest != null) {
             return existingRequest;
         }
         
-        // Create new request
         CompletableFuture<Image> future = new CompletableFuture<>();
         pendingRequests.put(imageId, future);
-        
-        // If not in cache, request from server
         try {
             ImageMessage fetchMessage = new ImageMessage();
             fetchMessage.setType(ImageMessage.Type.FETCH_REQUEST);
             fetchMessage.setImageId(imageId);
-            
-            // Send the message
             webSocketClient.sendMessage(fetchMessage)
                 .exceptionally(ex -> {
-                    // Remove from pending and complete with error
                     pendingRequests.remove(imageId);
                     future.completeExceptionally(ex);
                     return null;
@@ -141,11 +122,7 @@ public class ImageService {
                     try {
                         byte[] imageBytes = Base64.getDecoder().decode(message.getImageData());
                         Image image = new Image(new ByteArrayInputStream(imageBytes));
-                        
-                        // Cache the image
                         imageCache.put(imageId, image);
-                        
-                        // Complete the specific request
                         pendingRequest.complete(image);
                     } catch (Exception e) {
                         pendingRequest.completeExceptionally(
@@ -160,24 +137,20 @@ public class ImageService {
             }
         }
     }
-    
-    // Add method to clear pending requests if needed
+
     public void clearPendingRequests() {
         pendingRequests.clear();
     }
     
-    // Clear the cache when needed
     public void clearCache() {
         imageCache.clear();
     }
     
-    // Helper class for multipart uploads
     private static class MultipartFormData {
         private final String boundary;
         private final ByteArrayOutputStream baos;
         
         public MultipartFormData() {
-            // Create a unique boundary
             this.boundary = UUID.randomUUID().toString();
             this.baos = new ByteArrayOutputStream();
         }
@@ -195,16 +168,10 @@ public class ImageService {
         
         public void addFilePart(String name, File file) throws IOException {
             baos.write(("--" + boundary + "\r\n").getBytes(StandardCharsets.UTF_8));
-            
-            // Add file headers
             baos.write(("Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" 
                         + file.getName() + "\"\r\n").getBytes(StandardCharsets.UTF_8));
-            
-            // Determine content type
             String contentType = getContentType(file.getName());
             baos.write(("Content-Type: " + contentType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8));
-            
-            // Copy file contents directly to output stream
             Files.copy(file.toPath(), baos);
             baos.write("\r\n".getBytes(StandardCharsets.UTF_8));
         }
@@ -220,10 +187,7 @@ public class ImageService {
         }
         
         public HttpRequest.BodyPublisher getBodyPublisher() throws IOException {
-            // Add the final boundary
             baos.write(("--" + boundary + "--").getBytes(StandardCharsets.UTF_8));
-            
-            // Create body publisher from byte array
             return HttpRequest.BodyPublishers.ofByteArray(baos.toByteArray());
         }
     }

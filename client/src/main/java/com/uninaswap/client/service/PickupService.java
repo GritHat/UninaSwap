@@ -12,7 +12,6 @@ import javafx.collections.ObservableList;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -26,19 +25,16 @@ public class PickupService {
     private final ObservableList<PickupDTO> upcomingPickups = FXCollections.observableArrayList();
     private final ObservableList<PickupDTO> pastPickups = FXCollections.observableArrayList();
 
-    // Response handlers for async operations
     private Consumer<PickupMessage> createPickupHandler;
     private Consumer<PickupMessage> acceptPickupHandler;
     private Consumer<PickupMessage> updatePickupHandler;
-    private Consumer<PickupMessage> getPickupHandler; // Add this line
+    private Consumer<PickupMessage> getPickupHandler;
 
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
 
     private PickupService() {
         this.webSocketClient = WebSocketClient.getInstance();
         this.sessionService = UserSessionService.getInstance();
-
-        // Register message handler
         webSocketClient.registerMessageHandler(PickupMessage.class, this::handlePickupMessage);
     }
 
@@ -51,22 +47,23 @@ public class PickupService {
 
     /**
      * Create a pickup arrangement
+     * 
+     * @param pickupViewModel The view model containing pickup details
+     * @return CompletableFuture with true if successful
      */
     public CompletableFuture<Boolean> createPickup(PickupViewModel pickupViewModel) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         PickupDTO pickupDTO = viewModelMapper.toDTO(pickupViewModel);
 
-        // Set up response handler
         createPickupHandler = response -> {
             future.complete(response.isSuccess());
             if (response.isSuccess() && response.getPickup() != null) {
                 Platform.runLater(() -> {
-                    // Add to user pickups if not already present
                     userPickups.removeIf(p -> p.getId().equals(response.getPickup().getId()));
                     userPickups.add(response.getPickup());
                 });
             }
-            createPickupHandler = null; // Clear handler
+            createPickupHandler = null;
         };
 
         PickupMessage message = new PickupMessage();
@@ -85,17 +82,20 @@ public class PickupService {
 
     /**
      * Accept a pickup with selected date and time
+     * 
+     * @param pickupId The ID of the pickup to accept
+     * @param selectedDate The date selected for the pickup
+     * @param selectedTime The time selected for the pickup
+     * @return CompletableFuture with true if successful
      */
     public CompletableFuture<Boolean> acceptPickup(Long pickupId, LocalDate selectedDate, LocalTime selectedTime) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-
-        // Set up response handler
         acceptPickupHandler = response -> {
             future.complete(response.isSuccess());
             if (response.isSuccess() && response.getPickup() != null) {
                 Platform.runLater(() -> updatePickupInLists(response.getPickup()));
             }
-            acceptPickupHandler = null; // Clear handler
+            acceptPickupHandler = null;
         };
 
         PickupMessage message = new PickupMessage();
@@ -116,6 +116,10 @@ public class PickupService {
 
     /**
      * Update pickup status
+     * 
+     * @param pickupId The ID of the pickup to update
+     * @param status The new status for the pickup
+     * @return CompletableFuture with true if successful
      */
     public CompletableFuture<Boolean> updatePickupStatus(Long pickupId, PickupStatus status) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -145,17 +149,18 @@ public class PickupService {
 
     /**
      * Cancel pickup arrangement and update offer status to CANCELLED
+     * 
+     * @param pickupId The ID of the pickup to cancel
+     * @return CompletableFuture with true if successful
      */
     public CompletableFuture<Boolean> cancelPickupArrangement(Long pickupId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-
-        // Set up response handler
         updatePickupHandler = response -> {
             future.complete(response.isSuccess());
             if (response.isSuccess() && response.getPickup() != null) {
                 Platform.runLater(() -> updatePickupInLists(response.getPickup()));
             }
-            updatePickupHandler = null; // Clear handler
+            updatePickupHandler = null;
         };
 
         PickupMessage message = new PickupMessage();
@@ -174,6 +179,8 @@ public class PickupService {
 
     /**
      * Get user's pickups
+     * 
+     * @return CompletableFuture with user's pickups
      */
     public CompletableFuture<Void> getUserPickups() {
         CompletableFuture<Void> future = new CompletableFuture<>();
@@ -194,6 +201,8 @@ public class PickupService {
 
     /**
      * Get upcoming pickups
+     * 
+     * @return CompletableFuture with upcoming pickups
      */
     public CompletableFuture<Void> getUpcomingPickups() {
         CompletableFuture<Void> future = new CompletableFuture<>();
@@ -214,11 +223,12 @@ public class PickupService {
 
     /**
      * Get pickup by offer ID
+     * 
+     * @param offerId The ID of the offer to get the pickup for
+     * @return CompletableFuture with the PickupViewModel if found, null otherwise
      */
     public CompletableFuture<PickupViewModel> getPickupByOfferId(String offerId) {
         CompletableFuture<PickupViewModel> future = new CompletableFuture<>();
-
-        // Set up response handler
         Consumer<PickupMessage> tempHandler = response -> {
             if (response.isSuccess() && response.getPickup() != null) {
                 PickupViewModel pickup = ViewModelMapper.getInstance().toViewModel(response.getPickup());
@@ -266,13 +276,13 @@ public class PickupService {
                     }
                     break;
 
-                case CANCEL_PICKUP_ARRANGEMENT_RESPONSE: // Add this case
+                case CANCEL_PICKUP_ARRANGEMENT_RESPONSE:
                     if (updatePickupHandler != null) {
                         updatePickupHandler.accept(message);
                     }
                     break;
 
-                case GET_PICKUP_BY_OFFER_RESPONSE: // Add this case
+                case GET_PICKUP_BY_OFFER_RESPONSE:
                     if (getPickupHandler != null) {
                         getPickupHandler.accept(message);
                     }
@@ -319,7 +329,6 @@ public class PickupService {
     }
 
     private void updatePickupInLists(PickupDTO updatedPickup) {
-        // Update in all lists where the pickup exists
         updatePickupInList(userPickups, updatedPickup);
         updatePickupInList(upcomingPickups, updatedPickup);
         updatePickupInList(pastPickups, updatedPickup);
@@ -334,7 +343,6 @@ public class PickupService {
         }
     }
 
-    // Observable list getters
     public ObservableList<PickupDTO> getUserPickupsList() {
         return userPickups;
     }

@@ -13,7 +13,6 @@ import com.uninaswap.common.message.AuthMessage;
 public class AuthenticationService {
     private static AuthenticationService instance;
 
-    // Singleton pattern
     public static AuthenticationService getInstance() {
         if (instance == null) {
             instance = new AuthenticationService();
@@ -30,7 +29,6 @@ public class AuthenticationService {
     private boolean connectToAuthEndpoint() {
         try {
             if (!webSocketClient.isConnected()) {
-                // Connect to the unified endpoint instead of /auth
                 webSocketClient.connect("ws://localhost:8080/ws");
             }
             return true;
@@ -42,6 +40,12 @@ public class AuthenticationService {
 
     /**
      * Send login request to server
+     * 
+     * @param usernameOrEmail The username or email of the user
+     * @param password        The password of the user
+     * @return A CompletableFuture that completes when the login request is sent
+     *         successfully, or fails with an exception if the connection fails.
+     *         If the input contains '@', it is treated as an email; otherwise, it
      */
     public CompletableFuture<Void> login(String usernameOrEmail, String password) {
         if (!connectToAuthEndpoint())
@@ -51,7 +55,6 @@ public class AuthenticationService {
         AuthMessage loginRequest = new AuthMessage();
         loginRequest.setType(AuthMessage.Type.LOGIN_REQUEST);
 
-        // If the input contains '@', treat it as an email
         if (isEmail) {
             loginRequest.setEmail(usernameOrEmail);
             loginRequest.setPassword(password);
@@ -65,6 +68,15 @@ public class AuthenticationService {
 
     /**
      * Send registration request to server
+     * 
+     * @param firstName The first name of the user
+     * @param lastName  The last name of the user
+     * @param username  The username of the user
+     * @param email     The email of the user
+     * @param password  The password of the user
+     * @return A CompletableFuture that completes when the registration request is
+     *         sent successfully, or fails with an exception if the connection fails.
+     *         This method does not check if the username or email is already taken;
      */
     public CompletableFuture<Void> register(String firstName, String lastName ,String username, String email, String password) {
         if (!connectToAuthEndpoint())
@@ -82,6 +94,8 @@ public class AuthenticationService {
 
     /**
      * Set message handler for auth responses
+     * 
+     * @param handler The handler to process AuthMessage responses
      */
     public void setAuthResponseHandler(Consumer<AuthMessage> handler) {
         webSocketClient.registerMessageHandler(AuthMessage.class, handler);

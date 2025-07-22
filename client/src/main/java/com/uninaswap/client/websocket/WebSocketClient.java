@@ -28,8 +28,6 @@ public class WebSocketClient {
     private Session session;
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule())
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-    // Map of message handlers for different message types
     private final Map<Class<? extends Message>, Consumer<Message>> messageHandlers = new HashMap<>();
 
     public void connect(String uri) throws Exception {
@@ -58,13 +56,10 @@ public class WebSocketClient {
     @OnMessage
     public void onMessage(String message) {
         try {
-
-            // Deserialize to the base Message type
             Message baseMessage = objectMapper.readValue(message, Message.class);
             if (!baseMessage.getMessageType().equals("image"))
                 System.out.println("CLIENT RECEIVED: " + message);
             System.out.println(baseMessage.getMessageType());
-            // Find the appropriate handler based on the actual message type
             Consumer<Message> handler = messageHandlers.get(baseMessage.getClass());
 
             if (handler != null) {
@@ -83,7 +78,6 @@ public class WebSocketClient {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         try {
-            // Add authentication token to message if available
             UserSessionService sessionService = UserSessionService.getInstance();
             if (sessionService.isLoggedIn() && sessionService.getToken() != null) {
                 message.setToken(sessionService.getToken());

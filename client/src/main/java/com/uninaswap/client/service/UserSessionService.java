@@ -3,8 +3,6 @@ package com.uninaswap.client.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.text.View;
-
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.viewmodel.UserViewModel;
@@ -16,14 +14,11 @@ import com.uninaswap.common.message.AuthMessage;
  */
 public class UserSessionService {
     private static UserSessionService instance;
-    
-    // Session data
     private UserDTO user;
     private boolean loggedIn = false;
     private final Map<String, Object> sessionData = new HashMap<>();
     private final EventBusService eventBus = EventBusService.getInstance();
     
-    // Singleton pattern
     public static UserSessionService getInstance() {
         if (instance == null) {
             instance = new UserSessionService();
@@ -32,17 +27,17 @@ public class UserSessionService {
     }
     
     private UserSessionService() {
-        // Private constructor to enforce singleton
     }
     
     /**
      * Start a new user session after successful login
+     * 
+     * @param response The AuthMessage containing user data and token
      */
     public void startSession(AuthMessage response) {
         this.user = response.getUser();
         this.loggedIn = true;
         
-        // Store the authentication token
         if (response.getToken() != null) {
             this.sessionData.put("token", response.getToken());
         }
@@ -56,10 +51,7 @@ public class UserSessionService {
      * End the user session (logout)
      */
     public void endSession() {
-        // Publish logout event before clearing data
         eventBus.publishEvent(EventTypes.USER_LOGGED_OUT, null);
-        
-        // Clear user data
         this.user = null;
         this.loggedIn = false;
         this.sessionData.clear();
@@ -69,6 +61,8 @@ public class UserSessionService {
     
     /**
      * Get the current user
+     * 
+     * @return The UserDTO representing the current user, or null if not logged in
      */
     public UserDTO getUser() {
         return user;
@@ -80,6 +74,8 @@ public class UserSessionService {
 
     /**
      * Check if a user is logged in
+     * 
+     * @return true if a user is logged in, false otherwise
      */
     public boolean isLoggedIn() {
         return loggedIn;
@@ -87,6 +83,9 @@ public class UserSessionService {
 
     /**
      * Store additional data in the session
+     * 
+     * @param key The key to store the data under
+     * @param value The value to store
      */
     public void put(String key, Object value) {
         sessionData.put(key, value);
@@ -111,6 +110,9 @@ public class UserSessionService {
     
     /**
      * Check if the session contains a specific key
+     * 
+     * @param key The key to check for
+     * @return true if the key exists in the session, false otherwise
      */
     public boolean contains(String key) {
         return sessionData.containsKey(key);
@@ -118,6 +120,8 @@ public class UserSessionService {
     
     /**
      * Remove data from the session
+     * 
+     * @param key The key to remove
      */
     public void remove(String key) {
         sessionData.remove(key);

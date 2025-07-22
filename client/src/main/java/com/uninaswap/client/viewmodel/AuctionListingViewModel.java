@@ -26,7 +26,6 @@ public class AuctionListingViewModel extends ListingViewModel {
     private final IntegerProperty durationInDays = new SimpleIntegerProperty();
     private final StringProperty pickupLocation = new SimpleStringProperty();
 
-    // Constructors
     public AuctionListingViewModel() {
         super();
     }
@@ -36,7 +35,6 @@ public class AuctionListingViewModel extends ListingViewModel {
         super(id, title, description, user, createdAt, status, featured);
     }
 
-    // Property getters
     public ObjectProperty<BigDecimal> startingPriceProperty() {
         return startingPrice;
     }
@@ -77,7 +75,6 @@ public class AuctionListingViewModel extends ListingViewModel {
         return pickupLocation;
     }
 
-    // Setters
     public void setStartingPrice(BigDecimal startingPrice) {
         this.startingPrice.set(startingPrice);
     }
@@ -127,8 +124,6 @@ public class AuctionListingViewModel extends ListingViewModel {
             return DeliveryType.SHIPPING;
         }
     }
-
-    // Getters
 
     public BigDecimal getStartingPrice() {
         return startingPrice.get();

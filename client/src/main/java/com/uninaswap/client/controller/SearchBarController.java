@@ -23,20 +23,14 @@ public class SearchBarController implements Initializable {
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Inizializzazione del controller
     }
     
     @FXML
     public void handleSearch(ActionEvent event) {
         String searchQuery = searchField.getText();
         
-        // Esegui la ricerca quando pronto
         if (searchQuery != null && !searchQuery.isEmpty()) {
             System.out.println("Ricerca per: " + searchQuery);
-            // TODO: Implementare la logica di ricerca
-            
-            // Esempio: puoi inviare un evento di ricerca tramite EventBus
-            // EventBusService.getInstance().publish(EventTypes.SEARCH_REQUESTED, searchQuery);
         }
     }
 }

@@ -10,7 +10,6 @@ public class SearchController {
     
     @FXML
     public void initialize() {
-        // Inizializzazione della vista di ricerca
     }
     
     @FXML
@@ -18,7 +17,6 @@ public class SearchController {
         String searchQuery = searchField.getText().trim();
         if (!searchQuery.isEmpty()) {
             System.out.println("Cercando: " + searchQuery);
-            // Logica di ricerca da implementare
         }
     }
   

@@ -2,7 +2,6 @@ package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.FollowerService;
 import com.uninaswap.client.service.LocaleService;
-import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.UserViewModel;
 import javafx.application.Platform;
@@ -15,66 +14,43 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class UserFollowersController {
-
     @FXML
     private Label titleLabel;
-
     @FXML
     private Label userNameLabel;
-
     @FXML
     private Label followingCountLabel;
-
     @FXML
     private Label followersCountLabel;
-
     @FXML
     private TabPane followersTabPane;
-
-    // Following Tab
     @FXML
     private TableView<UserViewModel> followingTable;
-
     @FXML
     private TableColumn<UserViewModel, String> followingNameColumn;
-
     @FXML
     private TableColumn<UserViewModel, String> followingUsernameColumn;
-
     @FXML
     private TableColumn<UserViewModel, String> followingDateColumn;
-
     @FXML
     private TableColumn<UserViewModel, Void> followingActionsColumn;
-
-    // Followers Tab
     @FXML
     private TableView<UserViewModel> followersTable;
-
     @FXML
     private TableColumn<UserViewModel, String> followersNameColumn;
-
     @FXML
     private TableColumn<UserViewModel, String> followersUsernameColumn;
-
     @FXML
     private TableColumn<UserViewModel, String> followersDateColumn;
-
     @FXML
     private TableColumn<UserViewModel, Void> followersActionsColumn;
-
     @FXML
     private Button refreshButton;
-
     @FXML
     private Button closeButton;
 
-    // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final FollowerService followerService = FollowerService.getInstance();
-    private final NavigationService navigationService = NavigationService.getInstance();
-
-    // Data
     private UserViewModel currentUser;
     private final ObservableList<UserViewModel> followingUsers = FXCollections.observableArrayList();
     private final ObservableList<UserViewModel> followerUsers = FXCollections.observableArrayList();
@@ -93,31 +69,26 @@ public class UserFollowersController {
     }
 
     private void setupTables() {
-        // Following table setup
         followingNameColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDisplayName()));
 
         followingUsernameColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
 
-        followingDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty("N/A")); // You can add join date
+        followingDateColumn.setCellValueFactory(_ -> new SimpleStringProperty("N/A")); // You can add join date
                                                                                               // if available
 
-        // Followers table setup
         followersNameColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDisplayName()));
 
         followersUsernameColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
 
-        followersDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty("N/A")); // You can add join date
+        followersDateColumn.setCellValueFactory(_ -> new SimpleStringProperty("N/A")); // You can add join date
                                                                                               // if available
 
-        // Setup action columns
         setupFollowingActionsColumn();
         setupFollowersActionsColumn();
-
-        // Bind tables to observable lists
         followingTable.setItems(followingUsers);
         followersTable.setItems(followerUsers);
     }
@@ -132,12 +103,12 @@ public class UserFollowersController {
                 viewProfileButton.getStyleClass().add("secondary-button");
                 unfollowButton.getStyleClass().add("danger-button");
 
-                viewProfileButton.setOnAction(e -> {
+                viewProfileButton.setOnAction(_ -> {
                     UserViewModel user = getTableView().getItems().get(getIndex());
                     handleViewProfile(user);
                 });
 
-                unfollowButton.setOnAction(e -> {
+                unfollowButton.setOnAction(_ -> {
                     UserViewModel user = getTableView().getItems().get(getIndex());
                     handleUnfollow(user);
                 });
@@ -161,12 +132,12 @@ public class UserFollowersController {
                 viewProfileButton.getStyleClass().add("secondary-button");
                 followButton.getStyleClass().add("primary-button");
 
-                viewProfileButton.setOnAction(e -> {
+                viewProfileButton.setOnAction(_ -> {
                     UserViewModel user = getTableView().getItems().get(getIndex());
                     handleViewProfile(user);
                 });
 
-                followButton.setOnAction(e -> {
+                followButton.setOnAction(_ -> {
                     UserViewModel user = getTableView().getItems().get(getIndex());
                     handleFollow(user);
                 });
@@ -179,7 +150,6 @@ public class UserFollowersController {
                     setGraphic(null);
                 } else {
                     UserViewModel user = getTableView().getItems().get(getIndex());
-                    // Update follow button text based on current follow status
                     boolean isFollowing = followerService.isFollowingLocally(user.getId());
                     followButton.setText(isFollowing ? "Unfollow" : "Follow");
                     followButton.getStyleClass().clear();
@@ -216,14 +186,11 @@ public class UserFollowersController {
     private void loadFollowData() {
         if (currentUser == null)
             return;
-
-        // Load following users
         followerService.getFollowing()
                 .thenAccept(following -> Platform.runLater(() -> {
                     followingUsers.clear();
                     following.forEach(userDTO -> {
-                        // You'll need to convert DTOs to ViewModels
-                        // followingUsers.add(viewModelMapper.toViewModel(userDTO));
+                    //    followingUsers.add(viewModelMapper.toViewModel(userDTO));
                     });
                     updateCounts();
                 }))
@@ -235,13 +202,11 @@ public class UserFollowersController {
                     return null;
                 });
 
-        // Load followers
         followerService.getFollowers()
                 .thenAccept(followers -> Platform.runLater(() -> {
                     followerUsers.clear();
                     followers.forEach(userDTO -> {
-                        // You'll need to convert DTOs to ViewModels
-                        // followerUsers.add(viewModelMapper.toViewModel(userDTO));
+                       // followerUsers.add(viewModelMapper.toViewModel(userDTO));
                     });
                     updateCounts();
                 }))
@@ -255,15 +220,12 @@ public class UserFollowersController {
     }
 
     private void handleViewProfile(UserViewModel user) {
-        // Navigate to user profile view
-        // This would typically open a user profile dialog or navigate to profile page
         System.out.println("View profile for user: " + user.getUsername());
     }
 
     private void handleFollow(UserViewModel user) {
         followerService.followUser(user.getId())
-                .thenAccept(followerViewModel -> Platform.runLater(() -> {
-                    // Update UI to reflect new follow status
+                .thenAccept(_ -> Platform.runLater(() -> {
                     followersTable.refresh();
                     updateCounts();
                     AlertHelper.showInformationAlert(
@@ -291,8 +253,7 @@ public class UserFollowersController {
         confirmation.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 followerService.unfollowUser(user.getId())
-                        .thenAccept(success -> Platform.runLater(() -> {
-                            // Remove user from following list
+                        .thenAccept(_ -> Platform.runLater(() -> {
                             followingUsers.removeIf(u -> u.getId().equals(user.getId()));
                             updateCounts();
                             AlertHelper.showInformationAlert(

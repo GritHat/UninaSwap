@@ -27,12 +27,10 @@ public class ReportService {
     private CompletableFuture<?> futureToComplete;
     private Consumer<ReportMessage> messageCallback;
 
-    // Observable lists for UI binding
     private final ObservableList<UserReportViewModel> userReports = FXCollections.observableArrayList();
     private final ObservableList<ListingReportViewModel> listingReports = FXCollections.observableArrayList();
 
     private ReportService() {
-        // Register message handler
         webSocketClient.registerMessageHandler(ReportMessage.class, this::handleReportMessage);
     }
 
@@ -45,11 +43,13 @@ public class ReportService {
 
     /**
      * Create a user report
+     * 
+     * @param reportViewModel The ViewModel containing report details
+     * @return CompletableFuture with the created UserReportViewModel
+     *         or an exception if the report creation fails
      */
     public CompletableFuture<UserReportViewModel> createUserReport(UserReportViewModel reportViewModel) {
         CompletableFuture<UserReportViewModel> future = new CompletableFuture<>();
-
-        // Convert ViewModel to DTO for service communication
         UserReportDTO reportDTO = viewModelMapper.toDTO(reportViewModel);
 
         ReportMessage message = new ReportMessage();
@@ -70,11 +70,13 @@ public class ReportService {
 
     /**
      * Create a listing report
+     * 
+     * @param reportViewModel The ViewModel containing report details
+     * @return CompletableFuture with the created ListingReportViewModel
+     *         or an exception if the report creation fails
      */
     public CompletableFuture<ListingReportViewModel> createListingReport(ListingReportViewModel reportViewModel) {
         CompletableFuture<ListingReportViewModel> future = new CompletableFuture<>();
-
-        // Convert ViewModel to DTO for service communication
         ListingReportDTO reportDTO = viewModelMapper.toDTO(reportViewModel);
 
         ReportMessage message = new ReportMessage();
@@ -95,6 +97,9 @@ public class ReportService {
 
     /**
      * Get user reports
+     * 
+     * @return CompletableFuture with a list of UserReportDTOs
+     *         or an exception if the request fails
      */
     public CompletableFuture<List<UserReportDTO>> getUserReports() {
         CompletableFuture<List<UserReportDTO>> future = new CompletableFuture<>();
@@ -117,6 +122,9 @@ public class ReportService {
 
     /**
      * Get listing reports
+     * 
+     * @return CompletableFuture with a list of ListingReportDTOs
+     *         or an exception if the request fails
      */
     public CompletableFuture<List<ListingReportDTO>> getListingReports() {
         CompletableFuture<List<ListingReportDTO>> future = new CompletableFuture<>();
@@ -137,7 +145,6 @@ public class ReportService {
         return future;
     }
 
-    // Handle incoming messages
     @SuppressWarnings("unchecked")
     private void handleReportMessage(ReportMessage message) {
         if (message.getType() == null) {
@@ -241,14 +248,11 @@ public class ReportService {
                 System.out.println("Unhandled report message type: " + message.getType());
                 break;
         }
-
-        // Call any registered callback
         if (messageCallback != null) {
             messageCallback.accept(message);
         }
     }
 
-    // Getters for observable lists
     public ObservableList<UserReportViewModel> getUserReportsList() {
         return userReports;
     }
@@ -262,7 +266,6 @@ public class ReportService {
         listingReports.clear();
     }
 
-    // Set a callback for incoming messages
     public void setMessageCallback(Consumer<ReportMessage> callback) {
         this.messageCallback = callback;
     }

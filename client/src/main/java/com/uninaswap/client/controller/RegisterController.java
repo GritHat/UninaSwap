@@ -52,8 +52,7 @@ public class RegisterController {
 
     @FXML
     public void initialize() {
-        // Set message handler
-        buttonRegister(null); // Initialize button state
+        buttonRegister(null);
         registerMessageHandler();
     }
 
@@ -76,7 +75,6 @@ public class RegisterController {
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
 
-        // Validate input
         ValidationResult validationResult = validationService.validateRegistration(
                 username, email, password, confirmPassword);
 
@@ -108,7 +106,6 @@ public class RegisterController {
                 if (response.isSuccess()) {
                     showMessage("register.success", "message-success");
                 } else {
-                    // Use server's message or fallback
                     String errorMessage = (response.getMessage() != null && !response.getMessage().isEmpty())
                             ? response.getMessage()
                             : localeService.getMessage("register.error.failed");
@@ -122,6 +119,9 @@ public class RegisterController {
 
     /**
      * Helper method to display messages
+     * 
+     * @param messageKey The key for the message to display
+     * @param styleClass The CSS class to apply to the message label
      */
     private void showMessage(String messageKey, String styleClass) {
         messageLabel.setText(localeService.getMessage(messageKey));
@@ -140,7 +140,6 @@ public class RegisterController {
     @FXML
     public void openTermsAndConditions(MouseEvent event) {
         try {
-            // Pass the source of the event to the NavigationService
             navigationService.openTermsAndConditions((javafx.scene.Node) event.getSource());
         } catch (Exception e) {
             System.err.println("Error opening Terms and Conditions: " + e.getMessage());

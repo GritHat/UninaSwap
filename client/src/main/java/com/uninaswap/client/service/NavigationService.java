@@ -55,11 +55,9 @@ public class NavigationService {
     private final ItemService itemService = ItemService.getInstance();
     private final UserSessionService sessionService = UserSessionService.getInstance();
     private final EventBusService eventBus = EventBusService.getInstance();
-    // Add navigation history stack
     private final java.util.Stack<NavigationState> navigationHistory = new java.util.Stack<>();
-    private MainController mainController; // Reference to main controller
+    private MainController mainController;
 
-    // Navigation state class to store view information
     private static class NavigationState {
         private final Parent view;
         private final String title;
@@ -78,7 +76,6 @@ public class NavigationService {
         }
     }
 
-    // Singleton pattern
     public static NavigationService getInstance() {
         if (instance == null) {
             instance = new NavigationService();
@@ -87,7 +84,6 @@ public class NavigationService {
     }
 
     private NavigationService() {
-        // Private constructor to enforce singleton pattern
     }
 
     private class LoaderBundle {
@@ -111,19 +107,14 @@ public class NavigationService {
     /**
      * Navigate to the specified view
      * 
-     * @param sourceNode The node that triggered the navigation
-     * @param fxmlPath   The path to the FXML file
-     * @param title      The title of the new window
-     * @param width      The width of the new window
-     * @param height     The height of the new window
+     * @param fxmlPath The path to the FXML file
+     * @return A LoaderBundle containing the FXMLLoader and the loaded view
+     * @throws IOException If an error occurs while loading the view
      */
     private LoaderBundle loadView(String fxmlPath) throws IOException {
-        // Check if the path is valid before attempting to load
         if (fxmlPath == null || fxmlPath.isEmpty()) {
             throw new IllegalArgumentException("FXML path cannot be null or empty");
         }
-
-        // Get the resource URL and verify it exists
         java.net.URL resource = getClass().getResource(fxmlPath);
         if (resource == null) {
             throw new IOException("Resource not found: " + fxmlPath);
@@ -132,12 +123,8 @@ public class NavigationService {
         FXMLLoader loader = new FXMLLoader(resource);
         loader.setResources(localeService.getResourceBundle());
         Parent root = loader.load();
-
-        // Store the controller in the view's properties
         Object controller = loader.getController();
         root.getProperties().put("controller", controller);
-
-        // Also store the ID for easy identification
         String viewName = fxmlPath.substring(fxmlPath.lastIndexOf('/') + 1, fxmlPath.lastIndexOf('.'));
         root.setId(viewName);
 
@@ -146,6 +133,9 @@ public class NavigationService {
 
     /**
      * Navigate to the login screen
+     * 
+     * @param sourceNode The node that triggered the navigation
+     * @throws IOException If an error occurs while loading the view
      */
     public void navigateToLogin(Node sourceNode) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/LoginView.fxml");
@@ -155,7 +145,6 @@ public class NavigationService {
         if (sourceNode != null && sourceNode.getScene() != null) {
             stage = (Stage) sourceNode.getScene().getWindow();
         } else {
-            // If source node is null or doesn't have a scene, try to find the active window
             Window activeWindow = null;
             for (Window window : Stage.getWindows()) {
                 if (window instanceof Stage && window.isShowing()) {
@@ -167,7 +156,6 @@ public class NavigationService {
             if (activeWindow != null) {
                 stage = (Stage) activeWindow;
             } else {
-                // Create a new stage as a fallback
                 stage = new Stage();
             }
         }
@@ -178,7 +166,6 @@ public class NavigationService {
                 stage.getScene().getWidth(),
                 stage.getScene().getHeight()));
 
-        // Register the controller's message handler
         LoginController controller = loaderBundle.getLoader().getController();
         controller.registerMessageHandler();
     }
@@ -187,6 +174,7 @@ public class NavigationService {
      * Navigate to the register screen
      * 
      * @param sourceNode The node that triggered the navigation
+     * @throws IOException If an error occurs while loading the view
      */
     public void navigateToRegister(Node sourceNode) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/RegisterView.fxml");
@@ -194,10 +182,8 @@ public class NavigationService {
 
         Stage stage;
         if (sourceNode != null && sourceNode.getScene() != null) {
-            // Get the stage from the source node if available
             stage = (Stage) sourceNode.getScene().getWindow();
         } else {
-            // If source node is null or doesn't have a scene, try to find the active window
             Window activeWindow = null;
             for (Window window : Stage.getWindows()) {
                 if (window instanceof Stage && window.isShowing()) {
@@ -209,7 +195,6 @@ public class NavigationService {
             if (activeWindow != null) {
                 stage = (Stage) activeWindow;
             } else {
-                // Create a new stage as a fallback
                 stage = new Stage();
             }
         }
@@ -220,13 +205,15 @@ public class NavigationService {
                         stage.getScene().getWidth(),
                         stage.getScene().getHeight()));
 
-        // Register the controller's message handler
         RegisterController controller = loaderBundle.getLoader().getController();
         controller.registerMessageHandler();
     }
 
     /**
      * Navigate to the main dashboard screen
+     * 
+     * @param sourceNode The node that triggered the navigation
+     * @throws IOException If an error occurs while loading the view
      */
     public void navigateToMainDashboard(Node sourceNode) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/MainView.fxml");
@@ -238,14 +225,11 @@ public class NavigationService {
                 mainView,
                 stage.getScene().getWidth(),
                 stage.getScene().getHeight()));
-
-        // Initialize the MainController if needed
         MainController mainController = loaderBundle.getLoader().getController();
         mainController.initialize();
     }
 
     public void navigateToItemDetails(String itemId) {
-        // TODO: Implement navigation logic to item details view using itemId
         System.out.println("Navigating to item details for item: " + itemId);
     }
 
@@ -253,9 +237,9 @@ public class NavigationService {
      * Navigate to the terms and conditions screen
      * 
      * @param sourceNode The node that triggered the navigation
+     * @throws IOException If an error occurs while loading the view
      */
     public void openTermsAndConditions(Node sourceNode) throws IOException {
-        // Define the correct path to the Terms and Conditions FXML file
         final String TERMS_FXML_PATH = "/fxml/TermsAndConditionsView.fxml";
 
         try {
@@ -278,12 +262,14 @@ public class NavigationService {
             termsStage.show();
         } catch (IOException e) {
             System.err.println("Error loading Terms and Conditions view: " + e.getMessage());
-            throw e; // Re-throw to let caller handle it
+            throw e;
         }
     }
 
     /**
      * Load the home view
+     * 
+     * @throws IOException If an error occurs while loading the view
      */
     public Parent loadHomeView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/HomeView.fxml");
@@ -301,6 +287,10 @@ public class NavigationService {
 
     /**
      * Load the profile view
+     *
+     * @param user The user to load the profile for
+     * @throws IOException If an error occurs while loading the view
+     * @return The loaded profile view as a Parent object
      */
     public Parent loadProfileView(UserViewModel user) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/ProfileView.fxml");
@@ -315,6 +305,9 @@ public class NavigationService {
 
     /**
      * Load the inventory view
+     * 
+     * @throws IOException If an error occurs while loading the view
+     * @return The loaded inventory view as a Parent object
      */
     public Parent loadInventoryView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/InventoryView.fxml");
@@ -331,6 +324,9 @@ public class NavigationService {
 
     /**
      * Load the notifications view
+     * 
+     * @throws IOException If an error occurs while loading the view
+     * @return The loaded notifications view as a Parent object
      */
     public Parent loadNotificationsView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/NotificationsView.fxml");
@@ -346,6 +342,9 @@ public class NavigationService {
 
     /**
      * Load the listing creation view
+     * 
+     * @throws IOException If an error occurs while loading the view
+     * @return The loaded listing creation view as a Parent object
      */
     public Parent loadListingCreationView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/ListingCreationView.fxml");
@@ -378,6 +377,9 @@ public class NavigationService {
 
     /**
      * Load the support view
+     * 
+     * @throws IOException If an error occurs while loading the view
+     * @return The loaded support view as a Parent object
      */
     public Parent loadSupportView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/SupportView.fxml");
@@ -436,6 +438,8 @@ public class NavigationService {
 
     /**
      * Logout the current user and navigate to the login screen
+     * 
+     * @throws IOException If an error occurs while logging out
      */
     public void logout() throws IOException {
         sessionService.endSession();
@@ -445,6 +449,9 @@ public class NavigationService {
 
     /**
      * Convenience method to get Stage from an ActionEvent
+     * 
+     * @param event The ActionEvent from which to get the Stage
+     * @return The Stage associated with the ActionEvent    
      */
     public Stage getStageFromEvent(ActionEvent event) {
         return (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -452,6 +459,9 @@ public class NavigationService {
 
     /**
      * Load offers view
+     * 
+     * @throws IOException If an error occurs while loading the view
+     * @return The loaded offers view as a Parent object
      */
     public Parent loadOffersView() throws IOException {
 
@@ -526,6 +536,8 @@ public class NavigationService {
 
     /**
      * Set the main controller reference for navigation
+     * 
+     * @param mainController The main controller to set
      */
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
@@ -534,11 +546,9 @@ public class NavigationService {
     public void openItemDialog(ItemViewModel itemViewModel) {
         try {
             ItemDTO item = ViewModelMapper.getInstance().toDTO(itemViewModel);
-            // Load the dialog FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ItemDialogView.fxml"));
             loader.setResources(localeService.getResourceBundle());
             DialogPane dialogPane = loader.load();
-            // Create custom button types with localized text
             ButtonType confirmButtonType = new ButtonType(
                     localeService.getMessage("button.confirm"),
                     ButtonBar.ButtonData.OK_DONE);
@@ -546,27 +556,18 @@ public class NavigationService {
                     localeService.getMessage("button.cancel"),
                     ButtonBar.ButtonData.CANCEL_CLOSE);
             dialogPane.getButtonTypes().addAll(confirmButtonType, cancelButtonType);
-            // Get the controller
             ItemDialogController controller = loader.getController();
-
-            // Set up the item in the controller
             controller.setItem(item);
-
-            // Create the dialog
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setTitle(localeService.getMessage(item.getId() == null ? "item.add.title" : "item.edit.title"));
             dialog.setHeaderText(
                     localeService.getMessage(item.getId() == null ? "item.add.header" : "item.edit.header"));
             dialog.setDialogPane(dialogPane);
-
-            // Show the dialog and handle result
             Optional<ButtonType> result = dialog.showAndWait();
 
             if (result.isPresent() && result.get() == confirmButtonType) {
                 ItemDTO updatedItem = controller.getUpdatedItem();
                 File selectedImageFile = controller.getSelectedImageFile();
-
-                // If we have a new image, upload it first using HTTP
                 if (selectedImageFile != null) {
                     imageService.uploadImageViaHttp(selectedImageFile)
                             .thenAccept(imagePath -> {
@@ -581,7 +582,6 @@ public class NavigationService {
                                 return null;
                             });
                 } else {
-                    // No new image, just save the item
                     itemService.saveItem(updatedItem);
                 }
             }
@@ -608,8 +608,6 @@ public class NavigationService {
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.initModality(Modality.APPLICATION_MODAL);
-
-            // Center on parent window
             stage.initOwner(parentStage);
             stage.centerOnScreen();
 
@@ -625,13 +623,13 @@ public class NavigationService {
 
     /**
      * Open pickup selection dialog for accepting/selecting pickup times
+     * 
+     * @param offer The offer for which to select a pickup time
+     * @param parentStage The parent stage for the dialog
      */
     public void openPickupSelection(OfferViewModel offer, Stage parentStage) {
         try {
-            // First, get the pickup for this offer
             PickupService pickupService = PickupService.getInstance();
-            
-            // Get the pickup associated with this offer
             pickupService.getPickupByOfferId(offer.getId())
                 .thenAccept(pickup -> Platform.runLater(() -> {
                     if (pickup != null) {
@@ -675,8 +673,6 @@ public class NavigationService {
             dialog.setTitle(localeService.getMessage("pickup.selection.title", "Select Pickup Time"));
             dialog.setScene(new Scene(root));
             dialog.setResizable(false);
-            
-            // Center the dialog relative to the parent
             dialog.setOnShown(e -> {
                 dialog.setX(parentStage.getX() + (parentStage.getWidth() - dialog.getWidth()) / 2);
                 dialog.setY(parentStage.getY() + (parentStage.getHeight() - dialog.getHeight()) / 2);
@@ -700,32 +696,19 @@ public class NavigationService {
             
             Parent reviewContent = loader.load();
             ReviewCreateController controller = loader.getController();
-            
-            // Set the offer for the review
             controller.setOffer(offer);
-            
-            // Create and configure dialog
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.initOwner(parentStage);
             dialog.initModality(Modality.APPLICATION_MODAL);
             dialog.setTitle(localeService.getMessage("review.create.title", "Write a Review"));
-            
-            // Set the content
             DialogPane dialogPane = dialog.getDialogPane();
             dialogPane.setContent(reviewContent);
-            
-            // Don't add extra buttons since they're already in the FXML
-            // The FXML buttons will handle the actions directly
             dialogPane.getButtonTypes().add(ButtonType.CLOSE);
-            
-            // Hide the default close button
             Button closeButton = (Button) dialogPane.lookupButton(ButtonType.CLOSE);
             if (closeButton != null) {
                 closeButton.setVisible(false);
                 closeButton.setManaged(false);
             }
-            
-            // Show dialog
             dialog.showAndWait();
             
         } catch (IOException e) {
@@ -871,24 +854,20 @@ public class NavigationService {
      */
     public void goBack() {
         if (!navigationHistory.isEmpty()) {
-            // Remove current view from history
             navigationHistory.pop();
 
             if (!navigationHistory.isEmpty()) {
-                // Get previous view
                 NavigationState previousState = navigationHistory.peek();
 
                 if (mainController != null) {
                     Platform.runLater(() -> {
                         mainController.setContent(previousState.getView());
-                        // Optionally update window title
                         updateWindowTitle(previousState.getTitle());
                     });
                 } else {
                     System.err.println("MainController reference not set in NavigationService");
                 }
             } else {
-                // No more history, go to home
                 try {
                     Parent homeView = loadHomeView();
                     loadView(homeView, "Home");
@@ -897,7 +876,6 @@ public class NavigationService {
                 }
             }
         } else {
-            // No navigation history, go to home
             try {
                 Parent homeView = loadHomeView();
                 loadView(homeView, "Home");
@@ -909,17 +887,15 @@ public class NavigationService {
 
     /**
      * Load a view and add it to navigation history
+     * 
+     * @param view The view to load
+     * @param title The title for the view
      */
     public void loadView(Parent view, String title) {
         if (mainController != null) {
             Platform.runLater(() -> {
-                // Add current view to history before navigating
                 addToHistory(view, title);
-
-                // Set the new content
                 mainController.setContent(view);
-
-                // Update window title
                 updateWindowTitle(title);
             });
         } else {
@@ -929,14 +905,14 @@ public class NavigationService {
 
     /**
      * Add a view to navigation history
+     * 
+     * @param view The view to add
+     * @param title The title for the view
      */
     private void addToHistory(Parent view, String title) {
         NavigationState state = new NavigationState(view, title);
         navigationHistory.push(state);
-
-        // Limit history size to prevent memory issues
         if (navigationHistory.size() > 10) {
-            // Remove oldest entry
             navigationHistory.remove(0);
         }
     }
@@ -957,40 +933,34 @@ public class NavigationService {
 
     /**
      * Update window title (if applicable)
+     * 
+     * @param title The new title for the window
      */
     private void updateWindowTitle(String title) {
-        // This depends on your application structure
-        // You might want to update the main window title or just ignore this
         System.out.println("Navigation: " + title);
     }
 
     /**
      * Open pickup rescheduling dialog for an existing offer
+     * 
+     * @param offerId The ID of the offer to reschedule
+     * @param parentStage The parent stage for the dialog
      */
     public void openPickupRescheduling(String offerId, Stage parentStage) {
         try {
-            // Load the pickup scheduling FXML (we can reuse the same UI)
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PickupSchedulingView.fxml"));
             loader.setResources(localeService.getResourceBundle());
             Parent root = loader.load();
-            
-            // Get the controller
             PickupSchedulingController controller = loader.getController();
-            
-            // Set the offer ID and configure for rescheduling mode
             controller.setOfferId(offerId);
-            controller.setReschedulingMode(true); // We'll add this method
-            
-            // Create and configure the dialog
+            controller.setReschedulingMode(true);
             Stage dialog = new Stage();
             dialog.initModality(Modality.WINDOW_MODAL);
             dialog.initOwner(parentStage);
             dialog.setTitle(localeService.getMessage("pickup.reschedule.title", "Reschedule Pickup"));
             dialog.setScene(new Scene(root));
             dialog.setResizable(false);
-            
-            // Center the dialog relative to the parent
-            dialog.setOnShown(e -> {
+            dialog.setOnShown(_ -> {
                 dialog.setX(parentStage.getX() + (parentStage.getWidth() - dialog.getWidth()) / 2);
                 dialog.setY(parentStage.getY() + (parentStage.getHeight() - dialog.getHeight()) / 2);
             });
@@ -1008,22 +978,20 @@ public class NavigationService {
 
     /**
      * Navigate to home view and display listings for a specific user
+     * 
+     * @param userId The ID of the user whose listings to display
+     * @throws IOException If an error occurs while loading the home view
      */
     public void navigateToHomeViewAndSearchListingsByUserId(Long userId) throws IOException {
-        // Navigate to home view first
         Parent homeView = loadHomeView();
         mainController.setContent(homeView);
         mainController.updateSidebarButtonSelection("home");
-        
-        // Get the HomeController instance from the loaded view
         Object controller = homeView.getProperties().get("controller");
         if (controller instanceof HomeController homeController) {
-            // Call the method to display user listings
             Platform.runLater(() -> {
                 homeController.displayUserListings(userId);
             });
         } else {
-            // Fallback: try to get controller from the loader if property method doesn't work
             System.err.println("Could not get HomeController instance to display user listings");
         }
     }

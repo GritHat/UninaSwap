@@ -35,7 +35,6 @@ import com.uninaswap.client.viewmodel.ListingItemViewModel;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.viewmodel.UserViewModel;
 import com.uninaswap.client.service.ProfileService;
-import com.uninaswap.client.service.SearchService;
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.EventBusService;
@@ -85,16 +84,12 @@ public class ProfileController implements Refreshable {
     private TextField countryField;
     @FXML
     private TextField zipPostalCodeField;
-
-    // Add for user listings section
     @FXML
     private VBox userListingsSection;
     @FXML
     private VBox userListingsList;
     @FXML
     private Label userListingsCountLabel;
-
-    // Add these FXML fields
     @FXML
     private Label ratingReviewsLabel;
     @FXML
@@ -115,8 +110,6 @@ public class ProfileController implements Refreshable {
     private String tempProfileImagePath;
     private File tempSelectedImageFile;
     private UserViewModel user;
-
-    // Add fields to track profile ownership
     private boolean isOwnProfile = false;
     private UserViewModel viewedUser;
 
@@ -129,7 +122,6 @@ public class ProfileController implements Refreshable {
 
     @FXML
     public void initialize() {
-        // Verify user is logged in
         if (!sessionService.isLoggedIn()) {
             try {
                 navigationService.navigateToLogin(usernameField);
@@ -138,17 +130,11 @@ public class ProfileController implements Refreshable {
                 showStatus("error.navigation", true);
             }
         }
-
-        // Register message handler
         registerMessageHandler();
     }
-
-    // Update the loadProfile method
     public void loadProfile(UserViewModel user) {
         this.viewedUser = user;
         this.user = user;
-
-        // Check if this is the current user's own profile
         UserViewModel currentUser = sessionService.getUserViewModel();
         this.isOwnProfile = currentUser != null && user.getId().equals(currentUser.getId());
 
@@ -204,8 +190,6 @@ public class ProfileController implements Refreshable {
             bioField.setText(viewedUser.getBio());
             bioField.setEditable(isOwnProfile);
         }
-
-        // Load address fields (only for own profile)
         if (isOwnProfile) {
             if (addressField != null) {
                 addressField.setText(viewedUser.getAddress());
@@ -223,8 +207,6 @@ public class ProfileController implements Refreshable {
                 zipPostalCodeField.setText(viewedUser.getZipPostalCode()); // You might need a separate zip field in UserViewModel
             }
         }
-
-        // Set profile image
         String imagePath = viewedUser.getProfileImagePath();
         if (imagePath != null && !imagePath.isEmpty()) {
             ImageService.getInstance().fetchImage(imagePath)
@@ -236,7 +218,6 @@ public class ProfileController implements Refreshable {
                     })
                     .exceptionally(ex -> {
                         Platform.runLater(() -> {
-                            // If image loading fails, use default
                             profileImageView
                                     .setImage(new Image(getClass().getResourceAsStream("/images/default_profile.png")));
                             showStatus("profile.image.error.load", true);
@@ -248,7 +229,6 @@ public class ProfileController implements Refreshable {
     }
 
     private void setupProfileVisibility() {
-        // Show/hide address fields based on profile ownership
         if (addressField != null) {
             addressField.setVisible(isOwnProfile);
             addressField.setManaged(isOwnProfile);
@@ -269,14 +249,10 @@ public class ProfileController implements Refreshable {
             zipPostalCodeField.setVisible(isOwnProfile);
             zipPostalCodeField.setManaged(isOwnProfile);
         }
-
-        // Show/hide change image button
         if (changeImageButton != null) {
             changeImageButton.setVisible(isOwnProfile);
             changeImageButton.setManaged(isOwnProfile);
         }
-
-        // Show/hide save/cancel buttons
         if (saveButton != null) {
             saveButton.setVisible(isOwnProfile);
             saveButton.setManaged(isOwnProfile);
@@ -285,24 +261,16 @@ public class ProfileController implements Refreshable {
             cancelButton.setVisible(isOwnProfile);
             cancelButton.setManaged(isOwnProfile);
         }
-
-        // Show/hide analytics button (only for own profile)
         if (analyticsButton != null) {
             analyticsButton.setVisible(isOwnProfile);
             analyticsButton.setManaged(isOwnProfile);
         }
-
-        // Show/hide report user button (only for other profiles)
         if (reportUserButton != null) {
             reportUserButton.setVisible(!isOwnProfile);
             reportUserButton.setManaged(!isOwnProfile);
         }
-        
-        // Update rating/reviews label with actual data
         updateRatingReviewsLabel();
     }
-
-    // Add method to update rating and reviews display
     private void updateRatingReviewsLabel() {
         if (ratingReviewsLabel != null && viewedUser != null) {
             double rating = viewedUser.getRating();
@@ -326,11 +294,8 @@ public class ProfileController implements Refreshable {
         if (userListingsList == null) return;
 
         userListingsList.getChildren().clear();
-
-        // Load listings for the viewed user
         listingService.getUserListings(viewedUser.getId())
                 .thenAccept(listings -> Platform.runLater(() -> {
-                    // Convert DTOs to ViewModels
                     List<ListingViewModel> listingViewModels = listings.stream()
                             .map(ViewModelMapper.getInstance()::toViewModel)
                             .collect(Collectors.toList());
@@ -345,20 +310,15 @@ public class ProfileController implements Refreshable {
                         );
                         noListingsLabel.getStyleClass().add("placeholder-subtitle");
                         userListingsList.getChildren().add(noListingsLabel);
-                        
-                        // Hide view all button container
                         if (viewAllButtonContainer != null) {
                             viewAllButtonContainer.setVisible(false);
                             viewAllButtonContainer.setManaged(false);
                         }
                     } else {
-                        // Show all listings in the scroll pane (no limit like before)
                         for (ListingViewModel listing : listingViewModels) {
                             VBox listingItem = createListingPreviewItem(listing);
                             userListingsList.getChildren().add(listingItem);
                         }
-                        
-                        // Show view all button if there are many listings (optional)
                         if (listingViewModels.size() > 10 && isOwnProfile) {
                             viewAllButtonContainer.setVisible(true);
                             viewAllButtonContainer.setManaged(true);
@@ -368,7 +328,7 @@ public class ProfileController implements Refreshable {
                         }
                     }
                 }))
-                .exceptionally(ex -> {
+                .exceptionally(_ -> {
                     Platform.runLater(() -> {
                         Label errorLabel = new Label(
                                 localeService.getMessage("profile.listings.error", "Error loading listings.")
@@ -380,27 +340,18 @@ public class ProfileController implements Refreshable {
                 });
     }
 
-    // Update the createListingPreviewItem method to use drawer-style layout
     private VBox createListingPreviewItem(ListingViewModel listing) {
         VBox itemContainer = new VBox(5);
         itemContainer.getStyleClass().add("profile-listing-item");
-
-        // Main item header row (similar to favorites drawer)
         HBox headerRow = new HBox(10);
         headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         headerRow.getStyleClass().add("listing-item-header-row");
-
-        // Listing thumbnail
         ImageView thumbnail = new ImageView();
         thumbnail.setFitHeight(40);
         thumbnail.setFitWidth(40);
         thumbnail.setPreserveRatio(true);
         thumbnail.getStyleClass().add("listing-thumbnail");
-
-        // Load listing image
         loadListingThumbnail(thumbnail, listing);
-
-        // Title and details container
         VBox textContainer = new VBox(2);
         textContainer.setMaxWidth(250);
 
@@ -408,8 +359,6 @@ public class ProfileController implements Refreshable {
         title.setMaxWidth(250);
         title.setTextOverrun(OverrunStyle.ELLIPSIS);
         title.getStyleClass().add("listing-item-title");
-
-        // Status and type info
         HBox infoRow = new HBox(10);
         infoRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
@@ -423,8 +372,6 @@ public class ProfileController implements Refreshable {
         infoRow.getChildren().addAll(typeLabel, statusLabel);
 
         textContainer.getChildren().addAll(title, infoRow);
-
-        // Date label
         Label dateLabel = new Label();
         if (listing.getCreatedAt() != null) {
             dateLabel.setText(listing.getCreatedAt().toLocalDate().toString());
@@ -432,9 +379,7 @@ public class ProfileController implements Refreshable {
         dateLabel.getStyleClass().add("listing-date-label");
 
         headerRow.getChildren().addAll(thumbnail, textContainer);
-
-        // Click handler with visual feedback
-        itemContainer.setOnMouseClicked(e -> {
+        itemContainer.setOnMouseClicked(_ -> {
             try {
                 navigationService.navigateToListingDetails(listing);
             } catch (Exception ex) {
@@ -443,21 +388,20 @@ public class ProfileController implements Refreshable {
         });
 
         // Add hover effect
-        itemContainer.setOnMouseEntered(e -> itemContainer.getStyleClass().add("listing-item-hover"));
-        itemContainer.setOnMouseExited(e -> itemContainer.getStyleClass().remove("listing-item-hover"));
+        itemContainer.setOnMouseEntered(_ -> itemContainer.getStyleClass().add("listing-item-hover"));
+        itemContainer.setOnMouseExited(_ -> itemContainer.getStyleClass().remove("listing-item-hover"));
 
         itemContainer.getChildren().addAll(headerRow, dateLabel);
         return itemContainer;
     }
 
-    // Add method to load listing thumbnail
     private void loadListingThumbnail(ImageView thumbnail, ListingViewModel listing) {
         String imagePath = getFirstListingImagePath(listing);
         
         if (imagePath != null && !imagePath.isEmpty() && !imagePath.equals("default")) {
             ImageService.getInstance().fetchImage(imagePath)
                 .thenAccept(image -> Platform.runLater(() -> thumbnail.setImage(image)))
-                .exceptionally(ex -> {
+                .exceptionally(_ -> {
                     Platform.runLater(() -> setDefaultListingThumbnail(thumbnail));
                     return null;
                 });
@@ -466,7 +410,6 @@ public class ProfileController implements Refreshable {
         }
     }
 
-    // Add method to get first image from listing
     private String getFirstListingImagePath(ListingViewModel listing) {
         if (listing.getItems() != null && !listing.getItems().isEmpty()) {
             for (ListingItemViewModel item : listing.getItems()) {
@@ -478,7 +421,6 @@ public class ProfileController implements Refreshable {
         return null;
     }
 
-    // Add method to set default listing thumbnail
     private void setDefaultListingThumbnail(ImageView imageView) {
         try {
             Image defaultImage = new Image(getClass().getResourceAsStream("/images/icons/listings.png"));
@@ -498,15 +440,9 @@ public class ProfileController implements Refreshable {
         File selectedFile = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
         if (selectedFile != null) {
             try {
-                // Load the source image
                 Image sourceImage = new Image(selectedFile.toURI().toString());
-
-                // Show the image cropper dialog
                 showImageCropper(sourceImage, croppedImage -> {
-                    // Update UI with the cropped image
                     profileImageView.setImage(croppedImage);
-
-                    // Convert the cropped image to a file for later upload
                     tempSelectedImageFile = convertImageToTempFile(croppedImage);
                 });
             } catch (Exception e) {
@@ -519,7 +455,6 @@ public class ProfileController implements Refreshable {
     @FXML
     private void showAnalytics(ActionEvent event) {
         try {
-            // Navigate to the analytics view
             navigationService.navigateToAnalyticsView();
         } catch (IOException e) {
             System.err.println("Error navigating to analytics: " + e.getMessage());
@@ -529,31 +464,24 @@ public class ProfileController implements Refreshable {
 
     /**
      * Shows the image cropper dialog
+     * 
+     * @param sourceImage The image to crop
+     * @param cropCallback Callback to handle the cropped image
      */
     private void showImageCropper(Image sourceImage, Consumer<Image> cropCallback) {
         try {
-            // Load the cropper FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ImageCropperView.fxml"));
             loader.setResources(localeService.getResourceBundle());
             Parent cropperView = loader.load();
-
-            // Create dialog
             Stage cropperStage = new Stage();
-            // cropperStage.setTitle("Crop Profile Image");
             cropperStage.initModality(Modality.APPLICATION_MODAL);
             cropperStage.initOwner(profileImageView.getScene().getWindow());
-
-            // Add CSS
             Scene scene = new Scene(cropperView);
             scene.getStylesheets().add(getClass().getResource("/css/cropper.css").toExternalForm());
             cropperStage.setScene(scene);
-
-            // Set up the controller
             ImageCropperController controller = loader.getController();
             controller.setImage(sourceImage);
             controller.setCropCallback(cropCallback);
-
-            // Show the cropper dialog
             cropperStage.showAndWait();
         } catch (IOException e) {
             showStatus("profile.error.image.cropper", true);
@@ -563,17 +491,17 @@ public class ProfileController implements Refreshable {
 
     /**
      * Converts a JavaFX Image to a temporary file for upload
+     * 
+     * @param image The JavaFX Image to convert
+     * @return A temporary file containing the image data, or null if conversion failed
      */
     private File convertImageToTempFile(Image image) {
         try {
-            // Create a BufferedImage from the JavaFX Image
             int width = (int) image.getWidth();
             int height = (int) image.getHeight();
 
             java.awt.image.BufferedImage bufferedImage = new java.awt.image.BufferedImage(
                     width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB);
-
-            // Copy pixels
             PixelReader pixelReader = image.getPixelReader();
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
@@ -582,12 +510,8 @@ public class ProfileController implements Refreshable {
                     bufferedImage.setRGB(x, y, argb);
                 }
             }
-
-            // Create temp file
             File tempFile = File.createTempFile("profile_", ".png");
             tempFile.deleteOnExit();
-
-            // Write to file
             javax.imageio.ImageIO.write(bufferedImage, "png", tempFile);
 
             return tempFile;
@@ -599,6 +523,9 @@ public class ProfileController implements Refreshable {
 
     /**
      * Convert JavaFX Color to ARGB int value for BufferedImage
+     * 
+     * @param color The JavaFX Color to convert
+     * @return ARGB int value
      */
     private int convertColorToARGB(javafx.scene.paint.Color color) {
         int a = (int) (color.getOpacity() * 255);
@@ -610,25 +537,15 @@ public class ProfileController implements Refreshable {
 
     @FXML
     public void handleSave(ActionEvent event) {
-        // Disable save button to prevent multiple submissions
         Button saveButton = (Button) event.getSource();
         saveButton.setDisable(true);
-
-        // Show "saving" status
         showStatus("profile.save.inprogress", false);
-
-        // If a new image was selected, upload it first using HTTP
         if (tempSelectedImageFile != null) {
             ImageService imageService = ImageService.getInstance();
-
             imageService.uploadImageViaHttp(tempSelectedImageFile)
                     .thenAccept(imageId -> {
-                        // Update the image path to the server-side path
                         tempProfileImagePath = imageId;
-                        // Now save the profile with the new image ID
                         saveProfileWithImage();
-
-                        // Notify other parts of the application about the image change
                         notifyProfileImageChange(tempProfileImagePath);
                     })
                     .exceptionally(ex -> {
@@ -640,29 +557,22 @@ public class ProfileController implements Refreshable {
                         return null;
                     });
         } else {
-            // No new image, just save the profile
             saveProfileWithImage();
         }
     }
 
-    // Update the saveProfileWithImage method to include address fields
     private void saveProfileWithImage() {
-        // Update session with form values
         if (isOwnProfile) {
             user.setFirstName(firstNameField.getText());
             user.setLastName(lastNameField.getText());
             user.setBio(bioField.getText());
             user.setProfileImagePath(tempProfileImagePath);
-
-            // Update address fields
             user.setAddress(addressField.getText());
             user.setCity(cityField.getText());
             user.setCountry(countryField.getText());
             user.setStateProvince(stateProvinceField.getText());
             user.setZipPostalCode(zipPostalCodeField.getText());
-            // Note: You might need to add stateProvince and zipPostalCode fields to UserViewModel
 
-            // Send profile update request
             profileService.updateProfile(viewModelMapper.toDTO(user))
                     .exceptionally(ex -> {
                         Platform.runLater(() -> {
@@ -705,14 +615,11 @@ public class ProfileController implements Refreshable {
             profileTitleLabel.setText(viewedUser.getDisplayName() + "'s " + localeService.getMessage("profile.title"));
         }
 
-        // Update section labels
         if (userListingsCountLabel != null) {
-            // Refresh listings count
             loadUserListings();
         }
     }
-
-    // Add report user handler
+    
     @FXML
     private void handleReportUser() {
         if (viewedUser != null) {
@@ -727,8 +634,6 @@ public class ProfileController implements Refreshable {
             }
         }
     }
-
-    // Alternative implementation using SearchService
 
     @FXML
     private void handleViewAllListings() {

@@ -39,21 +39,15 @@ public class SettingsController {
     
     @FXML
     public void initialize() {
-        // Load user data
         if (userSessionService.isLoggedIn()) {
             emailField.setText(userSessionService.getUser().getEmail());
         }
         
-        // Setup language combo box
         languageComboBox.getItems().addAll("Italiano", "English");
         String currentLanguage = localeService.getCurrentLocale().getDisplayLanguage();
         languageComboBox.setValue(currentLanguage);
-        
-        // Setup theme combo box
         themeComboBox.getItems().addAll("Chiaro", "Scuro", "Sistema");
         themeComboBox.setValue("Chiaro");
-        
-        // Setup notification checkboxes with default values
         emailNotificationsCheckBox.setSelected(true);
         appNotificationsCheckBox.setSelected(true);
         offerNotificationsCheckBox.setSelected(true);
@@ -83,16 +77,11 @@ public class SettingsController {
             );
             return;
         }
-        
-        // Here you would implement the actual password change logic with your backend service
-        
         AlertHelper.showInformationAlert(
             "Password aggiornata",
             "La tua password è stata aggiornata con successo",
             "Usa la nuova password al prossimo accesso."
         );
-        
-        // Clear password fields
         currentPasswordField.clear();
         newPasswordField.clear();
         confirmPasswordField.clear();
@@ -100,7 +89,6 @@ public class SettingsController {
     
     @FXML
     public void handleSave(ActionEvent event) {
-        // Save language preference
         String selectedLanguage = languageComboBox.getValue();
         Locale locale;
         if (selectedLanguage.equals("English")) {
@@ -109,9 +97,6 @@ public class SettingsController {
             locale = Locale.ITALIAN;
         }
         localeService.setLocale(locale);
-        
-        // Here you would save other preferences to your backend or local storage
-        
         AlertHelper.showInformationAlert(
             "Impostazioni salvate",
             "Le tue impostazioni sono state salvate",
@@ -121,6 +106,5 @@ public class SettingsController {
     
     @FXML
     public void handleCancel(ActionEvent event) {
-        // Reset form or navigate back
     }
 }

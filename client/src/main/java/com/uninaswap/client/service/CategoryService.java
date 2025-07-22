@@ -29,7 +29,6 @@ public class CategoryService {
     }
 
     public List<Category> getSelectableCategories() {
-        // Return all categories except ALL for listing creation
         return categories.stream()
                 .filter(cat -> cat != Category.ALL)
                 .toList();

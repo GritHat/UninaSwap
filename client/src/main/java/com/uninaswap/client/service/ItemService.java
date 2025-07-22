@@ -48,8 +48,6 @@ public class ItemService {
             userItems.clear();
             userItemViewModels.clear();
             needsRefresh = true;
-
-            // Cancel any pending futures
             if (futureToComplete != null) {
                 futureToComplete.cancel(true);
                 futureToComplete = null;
@@ -63,69 +61,59 @@ public class ItemService {
         System.out.println("ItemService: Cleared all cached data on logout");
     }
 
-    // Get all items for the current user
     public CompletableFuture<List<ItemDTO>> getUserItems() {
         CompletableFuture<List<ItemDTO>> future = new CompletableFuture<>();
 
         ItemMessage message = new ItemMessage();
         message.setType(ItemMessage.Type.GET_ITEMS_REQUEST);
-
-        // Set the future to complete when response arrives
         this.futureToComplete = future;
 
         webSocketClient.sendMessage(message)
                 .exceptionally(ex -> {
                     future.completeExceptionally(ex);
-                    this.futureToComplete = null; // Reset on exception
+                    this.futureToComplete = null;
                     return null;
                 });
 
         return future;
     }
 
-    // Add a new item
     public CompletableFuture<ItemDTO> addItem(ItemDTO item) {
         CompletableFuture<ItemDTO> future = new CompletableFuture<>();
 
         ItemMessage message = new ItemMessage();
         message.setType(ItemMessage.Type.ADD_ITEM_REQUEST);
         message.setItem(item);
-
-        // Set the future to complete when response arrives
         this.futureToComplete = future;
 
         webSocketClient.sendMessage(message)
                 .exceptionally(ex -> {
                     future.completeExceptionally(ex);
-                    this.futureToComplete = null; // Reset on exception
+                    this.futureToComplete = null;
                     return null;
                 });
 
         return future;
     }
 
-    // Update an existing item
     public CompletableFuture<ItemDTO> updateItem(ItemDTO item) {
         CompletableFuture<ItemDTO> future = new CompletableFuture<>();
 
         ItemMessage message = new ItemMessage();
         message.setType(ItemMessage.Type.UPDATE_ITEM_REQUEST);
         message.setItem(item);
-
-        // Set the future to complete when response arrives
         this.futureToComplete = future;
 
         webSocketClient.sendMessage(message)
                 .exceptionally(ex -> {
                     future.completeExceptionally(ex);
-                    this.futureToComplete = null; // Reset on exception
+                    this.futureToComplete = null;
                     return null;
                 });
 
         return future;
     }
 
-    // Delete an item
     public CompletableFuture<Boolean> deleteItem(String itemId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -135,21 +123,18 @@ public class ItemService {
         ItemDTO item = new ItemDTO();
         item.setId(itemId);
         message.setItem(item);
-
-        // Set the future to complete when response arrives
         this.futureToComplete = future;
 
         webSocketClient.sendMessage(message)
                 .exceptionally(ex -> {
                     future.completeExceptionally(ex);
-                    this.futureToComplete = null; // Reset on exception
+                    this.futureToComplete = null;
                     return null;
                 });
 
         return future;
     }
 
-    // Get observable list of user items for UI binding
     public ObservableList<ItemDTO> getUserItemsList() {
         if (userItems.isEmpty() || needsRefresh) {
             refreshUserItems();
@@ -158,7 +143,6 @@ public class ItemService {
         return userItems;
     }
 
-    // Refresh the user's items
     public void refreshUserItems() {
         getUserItems()
                 .thenAccept(items -> {
@@ -193,7 +177,6 @@ public class ItemService {
         getUserItems()
                 .thenAccept(items -> {
                     Platform.runLater(() -> {
-                        // Update both lists
                         userItems.clear();
                         userItems.addAll(items);
 
@@ -210,7 +193,6 @@ public class ItemService {
                 });
     }
 
-    // Handle incoming item messages
     private CompletableFuture<?> futureToComplete;
     private Consumer<ItemMessage> messageCallback;
 
@@ -222,8 +204,6 @@ public class ItemService {
                     if (message.isSuccess()) {
                         userItems.clear();
                         userItems.addAll(message.getItems());
-
-                        // Also update ViewModels
                         userItemViewModels.clear();
                         message.getItems().forEach(itemDTO -> {
                             ItemViewModel itemViewModel = ViewModelMapper.getInstance().toViewModel(itemDTO);
@@ -248,8 +228,6 @@ public class ItemService {
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
                         userItems.add(message.getItem());
-
-                        // Also add to ViewModels
                         ItemViewModel itemViewModel = ViewModelMapper.getInstance().toViewModel(message.getItem());
                         userItemViewModels.add(itemViewModel);
 
@@ -270,12 +248,9 @@ public class ItemService {
             case UPDATE_ITEM_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
-                        // Update in both lists
                         for (int i = 0; i < userItems.size(); i++) {
                             if (userItems.get(i).getId().equals(message.getItem().getId())) {
                                 userItems.set(i, message.getItem());
-
-                                // Update ViewModel too
                                 ItemViewModel updatedViewModel = ViewModelMapper.getInstance()
                                         .toViewModel(message.getItem());
                                 userItemViewModels.set(i, updatedViewModel);
@@ -300,7 +275,6 @@ public class ItemService {
             case DELETE_ITEM_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
-                        // Remove from both lists
                         userItems.removeIf(item -> item.getId().equals(message.getItem().getId()));
                         userItemViewModels.removeIf(item -> item.getId().equals(message.getItem().getId()));
 
@@ -322,15 +296,12 @@ public class ItemService {
                 System.out.println("Unknown item message type: " + message.getType());
                 break;
         }
-
-        // Call any registered callback
         if (messageCallback != null) {
             messageCallback.accept(message);
         }
     }
 
     public void saveItem(ItemDTO item) {
-        // Determine if this is a new or existing item
         if (item.getId() == null || item.getId().isEmpty()) {
             // Add new item
             addItem(item)
@@ -345,7 +316,6 @@ public class ItemService {
                         return null;
                     });
         } else {
-            // Update existing item
             updateItem(item)
                     .thenAccept(_ -> {
                         publishItemUpdatedEvent(item);
@@ -361,7 +331,6 @@ public class ItemService {
     }
 
     private void publishItemUpdatedEvent(ItemDTO item) {
-        // Publish an event to notify other parts of the application
         eventBus.publishEvent(EventTypes.ITEM_UPDATED, ViewModelMapper.getInstance().toViewModel(item));
     }
 

@@ -20,7 +20,6 @@ public class ViewModelMapper {
         return instance;
     }
 
-    // Offer mappings
     public OfferViewModel toViewModel(OfferDTO dto) {
         if (dto == null)
             return null;
@@ -75,7 +74,6 @@ public class ViewModelMapper {
         return dto;
     }
 
-    // OfferItem mappings
     public OfferItemViewModel toViewModel(OfferItemDTO dto) {
         if (dto == null)
             return null;
@@ -102,7 +100,6 @@ public class ViewModelMapper {
                 toDTO(viewModel.getItem()));
     }
 
-    // User mappings
     public UserViewModel toViewModel(UserDTO dto) {
         if (dto == null)
             return null;
@@ -124,10 +121,6 @@ public class ViewModelMapper {
         viewModel.setBio(dto.getBio());
         viewModel.setZipPostalCode(dto.getZipPostalCode());
         viewModel.setStateProvince(dto.getStateProvince());
-        // Add rating and review count if available in DTO
-        // viewModel.setRating(dto.getRating());
-        // viewModel.setReviewCount(dto.getReviewCount());
-
         return viewModel;
     }
 
@@ -156,7 +149,6 @@ public class ViewModelMapper {
         return dto;
     }
 
-    // Item mappings
     public ItemViewModel toViewModel(ItemDTO dto) {
         if (dto == null)
             return null;
@@ -208,7 +200,6 @@ public class ViewModelMapper {
         return dto;
     }
 
-    // Listing mappings
     public ListingViewModel toViewModel(ListingDTO dto) {
         if (dto == null)
             return null;
@@ -309,7 +300,6 @@ public class ViewModelMapper {
         return dto;
     }
 
-    // Review mappings
     public ReviewViewModel toViewModel(ReviewDTO dto) {
         if (dto == null)
             return null;
@@ -378,7 +368,6 @@ public class ViewModelMapper {
         return dto;
     }
 
-    // User Report mappings
     public UserReportViewModel toViewModel(UserReportDTO dto) {
         if (dto == null)
             return null;
@@ -415,7 +404,6 @@ public class ViewModelMapper {
         return dto;
     }
 
-    // Listing Report mappings
     public ListingReportViewModel toViewModel(ListingReportDTO dto) {
         if (dto == null)
             return null;
@@ -452,7 +440,6 @@ public class ViewModelMapper {
         return dto;
     }
 
-    // Favorite mappings
     public FavoriteViewModel toViewModel(FavoriteDTO dto) {
         if (dto == null)
             return null;
@@ -483,7 +470,6 @@ public class ViewModelMapper {
         return dto;
     }
 
-    // Follower mappings
     public FollowerViewModel toViewModel(FollowerDTO dto) {
         if (dto == null)
             return null;
@@ -554,7 +540,6 @@ public class ViewModelMapper {
         return dto;
     }
 
-    // Convenience methods for collections
     public List<UserViewModel> toUserViewModels(List<UserDTO> dtos) {
         if (dtos == null)
             return null;

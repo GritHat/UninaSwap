@@ -56,12 +56,10 @@ public class NotificationsController implements Initializable, Refreshable {
     @FXML
     private ImageView notificationIcon;
 
-    // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final NotificationService notificationService = NotificationService.getInstance();
     private final NavigationService navigationService = NavigationService.getInstance();
 
-    // Data
     private ObservableList<NotificationViewModel> allNotifications;
     private FilteredList<NotificationViewModel> purchasesSalesNotifications;
     private FilteredList<NotificationViewModel> auctionNotifications;
@@ -79,8 +77,6 @@ public class NotificationsController implements Initializable, Refreshable {
     private void setupLabels() {
         titleText.setText(localeService.getMessage("notification.center", "Notification Center"));
         markAllReadButton.setText(localeService.getMessage("notification.mark.all.read", "Mark All as Read"));
-        
-        // Set tab texts
         allNotificationsTab.setText(localeService.getMessage("notification.tab.all", "All"));
         purchasesSalesTab.setText(localeService.getMessage("notification.tab.purchases.sales", "Purchases & Sales"));
         auctionsTab.setText(localeService.getMessage("notification.tab.auctions", "Auctions"));
@@ -88,10 +84,7 @@ public class NotificationsController implements Initializable, Refreshable {
     }
 
     private void setupObservableList() {
-        // Get the observable list from NotificationService
         allNotifications = notificationService.getAllNotifications();
-
-        // Create filtered lists for different tabs
         purchasesSalesNotifications = new FilteredList<>(allNotifications, notification -> {
             String type = notification.getType();
             return type.startsWith("OFFER_") || type.equals("PICKUP_SCHEDULED") || type.equals("PICKUP_REMINDER");
@@ -107,9 +100,7 @@ public class NotificationsController implements Initializable, Refreshable {
             return type.equals("MESSAGE_RECEIVED") || type.equals("PROFILE_UPDATED") || 
                    type.equals("FAVORITE_LISTING_UPDATED");
         });
-
-        // Set up listener for automatic updates
-        allNotifications.addListener((ListChangeListener<NotificationViewModel>) change -> {
+        allNotifications.addListener((ListChangeListener<NotificationViewModel>) _ -> {
             Platform.runLater(() -> {
                 updateNotificationDisplays();
             });
@@ -117,10 +108,9 @@ public class NotificationsController implements Initializable, Refreshable {
     }
 
     private void setupNotificationTabs() {
-        // Setup tab selection listeners
         if (notificationTabPane != null) {
             notificationTabPane.getSelectionModel().selectedItemProperty().addListener(
-                    (observable, oldTab, newTab) -> {
+                    (_, _, newTab) -> {
                         if (newTab != null) {
                             loadNotificationsForTab(newTab);
                         }
@@ -129,17 +119,15 @@ public class NotificationsController implements Initializable, Refreshable {
     }
 
     private void setupEventHandlers() {
-        // Setup the "Mark All as Read" button
         if (markAllReadButton != null) {
-            markAllReadButton.setOnAction(e -> handleMarkAllAsRead());
+            markAllReadButton.setOnAction(_ -> handleMarkAllAsRead());
         }
     }
 
     private void loadNotifications() {
-        // Refresh notifications from server if list is empty
         if (allNotifications.isEmpty()) {
             notificationService.getNotifications(0, 100)
-                .thenAccept(notifications -> Platform.runLater(() -> {
+                .thenAccept(_ -> Platform.runLater(() -> {
                     updateNotificationDisplays();
                 }))
                 .exceptionally(ex -> {
@@ -155,12 +143,10 @@ public class NotificationsController implements Initializable, Refreshable {
     }
 
     private void loadNotificationsForTab(Tab selectedTab) {
-        // Update displays when tab changes - the filtered lists will automatically update
         updateNotificationDisplays();
     }
 
     private void updateNotificationDisplays() {
-        // Update all tab contents
         updateTabContent(allNotificationsContainer, allNotifications);
         updateTabContent(purchasesSalesContainer, purchasesSalesNotifications);
         updateTabContent(auctionsContainer, auctionNotifications);
@@ -186,13 +172,9 @@ public class NotificationsController implements Initializable, Refreshable {
         VBox item = new VBox(8);
         item.getStyleClass().addAll("notification-item", notification.isRead() ? "read" : "unread");
         item.setPadding(new Insets(15));
-        item.setOnMouseClicked(e -> handleNotificationClick(notification));
-
-        // Header with icon, title, and time
+        item.setOnMouseClicked(_ -> handleNotificationClick(notification));
         HBox header = new HBox(10);
         header.setAlignment(Pos.CENTER_LEFT);
-
-        // Notification icon based on type
         ImageView icon = new ImageView(getNotificationIcon(notification.getType()));
         icon.setFitWidth(24);
         icon.setFitHeight(24);
@@ -206,8 +188,6 @@ public class NotificationsController implements Initializable, Refreshable {
 
         Text time = new Text(formatTime(notification.getCreatedAt()));
         time.getStyleClass().add("notification-time");
-
-        // Unread indicator
         if (!notification.isRead()) {
             Region unreadDot = new Region();
             unreadDot.getStyleClass().add("unread-dot");
@@ -217,13 +197,9 @@ public class NotificationsController implements Initializable, Refreshable {
         } else {
             header.getChildren().addAll(icon, title, spacer, time);
         }
-
-        // Message
         Text message = new Text(notification.getMessage());
         message.getStyleClass().add("notification-message");
         message.setWrappingWidth(450);
-
-        // Action buttons (optional)
         HBox actionButtons = createActionButtons(notification);
 
         item.getChildren().addAll(header, message);
@@ -238,8 +214,6 @@ public class NotificationsController implements Initializable, Refreshable {
         HBox buttonContainer = new HBox(10);
         buttonContainer.setAlignment(Pos.CENTER_LEFT);
         buttonContainer.setPadding(new Insets(10, 0, 0, 0));
-
-        // Add context-specific action buttons based on notification type
         switch (notification.getType()) {
             case "OFFER_RECEIVED" -> {
                 Button viewOfferBtn = new Button(localeService.getMessage("notification.action.view.offer", "View Offer"));
@@ -250,22 +224,20 @@ public class NotificationsController implements Initializable, Refreshable {
             case "AUCTION_ENDING_SOON" -> {
                 Button viewAuctionBtn = new Button(localeService.getMessage("notification.action.view.auction", "View Auction"));
                 viewAuctionBtn.getStyleClass().add("primary-button");
-                viewAuctionBtn.setOnAction(e -> handleViewAuction(notification));
+                viewAuctionBtn.setOnAction(_ -> handleViewAuction(notification));
                 buttonContainer.getChildren().add(viewAuctionBtn);
             }
             case "PICKUP_SCHEDULED" -> {
                 Button viewPickupBtn = new Button(localeService.getMessage("notification.action.view.pickup", "View Pickup"));
                 viewPickupBtn.getStyleClass().add("primary-button");
-                viewPickupBtn.setOnAction(e -> handleViewPickup(notification));
+                viewPickupBtn.setOnAction(_ -> handleViewPickup(notification));
                 buttonContainer.getChildren().add(viewPickupBtn);
             }
         }
-
-        // Always add mark as read button if not read
         if (!notification.isRead()) {
             Button markReadBtn = new Button(localeService.getMessage("notification.action.mark.read", "Mark as Read"));
             markReadBtn.getStyleClass().add("secondary-button");
-            markReadBtn.setOnAction(e -> markAsRead(notification));
+            markReadBtn.setOnAction(_ -> markAsRead(notification));
             buttonContainer.getChildren().add(markReadBtn);
         }
 
@@ -326,7 +298,6 @@ public class NotificationsController implements Initializable, Refreshable {
     }
 
     private void showErrorPlaceholder(String errorMessage) {
-        // Add error placeholder to all containers
         VBox errorPlaceholder = new VBox(10);
         errorPlaceholder.setAlignment(Pos.CENTER);
         errorPlaceholder.setPadding(new Insets(50));
@@ -337,7 +308,7 @@ public class NotificationsController implements Initializable, Refreshable {
 
         Button retryButton = new Button(localeService.getMessage("notification.retry", "Retry"));
         retryButton.getStyleClass().add("primary-button");
-        retryButton.setOnAction(e -> loadNotifications());
+        retryButton.setOnAction(_ -> loadNotifications());
 
         errorPlaceholder.getChildren().addAll(errorText, retryButton);
 
@@ -352,7 +323,6 @@ public class NotificationsController implements Initializable, Refreshable {
                     if (success) {
                         notification.setRead(true);
                         updateNotificationDisplays();
-                        // The unread count is automatically updated via the server response
                         System.out.println("Notification marked as read: " + notification.getTitle());
                     }
                 }))
@@ -370,7 +340,6 @@ public class NotificationsController implements Initializable, Refreshable {
         notificationService.markAllAsRead()
             .thenAccept(success -> Platform.runLater(() -> {
                 if (success) {
-                    // The observable list will automatically update via the server response
                     updateNotificationDisplays();
                     System.out.println("All notifications marked as read");
                 }
@@ -385,8 +354,6 @@ public class NotificationsController implements Initializable, Refreshable {
 
     private void handleNotificationClick(NotificationViewModel notification) {
         markAsRead(notification);
-        
-        // Navigate based on notification type
         switch (notification.getType()) {
             case "OFFER_RECEIVED", "OFFER_ACCEPTED", "OFFER_REJECTED", "OFFER_WITHDRAWN" -> handleViewOffer(notification);
             case "AUCTION_ENDING_SOON", "AUCTION_WON", "AUCTION_OUTBID" -> handleViewAuction(notification);
@@ -402,19 +369,14 @@ public class NotificationsController implements Initializable, Refreshable {
             System.err.println("Failed to navigate to offers: " + e.getMessage());
         }
         System.out.println("Navigate to offer from notification: " + notification.getTitle());
-        // TODO: Implement navigation to specific offer
     }
 
     private void handleViewAuction(NotificationViewModel notification) {
-        // Extract auction ID from notification data if available
         System.out.println("Navigate to auction from notification: " + notification.getTitle());
-        // TODO: Implement navigation to specific auction
     }
 
     private void handleViewPickup(NotificationViewModel notification) {
-        // Extract pickup ID from notification data if available
         System.out.println("Navigate to pickup from notification: " + notification.getTitle());
-        // TODO: Implement navigation to specific pickup
     }
 
     @Override
@@ -425,7 +387,6 @@ public class NotificationsController implements Initializable, Refreshable {
 
     public void updateNotificationBadge(int unreadCount) {
         Platform.runLater(() -> {
-            // Update any badge indicators
             System.out.println("Unread notifications: " + unreadCount);
         });
     }

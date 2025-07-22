@@ -7,12 +7,10 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 import javafx.scene.image.Image;
-//import javafx.scene.image.WritableImage;
 import java.awt.image.BufferedImage;
 
 /**
  * Utility class with helper methods for file operations
- * TODO maybe refactor ImageService to use this class
  */
 public class FileHelper {
     
@@ -73,8 +71,6 @@ public class FileHelper {
             if (bufferedImage == null) {
                 throw new IOException("Could not decode image");
             }
-            
-            //WritableImage writableImage = new WritableImage(bufferedImage.getWidth(), bufferedImage.getHeight());
             return new Image(new ByteArrayInputStream(imageData));
         } catch (IOException e) {
             System.err.println("Error creating image from Base64: " + e.getMessage());
@@ -138,19 +134,13 @@ public class FileHelper {
      * @throws IOException If the file cannot be saved
      */
     public static String saveImageToCache(String base64, String fileName) throws IOException {
-        // Create cache directory if it doesn't exist
         String cacheDir = System.getProperty("user.home") + "/.uninaswap/cache/images";
         ensureDirectoryExists(cacheDir);
-        
-        // Generate a unique file name if needed
         String extension = getFileExtension(fileName);
         if (extension.isEmpty()) {
-            extension = "png"; // Default to PNG if no extension
+            extension = "png";
         }
-        
         String filePath = cacheDir + "/" + UUID.randomUUID().toString() + "." + extension;
-        
-        // Save the file
         base64ToFile(base64, filePath);
         return filePath;
     }

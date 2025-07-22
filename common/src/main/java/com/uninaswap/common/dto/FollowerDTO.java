@@ -3,6 +3,9 @@ package com.uninaswap.common.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/*
+ * DTO representing a user's follower relationship
+ */
 public class FollowerDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 

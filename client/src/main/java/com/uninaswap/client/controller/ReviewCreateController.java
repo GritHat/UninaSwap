@@ -50,12 +50,10 @@ public class ReviewCreateController {
     @FXML
     private Button cancelButton;
 
-    // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final ReviewService reviewService = ReviewService.getInstance();
     private final UserSessionService sessionService = UserSessionService.getInstance();
 
-    // Data
     private OfferViewModel currentOffer;
     private UserViewModel reviewedUser;
     private double selectedScore = 0.0;
@@ -93,7 +91,6 @@ public class ReviewCreateController {
                 if (starButton.isSelected()) {
                     setStarRating(starValue);
                 } else {
-                    // Prevent deselection of all stars
                     starButton.setSelected(true);
                 }
             });
@@ -110,8 +107,7 @@ public class ReviewCreateController {
                 "Write your review here (optional)"));
         commentTextArea.setWrapText(true);
 
-        // Add character count listener
-        commentTextArea.textProperty().addListener((obs, oldText, newText) -> {
+        commentTextArea.textProperty().addListener((_, _, _) -> {
             updateCharacterCount();
             updateSubmitButton();
         });
@@ -124,13 +120,10 @@ public class ReviewCreateController {
 
         if (offer != null) {
             Platform.runLater(() -> {
-                // Determine who should be reviewed
                 UserViewModel currentUser = ViewModelMapper.getInstance().toViewModel(sessionService.getUser());
                 if (offer.getOfferingUser().getId().equals(currentUser.getId())) {
-                    // Current user made the offer, so review the listing owner
                     reviewedUser = offer.getListing().getUser();
                 } else {
-                    // Current user owns the listing, so review the offer maker
                     reviewedUser = offer.getOfferingUser();
                 }
 
@@ -156,8 +149,6 @@ public class ReviewCreateController {
 
     private void setStarRating(int rating) {
         selectedScore = rating;
-
-        // Update star button styles
         for (int i = 0; i < 5; i++) {
             ToggleButton star = starButtons[i];
             if (i < rating) {
@@ -195,32 +186,25 @@ public class ReviewCreateController {
     }
     
     private DoubleProperty scoreProperty() {
-        // You might need to implement this based on your star rating system
         return new SimpleDoubleProperty(selectedScore);
     }
 
 
-    // Update the updateSubmitButton method to only require rating
     private void updateSubmitButton() {
         boolean hasValidRating = selectedScore > 0;
         boolean hasValidComment = commentTextArea.getText().length() <= 1000; // Comment length check only
-
-        // Enable button if rating is selected and comment is within limit (or empty)
         submitButton.setDisable(!hasValidRating || !hasValidComment);
     }
 
      private boolean isValidReview() {
-        // Only require rating - comment is optional
         return selectedScore > 0 && commentTextArea.getText().length() <= 1000;
     }
 
     public void bindSubmitButton(Button externalSubmitButton) {
-        // Bind the external submit button to the internal validation logic
         externalSubmitButton.disableProperty().bind(
             javafx.beans.binding.Bindings.createBooleanBinding(
                 () -> !isValidReview(),
-                // Add your validation properties here
-                scoreProperty(), // You'll need to create this
+                scoreProperty(),
                 commentTextArea.textProperty()
             )
         );
@@ -231,24 +215,20 @@ public class ReviewCreateController {
             return;
         }
 
-        // Create review
         ReviewViewModel review = new ReviewViewModel();
         review.setOfferId(currentOffer.getId());
         review.setScore(selectedScore);
-
-        // Handle empty comment - set to null or empty string
         String comment = commentTextArea.getText().trim();
         review.setComment(comment.isEmpty() ? null : comment);
 
         reviewService.createReview(review)
-                .thenAccept(createdReview -> Platform.runLater(() -> {
+                .thenAccept(_ -> Platform.runLater(() -> {
                     AlertHelper.showInformationAlert(
                             localeService.getMessage("review.create.success.title", "Review Submitted"),
                             localeService.getMessage("review.create.success.header", "Thank you!"),
                             localeService.getMessage("review.create.success.message",
                                     "Your review has been submitted successfully."));
                     
-                    // Trigger refresh of offers to update the status
                     EventBusService.getInstance().publishEvent(EventTypes.OFFER_UPDATED, currentOffer);
                 }))
                 .exceptionally(ex -> {
@@ -268,26 +248,21 @@ public class ReviewCreateController {
             return;
         }
 
-        // Create review
         ReviewViewModel review = new ReviewViewModel();
         review.setOfferId(currentOffer.getId());
         review.setScore(selectedScore);
-
-        // Handle empty comment properly
         String comment = commentTextArea.getText().trim();
         review.setComment(comment.isEmpty() ? null : comment);
 
         submitButton.setDisable(true);
 
         reviewService.createReview(review)
-                .thenAccept(createdReview -> Platform.runLater(() -> {
+                .thenAccept(_ -> Platform.runLater(() -> {
                     AlertHelper.showInformationAlert(
                             localeService.getMessage("review.create.success.title", "Review Submitted"),
                             localeService.getMessage("review.create.success.header", "Thank you!"),
                             localeService.getMessage("review.create.success.message",
                                     "Your review has been submitted successfully."));
-                
-                // Trigger refresh of offers to update the status
                 EventBusService.getInstance().publishEvent(EventTypes.OFFER_UPDATED, currentOffer);
                 
                 closeWindow();
@@ -310,7 +285,6 @@ public class ReviewCreateController {
     }
 
     private boolean validateReview() {
-        // Check if rating is selected
         if (selectedScore <= 0) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("review.validation.title", "Validation Error"),
@@ -318,8 +292,6 @@ public class ReviewCreateController {
                     localeService.getMessage("review.validation.rating.required", "Please select a rating"));
             return false;
         }
-
-        // Check comment length (but comment can be empty)
         if (commentTextArea.getText().length() > 1000) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("review.validation.title", "Validation Error"),

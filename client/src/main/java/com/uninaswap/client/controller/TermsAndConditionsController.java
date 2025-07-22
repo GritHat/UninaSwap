@@ -31,7 +31,6 @@ public class TermsAndConditionsController {
      */
     @FXML
     private void initialize() {
-        // Default initialization logic
     }
     
     /**

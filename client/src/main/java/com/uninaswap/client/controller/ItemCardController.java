@@ -13,7 +13,6 @@ import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.FavoritesService;
 
 public class ItemCardController {
-
     @FXML
     private VBox itemCard;
     @FXML
@@ -44,7 +43,6 @@ public class ItemCardController {
 
     @FXML
     public void initialize() {
-        // Tooltip per il preferito
         Tooltip.install(favoriteIcon, new Tooltip("Aggiungi/rimuovi dai preferiti"));
     }
 
@@ -52,11 +50,6 @@ public class ItemCardController {
         this.item = item;
         itemName.setText(item.getName());
         categoryText.setText(item.getCategory());
-        // sellerName.setText(item.getSellerName());
-        // itemPrice.setText(item.getFormattedPrice());
-        // if (item.getImageUrl() != null && !item.getImageUrl().isEmpty()) {
-        // itemImage.setImage(new Image(item.getImageUrl(), true));
-        // }
         setFavorite(favoritesService.isFavorite(item.getId()));
     }
 

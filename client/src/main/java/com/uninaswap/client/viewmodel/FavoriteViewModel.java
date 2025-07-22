@@ -13,18 +13,15 @@ public class FavoriteViewModel {
     private final ObjectProperty<ListingViewModel> listing = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDateTime> createdAt = new SimpleObjectProperty<>();
 
-    // Default constructor
     public FavoriteViewModel() {
     }
 
-    // Constructor with required fields
     public FavoriteViewModel(Long userId, String listingId) {
         setUserId(userId);
         setListingId(listingId);
         setCreatedAt(LocalDateTime.now());
     }
 
-    // Property getters
     public LongProperty idProperty() {
         return id;
     }
@@ -49,7 +46,6 @@ public class FavoriteViewModel {
         return createdAt;
     }
 
-    // Getters and setters
     public Long getId() {
         return id.get();
     }
@@ -98,7 +94,6 @@ public class FavoriteViewModel {
         this.createdAt.set(createdAt);
     }
 
-    // Utility methods
     public String getFormattedDate() {
         if (getCreatedAt() != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");

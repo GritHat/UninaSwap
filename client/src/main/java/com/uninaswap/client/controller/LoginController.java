@@ -35,7 +35,6 @@ public class LoginController {
 
     @FXML
     public void initialize() {
-        // Set message handler
         registerMessageHandler();
     }
 
@@ -71,7 +70,6 @@ public class LoginController {
 
         authService.login(usernameOrEmail, password)
                 .thenRun(() -> {
-                    // The actual authentication result will be handled in handleAuthResponse
                 })
                 .exceptionally(_ -> {
                     Platform.runLater(() -> {
@@ -89,7 +87,6 @@ public class LoginController {
     @FXML
     public void showRegister(ActionEvent event) {
         try {
-            // Get the source node from the event
             Node sourceNode = (Node) event.getSource();
             navigationService.navigateToRegister(sourceNode);
         } catch (java.io.IOException e) {
@@ -112,11 +109,7 @@ public class LoginController {
             if (response.getType() == AuthMessage.Type.LOGIN_RESPONSE) {
                 if (response.isSuccess()) {
                     showMessage("login.success", "message-success");
-
-                    // Start user session
                     sessionService.startSession(response);
-
-                    // Navigate to main dashboard on successful login
                     try {
                         navigationService.navigateToMainDashboard(loginField);
                         navigationService.loadHomeView();
@@ -126,7 +119,6 @@ public class LoginController {
                         showMessage("navigation.error.load.dashboard", "message-error");
                     }
                 } else {
-                    // Use server's message or fallback
                     String errorMessage = (response.getMessage() != null && !response.getMessage().isEmpty())
                             ? response.getMessage()
                             : localeService.getMessage("login.error.failed");
@@ -140,10 +132,13 @@ public class LoginController {
 
     /**
      * Helper method to display messages
+     * 
+     * @param messageKey The key for the localized message
+     * @param styleClass The CSS class to apply to the message label
      */
     private void showMessage(String messageKey, String styleClass) {
 
-        messageLabel.setText(localeService.getMessage(messageKey)); // Uso il localeService diretto
+        messageLabel.setText(localeService.getMessage(messageKey));
         messageLabel.getStyleClass().clear();
         messageLabel.getStyleClass().add(styleClass);
     }

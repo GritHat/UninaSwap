@@ -45,12 +45,10 @@ public class ReportDialogController {
     @FXML
     private Button cancelButton;
 
-    // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final ReportService reportService = ReportService.getInstance();
     private final UserSessionService sessionService = UserSessionService.getInstance();
 
-    // Data
     private UserViewModel reportedUser;
     private ListingViewModel reportedListing;
     private boolean isUserReport;
@@ -73,7 +71,6 @@ public class ReportDialogController {
     }
 
     private void setupReasonComboBoxes() {
-        // Setup user report reasons
         userReasonComboBox.getItems().addAll(UserReportReason.values());
         userReasonComboBox.setConverter(new javafx.util.StringConverter<UserReportReason>() {
             @Override
@@ -87,7 +84,6 @@ public class ReportDialogController {
             }
         });
 
-        // Setup listing report reasons
         listingReasonComboBox.getItems().addAll(ListingReportReason.values());
         listingReasonComboBox.setConverter(new javafx.util.StringConverter<ListingReportReason>() {
             @Override
@@ -101,9 +97,8 @@ public class ReportDialogController {
             }
         });
 
-        // Add listeners for validation
-        userReasonComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateSubmitButton());
-        listingReasonComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateSubmitButton());
+        userReasonComboBox.valueProperty().addListener((_, _, _) -> updateSubmitButton());
+        listingReasonComboBox.valueProperty().addListener((_, _, _) -> updateSubmitButton());
     }
 
     private void setupDescriptionArea() {
@@ -111,8 +106,7 @@ public class ReportDialogController {
                 "Provide additional details about this report (optional)"));
         descriptionTextArea.setWrapText(true);
 
-        // Add character count listener
-        descriptionTextArea.textProperty().addListener((obs, oldText, newText) -> {
+        descriptionTextArea.textProperty().addListener((_, _, _) -> {
             updateCharacterCount();
             updateSubmitButton();
         });
@@ -180,7 +174,7 @@ public class ReportDialogController {
                 descriptionTextArea.getText().trim());
 
         reportService.createUserReport(report)
-                .thenAccept(createdReport -> Platform.runLater(() -> {
+                .thenAccept(_ -> Platform.runLater(() -> {
                     AlertHelper.showInformationAlert(
                             localeService.getMessage("report.submit.success.title", "Report Submitted"),
                             localeService.getMessage("report.submit.success.header", "Thank you!"),
@@ -209,7 +203,7 @@ public class ReportDialogController {
                 descriptionTextArea.getText().trim());
 
         reportService.createListingReport(report)
-                .thenAccept(createdReport -> Platform.runLater(() -> {
+                .thenAccept(_ -> Platform.runLater(() -> {
                     AlertHelper.showInformationAlert(
                             localeService.getMessage("report.submit.success.title", "Report Submitted"),
                             localeService.getMessage("report.submit.success.header", "Thank you!"),
@@ -235,7 +229,6 @@ public class ReportDialogController {
     }
 
     private boolean validateReport() {
-        // Check if reason is selected
         if (isUserReport && userReasonComboBox.getValue() == null) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("report.validation.title", "Validation Error"),
@@ -253,8 +246,6 @@ public class ReportDialogController {
                             "Please select a reason for the report"));
             return false;
         }
-
-        // Check description length
         if (descriptionTextArea.getText().length() > 1000) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("report.validation.title", "Validation Error"),

@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 public class ValidationService {
     private static ValidationService instance;
     
-    // Singleton pattern
     public static ValidationService getInstance() {
         if (instance == null) {
             instance = new ValidationService();
@@ -18,7 +17,6 @@ public class ValidationService {
     }
     
     private ValidationService() {
-        // Private constructor to enforce singleton
     }
     
     // Email regex pattern
@@ -48,6 +46,10 @@ public class ValidationService {
     
     /**
      * Validate login form input
+     * 
+     * @param username The username input
+     * @param password The password input
+     * @return ValidationResult containing validity and message key
      */
     public ValidationResult validateLogin(String username, String password) {
         if (username == null || username.trim().isEmpty()) {
@@ -63,6 +65,12 @@ public class ValidationService {
     
     /**
      * Validate registration form input
+     * 
+     * @param username The username input
+     * @param email The email input
+     * @param password The password input
+     * @param confirmPassword The confirm password input
+     * @return ValidationResult containing validity and message key
      */
     public ValidationResult validateRegistration(String username, String email, 
                                              String password, String confirmPassword) {

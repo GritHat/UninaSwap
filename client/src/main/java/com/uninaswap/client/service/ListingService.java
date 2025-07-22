@@ -23,7 +23,6 @@ public class ListingService {
     private CompletableFuture<?> futureToComplete;
     private Consumer<ListingMessage> messageCallback;
 
-    // Add a flag to track if we're loading more or refreshing
     private boolean isLoadingMore = false;
 
     private ListingService() {
@@ -38,7 +37,14 @@ public class ListingService {
         return instance;
     }
 
-    // Get all active listings
+    /**
+     * Get listings from the server.
+     * This method fetches listings from the server and returns them as a CompletableFuture.
+     * 
+     * @param page The page number to fetch
+     * @param size The number of listings per page
+     * @return A CompletableFuture with the list of listings
+     */
     public CompletableFuture<List<ListingDTO>> getListings(int page, int size) {
         CompletableFuture<List<ListingDTO>> future = new CompletableFuture<>();
 
@@ -59,7 +65,12 @@ public class ListingService {
         return future;
     }
 
-    // Get current user's listings
+    /**
+     * Get the current user's listings.
+     * This method fetches the listings from the server and returns them as a CompletableFuture.
+     * 
+     * @return A CompletableFuture with the list of the current user's listings
+     */
     public CompletableFuture<List<ListingDTO>> getMyListings() {
         CompletableFuture<List<ListingDTO>> future = new CompletableFuture<>();
 
@@ -78,7 +89,6 @@ public class ListingService {
         return future;
     }
 
-    // Create a new listing
     public CompletableFuture<ListingDTO> createListing(ListingDTO listing) {
         CompletableFuture<ListingDTO> future = new CompletableFuture<>();
 
@@ -99,7 +109,6 @@ public class ListingService {
         return future;
     }
 
-    // Update an existing listing
     public CompletableFuture<ListingDTO> updateListing(ListingDTO listing) {
         CompletableFuture<ListingDTO> future = new CompletableFuture<>();
 
@@ -120,7 +129,6 @@ public class ListingService {
         return future;
     }
 
-    // Delete a listing
     public CompletableFuture<Boolean> deleteListing(String listingId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -140,7 +148,6 @@ public class ListingService {
         return future;
     }
 
-    // Get listing details by ID
     public CompletableFuture<ListingDTO> getListingDetails(String listingId) {
         CompletableFuture<ListingDTO> future = new CompletableFuture<>();
 
@@ -160,7 +167,6 @@ public class ListingService {
         return future;
     }
 
-    // Get observable lists for UI binding
     public ObservableList<ListingViewModel> getUserListingsObservable() {
         if (userListings.isEmpty()) {
             refreshUserListings();
@@ -175,7 +181,6 @@ public class ListingService {
         return allListings;
     }
 
-    // Refresh listing data
     public void refreshUserListings() {
         getMyListings()
                 .thenAccept(listings -> {
@@ -193,15 +198,14 @@ public class ListingService {
                 });
     }
 
-    // Update the refreshAllListings method to support initial loading only
     public void refreshAllListings() {
-        getListings(0, 50) // First page with 50 items
+        getListings(0, 50)
                 .thenAccept(listings -> {
                     Platform.runLater(() -> {
                         List<ListingViewModel> viewModels = listings.stream()
                                 .map(ViewModelMapper.getInstance()::toViewModel)
                                 .toList();
-                        allListings.clear(); // Clear existing data
+                        allListings.clear();
                         allListings.addAll(viewModels);
                     });
                 })
@@ -211,29 +215,23 @@ public class ListingService {
                 });
     }
 
-    // Add method to append listings (for pagination)
     public void appendListings(List<ListingDTO> newListings) {
         Platform.runLater(() -> {
             List<ListingViewModel> viewModels = newListings.stream()
                     .map(ViewModelMapper.getInstance()::toViewModel)
                     .toList();
-            allListings.addAll(viewModels); // Append instead of replacing
+            allListings.addAll(viewModels);
         });
     }
 
-    // Add method to set loading more flag
     public void setLoadingMore(boolean loadingMore) {
         this.isLoadingMore = loadingMore;
     }
 
-    // Handle incoming messages
     @SuppressWarnings("unchecked")
     private void handleListingMessage(ListingMessage message) {
-        // SAFETY CHECK: Handle null type
         if (message.getType() == null) {
             System.err.println("Received message with null type: " + message.getErrorMessage());
-
-            // If there's an error message, it's likely a failed request
             if (!message.isSuccess() && futureToComplete != null) {
                 futureToComplete.completeExceptionally(
                         new Exception("Server error: " + message.getErrorMessage()));
@@ -251,19 +249,13 @@ public class ListingService {
                         List<ListingViewModel> viewModels = listings.stream()
                                 .map(ViewModelMapper.getInstance()::toViewModel)
                                 .toList();
-                        
-                        // Check if we're loading more or refreshing
                         if (isLoadingMore) {
-                            // Append new listings to existing ones
                             allListings.addAll(viewModels);
                             System.out.println("Added " + viewModels.size() + " more listings. Total: " + allListings.size());
                         } else {
-                            // Replace all listings (initial load or refresh)
                             allListings.setAll(viewModels);
                             System.out.println("Loaded " + viewModels.size() + " listings (initial/refresh)");
                         }
-                        
-                        // Reset the flag
                         isLoadingMore = false;
                         
                         if (futureToComplete != null) {
@@ -271,7 +263,7 @@ public class ListingService {
                             futureToComplete = null;
                         }
                     } else {
-                        isLoadingMore = false; // Reset flag on error too
+                        isLoadingMore = false;
                         if (futureToComplete != null) {
                             futureToComplete.completeExceptionally(
                                     new Exception("Failed to get listings: " + message.getErrorMessage()));
@@ -327,7 +319,6 @@ public class ListingService {
             case UPDATE_LISTING_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
-                        // Update in both lists
                         ListingDTO updated = message.getListing();
                         updateListingInObservableList(userListings, ViewModelMapper.getInstance().toViewModel(updated));
                         updateListingInObservableList(allListings, ViewModelMapper.getInstance().toViewModel(updated));
@@ -349,7 +340,6 @@ public class ListingService {
             case DELETE_LISTING_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
-                        // Remove from both lists
                         String deletedId = message.getListingId();
                         userListings.removeIf(listing -> listing.getId().equals(deletedId));
                         allListings.removeIf(listing -> listing.getId().equals(deletedId));
@@ -409,13 +399,18 @@ public class ListingService {
                 break;
         }
 
-        // Call any registered callback
         if (messageCallback != null) {
             messageCallback.accept(message);
         }
     }
 
-    // Helper method to update a listing in an ObservableList
+    /**
+     * Helper method to update a listing in an observable list.
+     * This method finds the listing by ID and updates it in the list.
+     * 
+     * @param list The observable list to update
+     * @param updated The updated listing view model
+     */
     private void updateListingInObservableList(ObservableList<ListingViewModel> list, ListingViewModel updated) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId().equals(updated.getId())) {
@@ -424,13 +419,23 @@ public class ListingService {
             }
         }
     }
-
-    // Set a callback for incoming messages
+    /**
+     * Set a callback to handle incoming listing messages.
+     * This allows other parts of the application to react to listing updates.
+     * 
+     * @param callback The callback to set
+     */
     public void setMessageCallback(Consumer<ListingMessage> callback) {
         this.messageCallback = callback;
     }
 
-    // Get listings for a specific user by user ID
+    /**
+     * Get the current user's listings.
+     * This method fetches the listings from the server and returns them as a CompletableFuture.
+     * 
+     * @param userId The ID of the user whose listings to fetch
+     * @return A CompletableFuture with the list of user's listings
+     */
     public CompletableFuture<List<ListingDTO>> getUserListings(Long userId) {
         CompletableFuture<List<ListingDTO>> future = new CompletableFuture<>();
 

@@ -91,11 +91,8 @@ public class UserReviewsController {
     @FXML
     private Button closeButton;
 
-    // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final ReviewService reviewService = ReviewService.getInstance();
-
-    // Data
     private UserViewModel currentUser;
     private final ObservableList<ReviewViewModel> receivedReviews = FXCollections.observableArrayList();
     private final ObservableList<ReviewViewModel> givenReviews = FXCollections.observableArrayList();
@@ -115,7 +112,6 @@ public class UserReviewsController {
     }
 
     private void setupTables() {
-        // Received reviews table
         receivedReviewerColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getReviewerName()));
 
@@ -132,8 +128,6 @@ public class UserReviewsController {
 
         receivedDateColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFormattedDate()));
-
-        // Given reviews table
         givenReviewedUserColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getReviewedUserName()));
 
@@ -151,7 +145,6 @@ public class UserReviewsController {
         givenDateColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFormattedDate()));
 
-        // Bind tables to observable lists
         receivedReviewsTable.setItems(receivedReviews);
         givenReviewsTable.setItems(givenReviews);
     }
@@ -193,7 +186,6 @@ public class UserReviewsController {
 
     private void updateRatingSummary() {
         if (currentUser != null) {
-            // Get rating summary from service
             reviewService.getUserRatingSummary(currentUser.getId())
                     .thenAccept(summary -> Platform.runLater(() -> {
                         double avgRating = summary.getAverageRating();
@@ -218,7 +210,6 @@ public class UserReviewsController {
     }
 
     private void updateRatingVisuals(double rating) {
-        // Update star display
         ratingStarsBox.getChildren().clear();
         int fullStars = (int) Math.floor(rating);
         boolean hasHalfStar = (rating - fullStars) >= 0.5;
@@ -240,8 +231,6 @@ public class UserReviewsController {
             emptyStar.getStyleClass().add("rating-star-empty");
             ratingStarsBox.getChildren().add(emptyStar);
         }
-
-        // Update progress bar
         ratingBar.setProgress(rating / 5.0);
     }
 
@@ -252,12 +241,10 @@ public class UserReviewsController {
         // Load received reviews
         reviewService.getReceivedReviews(currentUser.getId())
                 .thenAccept(reviews -> Platform.runLater(() -> {
-                    receivedReviews.clear();
-                    reviews.forEach(reviewDTO -> {
-                        // Convert DTO to ViewModel if needed
-                        // For now, assuming we get ViewModels directly
-                        // receivedReviews.add(viewModelMapper.toViewModel(reviewDTO));
-                    });
+                        receivedReviews.clear();
+                        reviews.forEach(reviewDTO -> {
+                            //receivedReviews.add(viewModelMapper.toViewModel(reviewDTO));
+                        });
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> AlertHelper.showErrorAlert(
@@ -296,7 +283,6 @@ public class UserReviewsController {
         detailDateLabel.setText(review.getFormattedDate());
         detailCommentArea.setText(review.getComment() != null ? review.getComment() : "");
 
-        // Update detail stars
         detailStarsBox.getChildren().clear();
         double score = review.getScore();
         int fullStars = (int) Math.floor(score);

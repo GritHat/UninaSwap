@@ -17,18 +17,13 @@ public class AnalyticsService {
     
     private final WebSocketClient webSocketClient;
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
-    
-    // Cache for analytics data
     private AnalyticsViewModel cachedAnalytics;
     private LocalDateTime lastRefresh;
-    private static final long CACHE_DURATION_MINUTES = 15; // Cache for 15 minutes
-    
-    // Pending futures for WebSocket responses
+    private static final long CACHE_DURATION_MINUTES = 15;
     private final Map<String, CompletableFuture<?>> pendingFutures = new ConcurrentHashMap<>();
     
     private AnalyticsService() {
         webSocketClient = WebSocketClient.getInstance();
-        // Register message handler
         webSocketClient.registerMessageHandler(AnalyticsMessage.class, this::handleAnalyticsMessage);
     }
     
@@ -41,6 +36,9 @@ public class AnalyticsService {
     
     /**
      * Get analytics data for a specific time period
+     * 
+     * @param period The time period for analytics (e.g., "daily", "weekly", "monthly", "yearly")
+     * @return CompletableFuture with AnalyticsViewModel containing the analytics data
      */
     public CompletableFuture<AnalyticsViewModel> getAnalytics(String period) {
         // Check cache first
@@ -62,6 +60,10 @@ public class AnalyticsService {
     
     /**
      * Get analytics data for a custom date range
+     * 
+     * @param startDate Start date for the analytics
+     * @param endDate End date for the analytics
+     * @return CompletableFuture with AnalyticsViewModel containing the analytics data
      */
     public CompletableFuture<AnalyticsViewModel> getAnalytics(LocalDateTime startDate, LocalDateTime endDate) {
         CompletableFuture<AnalyticsViewModel> future = new CompletableFuture<>();
@@ -79,6 +81,10 @@ public class AnalyticsService {
     
     /**
      * Get category-specific analytics
+     * 
+     * @param category The category to get analytics for
+     * @param period The time period for analytics (e.g., "daily", "weekly", "monthly", "yearly")
+     * @return CompletableFuture with AnalyticsViewModel containing the category analytics data
      */
     public CompletableFuture<AnalyticsViewModel> getCategoryAnalytics(String category, String period) {
         CompletableFuture<AnalyticsViewModel> future = new CompletableFuture<>();
@@ -96,6 +102,9 @@ public class AnalyticsService {
     
     /**
      * Get performance comparison with other users
+     * 
+     * @param period The time period for comparison (e.g., "daily", "weekly", "monthly", "yearly")
+     * @return CompletableFuture with AnalyticsViewModel containing the performance comparison data
      */
     public CompletableFuture<AnalyticsViewModel> getPerformanceComparison(String period) {
         CompletableFuture<AnalyticsViewModel> future = new CompletableFuture<>();
@@ -120,6 +129,10 @@ public class AnalyticsService {
     
     /**
      * Export analytics data
+     * 
+     * @param format The format to export (e.g., "csv", "json")
+     * @param period The time period for export (e.g., "daily", "weekly", "monthly", "yearly")
+     * @return CompletableFuture with the file path of the exported analytics data
      */
     public CompletableFuture<String> exportAnalytics(String format, String period) {
         CompletableFuture<String> future = new CompletableFuture<>();
@@ -137,6 +150,8 @@ public class AnalyticsService {
     
     /**
      * Handle incoming WebSocket messages
+     * 
+     * @param message The AnalyticsMessage received from the WebSocket
      */
     @SuppressWarnings("unchecked")
     private void handleAnalyticsMessage(AnalyticsMessage message) {
@@ -207,13 +222,15 @@ public class AnalyticsService {
     
     /**
      * Convert DTO to ViewModel
+     * 
+     * @param dto The AnalyticsDTO to convert
+     * @return AnalyticsViewModel containing the converted data
      */
     private AnalyticsViewModel convertToViewModel(AnalyticsDTO dto) {
         if (dto == null) return new AnalyticsViewModel();
         
         AnalyticsViewModel viewModel = new AnalyticsViewModel();
         
-        // User stats
         if (dto.getUserStats() != null) {
             var userStats = dto.getUserStats();
             viewModel.setTotalListings(userStats.getTotalListings());
@@ -230,7 +247,6 @@ public class AnalyticsService {
             viewModel.setTotalFavorites(userStats.getTotalFavorites());
         }
         
-        // Performance metrics
         if (dto.getPerformanceMetrics() != null) {
             var metrics = dto.getPerformanceMetrics();
             viewModel.setListingSuccessRate(metrics.getListingSuccessRate());
@@ -240,8 +256,7 @@ public class AnalyticsService {
             viewModel.setRepeatCustomerRate(metrics.getRepeatCustomerRate());
             viewModel.setRatingTrend(metrics.getRatingTrend());
         }
-        
-        // Time series data
+
         if (dto.getListingStats() != null) {
             viewModel.getListingStats().clear();
             dto.getListingStats().forEach(ts -> 
@@ -270,7 +285,6 @@ public class AnalyticsService {
                     ts.getTimestamp(), ts.getValue(), ts.getLabel())));
         }
         
-        // Category breakdown
         if (dto.getCategoryBreakdown() != null) {
             viewModel.getCategoryBreakdown().clear();
             dto.getCategoryBreakdown().forEach(cat -> 
@@ -279,7 +293,6 @@ public class AnalyticsService {
                     cat.getCompletedListings(), cat.getTotalEarnings(), cat.getAverageRating())));
         }
         
-        // Monthly breakdown
         if (dto.getMonthlyBreakdown() != null) {
             viewModel.getMonthlyBreakdown().clear();
             dto.getMonthlyBreakdown().forEach(month -> 
@@ -301,6 +314,8 @@ public class AnalyticsService {
     
     /**
      * Update cache
+     * 
+     * @param analytics The AnalyticsViewModel to cache
      */
     private void updateCache(AnalyticsViewModel analytics) {
         this.cachedAnalytics = analytics;

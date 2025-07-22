@@ -9,7 +9,6 @@ import com.uninaswap.common.dto.*;
 import com.uninaswap.common.enums.Category;
 import com.uninaswap.common.enums.Currency;
 import com.uninaswap.common.enums.ListingStatus;
-
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -17,8 +16,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -69,7 +66,6 @@ public class ListingCreationController implements Refreshable {
     @FXML
     private TableColumn<ListingItemDTO, String> selectedActionColumn;
 
-    // Sell listing specific controls
     @FXML
     private TextField sellPriceField;
 
@@ -77,9 +73,8 @@ public class ListingCreationController implements Refreshable {
     private ComboBox<Currency> sellCurrencyComboBox;
 
     @FXML
-    private TextField sellLocationField; // Add location field for sell listings
+    private TextField sellLocationField;
 
-    // Trade listing specific controls
     @FXML
     private CheckBox acceptMoneyOffersCheckBox;
 
@@ -95,11 +90,9 @@ public class ListingCreationController implements Refreshable {
     @FXML
     private CheckBox acceptOtherOffersCheckBox;
 
-  
     @FXML
-    private TextField tradeLocationField; // Add location field for trade listings (MANDATORY)
+    private TextField tradeLocationField;
 
-    // Gift listing specific controls
     @FXML
     private CheckBox pickupOnlyCheckBox;
 
@@ -115,11 +108,9 @@ public class ListingCreationController implements Refreshable {
     @FXML
     private Button addCategoryButton;
     
-
     @FXML
-    private TextField giftLocationField; // Add location field for gift listings
+    private TextField giftLocationField;
 
-    // Auction listing specific controls
     @FXML
     private TextField startingPriceField;
 
@@ -128,8 +119,6 @@ public class ListingCreationController implements Refreshable {
 
     @FXML
     private VBox selectedCategoriesContainer;
-
-
 
     @FXML
     private ComboBox<Currency> auctionCurrencyComboBox;
@@ -141,9 +130,8 @@ public class ListingCreationController implements Refreshable {
     private TextField bidIncrementField;
 
     @FXML
-    private TextField auctionLocationField; // Add location field for auction listings
-
-    // Common buttons
+    private TextField auctionLocationField;
+    
     @FXML
     private Button createButton;
 
@@ -185,23 +173,15 @@ public class ListingCreationController implements Refreshable {
 
     @FXML
     public void initialize() {
-        // Initialize tables
         setupItemsTable();
         setupSelectedItemsTable();
-
         setupCategorySelection();
-
-        // Configure currency combo boxes
         sellCurrencyComboBox.setItems(FXCollections.observableArrayList(Currency.values()));
         sellCurrencyComboBox.setValue(Currency.EUR);
-
         tradeCurrencyComboBox.setItems(FXCollections.observableArrayList(Currency.values()));
         tradeCurrencyComboBox.setValue(Currency.EUR);
-
         auctionCurrencyComboBox.setItems(FXCollections.observableArrayList(Currency.values()));
         auctionCurrencyComboBox.setValue(Currency.EUR);
-
-        // Configure auction duration options
         durationOptions = Arrays.asList(
                 new DurationOption(1, "listing.auction.time.1day", localeService),
                 new DurationOption(3, "listing.auction.time.3days", localeService),
@@ -209,14 +189,11 @@ public class ListingCreationController implements Refreshable {
                 new DurationOption(7, "listing.auction.time.7days", localeService),
                 new DurationOption(14, "listing.auction.time.14days", localeService),
                 new DurationOption(30, "listing.auction.time.30days", localeService));
-
         durationComboBox.setItems(FXCollections.observableArrayList(durationOptions));
         durationComboBox.setValue(durationOptions.stream()
                 .filter(option -> option.getDays() == 7)
                 .findFirst()
                 .orElse(durationOptions.get(3)));
-
-        // Configure bindings for trade listing controls
         referencePriceField.disableProperty().bind(acceptMoneyOffersCheckBox.selectedProperty().not());
         tradeCurrencyComboBox.disableProperty().bind(acceptMoneyOffersCheckBox.selectedProperty().not());
         acceptMixedOffersCheckBox.disableProperty().bind(acceptMoneyOffersCheckBox.selectedProperty().not());
@@ -225,20 +202,14 @@ public class ListingCreationController implements Refreshable {
                 acceptMixedOffersCheckBox.setSelected(false);
             }
         });
-
-        // Load user's items
         itemsTable.setItems(itemService.getUserItemsList());
     }
 
     private void setupCategorySelection() {
-        // Populate available categories (exclude ALL category for selection)
         List<Category> availableCategories = Arrays.stream(Category.values())
                 .filter(category -> category != Category.ALL)
                 .collect(Collectors.toList());
-
         availableCategoriesComboBox.setItems(FXCollections.observableArrayList(availableCategories));
-
-        // Configure category combo box display
         availableCategoriesComboBox.setCellFactory(_ -> new ListCell<Category>() {
             @Override
             protected void updateItem(Category category, boolean empty) {
@@ -250,7 +221,6 @@ public class ListingCreationController implements Refreshable {
                 }
             }
         });
-        
         availableCategoriesComboBox.setButtonCell(new ListCell<Category>() {
             @Override
             protected void updateItem(Category category, boolean empty) {
@@ -262,13 +232,9 @@ public class ListingCreationController implements Refreshable {
                 }
             }
         });
-
-        // Enable/disable add button based on selection
         addCategoryButton.disableProperty().bind(
             availableCategoriesComboBox.valueProperty().isNull()
         );
-
-        // Update selected categories display
         updateSelectedCategoriesDisplay();
     }
 
@@ -278,7 +244,7 @@ public class ListingCreationController implements Refreshable {
         if (selectedCategory != null && !selectedCategories.contains(selectedCategory)) {
             selectedCategories.add(selectedCategory);
             updateSelectedCategoriesDisplay();
-            availableCategoriesComboBox.setValue(null); // Clear selection
+            availableCategoriesComboBox.setValue(null);
         }
     }
 
@@ -286,12 +252,10 @@ public class ListingCreationController implements Refreshable {
         selectedCategoriesContainer.getChildren().clear();
         
         if (selectedCategories.isEmpty()) {
-            // Show empty state
             Label emptyLabel = new Label(localeService.getMessage("listing.trade.categories.none.selected"));
             emptyLabel.getStyleClass().add("empty-categories-label");
             selectedCategoriesContainer.getChildren().add(emptyLabel);
         } else {
-            // Create category chips
             for (Category category : selectedCategories) {
                 HBox categoryChip = createCategoryChip(category);
                 selectedCategoriesContainer.getChildren().add(categoryChip);
@@ -303,12 +267,8 @@ public class ListingCreationController implements Refreshable {
         HBox chip = new HBox(8.0);
         chip.getStyleClass().add("category-chip");
         chip.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-
-        // Category label
         Label categoryLabel = new Label(localeService.getMessage(category.getMessageKey()));
         categoryLabel.getStyleClass().add("category-chip-label");
-
-        // Remove button
         Button removeButton = new Button("×");
         removeButton.getStyleClass().addAll("category-chip-remove", "small-button");
         removeButton.setOnAction(_ -> {
@@ -320,9 +280,7 @@ public class ListingCreationController implements Refreshable {
         return chip;
     }
 
-    // Update the createTradeListing method to use the new category selection
     private TradeListingDTO createTradeListing() {
-        // Validate mandatory location for trade listings
         if (tradeLocationField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("listing.validation.title"),
@@ -333,13 +291,10 @@ public class ListingCreationController implements Refreshable {
 
         TradeListingDTO listing = new TradeListingDTO();
         setupCommonFields(listing);
-
-        // Set trade-specific fields
         listing.setAcceptMoneyOffers(acceptMoneyOffersCheckBox.isSelected());
         listing.setAcceptMixedOffers(acceptMixedOffersCheckBox.isSelected());
         listing.setAcceptOtherOffers(acceptOtherOffersCheckBox.isSelected());
         listing.setPickupLocation(tradeLocationField.getText().trim());
-        // Set reference price if accepting money offers
         if (acceptMoneyOffersCheckBox.isSelected() && !referencePriceField.getText().trim().isEmpty()) {
             try {
                 BigDecimal referencePrice = new BigDecimal(referencePriceField.getText().trim());
@@ -353,8 +308,6 @@ public class ListingCreationController implements Refreshable {
                 return null;
             }
         }
-
-        // Set desired categories using the new category selection
         if (!selectedCategories.isEmpty()) {
             List<String> categoryNames = selectedCategories.stream()
                     .map(category -> localeService.getMessage(category.getMessageKey()))
@@ -379,14 +332,9 @@ public class ListingCreationController implements Refreshable {
 
             return Bindings.createObjectBinding(() -> effectiveAvailable);
         });
-
-        // Configure selection listener
         itemsTable.getSelectionModel().selectedItemProperty().addListener((_, _, newSelection) -> {
             if (newSelection != null) {
-                // Enable the add button and set max quantity
                 addItemButton.setDisable(false);
-
-                // Set max spinner value to available quantity
                 SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory = (SpinnerValueFactory.IntegerSpinnerValueFactory) quantitySpinner
                         .getValueFactory();
 
@@ -419,8 +367,6 @@ public class ListingCreationController implements Refreshable {
                 removeButton.setOnAction(_ -> {
                     ListingItemDTO item = getTableView().getItems().get(getIndex());
                     selectedItems.remove(item);
-
-                    // Update temp reserved quantities
                     int currentReserved = tempReservedQuantities.getOrDefault(item.getItemId(), 0);
                     int newReserved = Math.max(0, currentReserved - item.getQuantity());
                     if (newReserved == 0) {
@@ -428,7 +374,6 @@ public class ListingCreationController implements Refreshable {
                     } else {
                         tempReservedQuantities.put(item.getItemId(), newReserved);
                     }
-
                     updateSelectedItemsTable();
                     refreshItemsTable();
                 });
@@ -444,8 +389,6 @@ public class ListingCreationController implements Refreshable {
                 }
             }
         });
-
-        // Set initial data
         updateSelectedItemsTable();
     }
 
@@ -454,21 +397,11 @@ public class ListingCreationController implements Refreshable {
     }
 
     private void refreshItemsTable() {
-        // Get the current selection to restore it after refresh
         ItemDTO selectedItem = itemsTable.getSelectionModel().getSelectedItem();
-
-        // Store current items
         List<ItemDTO> currentItems = new ArrayList<>(itemsTable.getItems());
-
-        // Refresh the table by re-setting the same items
-        // This forces the cell factories to recalculate their values
         itemsTable.setItems(null);
         itemsTable.setItems(FXCollections.observableArrayList(currentItems));
-
-        // Force refresh of table cells
         itemsTable.refresh();
-
-        // Restore selection if possible
         if (selectedItem != null) {
             itemsTable.getSelectionModel().select(selectedItem);
         }
@@ -479,22 +412,16 @@ public class ListingCreationController implements Refreshable {
         ItemDTO selectedItem = itemsTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             int quantity = quantitySpinner.getValue();
-
-            // Create listing item
             ListingItemDTO listingItem = new ListingItemDTO();
             listingItem.setItemId(selectedItem.getId());
             listingItem.setItemName(selectedItem.getName());
             listingItem.setQuantity(quantity);
-
             selectedItems.add(listingItem);
-
-            // Update temp reserved quantities
             String itemId = selectedItem.getId();
             int currentReserved = tempReservedQuantities.getOrDefault(itemId, 0);
             tempReservedQuantities.put(itemId, currentReserved + quantity);
-
             updateSelectedItemsTable();
-            refreshItemsTable(); // Refresh to show updated available quantities
+            refreshItemsTable();
         }
     }
 
@@ -503,8 +430,6 @@ public class ListingCreationController implements Refreshable {
         if (!validateCommonFields()) {
             return;
         }
-
-        // Create appropriate listing based on selected tab
         Tab selectedTab = listingTypeTabs.getSelectionModel().getSelectedItem();
         ListingDTO listing;
 
@@ -523,23 +448,17 @@ public class ListingCreationController implements Refreshable {
                     localeService.getMessage("listing.create.error.no.type"));
             return;
         }
-
         if (listing == null) {
-            return; // Validation failed in specific listing creation
+            return;
         }
-
-        // Save the listing
         listingService.createListing(listing)
                 .thenAccept(_ -> {
-                    // Clear temp reservations
                     tempReservedQuantities.clear();
 
                     AlertHelper.showInformationAlert(
                             localeService.getMessage("listing.create.success.title"),
                             localeService.getMessage("listing.create.success.header"),
                             localeService.getMessage("listing.create.success.content"));
-
-                    // Clear the form instead of closing
                     clearForm();
                 })
                 .exceptionally(ex -> {
@@ -553,73 +472,49 @@ public class ListingCreationController implements Refreshable {
 
     @FXML
     private void handleCancel() {
-        // Clear temporary reservations and form
         tempReservedQuantities.clear();
         clearForm();
     }
 
     private void clearForm() {
-        // Clear basic fields
         titleField.clear();
         descriptionArea.clear();
-        
-        // Clear selected items
         selectedItems.clear();
         updateSelectedItemsTable();
         refreshItemsTable();
-        
-        // Clear sell listing fields
         sellPriceField.clear();
         sellCurrencyComboBox.setValue(Currency.EUR);
         sellLocationField.clear();
-        
-        // Clear trade listing fields
         acceptMoneyOffersCheckBox.setSelected(false);
         referencePriceField.clear();
         tradeCurrencyComboBox.setValue(Currency.EUR);
         acceptMixedOffersCheckBox.setSelected(false);
         acceptOtherOffersCheckBox.setSelected(false);
         tradeLocationField.clear();
-        
-        // Clear selected categories
         selectedCategories.clear();
         updateSelectedCategoriesDisplay();
         availableCategoriesComboBox.setValue(null);
-        
-        // Clear gift listing fields
         pickupOnlyCheckBox.setSelected(false);
         allowThankYouOffersCheckBox.setSelected(false);
         restrictionsArea.clear();
         giftLocationField.clear();
-        
-        // Clear auction listing fields
         startingPriceField.clear();
         reservePriceField.clear();
         auctionCurrencyComboBox.setValue(Currency.EUR);
         bidIncrementField.clear();
         auctionLocationField.clear();
-        
-        // Reset duration to default
         if (durationComboBox.getItems() != null && !durationComboBox.getItems().isEmpty()) {
             durationComboBox.setValue(durationOptions.stream()
                     .filter(option -> option.getDays() == 7)
                     .findFirst()
                     .orElse(durationOptions.get(0)));
         }
-        
-        // Reset to the first tab (Sell)
         if (listingTypeTabs != null && !listingTypeTabs.getTabs().isEmpty()) {
             listingTypeTabs.getSelectionModel().selectFirst();
         }
-        
-        // Clear any table selections
         itemsTable.getSelectionModel().clearSelection();
         selectedItemsTable.getSelectionModel().clearSelection();
-        
-        // Disable add item button
         addItemButton.setDisable(true);
-        
-        // Reset quantity spinner
         if (quantitySpinner.getValueFactory() != null) {
             quantitySpinner.getValueFactory().setValue(1);
         }
@@ -725,8 +620,6 @@ public class ListingCreationController implements Refreshable {
             listing.setCurrency(auctionCurrencyComboBox.getValue());
             listing.setDurationInDays(durationComboBox.getValue().getDays());
             listing.setPickupLocation(auctionLocationField.getText().trim());
-
-            // Set optional reserve price
             if (!reservePriceField.getText().trim().isEmpty()) {
                 BigDecimal reservePrice = new BigDecimal(reservePriceField.getText().trim());
                 if (reservePrice.compareTo(startingPrice) < 0) {
@@ -738,8 +631,6 @@ public class ListingCreationController implements Refreshable {
                 }
                 listing.setReservePrice(reservePrice);
             }
-
-            // Set optional bid increment
             if (!bidIncrementField.getText().trim().isEmpty()) {
                 BigDecimal bidIncrement = new BigDecimal(bidIncrementField.getText().trim());
                 if (bidIncrement.compareTo(BigDecimal.ZERO) <= 0) {
@@ -769,8 +660,6 @@ public class ListingCreationController implements Refreshable {
         listing.setStatus(ListingStatus.ACTIVE);
         listing.setCreatedAt(LocalDateTime.now());
         listing.setUpdatedAt(LocalDateTime.now());
-
-        // Add selected items
         listing.setItems(new ArrayList<>(selectedItems));
     }
 

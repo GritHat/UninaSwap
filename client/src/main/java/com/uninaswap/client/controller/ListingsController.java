@@ -71,12 +71,9 @@ public class ListingsController implements Refreshable {
     @FXML
     private TableColumn<ListingViewModel, Void> actionsColumn;
 
-    // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final ListingService listingService = ListingService.getInstance();
     private final NavigationService navigationService = NavigationService.getInstance();
-
-    // Data
     private ObservableList<ListingViewModel> userListings;
     private FilteredList<ListingViewModel> filteredListings;
 
@@ -98,7 +95,6 @@ public class ListingsController implements Refreshable {
     }
 
     private void setupFilters() {
-        // Status filter
         statusFilterComboBox.setItems(FXCollections.observableArrayList(
                 "All Statuses",
                 "Active",
@@ -107,8 +103,6 @@ public class ListingsController implements Refreshable {
                 "Expired"
         ));
         statusFilterComboBox.setValue("All Statuses");
-
-        // Type filter
         typeFilterComboBox.setItems(FXCollections.observableArrayList(
                 "All Types",
                 "Sale",
@@ -117,21 +111,14 @@ public class ListingsController implements Refreshable {
                 "Gift"
         ));
         typeFilterComboBox.setValue("All Types");
-
-        // Add listeners for filter changes
-        statusFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateFilters());
-        typeFilterComboBox.valueProperty().addListener((obs, oldVal, newVal) -> updateFilters());
+        statusFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
+        typeFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
     }
 
     private void setupObservableList() {
-        // Get the observable list from ListingService
         userListings = listingService.getUserListingsObservable();
-
-        // Create filtered list
         filteredListings = new FilteredList<>(userListings);
-
-        // Set up listener for automatic updates
-        userListings.addListener((ListChangeListener<ListingViewModel>) change -> {
+        userListings.addListener((ListChangeListener<ListingViewModel>) _ -> {
             Platform.runLater(() -> {
                 updateListingsCount();
             });
@@ -139,15 +126,10 @@ public class ListingsController implements Refreshable {
     }
 
     private void setupTable() {
-        // Title column
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
-
-        // Type column
         typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getListingTypeValue()));
-
-        // Status column
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getStatus().toString()));
-        statusColumn.setCellFactory(column -> new TableCell<ListingViewModel, String>() {
+        statusColumn.setCellFactory(_ -> new TableCell<ListingViewModel, String>() {
             @Override
             protected void updateItem(String status, boolean empty) {
                 super.updateItem(status, empty);
@@ -156,7 +138,6 @@ public class ListingsController implements Refreshable {
                     setStyle("");
                 } else {
                     setText(status);
-                    // Color code the status
                     switch (status.toUpperCase()) {
                         case "ACTIVE" -> setStyle("-fx-text-fill: #27AE60; -fx-font-weight: bold;");
                         case "COMPLETED" -> setStyle("-fx-text-fill: #3498DB; -fx-font-weight: bold;");
@@ -167,8 +148,6 @@ public class ListingsController implements Refreshable {
                 }
             }
         });
-
-        // Price column
         priceColumn.setCellValueFactory(cellData -> {
             ListingViewModel listing = cellData.getValue();
             if (listing instanceof SellListingViewModel sellListing) {
@@ -184,8 +163,6 @@ public class ListingsController implements Refreshable {
             }
             return new SimpleStringProperty("N/A");
         });
-
-        // Date column
         dateColumn.setCellValueFactory(cellData -> {
             if (cellData.getValue().getCreatedAt() != null) {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -193,15 +170,9 @@ public class ListingsController implements Refreshable {
             }
             return new SimpleStringProperty("");
         });
-
-        // Actions column
         setupActionsColumn();
-
-        // Bind table to filtered list
         listingsTable.setItems(filteredListings);
-
-        // Add row double-click handler for viewing details
-        listingsTable.setRowFactory(tv -> {
+        listingsTable.setRowFactory(_ -> {
             TableRow<ListingViewModel> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
@@ -213,7 +184,7 @@ public class ListingsController implements Refreshable {
     }
 
     private void setupActionsColumn() {
-        actionsColumn.setCellFactory(_ -> new TableCell<>() {
+            actionsColumn.setCellFactory(_ -> new TableCell<>() {
             private final Button viewButton = new Button("View");
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
@@ -224,17 +195,17 @@ public class ListingsController implements Refreshable {
                 editButton.getStyleClass().add("primary-button");
                 deleteButton.getStyleClass().add("danger-button");
 
-                viewButton.setOnAction(e -> {
+                viewButton.setOnAction(_ -> {
                     ListingViewModel listing = getTableView().getItems().get(getIndex());
                     handleViewListing(listing);
                 });
 
-                editButton.setOnAction(e -> {
+                editButton.setOnAction(_ -> {
                     ListingViewModel listing = getTableView().getItems().get(getIndex());
                     handleEditListing(listing);
                 });
 
-                deleteButton.setOnAction(e -> {
+                deleteButton.setOnAction(_ -> {
                     ListingViewModel listing = getTableView().getItems().get(getIndex());
                     handleDeleteListing(listing);
                 });
@@ -247,8 +218,6 @@ public class ListingsController implements Refreshable {
                     setGraphic(null);
                 } else {
                     ListingViewModel listing = getTableView().getItems().get(getIndex());
-                    
-                    // Show/hide buttons based on listing status
                     boolean canEdit = listing.getStatus() == ListingStatus.ACTIVE;
                     boolean canDelete = listing.getStatus() != ListingStatus.COMPLETED;
                     
@@ -264,27 +233,22 @@ public class ListingsController implements Refreshable {
     }
 
     private void setupSearchFilter() {
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> updateFilters());
+        searchField.textProperty().addListener((_, _, _) -> updateFilters());
     }
 
     private void updateFilters() {
         filteredListings.setPredicate(listing -> {
-            // Search filter
             String searchText = searchField.getText().toLowerCase().trim();
             if (!searchText.isEmpty()) {
                 boolean matchesSearch = listing.getTitle().toLowerCase().contains(searchText) ||
                                      listing.getDescription().toLowerCase().contains(searchText);
                 if (!matchesSearch) return false;
             }
-
-            // Status filter
             String statusFilter = statusFilterComboBox.getValue();
             if (!"All Statuses".equals(statusFilter)) {
                 ListingStatus selectedStatus = ListingStatus.valueOf(statusFilter.toUpperCase());
                 if (listing.getStatus() != selectedStatus) return false;
             }
-
-            // Type filter
             String typeFilter = typeFilterComboBox.getValue();
             if (!"All Types".equals(typeFilter)) {
                 String listingType = listing.getListingTypeValue().toUpperCase();
@@ -298,7 +262,6 @@ public class ListingsController implements Refreshable {
     }
 
     private void loadUserListings() {
-        // If the observable list is empty, refresh from server
         if (userListings.isEmpty()) {
             listingService.refreshUserListings();
         }
@@ -337,8 +300,6 @@ public class ListingsController implements Refreshable {
         }
 
         try {
-            // TODO: Implement listing editing
-            // For now, show a placeholder message
             AlertHelper.showInformationAlert(
                     localeService.getMessage("listings.edit.info.title", "Edit Listing"),
                     localeService.getMessage("listings.edit.info.header", "Feature Coming Soon"),

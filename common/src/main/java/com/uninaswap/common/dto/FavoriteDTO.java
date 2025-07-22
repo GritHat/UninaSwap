@@ -3,6 +3,9 @@ package com.uninaswap.common.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/*
+ * DTO representing a user's favorite listing
+ */
 public class FavoriteDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 

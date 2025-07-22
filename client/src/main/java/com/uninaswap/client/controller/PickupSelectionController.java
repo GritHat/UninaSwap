@@ -1,11 +1,9 @@
 package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.LocaleService;
-import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.PickupService;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.PickupViewModel;
-import com.uninaswap.common.dto.PickupDTO;
 import com.uninaswap.common.enums.PickupStatus;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -123,15 +121,10 @@ public class PickupSelectionController {
     @FXML
     private HBox counterProposalButtons;
 
-    // Services
     private final LocaleService localeService = LocaleService.getInstance();
     private final PickupService pickupService = PickupService.getInstance();
-    private final NavigationService navigationService = NavigationService.getInstance();
-
-    // Data
     private PickupViewModel currentPickup;
     private List<LocalDate> counterSelectedDates = new ArrayList<>();
-    private boolean isCounterProposalMode = false;
 
     @FXML
     public void initialize() {
@@ -161,10 +154,10 @@ public class PickupSelectionController {
         counterEndMinuteSpinner.setEditable(true);
 
         // Add validation listeners for counter proposal
-        counterStartHourSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateCounterTimeRange());
-        counterStartMinuteSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateCounterTimeRange());
-        counterEndHourSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateCounterTimeRange());
-        counterEndMinuteSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateCounterTimeRange());
+        counterStartHourSpinner.valueProperty().addListener((_, _, _) -> validateCounterTimeRange());
+        counterStartMinuteSpinner.valueProperty().addListener((_, _, _) -> validateCounterTimeRange());
+        counterEndHourSpinner.valueProperty().addListener((_, _, _) -> validateCounterTimeRange());
+        counterEndMinuteSpinner.valueProperty().addListener((_, _, _) -> validateCounterTimeRange());
     }
 
     private void setupLabels() {
@@ -189,14 +182,10 @@ public class PickupSelectionController {
     private void setupCounterProposalSection() {
         counterProposalSection.setVisible(false);
         counterProposalSection.setManaged(false);
-
-        // Setup date pickers for counter proposal
         LocalDate today = LocalDate.now();
         counterStartDatePicker.setValue(today);
         counterEndDatePicker.setValue(today.plusDays(7));
-
-        // Disable past dates
-        counterStartDatePicker.setDayCellFactory(picker -> new DateCell() {
+        counterStartDatePicker.setDayCellFactory(_ -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
@@ -204,7 +193,7 @@ public class PickupSelectionController {
             }
         });
 
-        counterEndDatePicker.setDayCellFactory(picker -> new DateCell() {
+        counterEndDatePicker.setDayCellFactory(_ -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
                 super.updateItem(date, empty);
@@ -213,9 +202,7 @@ public class PickupSelectionController {
                         (startDate != null && date.isBefore(startDate)));
             }
         });
-
-        // Update end date picker when start date changes
-        counterStartDatePicker.valueProperty().addListener((obs, oldDate, newDate) -> {
+        counterStartDatePicker.valueProperty().addListener((_, _, newDate) -> {
             if (newDate != null && counterEndDatePicker.getValue() != null &&
                     counterEndDatePicker.getValue().isBefore(newDate)) {
                 counterEndDatePicker.setValue(newDate);
@@ -233,28 +220,18 @@ public class PickupSelectionController {
     private void updateUI() {
         if (currentPickup == null)
             return;
-
-        // Update available dates display
         updateAvailableDatesDisplay();
-
-        // Update time range
         if (currentPickup.getStartTime() != null && currentPickup.getEndTime() != null) {
             timeRangeLabel.setText(String.format("%s - %s",
                     currentPickup.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")),
                     currentPickup.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))));
         }
-
-        // Update location and details
         locationLabel.setText(currentPickup.getLocation() != null ? currentPickup.getLocation() : "");
         detailsArea.setText(currentPickup.getDetails() != null ? currentPickup.getDetails() : "");
         detailsArea.setEditable(false);
-
-        // Set up date picker for selection
         if (!currentPickup.getAvailableDates().isEmpty()) {
             selectedDatePicker.setValue(currentPickup.getAvailableDates().get(0));
         }
-
-        // Set default time to middle of available range
         if (currentPickup.getStartTime() != null && currentPickup.getEndTime() != null) {
             LocalTime middleTime = currentPickup.getStartTime().plusMinutes(
                     java.time.Duration.between(currentPickup.getStartTime(), currentPickup.getEndTime()).toMinutes()
@@ -262,8 +239,6 @@ public class PickupSelectionController {
             selectedHourSpinner.getValueFactory().setValue(middleTime.getHour());
             selectedMinuteSpinner.getValueFactory().setValue(middleTime.getMinute());
         }
-
-        // Validate initial selection
         validateSelection();
     }
 
@@ -274,9 +249,7 @@ public class PickupSelectionController {
             for (LocalDate date : currentPickup.getAvailableDates()) {
                 Label dateLabel = new Label(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
                 dateLabel.getStyleClass().add("available-date-chip");
-
-                // Add click handler to select this date
-                dateLabel.setOnMouseClicked(e -> {
+                dateLabel.setOnMouseClicked(_ -> {
                     selectedDatePicker.setValue(date);
                     validateSelection();
                 });
@@ -307,8 +280,6 @@ public class PickupSelectionController {
                                         String.format("Pickup confirmed for %s at %s. The offer status has been updated to 'Confirmed'.",
                                                 selectedDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                                                 selectedTime.format(DateTimeFormatter.ofPattern("HH:mm")))));
-                        
-                        // Close the popup window
                         closeWindow();
                     } else {
                         AlertHelper.showErrorAlert(
@@ -346,7 +317,6 @@ public class PickupSelectionController {
                 pickupService.updatePickupStatus(currentPickup.getId(), PickupStatus.DECLINED)
                         .thenAccept(success -> Platform.runLater(() -> {
                             if (success) {
-                                // Show options for next steps
                                 Alert nextStepsDialog = new Alert(Alert.AlertType.CONFIRMATION);
                                 nextStepsDialog.setTitle(localeService.getMessage("pickup.reject.nextsteps.title", "Next Steps"));
                                 nextStepsDialog.setHeaderText(localeService.getMessage("pickup.reject.nextsteps.header", 
@@ -365,16 +335,11 @@ public class PickupSelectionController {
 
                                 nextStepsDialog.showAndWait().ifPresent(choice -> {
                                     if (choice == rescheduleButton) {
-                                        // Open pickup scheduling dialog for rescheduling
                                         handleReschedulePickup();
                                     } else if (choice == cancelOfferButton) {
-                                        // Cancel the entire offer
                                         handleCancelOffer();
                                     }
-                                    // If "Decide Later", just close the dialog
                                 });
-
-                                // Close the popup window
                                 closeWindow();
                             } else {
                                 AlertHelper.showErrorAlert(
@@ -398,9 +363,7 @@ public class PickupSelectionController {
     }
 
     private void handleReschedulePickup() {
-        // Close current window and open pickup scheduling dialog for rescheduling
         closeWindow();
-        
         AlertHelper.showInformationAlert(
                 localeService.getMessage("pickup.reschedule.info.title", "Rescheduling"),
                 localeService.getMessage("pickup.reschedule.info.header", "Navigate to Rescheduling"),
@@ -417,7 +380,6 @@ public class PickupSelectionController {
 
         confirmation.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                // Call service to cancel the pickup arrangement and update offer status
                 pickupService.cancelPickupArrangement(currentPickup.getId())
                         .thenAccept(success -> Platform.runLater(() -> {
                             if (success) {
@@ -427,7 +389,6 @@ public class PickupSelectionController {
                                         localeService.getMessage("offer.cancel.success.message",
                                                 "The offer has been cancelled successfully."));
                                 
-                                // Close the popup after successful cancellation
                                 closeWindow();
                             } else {
                                 AlertHelper.showErrorAlert(
@@ -450,28 +411,17 @@ public class PickupSelectionController {
 
     @FXML
     private void handleCounterPropose() {
-        isCounterProposalMode = true;
-
-        // Hide main selection section
         availableDatesSection.setVisible(false);
         availableDatesSection.setManaged(false);
         selectedDateTimeSection.setVisible(false);
         selectedDateTimeSection.setManaged(false);
-
-        // Show counter proposal section
         counterProposalSection.setVisible(true);
         counterProposalSection.setManaged(true);
-
-        // Update instructions
         instructionsLabel.setText(localeService.getMessage("pickup.counter.instructions",
                 "Propose your available dates and time range for pickup"));
-
-        // Hide original buttons
         acceptButton.setVisible(false);
         rejectButton.setVisible(false);
         counterProposeButton.setVisible(false);
-
-        // Prefill with original location if available
         if (currentPickup.getLocation() != null) {
             counterLocationField.setText(currentPickup.getLocation());
         }
@@ -481,7 +431,6 @@ public class PickupSelectionController {
     private void handleAddCounterDateRange() {
         LocalDate startDate = counterStartDatePicker.getValue();
         LocalDate endDate = counterEndDatePicker.getValue();
-
         if (startDate == null || endDate == null) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("pickup.validation.title", "Validation Error"),
@@ -490,7 +439,6 @@ public class PickupSelectionController {
                             "Please select both start and end dates"));
             return;
         }
-
         if (startDate.isAfter(endDate)) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("pickup.validation.title", "Validation Error"),
@@ -550,8 +498,6 @@ public class PickupSelectionController {
 
         LocalTime startTime = LocalTime.of(counterStartHourSpinner.getValue(), counterStartMinuteSpinner.getValue());
         LocalTime endTime = LocalTime.of(counterEndHourSpinner.getValue(), counterEndMinuteSpinner.getValue());
-
-        // Create new pickup with counter proposal
         PickupViewModel counterPickupViewModel = new PickupViewModel(
                 currentPickup.getOfferId(),
                 currentPickup.getOffer(),
@@ -560,16 +506,13 @@ public class PickupSelectionController {
                 endTime,
                 currentPickup.getOffer().getListing().getPickupLocation(),
                 counterDetailsArea.getText().trim(),
-                null // createdByUserId will be set by the service
-        );
+                null);
 
         submitCounterProposalButton.setDisable(true);
 
-        // First reject the current pickup
         pickupService.updatePickupStatus(currentPickup.getId(), PickupStatus.CANCELLED)
                 .thenCompose(rejected -> {
                     if (rejected) {
-                        // Then create the counter proposal
                         return pickupService.createPickup(counterPickupViewModel);
                     } else {
                         throw new RuntimeException("Failed to reject current pickup");
@@ -583,7 +526,6 @@ public class PickupSelectionController {
                                 localeService.getMessage("pickup.counter.success.message",
                                         "Your counter proposal has been sent. The other party can now review your availability."));
                         
-                        // Close the popup window
                         closeWindow();
                     } else {
                         AlertHelper.showErrorAlert(
@@ -609,43 +551,26 @@ public class PickupSelectionController {
 
     @FXML
     private void handleCancelCounterProposal() {
-        isCounterProposalMode = false;
-
-        // Show main selection section
         availableDatesSection.setVisible(true);
         availableDatesSection.setManaged(true);
         selectedDateTimeSection.setVisible(true);
         selectedDateTimeSection.setManaged(true);
-
-        // Hide counter proposal section
         counterProposalSection.setVisible(false);
         counterProposalSection.setManaged(false);
-
-        // Show/hide button sections
         mainActionButtons.setVisible(true);
         mainActionButtons.setManaged(true);
         counterProposalButtons.setVisible(false);
         counterProposalButtons.setManaged(false);
-
-        // Restore original instructions
         instructionsLabel.setText(localeService.getMessage("pickup.selection.instructions",
                 "Choose a convenient date and time from the available options, or propose an alternative"));
-
-        // Clear counter proposal data
         counterSelectedDates.clear();
         updateCounterSelectedDatesDisplay();
-        
-        // Clear counter proposal form fields
         counterLocationField.clear();
         counterDetailsArea.clear();
-        
-        // Reset time spinners to default values
         counterStartHourSpinner.getValueFactory().setValue(9);
         counterStartMinuteSpinner.getValueFactory().setValue(0);
         counterEndHourSpinner.getValueFactory().setValue(18);
         counterEndMinuteSpinner.getValueFactory().setValue(0);
-        
-        // Reset date pickers to default values
         LocalDate today = LocalDate.now();
         counterStartDatePicker.setValue(today);
         counterEndDatePicker.setValue(today.plusDays(7));
@@ -653,7 +578,6 @@ public class PickupSelectionController {
 
     @FXML
     private void handleCancel() {
-        // Close the popup window
         closeWindow();
     }
 
@@ -663,14 +587,10 @@ public class PickupSelectionController {
 
         LocalDate selectedDate = selectedDatePicker.getValue();
         LocalTime selectedTime = LocalTime.of(selectedHourSpinner.getValue(), selectedMinuteSpinner.getValue());
-
-        // Check if selected date is available
         if (!currentPickup.getAvailableDates().contains(selectedDate)) {
             acceptButton.setDisable(true);
             return false;
         }
-
-        // Check if selected time is within range
         if (selectedTime.isBefore(currentPickup.getStartTime()) || selectedTime.isAfter(currentPickup.getEndTime())) {
             acceptButton.setDisable(true);
             return false;
@@ -692,7 +612,6 @@ public class PickupSelectionController {
     }
 
     private boolean validateCounterProposal() {
-        // Check location
         if (counterLocationField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("pickup.validation.title", "Validation Error"),
@@ -701,8 +620,6 @@ public class PickupSelectionController {
             counterLocationField.requestFocus();
             return false;
         }
-
-        // Check time range
         LocalTime startTime = LocalTime.of(counterStartHourSpinner.getValue(), counterStartMinuteSpinner.getValue());
         LocalTime endTime = LocalTime.of(counterEndHourSpinner.getValue(), counterEndMinuteSpinner.getValue());
 
@@ -714,8 +631,6 @@ public class PickupSelectionController {
             counterStartHourSpinner.requestFocus();
             return false;
         }
-
-        // Check selected dates
         if (counterSelectedDates.isEmpty()) {
             AlertHelper.showWarningAlert(
                     localeService.getMessage("pickup.validation.title", "Validation Error"),
@@ -741,7 +656,7 @@ public class PickupSelectionController {
 
             Button removeButton = new Button("×");
             removeButton.getStyleClass().add("date-chip-remove");
-            removeButton.setOnAction(e -> {
+            removeButton.setOnAction(_ -> {
                 counterSelectedDates.remove(date);
                 updateCounterSelectedDatesDisplay();
             });

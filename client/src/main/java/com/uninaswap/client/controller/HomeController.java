@@ -2,6 +2,7 @@ package com.uninaswap.client.controller;
 
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.FavoritesService;
+import com.uninaswap.client.service.ItemService;
 import com.uninaswap.client.service.ListingService;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 
@@ -92,6 +93,10 @@ public class HomeController {
     /**
      * 
      */
+    private final ItemService itemService = ItemService.getInstance();
+    /**
+     * 
+     */
     private final FavoritesService favoritesService = FavoritesService.getInstance();
     /**
      * 
@@ -171,12 +176,8 @@ public class HomeController {
         currentPage = 0;
         hasMoreListings = true;
         listingService.refreshAllListings();
-        if (favoriteListingViewModels.isEmpty()) {
-            System.out.println("Favorites list is empty, refreshing from server...");
-            favoritesService.refreshUserFavorites();
-        } else {
-            updateFavoritesContainer();
-        }
+        favoritesService.refreshUserFavorites();
+        itemService.getUserItemsListAsViewModel();
     }
     /**
      * 
@@ -251,7 +252,6 @@ public class HomeController {
      * @param listings
      */
     private void debouncedUpdate(ObservableList<ListingViewModel> listings) {
-        System.out.println("Debounced update called with " + listings.size() + " listings");
         if (updateTimeline != null) {
             updateTimeline.stop();
         }

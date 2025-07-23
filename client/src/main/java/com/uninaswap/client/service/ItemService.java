@@ -15,15 +15,42 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * 
+ */
 public class ItemService {
+    /**
+     * 
+     */
     private static ItemService instance;
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final EventBusService eventBus = EventBusService.getInstance();
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient;
+    /**
+     * 
+     */
     private final ObservableList<ItemDTO> userItems = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<ItemViewModel> userItemViewModels = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private boolean needsRefresh = false;
 
+    /**
+     * 
+     */
     private ItemService() {
         this.webSocketClient = WebSocketClient.getInstance();
         this.webSocketClient.registerMessageHandler(ItemMessage.class, this::handleItemMessage);
@@ -33,6 +60,9 @@ public class ItemService {
         });
     }
 
+    /**
+     * @return
+     */
     public static synchronized ItemService getInstance() {
         if (instance == null) {
             instance = new ItemService();
@@ -40,6 +70,9 @@ public class ItemService {
         return instance;
     }
 
+    /**
+     * 
+     */
     private void clearAllData() {
         Platform.runLater(() -> {
             System.out.println("ItemService: Clearing all cached data...");
@@ -61,6 +94,9 @@ public class ItemService {
         System.out.println("ItemService: Cleared all cached data on logout");
     }
 
+    /**
+     * @return
+     */
     public CompletableFuture<List<ItemDTO>> getUserItems() {
         CompletableFuture<List<ItemDTO>> future = new CompletableFuture<>();
 
@@ -78,6 +114,10 @@ public class ItemService {
         return future;
     }
 
+    /**
+     * @param item
+     * @return
+     */
     public CompletableFuture<ItemDTO> addItem(ItemDTO item) {
         CompletableFuture<ItemDTO> future = new CompletableFuture<>();
 
@@ -96,6 +136,10 @@ public class ItemService {
         return future;
     }
 
+    /**
+     * @param item
+     * @return
+     */
     public CompletableFuture<ItemDTO> updateItem(ItemDTO item) {
         CompletableFuture<ItemDTO> future = new CompletableFuture<>();
 
@@ -114,6 +158,10 @@ public class ItemService {
         return future;
     }
 
+    /**
+     * @param itemId
+     * @return
+     */
     public CompletableFuture<Boolean> deleteItem(String itemId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -135,6 +183,9 @@ public class ItemService {
         return future;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<ItemDTO> getUserItemsList() {
         if (userItems.isEmpty() || needsRefresh) {
             refreshUserItems();
@@ -143,6 +194,9 @@ public class ItemService {
         return userItems;
     }
 
+    /**
+     * 
+     */
     public void refreshUserItems() {
         getUserItems()
                 .thenAccept(items -> {
@@ -162,6 +216,9 @@ public class ItemService {
      * 
      * @return ObservableList of ItemViewModels that automatically updates
      */
+    /**
+     * @return
+     */
     public ObservableList<ItemViewModel> getUserItemsListAsViewModel() {
         // If we need initial load
         if (userItemViewModels.isEmpty() || needsRefresh) {
@@ -171,6 +228,9 @@ public class ItemService {
         return userItemViewModels;
     }
 
+    /**
+     * 
+     */
     private void loadUserItemsAsViewModels() {
         needsRefresh = false;
 
@@ -193,9 +253,18 @@ public class ItemService {
                 });
     }
 
+    /**
+     * 
+     */
     private CompletableFuture<?> futureToComplete;
+    /**
+     * 
+     */
     private Consumer<ItemMessage> messageCallback;
 
+    /**
+     * @param message
+     */
     @SuppressWarnings("unchecked")
     private void handleItemMessage(ItemMessage message) {
         switch (message.getType()) {
@@ -301,6 +370,9 @@ public class ItemService {
         }
     }
 
+    /**
+     * @param item
+     */
     public void saveItem(ItemDTO item) {
         if (item.getId() == null || item.getId().isEmpty()) {
             // Add new item
@@ -330,14 +402,23 @@ public class ItemService {
         }
     }
 
+    /**
+     * @param item
+     */
     private void publishItemUpdatedEvent(ItemDTO item) {
         eventBus.publishEvent(EventTypes.ITEM_UPDATED, ViewModelMapper.getInstance().toViewModel(item));
     }
 
+    /**
+     * @param callback
+     */
     public void setMessageCallback(Consumer<ItemMessage> callback) {
         this.messageCallback = callback;
     }
 
+    /**
+     * @param needsRefresh
+     */
     public void setNeedsRefresh(boolean needsRefresh) {
         this.needsRefresh = needsRefresh;
     }

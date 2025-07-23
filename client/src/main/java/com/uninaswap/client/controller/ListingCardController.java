@@ -27,43 +27,106 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ */
 public class ListingCardController {
 
+    /**
+     * 
+     */
     @FXML
     private VBox itemCard;
+    /**
+     * 
+     */
     @FXML
     private ImageView itemImage;
+    /**
+     * 
+     */
     @FXML
     private Label itemName;
+    /**
+     * 
+     */
     @FXML
     private Text categoryText;
+    /**
+     * 
+     */
     @FXML
     private Text sellerName;
+    /**
+     * 
+     */
     @FXML
     private Text itemPrice;
+    /**
+     * 
+     */
     @FXML
     private ImageView favoriteIcon;
+    /**
+     * 
+     */
     @FXML
     private StackPane listingCardContainer;
+    /**
+     * 
+     */
     @FXML
     private StackPane imageContainer;
 
+    /**
+     * 
+     */
     private ListingViewModel listing;
+    /**
+     * 
+     */
     private boolean isFavorite = false;
+    /**
+     * 
+     */
     private final NavigationService navigationService = NavigationService.getInstance();
+    /**
+     * 
+     */
     private final FavoritesService favoritesService = FavoritesService.getInstance();
+    /**
+     * 
+     */
     private final ImageService imageService = ImageService.getInstance();
+    /**
+     * 
+     */
     private Label imageCountLabel;
+    /**
+     * 
+     */
     private int currentImageIndex = 0;
+    /**
+     * 
+     */
     private List<String> availableImagePaths = new ArrayList<>();
 
+    /**
+     * 
+     */
     public ListingCardController() {
     }
 
+    /**
+     * @param listing
+     */
     public ListingCardController(ListingViewModel listing) {
         this.listing = listing;
     }
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         Rectangle clip = new Rectangle(240, 360);
@@ -74,6 +137,9 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * @param listing
+     */
     public void setListing(ListingViewModel listing) {
         this.listing = listing;
 
@@ -99,6 +165,9 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * @param listing
+     */
     private void loadListingImages(ListingViewModel listing) {
         availableImagePaths = getAllImagePaths(listing);
         currentImageIndex = 0;
@@ -112,6 +181,10 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * @param listing
+     * @return
+     */
     private List<String> getAllImagePaths(ListingViewModel listing) {
         List<String> imagePaths = new ArrayList<>();
 
@@ -127,6 +200,9 @@ public class ListingCardController {
         return imagePaths;
     }
 
+    /**
+     * @param imagePath
+     */
     private void loadImageFromPath(String imagePath) {
         imageService.fetchImage(imagePath)
                 .thenAccept(image -> {
@@ -145,6 +221,9 @@ public class ListingCardController {
                 });
     }
 
+    /**
+     * 
+     */
     private void setDefaultImage() {
         try {
             Image defaultImage = new Image(getClass()
@@ -157,6 +236,9 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * 
+     */
     private void initializeFavoriteStatus() {
         if (listing != null) {
             boolean isCurrentlyFavorite = favoritesService.isFavoriteListing(listing.getId());
@@ -164,6 +246,10 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * @param listing
+     * @return
+     */
     private String getPriceText(ListingViewModel listing) {
         String type = listing.getListingTypeValue();
 
@@ -207,6 +293,10 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * @param listing
+     * @return
+     */
     private String getListingCategory(ListingViewModel listing) {
         if (listing.getItems() != null && !listing.getItems().isEmpty()) {
             String itemCategory = listing.getItems().get(0).getItem().getItemCategory();
@@ -229,6 +319,9 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * @param favorite
+     */
     private void setFavorite(boolean favorite) {
         this.isFavorite = favorite;
         if (favoriteIcon != null) {
@@ -243,6 +336,9 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     private void openListingDetails(MouseEvent event) {
         if (listing != null) {
@@ -261,6 +357,9 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     private void toggleFavorite(MouseEvent event) {
         if (listing != null) {
@@ -290,6 +389,9 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * @param imageCount
+     */
     private void addMultipleImageIndicator(int imageCount) {
         if (imageContainer != null) {
             createImageCountIndicator(imageCount, imageContainer);
@@ -297,6 +399,10 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * @param imageCount
+     * @param imageContainer
+     */
     private void createImageCountIndicator(int imageCount, StackPane imageContainer) {
         imageCountLabel = new Label("1/" + imageCount);
         imageCountLabel.getStyleClass().addAll("image-count-indicator");
@@ -312,6 +418,9 @@ public class ListingCardController {
         imageContainer.getChildren().add(imageCountLabel);
     }
 
+    /**
+     * 
+     */
     private void addImageCyclingHandler() {
         if (itemImage != null) {
             itemImage.setOnMouseClicked(event -> {
@@ -333,6 +442,9 @@ public class ListingCardController {
         }
     }
 
+    /**
+     * 
+     */
     private void cycleToNextImage() {
         if (availableImagePaths.isEmpty())
             return;
@@ -343,6 +455,9 @@ public class ListingCardController {
         updateImageCountIndicator();
     }
 
+    /**
+     * 
+     */
     private void updateImageCountIndicator() {
         if (imageCountLabel != null) {
             imageCountLabel.setText((currentImageIndex + 1) + "/" + availableImagePaths.size());

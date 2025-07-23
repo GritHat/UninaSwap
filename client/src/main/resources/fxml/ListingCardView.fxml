@@ -14,10 +14,10 @@
 <StackPane fx:id="listingCardContainer" maxWidth="240.0" minWidth="240.0" prefWidth="240.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <!-- Card principale (cliccabile) -->
-      <VBox fx:id="itemCard" onMouseClicked="#openListingDetails" prefHeight="360.0" prefWidth="240.0" styleClass="card">
+      <VBox fx:id="itemCard" prefHeight="360.0" prefWidth="240.0" styleClass="card">
          <children>
             <!-- Image container - ALWAYS wrapped in StackPane -->
-            <StackPane fx:id="imageContainer" maxHeight="280.0" maxWidth="240.0" minHeight="280.0" minWidth="240.0" prefHeight="280.0" prefWidth="240.0">
+            <StackPane fx:id="imageContainer" onMouseClicked="#openListingDetails" maxHeight="280.0" maxWidth="240.0" minHeight="280.0" minWidth="240.0" prefHeight="280.0" prefWidth="240.0">
                <children>
                   <ImageView fx:id="itemImage" fitHeight="280.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -34,7 +34,7 @@
                <children>
                   <HBox alignment="CENTER">
                      <children>
-                        <Label fx:id="itemName" maxWidth="190.0" minWidth="190.0" prefWidth="190.0" styleClass="item-name" text="Listing Title">
+                        <Label onMouseClicked="#openListingDetails" fx:id="itemName" maxWidth="190.0" minWidth="190.0" prefWidth="190.0" styleClass="item-name" text="Listing Title">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -42,7 +42,7 @@
                               <Insets left="5.0" />
                            </HBox.margin>
                         </Label>
-                        <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <Pane onMouseClicked="#openListingDetails" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                         <ImageView fx:id="favoriteIcon" fitHeight="32.0" fitWidth="32.0" onMouseClicked="#toggleFavorite" pickOnBounds="true" preserveRatio="true" styleClass="favorite-icon">
                            <image>
                               <Image url="@../images/favorites_add.png" />
@@ -53,7 +53,7 @@
                         </ImageView>
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <HBox onMouseClicked="#openListingDetails" prefHeight="100.0" prefWidth="200.0">
                      <children>
                         <Text fx:id="categoryText" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="category-tag" text="Category">
                            <font>
@@ -66,7 +66,7 @@
                         <Pane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <HBox onMouseClicked="#openListingDetails" prefHeight="100.0" prefWidth="200.0">
                      <children>
                         <Text fx:id="sellerName" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="seller-name" text="Seller Name">
                            <font>
@@ -79,7 +79,7 @@
                         <Pane prefHeight="200.0" prefWidth="200.0" />
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <HBox onMouseClicked="#openListingDetails" prefHeight="100.0" prefWidth="200.0">
                      <children>
                         
                         <!-- Listing price/type -->

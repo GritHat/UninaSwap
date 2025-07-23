@@ -13,28 +13,58 @@ import java.lang.classfile.Label;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * 
+ */
 public class FooterController {
+    /**
+     * 
+     */
     @FXML
     private HBox footer;
+    /**
+     * 
+     */
     @FXML
     private Text connectionStatusLabel;
+    /**
+     * 
+     */
     @FXML
     private ImageView statusIcon;
+    /**
+     * 
+     */
     @FXML
     private ComboBox<String> languageSelector;
+    /**
+     * 
+     */
     @FXML
     private ComboBox<Locale> languageComboBox;
+    /**
+     * 
+     */
     @FXML
     private Label languageLabel;
 
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
 
 
+    /**
+     * 
+     */
     private static final Map<String, Locale> SUPPORTED_LANGUAGES = Map.of(
         "English", Locale.ENGLISH,
         "Italiano", Locale.ITALIAN
     );
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {    
         connectionStatusLabel.setText(localeService.getMessage("dashboard.status.connected"));
@@ -59,6 +89,9 @@ public class FooterController {
         });
     }
 
+    /**
+     * @param isConnected
+     */
     public void updateConnectionStatus(boolean isConnected) {
         if (isConnected) {
             connectionStatusLabel.setText(localeService.getMessage("dashboard.status.online"));

@@ -104,7 +104,7 @@ public class GiftListingEntity extends ListingEntity {
 
     @Override
     public String getListingType() {
-        return "Gift";
+        return "GIFT";
     }
 
     @Override

@@ -13,48 +13,120 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+/**
+ * 
+ */
 public class UserFollowersController {
+    /**
+     * 
+     */
     @FXML
     private Label titleLabel;
+    /**
+     * 
+     */
     @FXML
     private Label userNameLabel;
+    /**
+     * 
+     */
     @FXML
     private Label followingCountLabel;
+    /**
+     * 
+     */
     @FXML
     private Label followersCountLabel;
+    /**
+     * 
+     */
     @FXML
     private TabPane followersTabPane;
+    /**
+     * 
+     */
     @FXML
     private TableView<UserViewModel> followingTable;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<UserViewModel, String> followingNameColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<UserViewModel, String> followingUsernameColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<UserViewModel, String> followingDateColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<UserViewModel, Void> followingActionsColumn;
+    /**
+     * 
+     */
     @FXML
     private TableView<UserViewModel> followersTable;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<UserViewModel, String> followersNameColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<UserViewModel, String> followersUsernameColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<UserViewModel, String> followersDateColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<UserViewModel, Void> followersActionsColumn;
+    /**
+     * 
+     */
     @FXML
     private Button refreshButton;
+    /**
+     * 
+     */
     @FXML
     private Button closeButton;
 
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final FollowerService followerService = FollowerService.getInstance();
+    /**
+     * 
+     */
     private UserViewModel currentUser;
+    /**
+     * 
+     */
     private final ObservableList<UserViewModel> followingUsers = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<UserViewModel> followerUsers = FXCollections.observableArrayList();
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupLabels();
@@ -62,12 +134,18 @@ public class UserFollowersController {
         updateCounts();
     }
 
+    /**
+     * 
+     */
     private void setupLabels() {
         titleLabel.setText(localeService.getMessage("followers.title", "Followers & Following"));
         refreshButton.setText(localeService.getMessage("followers.refresh", "Refresh"));
         closeButton.setText(localeService.getMessage("followers.close", "Close"));
     }
 
+    /**
+     * 
+     */
     private void setupTables() {
         followingNameColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDisplayName()));
@@ -93,6 +171,9 @@ public class UserFollowersController {
         followersTable.setItems(followerUsers);
     }
 
+    /**
+     * 
+     */
     private void setupFollowingActionsColumn() {
         followingActionsColumn.setCellFactory(_ -> new TableCell<>() {
             private final Button unfollowButton = new Button("Unfollow");
@@ -122,6 +203,9 @@ public class UserFollowersController {
         });
     }
 
+    /**
+     * 
+     */
     private void setupFollowersActionsColumn() {
         followersActionsColumn.setCellFactory(_ -> new TableCell<>() {
             private final Button followButton = new Button("Follow");
@@ -160,6 +244,9 @@ public class UserFollowersController {
         });
     }
 
+    /**
+     * @param user
+     */
     public void setUser(UserViewModel user) {
         this.currentUser = user;
 
@@ -171,6 +258,9 @@ public class UserFollowersController {
         }
     }
 
+    /**
+     * 
+     */
     private void updateUserInfo() {
         if (currentUser != null) {
             userNameLabel.setText(currentUser.getDisplayName());
@@ -178,11 +268,17 @@ public class UserFollowersController {
         }
     }
 
+    /**
+     * 
+     */
     private void updateCounts() {
         followingCountLabel.setText(String.valueOf(followerService.getFollowingCount()));
         followersCountLabel.setText(String.valueOf(followerService.getFollowerCount()));
     }
 
+    /**
+     * 
+     */
     private void loadFollowData() {
         if (currentUser == null)
             return;
@@ -219,10 +315,16 @@ public class UserFollowersController {
                 });
     }
 
+    /**
+     * @param user
+     */
     private void handleViewProfile(UserViewModel user) {
         System.out.println("View profile for user: " + user.getUsername());
     }
 
+    /**
+     * @param user
+     */
     private void handleFollow(UserViewModel user) {
         followerService.followUser(user.getId())
                 .thenAccept(_ -> Platform.runLater(() -> {
@@ -243,6 +345,9 @@ public class UserFollowersController {
                 });
     }
 
+    /**
+     * @param user
+     */
     private void handleUnfollow(UserViewModel user) {
         Alert confirmation = AlertHelper.createConfirmationDialog(
                 localeService.getMessage("followers.unfollow.title", "Unfollow User"),
@@ -273,12 +378,18 @@ public class UserFollowersController {
         });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleRefresh() {
         updateCounts();
         loadFollowData();
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleClose() {
         Stage stage = (Stage) closeButton.getScene().getWindow();

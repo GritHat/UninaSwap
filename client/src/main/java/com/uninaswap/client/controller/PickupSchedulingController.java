@@ -17,63 +17,135 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ */
 public class PickupSchedulingController {
 
+    /**
+     * 
+     */
     @FXML
     private Label titleLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label instructionsLabel;
 
+    /**
+     * 
+     */
     @FXML
     private TextField locationField;
 
+    /**
+     * 
+     */
     @FXML
     private TextArea detailsArea;
 
+    /**
+     * 
+     */
     @FXML
     private Spinner<Integer> startHourSpinner;
 
+    /**
+     * 
+     */
     @FXML
     private Spinner<Integer> startMinuteSpinner;
 
+    /**
+     * 
+     */
     @FXML
     private Spinner<Integer> endHourSpinner;
 
+    /**
+     * 
+     */
     @FXML
     private Spinner<Integer> endMinuteSpinner;
 
+    /**
+     * 
+     */
     @FXML
     private DatePicker startDatePicker;
 
+    /**
+     * 
+     */
     @FXML
     private DatePicker endDatePicker;
 
+    /**
+     * 
+     */
     @FXML
     private FlowPane selectedDatesPane;
 
+    /**
+     * 
+     */
     @FXML
     private Button addDateRangeButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button clearDatesButton;
 
+    /**
+     * 
+     */
     @FXML
     private Label selectedDatesCountLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Button confirmButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button cancelButton;
 
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final PickupService pickupService = PickupService.getInstance();
+    /**
+     * 
+     */
     private String offerId;
+    /**
+     * 
+     */
     private OfferViewModel offer;
+    /**
+     * 
+     */
     private List<LocalDate> selectedDates = new ArrayList<>();
+    /**
+     * 
+     */
     private boolean isReschedulingMode = false;
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupTimeSpinners();
@@ -82,6 +154,9 @@ public class PickupSchedulingController {
         updateSelectedDatesDisplay();
     }
 
+    /**
+     * 
+     */
     private void setupTimeSpinners() {
         startHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9));
         startMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15));
@@ -97,6 +172,9 @@ public class PickupSchedulingController {
         endMinuteSpinner.valueProperty().addListener((_, _, _) -> validateTimeRange());
     }
 
+    /**
+     * 
+     */
     private void setupDatePickers() {
         LocalDate today = LocalDate.now();
         startDatePicker.setValue(today);
@@ -126,6 +204,9 @@ public class PickupSchedulingController {
         });
     }
 
+    /**
+     * 
+     */
     private void setupLabels() {
         titleLabel.setText(localeService.getMessage("pickup.scheduling.title", "Schedule Pickup"));
         instructionsLabel.setText(localeService.getMessage("pickup.scheduling.instructions",
@@ -143,14 +224,23 @@ public class PickupSchedulingController {
         updateSelectedDatesDisplay();
     }
 
+    /**
+     * @param offerId
+     */
     public void setOfferId(String offerId) {
         this.offerId = offerId;
     }
 
+    /**
+     * @param offer
+     */
     public void setOffer(OfferViewModel offer) {
         this.offer = offer;
     }
 
+    /**
+     * @param reschedulingMode
+     */
     public void setReschedulingMode(boolean reschedulingMode) {
         this.isReschedulingMode = reschedulingMode;
 
@@ -169,6 +259,9 @@ public class PickupSchedulingController {
         });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleAddDateRange() {
         LocalDate startDate = startDatePicker.getValue();
@@ -211,6 +304,9 @@ public class PickupSchedulingController {
                         datesToAdd.size()));
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleClearDates() {
         if (selectedDates.isEmpty()) {
@@ -231,6 +327,9 @@ public class PickupSchedulingController {
         });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleConfirm() {
         if (!validateForm()) {
@@ -313,11 +412,17 @@ public class PickupSchedulingController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCancel() {
         closeWindow();
     }
 
+    /**
+     * 
+     */
     private void validateTimeRange() {
         LocalTime startTime = LocalTime.of(startHourSpinner.getValue(), startMinuteSpinner.getValue());
         LocalTime endTime = LocalTime.of(endHourSpinner.getValue(), endMinuteSpinner.getValue());
@@ -329,6 +434,9 @@ public class PickupSchedulingController {
         }
     }
 
+    /**
+     * @return
+     */
     private boolean validateForm() {
         if (locationField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
@@ -361,6 +469,9 @@ public class PickupSchedulingController {
         return true;
     }
 
+    /**
+     * 
+     */
     private void updateSelectedDatesDisplay() {
         selectedDatesPane.getChildren().clear();
 
@@ -384,6 +495,9 @@ public class PickupSchedulingController {
         }
     }
 
+    /**
+     * 
+     */
     private void closeWindow() {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();

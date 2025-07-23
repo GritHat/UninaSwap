@@ -19,113 +19,230 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ */
 public class PickupSelectionController {
 
+    /**
+     * 
+     */
     @FXML
     private Label titleLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label instructionsLabel;
 
+    /**
+     * 
+     */
     @FXML
     private VBox availableDatesSection;
 
+    /**
+     * 
+     */
     @FXML
     private FlowPane availableDatesPane;
 
+    /**
+     * 
+     */
     @FXML
     private Label timeRangeLabel;
 
+    /**
+     * 
+     */
     @FXML
     private VBox selectedDateTimeSection;
 
+    /**
+     * 
+     */
     @FXML
     private DatePicker selectedDatePicker;
 
+    /**
+     * 
+     */
     @FXML
     private Spinner<Integer> selectedHourSpinner;
 
+    /**
+     * 
+     */
     @FXML
     private Spinner<Integer> selectedMinuteSpinner;
 
+    /**
+     * 
+     */
     @FXML
     private Label locationLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label detailsLabel;
 
+    /**
+     * 
+     */
     @FXML
     private TextArea detailsArea;
 
+    /**
+     * 
+     */
     @FXML
     private Button acceptButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button rejectButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button counterProposeButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button cancelButton;
 
     // Counter proposal section (initially hidden)
+    /**
+     * 
+     */
     @FXML
     private VBox counterProposalSection;
 
+    /**
+     * 
+     */
     @FXML
     private TextField counterLocationField;
 
+    /**
+     * 
+     */
     @FXML
     private Spinner<Integer> counterStartHourSpinner;
 
+    /**
+     * 
+     */
     @FXML
     private Spinner<Integer> counterStartMinuteSpinner;
 
+    /**
+     * 
+     */
     @FXML
     private Spinner<Integer> counterEndHourSpinner;
 
+    /**
+     * 
+     */
     @FXML
     private Spinner<Integer> counterEndMinuteSpinner;
 
+    /**
+     * 
+     */
     @FXML
     private DatePicker counterStartDatePicker;
 
+    /**
+     * 
+     */
     @FXML
     private DatePicker counterEndDatePicker;
 
+    /**
+     * 
+     */
     @FXML
     private FlowPane counterSelectedDatesPane;
 
+    /**
+     * 
+     */
     @FXML
     private Button addCounterDateRangeButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button clearCounterDatesButton;
 
+    /**
+     * 
+     */
     @FXML
     private Label counterSelectedDatesCountLabel;
 
+    /**
+     * 
+     */
     @FXML
     private TextArea counterDetailsArea;
 
+    /**
+     * 
+     */
     @FXML
     private Button submitCounterProposalButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button cancelCounterProposalButton;
     
+    /**
+     * 
+     */
     @FXML
     private HBox mainActionButtons;
 
+    /**
+     * 
+     */
     @FXML
     private HBox counterProposalButtons;
 
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final PickupService pickupService = PickupService.getInstance();
+    /**
+     * 
+     */
     private PickupViewModel currentPickup;
+    /**
+     * 
+     */
     private List<LocalDate> counterSelectedDates = new ArrayList<>();
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupTimeSpinners();
@@ -134,6 +251,9 @@ public class PickupSelectionController {
         updateUI();
     }
 
+    /**
+     * 
+     */
     private void setupTimeSpinners() {
         // Selected time spinners
         selectedHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12));
@@ -160,6 +280,9 @@ public class PickupSelectionController {
         counterEndMinuteSpinner.valueProperty().addListener((_, _, _) -> validateCounterTimeRange());
     }
 
+    /**
+     * 
+     */
     private void setupLabels() {
         titleLabel.setText(localeService.getMessage("pickup.selection.title", "Select Pickup Time"));
         instructionsLabel.setText(localeService.getMessage("pickup.selection.instructions",
@@ -179,6 +302,9 @@ public class PickupSelectionController {
         clearCounterDatesButton.setText(localeService.getMessage("pickup.clear.dates", "Clear All"));
     }
 
+    /**
+     * 
+     */
     private void setupCounterProposalSection() {
         counterProposalSection.setVisible(false);
         counterProposalSection.setManaged(false);
@@ -212,11 +338,17 @@ public class PickupSelectionController {
         updateCounterSelectedDatesDisplay();
     }
 
+    /**
+     * @param pickup
+     */
     public void setPickup(PickupViewModel pickup) {
         this.currentPickup = pickup;
         updateUI();
     }
 
+    /**
+     * 
+     */
     private void updateUI() {
         if (currentPickup == null)
             return;
@@ -242,6 +374,9 @@ public class PickupSelectionController {
         validateSelection();
     }
 
+    /**
+     * 
+     */
     private void updateAvailableDatesDisplay() {
         availableDatesPane.getChildren().clear();
 
@@ -259,6 +394,9 @@ public class PickupSelectionController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleAccept() {
         if (!validateSelection()) {
@@ -302,6 +440,9 @@ public class PickupSelectionController {
                 });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleReject() {
         Alert confirmation = AlertHelper.createConfirmationDialog(
@@ -362,6 +503,9 @@ public class PickupSelectionController {
         });
     }
 
+    /**
+     * 
+     */
     private void handleReschedulePickup() {
         closeWindow();
         AlertHelper.showInformationAlert(
@@ -371,6 +515,9 @@ public class PickupSelectionController {
                         "Please navigate to the pickup scheduling section to propose new times."));
     }
 
+    /**
+     * 
+     */
     private void handleCancelOffer() {
         Alert confirmation = AlertHelper.createConfirmationDialog(
                 localeService.getMessage("offer.cancel.confirm.title", "Cancel Offer"),
@@ -409,6 +556,9 @@ public class PickupSelectionController {
         });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCounterPropose() {
         availableDatesSection.setVisible(false);
@@ -427,6 +577,9 @@ public class PickupSelectionController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleAddCounterDateRange() {
         LocalDate startDate = counterStartDatePicker.getValue();
@@ -470,6 +623,9 @@ public class PickupSelectionController {
                         datesToAdd.size()));
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleClearCounterDates() {
         if (counterSelectedDates.isEmpty()) {
@@ -490,6 +646,9 @@ public class PickupSelectionController {
         });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleSubmitCounterProposal() {
         if (!validateCounterProposal()) {
@@ -549,6 +708,9 @@ public class PickupSelectionController {
                 });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCancelCounterProposal() {
         availableDatesSection.setVisible(true);
@@ -576,11 +738,17 @@ public class PickupSelectionController {
         counterEndDatePicker.setValue(today.plusDays(7));
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCancel() {
         closeWindow();
     }
 
+    /**
+     * @return
+     */
     private boolean validateSelection() {
         if (currentPickup == null)
             return false;
@@ -600,6 +768,9 @@ public class PickupSelectionController {
         return true;
     }
 
+    /**
+     * 
+     */
     private void validateCounterTimeRange() {
         LocalTime startTime = LocalTime.of(counterStartHourSpinner.getValue(), counterStartMinuteSpinner.getValue());
         LocalTime endTime = LocalTime.of(counterEndHourSpinner.getValue(), counterEndMinuteSpinner.getValue());
@@ -611,6 +782,9 @@ public class PickupSelectionController {
         }
     }
 
+    /**
+     * @return
+     */
     private boolean validateCounterProposal() {
         if (counterLocationField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
@@ -643,6 +817,9 @@ public class PickupSelectionController {
         return true;
     }
 
+    /**
+     * 
+     */
     private void updateCounterSelectedDatesDisplay() {
         counterSelectedDatesPane.getChildren().clear();
 
@@ -666,6 +843,9 @@ public class PickupSelectionController {
         }
     }
 
+    /**
+     * 
+     */
     private void closeWindow() {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();

@@ -14,22 +14,52 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * 
+ */
 public class ListingService {
+    /**
+     * 
+     */
     private static ListingService instance;
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient;
+    /**
+     * 
+     */
     private final ObservableList<ListingViewModel> userListings = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<ListingViewModel> allListings = FXCollections.observableArrayList();
 
+    /**
+     * 
+     */
     private CompletableFuture<?> futureToComplete;
+    /**
+     * 
+     */
     private Consumer<ListingMessage> messageCallback;
 
+    /**
+     * 
+     */
     private boolean isLoadingMore = false;
 
+    /**
+     * 
+     */
     private ListingService() {
         this.webSocketClient = WebSocketClient.getInstance();
         this.webSocketClient.registerMessageHandler(ListingMessage.class, this::handleListingMessage);
     }
 
+    /**
+     * @return
+     */
     public static synchronized ListingService getInstance() {
         if (instance == null) {
             instance = new ListingService();
@@ -44,6 +74,11 @@ public class ListingService {
      * @param page The page number to fetch
      * @param size The number of listings per page
      * @return A CompletableFuture with the list of listings
+     */
+    /**
+     * @param page
+     * @param size
+     * @return
      */
     public CompletableFuture<List<ListingDTO>> getListings(int page, int size) {
         CompletableFuture<List<ListingDTO>> future = new CompletableFuture<>();
@@ -71,6 +106,9 @@ public class ListingService {
      * 
      * @return A CompletableFuture with the list of the current user's listings
      */
+    /**
+     * @return
+     */
     public CompletableFuture<List<ListingDTO>> getMyListings() {
         CompletableFuture<List<ListingDTO>> future = new CompletableFuture<>();
 
@@ -89,6 +127,10 @@ public class ListingService {
         return future;
     }
 
+    /**
+     * @param listing
+     * @return
+     */
     public CompletableFuture<ListingDTO> createListing(ListingDTO listing) {
         CompletableFuture<ListingDTO> future = new CompletableFuture<>();
 
@@ -109,6 +151,10 @@ public class ListingService {
         return future;
     }
 
+    /**
+     * @param listing
+     * @return
+     */
     public CompletableFuture<ListingDTO> updateListing(ListingDTO listing) {
         CompletableFuture<ListingDTO> future = new CompletableFuture<>();
 
@@ -129,6 +175,10 @@ public class ListingService {
         return future;
     }
 
+    /**
+     * @param listingId
+     * @return
+     */
     public CompletableFuture<Boolean> deleteListing(String listingId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -148,6 +198,10 @@ public class ListingService {
         return future;
     }
 
+    /**
+     * @param listingId
+     * @return
+     */
     public CompletableFuture<ListingDTO> getListingDetails(String listingId) {
         CompletableFuture<ListingDTO> future = new CompletableFuture<>();
 
@@ -167,6 +221,9 @@ public class ListingService {
         return future;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<ListingViewModel> getUserListingsObservable() {
         if (userListings.isEmpty()) {
             refreshUserListings();
@@ -174,6 +231,9 @@ public class ListingService {
         return userListings;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<ListingViewModel> getAllListingsObservable() {
         if (allListings.isEmpty()) {
             refreshAllListings();
@@ -181,6 +241,9 @@ public class ListingService {
         return allListings;
     }
 
+    /**
+     * 
+     */
     public void refreshUserListings() {
         getMyListings()
                 .thenAccept(listings -> {
@@ -198,6 +261,9 @@ public class ListingService {
                 });
     }
 
+    /**
+     * 
+     */
     public void refreshAllListings() {
         getListings(0, 50)
                 .thenAccept(listings -> {
@@ -215,6 +281,9 @@ public class ListingService {
                 });
     }
 
+    /**
+     * @param newListings
+     */
     public void appendListings(List<ListingDTO> newListings) {
         Platform.runLater(() -> {
             List<ListingViewModel> viewModels = newListings.stream()
@@ -224,10 +293,16 @@ public class ListingService {
         });
     }
 
+    /**
+     * @param loadingMore
+     */
     public void setLoadingMore(boolean loadingMore) {
         this.isLoadingMore = loadingMore;
     }
 
+    /**
+     * @param message
+     */
     @SuppressWarnings("unchecked")
     private void handleListingMessage(ListingMessage message) {
         if (message.getType() == null) {
@@ -411,6 +486,10 @@ public class ListingService {
      * @param list The observable list to update
      * @param updated The updated listing view model
      */
+    /**
+     * @param list
+     * @param updated
+     */
     private void updateListingInObservableList(ObservableList<ListingViewModel> list, ListingViewModel updated) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId().equals(updated.getId())) {
@@ -425,6 +504,9 @@ public class ListingService {
      * 
      * @param callback The callback to set
      */
+    /**
+     * @param callback
+     */
     public void setMessageCallback(Consumer<ListingMessage> callback) {
         this.messageCallback = callback;
     }
@@ -435,6 +517,10 @@ public class ListingService {
      * 
      * @param userId The ID of the user whose listings to fetch
      * @return A CompletableFuture with the list of user's listings
+     */
+    /**
+     * @param userId
+     * @return
      */
     public CompletableFuture<List<ListingDTO>> getUserListings(Long userId) {
         CompletableFuture<List<ListingDTO>> future = new CompletableFuture<>();

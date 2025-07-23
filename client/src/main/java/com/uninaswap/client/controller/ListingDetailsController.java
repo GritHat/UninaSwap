@@ -6,10 +6,13 @@ import com.uninaswap.client.viewmodel.GiftListingViewModel;
 import com.uninaswap.client.viewmodel.ItemViewModel;
 import com.uninaswap.client.viewmodel.ListingItemViewModel;
 import com.uninaswap.client.viewmodel.ListingViewModel;
+import com.uninaswap.client.viewmodel.OfferViewModel;
 import com.uninaswap.client.viewmodel.SellListingViewModel;
 import com.uninaswap.client.viewmodel.TradeListingViewModel;
 import com.uninaswap.client.viewmodel.UserViewModel;
 import com.uninaswap.common.enums.Currency;
+import com.uninaswap.common.enums.DeliveryType;
+
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -31,116 +34,296 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 
+/**
+ * 
+ */
 public class ListingDetailsController {
+    /**
+     * 
+     */
     @FXML
     private Button backButton;
+    /**
+     * 
+     */
     @FXML
     private Button favoriteButton;
+    /**
+     * 
+     */
     @FXML
     private ImageView favoriteIcon;
+    /**
+     * 
+     */
     @FXML
     private ImageView mainImage;
+    /**
+     * 
+     */
     @FXML
     private HBox imageNavigation;
+    /**
+     * 
+     */
     @FXML
     private Button prevImageButton;
+    /**
+     * 
+     */
     @FXML
     private Button nextImageButton;
+    /**
+     * 
+     */
     @FXML
     private Label imageCounter;
+    /**
+     * 
+     */
     @FXML
     private ScrollPane thumbnailScrollPane;
+    /**
+     * 
+     */
     @FXML
     private HBox thumbnailContainer;
+    /**
+     * 
+     */
     @FXML
     private Text listingTitle;
+    /**
+     * 
+     */
     @FXML
     private Label categoryLabel;
+    /**
+     * 
+     */
     @FXML
     private Label statusLabel;
+    /**
+     * 
+     */
     @FXML
     private TextArea descriptionArea;
+    /**
+     * 
+     */
     @FXML
     private VBox itemsSection;
+    /**
+     * 
+     */
     @FXML
     private VBox itemsList;
+    /**
+     * 
+     */
     @FXML
     private ImageView sellerAvatar;
+    /**
+     * 
+     */
     @FXML
     private Text sellerName;
+    /**
+     * 
+     */
     @FXML
     private Text sellerRating;
+    /**
+     * 
+     */
     @FXML
     private Text priceValue;
+    /**
+     * 
+     */
     @FXML
     private Text priceDetails;
+    /**
+     * 
+     */
     @FXML
     private VBox actionButtonsSection;
+    /**
+     * 
+     */
     @FXML
     private VBox sellActions;
+    /**
+     * 
+     */
     @FXML
     private Button buyNowButton;
+    /**
+     * 
+     */
     @FXML
     private Button makeOfferButton;
+    /**
+     * 
+     */
     @FXML
     private VBox tradeActions;
+    /**
+     * 
+     */
     @FXML
     private Button proposeTradeButton;
+    /**
+     * 
+     */
     @FXML
     private VBox tradeOptionsSection;
+    /**
+     * 
+     */
     @FXML
     private CheckBox includeMoneyCheckBox;
+    /**
+     * 
+     */
     @FXML
     private HBox moneyOfferSection;
+    /**
+     * 
+     */
     @FXML
     private TextField moneyAmountField;
+    /**
+     * 
+     */
     @FXML
     private ComboBox<Currency> currencyComboBox;
+    /**
+     * 
+     */
     @FXML
     private VBox giftActions;
+    /**
+     * 
+     */
     @FXML
     private Button requestGiftButton;
+    /**
+     * 
+     */
     @FXML
     private VBox thankYouSection;
+    /**
+     * 
+     */
     @FXML
     private CheckBox offerThankYouCheckBox;
+    /**
+     * 
+     */
     @FXML
     private TextArea thankYouMessageArea;
+    /**
+     * 
+     */
     @FXML
     private VBox auctionActions;
+    /**
+     * 
+     */
     @FXML
     private Text currentBidValue;
+    /**
+     * 
+     */
     @FXML
     private Text timeRemainingLabel;
+    /**
+     * 
+     */
     @FXML
     private TextField bidAmountField;
+    /**
+     * 
+     */
     @FXML
     private ComboBox<Currency> bidCurrencyComboBox;
+    /**
+     * 
+     */
     @FXML
     private Text minimumBidLabel;
+    /**
+     * 
+     */
     @FXML
     private Button placeBidButton;
+    /**
+     * 
+     */
     @FXML
     private Button contactSellerButton;
+    /**
+     * 
+     */
     @FXML
     private Button reportListingButton;
+    /**
+     * 
+     */
     @FXML
     private HBox deliveryOptionsSection;
+    /**
+     * 
+     */
     @FXML
     private Label pickupLocationLabel;
+    /**
+     * 
+     */
     @FXML
-    private ComboBox<String> deliveryMethodComboBox;
+    private ComboBox<DeliveryType> deliveryMethodComboBox;
 
+    /**
+     * 
+     */
     private final NavigationService navigationService = NavigationService.getInstance();
+    /**
+     * 
+     */
     private final FavoritesService favoritesService = FavoritesService.getInstance();
+    /**
+     * 
+     */
     private final ImageService imageService = ImageService.getInstance();
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final UserSessionService sessionService = UserSessionService.getInstance();
+    /**
+     * 
+     */
     private ListingViewModel currentListing;
+    /**
+     * 
+     */
     private List<String> imageUrls = new ArrayList<>();
+    /**
+     * 
+     */
     private int currentImageIndex = 0;
+    /**
+     * 
+     */
     private boolean isFavorite = false;
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupCurrencyComboBoxes();
@@ -148,6 +331,9 @@ public class ListingDetailsController {
         setupEventHandlers();
     }
 
+    /**
+     * 
+     */
     private void setupCurrencyComboBoxes() {
         List<Currency> currencies = List.of(Currency.EUR, Currency.USD, Currency.GBP);
         currencyComboBox.setItems(FXCollections.observableArrayList(currencies));
@@ -156,15 +342,21 @@ public class ListingDetailsController {
         bidCurrencyComboBox.setValue(Currency.EUR);
     }
 
+    /**
+     * 
+     */
     private void setupDeliveryMethodComboBox() {
         deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
-            localeService.getMessage("delivery.method.pickup", "Pickup"),
-            localeService.getMessage("delivery.method.shipping", "Shipping"),
-            localeService.getMessage("delivery.method.both", "Pickup or Shipping")
+            DeliveryType.PICKUP,
+            DeliveryType.SHIPPING,
+            DeliveryType.BOTH
         ));
-        deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
+        deliveryMethodComboBox.setValue(DeliveryType.PICKUP);
     }
 
+    /**
+     * 
+     */
     private void setupEventHandlers() {
         includeMoneyCheckBox.selectedProperty().addListener((_, _, newVal) -> {
             setVisibleAndManaged(moneyOfferSection, newVal);
@@ -174,6 +366,9 @@ public class ListingDetailsController {
         });
     }
 
+    /**
+     * @param listing
+     */
     public void setListing(ListingViewModel listing) {
         this.currentListing = listing;
 
@@ -187,6 +382,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     private void populateListingDetails() {
         listingTitle.setText(currentListing.getTitle());
         descriptionArea.setText(currentListing.getDescription());
@@ -208,6 +406,9 @@ public class ListingDetailsController {
         setupDeliveryOptions();
     }
 
+    /**
+     * 
+     */
     private void setupDeliveryOptions() {
         String pickupLocation = getPickupLocationFromListing();
         
@@ -220,6 +421,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * @return
+     */
     private String getPickupLocationFromListing() {
         if (currentListing == null) {
             return null;
@@ -254,13 +458,19 @@ public class ListingDetailsController {
         return pickupLocation;
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleDeliveryMethodChange() {
-        String selectedMethod = deliveryMethodComboBox.getValue();
+        DeliveryType selectedMethod = deliveryMethodComboBox.getValue();
         if (selectedMethod != null) {
             System.out.println("Selected delivery method: " + selectedMethod);
         }
     }
+    /**
+     * 
+     */
     private void setupDeliveryMethodForListing() {
         if (currentListing == null) {
             return;
@@ -269,27 +479,30 @@ public class ListingDetailsController {
         boolean isPickupOnly = isListingPickupOnly();
         if (isPickupOnly) {
             deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
-                localeService.getMessage("delivery.method.pickup", "Pickup")
+                DeliveryType.PICKUP
             ));
-            deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
+            deliveryMethodComboBox.setValue(DeliveryType.PICKUP);
             deliveryMethodComboBox.setDisable(true);
         } else if (supportsShipping) {
             deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
-                localeService.getMessage("delivery.method.pickup", "Pickup"),
-                localeService.getMessage("delivery.method.shipping", "Shipping"),
-                localeService.getMessage("delivery.method.both", "Pickup or Shipping")
+                DeliveryType.PICKUP,
+                DeliveryType.SHIPPING,
+                DeliveryType.BOTH
             ));
-            deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
+            deliveryMethodComboBox.setValue(DeliveryType.PICKUP);
             deliveryMethodComboBox.setDisable(false);
         } else {
             deliveryMethodComboBox.setItems(FXCollections.observableArrayList(
-                localeService.getMessage("delivery.method.pickup", "Pickup")
+                DeliveryType.PICKUP
             ));
-            deliveryMethodComboBox.setValue(localeService.getMessage("delivery.method.pickup", "Pickup"));
+            deliveryMethodComboBox.setValue(DeliveryType.PICKUP);
             deliveryMethodComboBox.setDisable(true);
         }
     }
 
+    /**
+     * @return
+     */
     private boolean doesListingSupportShipping() {
         if (currentListing == null) {
             return false;
@@ -314,6 +527,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * @return
+     */
     private boolean isListingPickupOnly() {
         if (currentListing == null) {
             return true;
@@ -328,6 +544,9 @@ public class ListingDetailsController {
     }
 
 
+    /**
+     * @param seller
+     */
     private void loadSellerAvatar(UserViewModel seller) {
         String profileImagePath = seller.getProfileImagePath();
         
@@ -352,6 +571,9 @@ public class ListingDetailsController {
         }
     }
  
+    /**
+     * 
+     */
     private void setDefaultSellerAvatar() {
         try {
             Image defaultAvatar = new Image(getClass()
@@ -362,6 +584,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * @return
+     */
     private String getListingCategory() {
         if (currentListing.getItems() != null && !currentListing.getItems().isEmpty()) {
             String itemCategory = currentListing.getItems().get(0).getItem().getItemCategory();
@@ -372,6 +597,9 @@ public class ListingDetailsController {
         return currentListing.getListingTypeValue();
     }
 
+    /**
+     * 
+     */
     private void setupPriceSection() {
         String listingType = currentListing.getListingTypeValue();
 
@@ -391,12 +619,18 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * @param sellListing
+     */
     private void setupSellPricing(SellListingViewModel sellListing) {
         String currency = sellListing.getCurrency() != null ? sellListing.getCurrency().getSymbol() : "€";
         priceValue.setText(currency + " " + sellListing.getPrice());
         priceDetails.setText("Prezzo fisso");
     }
 
+    /**
+     * @param tradeListing
+     */
     private void setupTradePricing(TradeListingViewModel tradeListing) {
         priceValue.setText("Scambio");
 
@@ -413,6 +647,9 @@ public class ListingDetailsController {
         priceDetails.setText(details.toString());
     }
 
+    /**
+     * @param giftListing
+     */
     private void setupGiftPricing(GiftListingViewModel giftListing) {
         priceValue.setText("Regalo");
 
@@ -426,6 +663,9 @@ public class ListingDetailsController {
         priceDetails.setText(details.toString());
     }
 
+    /**
+     * @param auctionListing
+     */
     private void setupAuctionPricing(AuctionListingViewModel auctionListing) {
         BigDecimal currentBid = auctionListing.getHighestBid();
         String currency = auctionListing.getCurrency() != null ? auctionListing.getCurrency().getSymbol() : "€";
@@ -444,6 +684,9 @@ public class ListingDetailsController {
         updateTimeRemaining(auctionListing);
     }
 
+    /**
+     * @param auction
+     */
     private void updateTimeRemaining(AuctionListingViewModel auction) {
         if (auction.getAuctionEndTime() != null) {
             LocalDateTime now = LocalDateTime.now();
@@ -464,6 +707,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     private void populateItemsList() {
         itemsList.getChildren().clear();
 
@@ -475,13 +721,17 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * @param item
+     * @return
+     */
     private VBox createItemDetailsSection(ListingItemViewModel item) {
         ItemViewModel itemData = item.getItem();
         boolean hasDescription = itemData.getDescription() != null && !itemData.getDescription().trim().isEmpty();
         boolean hasBrand = itemData.getBrand() != null && !itemData.getBrand().trim().isEmpty();
         boolean hasModel = itemData.getModel() != null && !itemData.getModel().trim().isEmpty();
-        boolean hasYear = itemData.getYear() > 0;
-        
+        boolean hasYear = itemData.getYear() != null && itemData.getYear() > 0;
+
         if (!hasDescription && !hasBrand && !hasModel && !hasYear) {
             return null;
         }
@@ -554,6 +804,9 @@ public class ListingDetailsController {
         return detailsContainer;
     }
 
+    /**
+     * @param imageView
+     */
     private void setDefaultItemImage(ImageView imageView) {
         try {
             Image defaultImage = new Image(getClass()
@@ -564,6 +817,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     private void setupImageGallery() {
         imageUrls.clear();
         if (currentListing.getItems() != null) {
@@ -595,6 +851,9 @@ public class ListingDetailsController {
         updateImageNavigation();
     }
 
+    /**
+     * @param imagePath
+     */
     private void loadMainImage(String imagePath) {
         imageService.fetchImage(imagePath)
                 .thenAccept(image -> Platform.runLater(() -> {
@@ -606,6 +865,9 @@ public class ListingDetailsController {
                 }));
     }
 
+    /**
+     * 
+     */
     private void setDefaultMainImage() {
         try {
             Image defaultImage = new Image(getClass()
@@ -622,6 +884,10 @@ public class ListingDetailsController {
      * @param node The node to modify
      * @param visible Whether the node should be visible and managed
      */
+    /**
+     * @param node
+     * @param visible
+     */
     private void setVisibleAndManaged(Node node, boolean visible) {
         node.setVisible(visible);
         node.setManaged(visible);
@@ -633,12 +899,19 @@ public class ListingDetailsController {
      * @param visible Whether the nodes should be visible and managed
      * @param nodes The nodes to modify
      */
+    /**
+     * @param visible
+     * @param nodes
+     */
     private void setVisibleAndManaged(boolean visible, Node... nodes) {
         for (Node node : nodes) {
             setVisibleAndManaged(node, visible);
         }
     }
 
+    /**
+     * 
+     */
     private void setupImageNavigation() {
         boolean hasMultipleImages = imageUrls.size() > 1;
         setVisibleAndManaged(imageNavigation, hasMultipleImages);
@@ -648,6 +921,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     private void updateImageNavigation() {
         if (imageUrls.size() > 1) {
             prevImageButton.setDisable(currentImageIndex == 0);
@@ -656,12 +932,18 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     private void updateImageCounter() {
         if (!imageUrls.isEmpty()) {
             imageCounter.setText((currentImageIndex + 1) + " / " + imageUrls.size());
         }
     }
 
+    /**
+     * 
+     */
     private void createThumbnails() {
         thumbnailContainer.getChildren().clear();
 
@@ -698,6 +980,9 @@ public class ListingDetailsController {
         updateThumbnailSelection();
     }
 
+    /**
+     * 
+     */
     private void updateThumbnailSelection() {
         for (int i = 0; i < thumbnailContainer.getChildren().size(); i++) {
             ImageView thumbnail = (ImageView) thumbnailContainer.getChildren().get(i);
@@ -709,6 +994,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     private void setupActionButtons() {
         setVisibleAndManaged(false, sellActions, tradeActions, giftActions, auctionActions);
         setVisibleAndManaged(tradeOptionsSection, false);
@@ -752,21 +1040,33 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     private void disableTradeActions() {
         proposeTradeButton.setDisable(true);
         proposeTradeButton.setText("La tua inserzione");
     }
 
+    /**
+     * 
+     */
     private void disableGiftActions() {
         requestGiftButton.setDisable(true);
         requestGiftButton.setText("La tua inserzione");
     }
 
+    /**
+     * 
+     */
     private void disableAuctionActions() {
         placeBidButton.setDisable(true);
         placeBidButton.setText("La tua inserzione");
     }
 
+    /**
+     * 
+     */
     private void initializeFavoriteStatus() {
         if (currentListing != null) {
             isFavorite = favoritesService.isFavoriteListing(currentListing.getId());
@@ -774,6 +1074,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     private void updateFavoriteIcon() {
         String iconPath = isFavorite ? "/images/icons/favorites_add.png" : "/images/icons/favorites_remove.png";
         try {
@@ -784,6 +1087,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     private void setupSellerAvatarClickHandler() {
         if (sellerAvatar != null) {
             sellerAvatar.setOnMouseClicked(_ -> {
@@ -794,6 +1100,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     private void handleViewSellerProfile() {
         if (currentListing != null && currentListing.getUser() != null) {
             UserViewModel seller = currentListing.getUser();
@@ -811,11 +1120,17 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleBack() {
         navigationService.goBack();
     }
 
+    /**
+     * 
+     */
     @FXML
     private void toggleFavorite() {
         if (currentListing != null) {
@@ -848,6 +1163,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void showPreviousImage() {
         if (currentImageIndex > 0) {
@@ -858,6 +1176,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void showNextImage() {
         if (currentImageIndex < imageUrls.size() - 1) {
@@ -868,30 +1189,116 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleBuyNow() {
-        if (currentListing instanceof SellListingViewModel) {
-            SellListingViewModel sellListing = (SellListingViewModel) currentListing;
+        if (!(currentListing instanceof SellListingViewModel)) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("buy.error.title", "Errore"),
+                    localeService.getMessage("buy.error.header", "Tipo di inserzione non valido"),
+                    localeService.getMessage("buy.error.message", "Questa funzione è disponibile solo per gli annunci di vendita."));
+            return;
+        }
 
-            String message = String.format("Confermi l'acquisto di '%s' per %s %s?",
-                    currentListing.getTitle(),
-                    sellListing.getCurrency().getSymbol(),
-                    sellListing.getPrice());
+        SellListingViewModel sellListing = (SellListingViewModel) currentListing;
 
-            boolean confirmed = AlertHelper.showConfirmationAlert(
-                    "Conferma acquisto",
-                    "Acquisto diretto",
-                    message);
+        String message = String.format("Confermi l'acquisto di '%s' per %s %s?",
+                currentListing.getTitle(),
+                sellListing.getCurrency().getSymbol(),
+                sellListing.getPrice());
 
-            if (confirmed) {
-                AlertHelper.showInformationAlert(
-                        "Acquisto confermato",
-                        "Il tuo acquisto è stato registrato",
-                        "Riceverai presto i dettagli per il pagamento e la consegna.");
-            }
+        boolean confirmed = AlertHelper.showConfirmationAlert(
+                "Conferma acquisto",
+                "Acquisto diretto",
+                message);
+
+        if (confirmed) {
+            createBuyNowOffer(sellListing);
         }
     }
 
+    /**
+     * Creates a buy now offer with the full listing price
+     * @param sellListing The sell listing to create an offer for
+     */
+    private void createBuyNowOffer(SellListingViewModel sellListing) {
+        try {
+            // Create an offer with the full listing price
+            OfferViewModel offer = new OfferViewModel();
+            offer.setListingId(sellListing.getId());
+            offer.setAmount(sellListing.getPrice());
+            offer.setCurrency(sellListing.getCurrency());
+            offer.setMessage("Buy Now - Full Price Purchase");
+            
+            // Set delivery type based on listing and user selection
+            offer.setDeliveryType(sellListing.getDeliveryType(
+                    deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
+            
+            // Create the offer using the existing service
+            OfferService.getInstance().createOffer(offer)
+                    .thenAccept(model -> Platform.runLater(() -> {
+                        if (model != null) {
+                            String successMessage;
+                            if (offer.getDeliveryType() == com.uninaswap.common.enums.DeliveryType.SHIPPING) {
+                                successMessage = localeService.getMessage("buy.success.shipping.message",
+                                        "Acquisto confermato! Il venditore preparerà la spedizione. " +
+                                        "Riceverai una notifica quando dovrai confermare l'arrivo del prodotto.");
+                            } else {
+                                successMessage = localeService.getMessage("buy.success.pickup.message",
+                                        "Acquisto confermato! Il venditore ti proporrà alcuni orari per il ritiro. " +
+                                        "Riceverai una notifica per scegliere l'orario più conveniente.");
+                            }
+                            
+                            AlertHelper.showInformationAlert(
+                                    localeService.getMessage("buy.success.title", "Acquisto confermato"),
+                                    localeService.getMessage("buy.success.header", "Il tuo acquisto è stato registrato"),
+                                    successMessage);
+                                    
+                            // Navigate to offers view to show the created offer
+                            try {
+                                navigationService.navigateToOffersView();
+                            } catch (Exception e) {
+                                System.err.println("Failed to navigate to offers view: " + e.getMessage());
+                                AlertHelper.showErrorAlert(
+                                        localeService.getMessage("buy.error.navigation.title", "Errore di navigazione"),
+                                        localeService.getMessage("buy.error.navigation.header", "Navigazione fallita"),
+                                        localeService.getMessage("buy.error.navigation.message",
+                                                "Si è verificato un errore durante la navigazione alla sezione offerte: " + e.getMessage()));
+                            }
+                        } else {
+                            AlertHelper.showErrorAlert(
+                                    localeService.getMessage("buy.error.title", "Errore"),
+                                    localeService.getMessage("buy.error.header", "Acquisto fallito"),
+                                    localeService.getMessage("buy.error.accept.message",
+                                            "L'offerta è stata creata ma non è stata possibile accettarla automaticamente. " +
+                                            "Controlla la sezione offerte per maggiori dettagli."));
+                        }
+                    }))
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> {
+                            AlertHelper.showErrorAlert(
+                                    localeService.getMessage("buy.error.title", "Errore"),
+                                    localeService.getMessage("buy.error.header", "Errore durante l'acquisto"),
+                                    localeService.getMessage("buy.error.connection.message",
+                                            "Si è verificato un errore durante l'elaborazione dell'acquisto: " + ex.getMessage()));
+                        });
+                        return null;
+                    });
+                        
+        } catch (Exception e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("buy.error.title", "Errore"),
+                    localeService.getMessage("buy.error.header", "Errore durante l'acquisto"),
+                    localeService.getMessage("buy.error.unexpected.message",
+                            "Si è verificato un errore imprevisto: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * 
+     */
     @FXML
     private void handleMakeOffer() {
         try {
@@ -957,6 +1364,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleProposeTrade() {
         if (!(currentListing instanceof TradeListingViewModel)) {
@@ -1036,31 +1446,227 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleRequestGift() {
-        if (currentListing instanceof GiftListingViewModel) {
-            boolean offerThankYou = offerThankYouCheckBox.isSelected();
-            //String thankYouMessage = offerThankYou ? thankYouMessageArea.getText() : "";
+        if (!(currentListing instanceof GiftListingViewModel)) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("gift.error.title", "Errore"),
+                    localeService.getMessage("gift.error.header", "Tipo di inserzione non valido"),
+                    localeService.getMessage("gift.error.message", "Questa funzione è disponibile solo per i regali."));
+            return;
+        }
 
-            String message = "Confermi la richiesta per il regalo '" + currentListing.getTitle() + "'?";
-            if (offerThankYou) {
-                message += "\n\nMessaggio di ringraziamento incluso.";
-            }
+        GiftListingViewModel giftListing = (GiftListingViewModel) currentListing;
+        boolean offerThankYou = offerThankYouCheckBox.isSelected();
 
-            boolean confirmed = AlertHelper.showConfirmationAlert(
-                    "Conferma richiesta regalo",
-                    "Richiesta regalo",
-                    message);
-
-            if (confirmed) {
-                AlertHelper.showInformationAlert(
-                        "Richiesta inviata",
-                        "La tua richiesta è stata inviata",
-                        "Il donatore riceverà la tua richiesta e ti risponderà presto.");
-            }
+        if (offerThankYou && giftListing.isAllowThankYouOffers()) {
+            // Show offer dialog to create thank-you offer
+            openThankYouOfferDialog(giftListing);
+        } else {
+            // Go straight to confirmation and create empty gift request
+            showGiftRequestConfirmation(giftListing, null);
         }
     }
 
+    /**
+     * Opens the offer dialog for creating a thank-you offer
+     * @param giftListing The gift listing to create an offer for
+     */
+    private void openThankYouOfferDialog(GiftListingViewModel giftListing) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/OfferDialogView.fxml"));
+            loader.setResources(localeService.getResourceBundle());
+            DialogPane dialogPane = loader.load();
+
+            ButtonType confirmButtonType = new ButtonType(
+                    localeService.getMessage("gift.thankyou.button.send", "Invia ringraziamento"),
+                    ButtonBar.ButtonData.OK_DONE);
+            ButtonType cancelButtonType = new ButtonType(
+                    localeService.getMessage("gift.thankyou.button.cancel", "Annulla"),
+                    ButtonBar.ButtonData.CANCEL_CLOSE);
+            dialogPane.getButtonTypes().addAll(confirmButtonType, cancelButtonType);
+
+            OfferDialogController controller = loader.getController();
+            controller.setListing(currentListing);
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle(localeService.getMessage("gift.thankyou.dialog.title", "Offri un ringraziamento"));
+            dialog.setHeaderText(localeService.getMessage("gift.thankyou.dialog.header",
+                    "Cosa vuoi offrire come ringraziamento per: " + currentListing.getTitle()));
+            dialog.setDialogPane(dialogPane);
+
+            Button confirmButton = (Button) dialogPane.lookupButton(confirmButtonType);
+            confirmButton.disableProperty().bind(
+                    javafx.beans.binding.Bindings.createBooleanBinding(
+                            () -> !controller.isValidOffer(),
+                            controller.getIncludeMoneyCheckBox().selectedProperty(),
+                            controller.getMoneyAmountField().textProperty(),
+                            controller.getSelectedItems()));
+
+            Optional<ButtonType> result = dialog.showAndWait();
+
+            if (result.isPresent() && result.get() == confirmButtonType) {
+                // Create the thank-you offer data
+                OfferViewModel thankYouOffer = createThankYouOfferFromDialog(controller, giftListing);
+                showGiftRequestConfirmation(giftListing, thankYouOffer);
+            }
+            
+            controller.cleanup();
+
+        } catch (IOException e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("gift.error.title", "Errore"),
+                    localeService.getMessage("gift.error.header", "Impossibile aprire la finestra di ringraziamento"),
+                    e.getMessage());
+        }
+    }
+
+    /**
+     * Creates a thank-you offer from the dialog data
+     * @param controller The offer dialog controller
+     * @param giftListing The gift listing
+     * @return The created offer view model
+     */
+    @SuppressWarnings("unchecked")
+    private OfferViewModel createThankYouOfferFromDialog(OfferDialogController controller, GiftListingViewModel giftListing) {
+        OfferViewModel offer = new OfferViewModel();
+        offer.setListingId(giftListing.getId());
+        offer.setMessage("Gift Request - Thank You Offer");
+        
+        // Set delivery type based on gift listing
+        offer.setDeliveryType(giftListing.getDeliveryType(
+                deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
+        
+        // Add money component if selected
+        if (controller.getIncludeMoneyCheckBox().isSelected() && 
+            !controller.getMoneyAmountField().getText().trim().isEmpty()) {
+            try {
+                BigDecimal amount = new BigDecimal(controller.getMoneyAmountField().getText().trim());
+                offer.setAmount(amount);
+                offer.setCurrency(controller.getMoneyAmountField().getParent() != null ? 
+                    ((ComboBox<Currency>) controller.getMoneyAmountField().getParent()
+                        .lookup(".currency-combo")).getValue() : Currency.EUR);
+            } catch (NumberFormatException e) {
+                // Handle error - could log or set default
+                System.err.println("Error parsing money amount: " + e.getMessage());
+            }
+        }
+        
+        // Add items if selected
+        if (!controller.getSelectedItems().isEmpty()) {
+            offer.getOfferItems().setAll(controller.getSelectedItems());
+        }
+        
+        return offer;
+    }
+
+    /**
+     * Shows confirmation dialog and creates the gift request
+     * @param giftListing The gift listing
+     * @param thankYouOffer Optional thank-you offer data
+     */
+    private void showGiftRequestConfirmation(GiftListingViewModel giftListing, OfferViewModel thankYouOffer) {
+        String message = "Confermi la richiesta per il regalo '" + currentListing.getTitle() + "'?";
+        
+        if (thankYouOffer != null) {
+            message += "\n\nRingraziamento incluso:";
+            if (thankYouOffer.getAmount() != null) {
+                message += "\n• Denaro: " + thankYouOffer.getCurrency().getSymbol() + " " + thankYouOffer.getAmount();
+            }
+            if (thankYouOffer.getOfferItems() != null && !thankYouOffer.getOfferItems().isEmpty()) {
+                message += "\n• Oggetti: " + thankYouOffer.getOfferItems().size() + " elemento/i";
+            }
+        }
+
+        boolean confirmed = AlertHelper.showConfirmationAlert(
+                "Conferma richiesta regalo",
+                "Richiesta regalo",
+                message);
+
+        if (confirmed) {
+            createGiftRequest(giftListing, thankYouOffer);
+        }
+    }
+
+    /**
+     * Creates the actual gift request offer
+     * @param giftListing The gift listing
+     * @param thankYouOffer Optional thank-you offer data
+     */
+    private void createGiftRequest(GiftListingViewModel giftListing, OfferViewModel thankYouOffer) {
+        try {
+            OfferViewModel giftRequest;
+            
+            if (thankYouOffer != null) {
+                // Use the thank-you offer data
+                giftRequest = thankYouOffer;
+            } else {
+                // Create empty gift request
+                giftRequest = new OfferViewModel();
+                giftRequest.setListingId(giftListing.getId());
+                giftRequest.setMessage("Gift Request - No Thank You Offer");
+                giftRequest.setDeliveryType(giftListing.getDeliveryType(
+                        deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
+            }
+            
+            // Send the gift request to server
+            OfferService.getInstance().createOffer(giftRequest)
+                    .thenAccept(createdOffer -> Platform.runLater(() -> {
+                        if (createdOffer != null) {
+                            String successMessage;
+                            if (giftRequest.getDeliveryType() == DeliveryType.SHIPPING) {
+                                successMessage = localeService.getMessage("gift.success.shipping.message",
+                                        "Richiesta regalo inviata! Il donatore ti contatterà per organizzare la spedizione.");
+                            } else {
+                                successMessage = localeService.getMessage("gift.success.pickup.message",
+                                        "Richiesta regalo inviata! Il donatore ti proporrà alcuni orari per il ritiro.");
+                            }
+                            
+                            AlertHelper.showInformationAlert(
+                                    localeService.getMessage("gift.success.title", "Richiesta inviata"),
+                                    localeService.getMessage("gift.success.header", "La tua richiesta è stata inviata"),
+                                    successMessage);
+                                    
+                            // Navigate to offers view
+                            try {
+                                navigationService.navigateToOffersView();
+                            } catch (Exception e) {
+                                System.err.println("Failed to navigate to offers view: " + e.getMessage());
+                            }
+                        } else {
+                            AlertHelper.showErrorAlert(
+                                    localeService.getMessage("gift.error.title", "Errore"),
+                                    localeService.getMessage("gift.error.header", "Richiesta fallita"),
+                                    localeService.getMessage("gift.error.message",
+                                            "Non è stato possibile inviare la richiesta. Riprova più tardi."));
+                        }
+                    }))
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> {
+                            AlertHelper.showErrorAlert(
+                                    localeService.getMessage("gift.error.title", "Errore"),
+                                    localeService.getMessage("gift.error.header", "Errore durante l'invio"),
+                                    localeService.getMessage("gift.error.connection.message",
+                                            "Si è verificato un errore durante l'invio della richiesta: " + ex.getMessage()));
+                        });
+                        return null;
+                    });
+                        
+        } catch (Exception e) {
+            AlertHelper.showErrorAlert(
+                    localeService.getMessage("gift.error.title", "Errore"),
+                    localeService.getMessage("gift.error.header", "Errore imprevisto"),
+                    localeService.getMessage("gift.error.unexpected.message",
+                            "Si è verificato un errore imprevisto: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * 
+     */
     @FXML
     private void handlePlaceBid() {
         if (currentListing instanceof AuctionListingViewModel) {
@@ -1104,6 +1710,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleContactSeller() {
         AlertHelper.showInformationAlert(
@@ -1112,6 +1721,9 @@ public class ListingDetailsController {
                 "La messaggistica diretta sarà disponibile presto.");
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleReportListing() {
         if (currentListing != null) {
@@ -1119,6 +1731,9 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleReportUser() {
         if (currentListing != null && currentListing.getUser() != null) {
@@ -1127,6 +1742,10 @@ public class ListingDetailsController {
         }
     }
 
+    /**
+     * @param item
+     * @return
+     */
     private VBox createExpandableItemRow(ListingItemViewModel item) {
         VBox itemContainer = new VBox(0);
         itemContainer.getStyleClass().add("item-row");
@@ -1153,6 +1772,10 @@ public class ListingDetailsController {
         return itemContainer;
     }
 
+    /**
+     * @param item
+     * @return
+     */
     private HBox createMainItemRow(ListingItemViewModel item) {
         HBox headerRow = new HBox(10);
         headerRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);

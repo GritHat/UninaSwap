@@ -12,40 +12,88 @@ import com.uninaswap.common.dto.ItemDTO;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.FavoritesService;
 
+/**
+ * 
+ */
 public class ItemCardController {
+    /**
+     * 
+     */
     @FXML
     private VBox itemCard;
+    /**
+     * 
+     */
     @FXML
     private ImageView itemImage;
+    /**
+     * 
+     */
     @FXML
     private Text itemName;
+    /**
+     * 
+     */
     @FXML
     private Text categoryText;
+    /**
+     * 
+     */
     @FXML
     private Text sellerName;
+    /**
+     * 
+     */
     @FXML
     private Text itemPrice;
+    /**
+     * 
+     */
     @FXML
     private ImageView favoriteIcon;
 
+    /**
+     * 
+     */
     private ItemDTO item;
+    /**
+     * 
+     */
     private boolean isFavorite = false;
 
+    /**
+     * 
+     */
     private final NavigationService navigationService = NavigationService.getInstance();
+    /**
+     * 
+     */
     private final FavoritesService favoritesService = FavoritesService.getInstance();
 
+    /**
+     * 
+     */
     public ItemCardController() {
     }
 
+    /**
+     * @param item
+     */
     public ItemCardController(ItemDTO item) {
         this.item = item;
     }
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         Tooltip.install(favoriteIcon, new Tooltip("Aggiungi/rimuovi dai preferiti"));
     }
 
+    /**
+     * @param item
+     */
     public void setItem(ItemDTO item) {
         this.item = item;
         itemName.setText(item.getName());
@@ -53,6 +101,9 @@ public class ItemCardController {
         setFavorite(favoritesService.isFavorite(item.getId()));
     }
 
+    /**
+     * @param favorite
+     */
     private void setFavorite(boolean favorite) {
         isFavorite = favorite;
         String iconPath = favorite
@@ -61,6 +112,9 @@ public class ItemCardController {
         favoriteIcon.setImage(new Image(getClass().getResourceAsStream(iconPath)));
     }
 
+    /**
+     * @param event
+     */
     @FXML
     private void openItemDetails(MouseEvent event) {
         if (item != null) {
@@ -68,6 +122,9 @@ public class ItemCardController {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     private void toggleFavorite(MouseEvent event) {
         if (item == null)

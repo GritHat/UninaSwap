@@ -12,14 +12,29 @@ import java.util.List;
  * A simple event bus to decouple components in the application.
  * Components can subscribe to events and be notified when those events occur.
  */
+/**
+ * 
+ */
 public class EventBusService {
+    /**
+     * 
+     */
     private static EventBusService instance;
     
+    /**
+     * 
+     */
     private final Map<String, CopyOnWriteArrayList<Consumer<Object>>> subscribers = new ConcurrentHashMap<>();
     
+    /**
+     * 
+     */
     private EventBusService() {
     }
     
+    /**
+     * @return
+     */
     public static synchronized EventBusService getInstance() {
         if (instance == null) {
             instance = new EventBusService();
@@ -34,6 +49,10 @@ public class EventBusService {
      * @param handler The handler to call when the event occurs
      * @return A subscription ID that can be used to unsubscribe
      */
+    /**
+     * @param eventType
+     * @param handler
+     */
     public void subscribe(String eventType, Consumer<Object> handler) {
         subscribers.computeIfAbsent(eventType, _ -> new CopyOnWriteArrayList<>())
                   .add(handler);
@@ -44,6 +63,10 @@ public class EventBusService {
      * 
      * @param eventType The type of event to unsubscribe from
      * @param handler The handler to unsubscribe
+     */
+    /**
+     * @param eventType
+     * @param handler
      */
     public void unsubscribe(String eventType, Consumer<Object> handler) {
         if (subscribers.containsKey(eventType)) {
@@ -57,6 +80,10 @@ public class EventBusService {
      * 
      * @param eventType The type of event to publish
      * @param data The data to send with the event
+     */
+    /**
+     * @param eventType
+     * @param data
      */
     public void publishEvent(String eventType, Object data) {
         if (subscribers.containsKey(eventType)) {
@@ -74,12 +101,18 @@ public class EventBusService {
     /**
      * Clear all subscriptions for a specific event type
      */
+    /**
+     * @param eventType
+     */
     public void clearSubscriptions(String eventType) {
         subscribers.remove(eventType);
     }
     
     /**
      * Clear all subscriptions
+     */
+    /**
+     * 
      */
     public void clearAllSubscriptions() {
         subscribers.clear();
@@ -90,6 +123,9 @@ public class EventBusService {
      * Used when controllers are destroyed (e.g., during logout)
      * 
      * @param controllerClass The class of the controller being destroyed
+     */
+    /**
+     * @param controllerClass
      */
     public void clearSubscriptionsForController(Class<?> controllerClass) {
         for (String eventType : new ArrayList<>(subscribers.keySet())) {

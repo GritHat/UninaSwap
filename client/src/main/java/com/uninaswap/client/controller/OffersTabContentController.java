@@ -28,93 +28,252 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+/**
+ * 
+ */
 public class OffersTabContentController {
+    /**
+     * 
+     */
     @FXML
     private SplitPane mainSplitPane;
+    /**
+     * 
+     */
     @FXML
     private TableView<OfferViewModel> offersTable;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<OfferViewModel, String> listingTitleColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<OfferViewModel, String> fromToColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<OfferViewModel, String> typeColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<OfferViewModel, String> amountColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<OfferViewModel, String> statusColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<OfferViewModel, String> dateColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<OfferViewModel, Void> actionsColumn;
+    /**
+     * 
+     */
     @FXML
     private VBox offerDetailsPanel;
+    /**
+     * 
+     */
     @FXML
     private VBox detailsHeader;
+    /**
+     * 
+     */
     @FXML
     private ScrollPane detailsScrollPane;
+    /**
+     * 
+     */
     @FXML
     private VBox detailsContent;
+    /**
+     * 
+     */
     @FXML
     private VBox emptyDetailsState;
+    /**
+     * 
+     */
     @FXML
     private VBox offerSummaryCard;
+    /**
+     * 
+     */
     @FXML
     private Label offerFromLabel;
+    /**
+     * 
+     */
     @FXML
     private Label offerListingLabel;
+    /**
+     * 
+     */
     @FXML
     private Label offerTypeLabel;
+    /**
+     * 
+     */
     @FXML
     private Label offerAmountLabel;
+    /**
+     * 
+     */
     @FXML
     private VBox messageSection;
+    /**
+     * 
+     */
     @FXML
     private TextArea offerMessageArea;
+    /**
+     * 
+     */
     @FXML
     private VBox offeredItemsSection;
+    /**
+     * 
+     */
     @FXML
     private VBox offeredItemsList;
+    /**
+     * 
+     */
     @FXML
     private VBox actionButtonsSection;
+    /**
+     * 
+     */
     @FXML
     private Button acceptOfferButton;
+    /**
+     * 
+     */
     @FXML
     private Button rejectOfferButton;
+    /**
+     * 
+     */
     @FXML
     private Button counterOfferButton;
+    /**
+     * 
+     */
     @FXML
     private Button closeDetailsButton;
+    /**
+     * 
+     */
     @FXML
     private Button schedulePickupButton;
+    /**
+     * 
+     */
     @FXML
     private Button selectPickupTimeButton;
+    /**
+     * 
+     */
     @FXML
     private Button reschedulePickupButton;
+    /**
+     * 
+     */
     @FXML
     private Button confirmTransactionButton;
+    /**
+     * 
+     */
     @FXML
     private Button cancelTransactionButton;
+    /**
+     * 
+     */
     @FXML
     private Button writeReviewButton;
     
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final ImageService imageService = ImageService.getInstance();
     
+    /**
+     * 
+     */
     private FilteredList<OfferViewModel> filteredOffers;
+    /**
+     * 
+     */
     private String tabType;
+    /**
+     * 
+     */
     private Consumer<OfferViewModel> onOfferSelected;
+    /**
+     * 
+     */
     private Consumer<TableColumn<OfferViewModel, Void>> actionButtonsSetup;
+    /**
+     * 
+     */
     private OfferViewModel currentOffer;
+    /**
+     * 
+     */
     private Consumer<OfferViewModel> onAcceptOffer;
+    /**
+     * 
+     */
     private Consumer<OfferViewModel> onRejectOffer;
+    /**
+     * 
+     */
     private Consumer<OfferViewModel> onCounterOffer;
+    /**
+     * 
+     */
     private Consumer<OfferViewModel> onConfirmTransaction;
+    /**
+     * 
+     */
     private Consumer<OfferViewModel> onCancelTransaction;
+    /**
+     * 
+     */
     private Consumer<OfferViewModel> onWriteReview;
     
+    /**
+     * 
+     */
     private ObservableList<OfferViewModel> sourceOffersList;
 
+    /**
+     * @param offersList
+     * @param tabType
+     * @param onOfferSelected
+     * @param actionButtonsSetup
+     * @param onAcceptOffer
+     * @param onRejectOffer
+     * @param onCounterOffer
+     * @param onConfirmTransaction
+     * @param onCancelTransaction
+     * @param onWriteReview
+     */
     public void initialize(ObservableList<OfferViewModel> offersList, String tabType, 
                           Consumer<OfferViewModel> onOfferSelected, 
                           Consumer<TableColumn<OfferViewModel, Void>> actionButtonsSetup,
@@ -145,6 +304,9 @@ public class OffersTabContentController {
         showEmptyState();
     }
 
+    /**
+     * 
+     */
     private void setupTable() {
         listingTitleColumn.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getListingTitle()));
@@ -166,7 +328,7 @@ public class OffersTabContentController {
             new SimpleStringProperty(formatOfferAmount(cellData.getValue())));
         
         statusColumn.setCellValueFactory(cellData -> 
-            new SimpleStringProperty(cellData.getValue().getStatus().getDisplayName()));
+            new SimpleStringProperty(localeService.getMessage(cellData.getValue().getStatus().getDisplayName())));
         
         dateColumn.setCellValueFactory(cellData -> 
             new SimpleStringProperty(formatDate(cellData.getValue())));
@@ -201,6 +363,9 @@ public class OffersTabContentController {
         });
     }
     
+    /**
+     * 
+     */
     private void setupDetailsPanel() {
         closeDetailsButton.setOnAction(_ -> clearDetails());
         actionButtonsSection.setVisible(true);
@@ -211,6 +376,9 @@ public class OffersTabContentController {
         }
     }
     
+    /**
+     * 
+     */
     private void setupResponsiveLayout() {
         Platform.runLater(() -> {
             mainSplitPane.setDividerPositions(0.6);
@@ -232,6 +400,9 @@ public class OffersTabContentController {
         });
     }
     
+    /**
+     * @param offer
+     */
     public void showOfferDetails(OfferViewModel offer) {
         this.currentOffer = offer;
         emptyDetailsState.setVisible(false);
@@ -266,6 +437,9 @@ public class OffersTabContentController {
         adjustSplitPaneForDetails();
     }
     
+    /**
+     * @param offerItems
+     */
     private void populateOfferedItemsList(ObservableList<OfferItemViewModel> offerItems) {
         offeredItemsList.getChildren().clear();
         
@@ -275,6 +449,10 @@ public class OffersTabContentController {
         }
     }
     
+    /**
+     * @param item
+     * @return
+     */
     private VBox createOfferItemRow(OfferItemViewModel item) {
         VBox itemContainer = new VBox(8);
         itemContainer.getStyleClass().add("offer-item-row");
@@ -328,6 +506,9 @@ public class OffersTabContentController {
         return itemContainer;
     }
     
+    /**
+     * @param imageView
+     */
     private void setDefaultOfferItemImage(ImageView imageView) {
         try {
             Image defaultImage = new Image(getClass()
@@ -338,6 +519,9 @@ public class OffersTabContentController {
         }
     }
     
+    /**
+     * @param offer
+     */
     private void updateActionButtons(OfferViewModel offer) {
         
         if ("received".equals(tabType)) {
@@ -351,6 +535,9 @@ public class OffersTabContentController {
         }
     }
     
+    /**
+     * @param offer
+     */
     private void updateReceivedOfferButtons(OfferViewModel offer) {
         Long currentUserId = UserSessionService.getInstance().getUser().getId();
         boolean isListingOwner = offer.getListing() != null && 
@@ -455,6 +642,9 @@ public class OffersTabContentController {
         }
     }
     
+    /**
+     * @param offer
+     */
     private void updateSentOfferButtons(OfferViewModel offer) {
         hideAllActionButtons();
         
@@ -536,6 +726,9 @@ public class OffersTabContentController {
         }
     }
     
+    /**
+     * 
+     */
     private void hideAllActionButtons() {
         setButtonVisibility(acceptOfferButton, false);
         setButtonVisibility(rejectOfferButton, false);
@@ -548,6 +741,17 @@ public class OffersTabContentController {
         setButtonVisibility(writeReviewButton, false);
     }
     
+    /**
+     * @param showAccept
+     * @param showReject
+     * @param showCounter
+     * @param showSchedule
+     * @param showSelectTime
+     * @param showReschedule
+     * @param showConfirmTransaction
+     * @param showCancelTransaction
+     * @param showWriteReview
+     */
     private void showActionButtons(boolean showAccept, boolean showReject, boolean showCounter,
                                   boolean showSchedule, boolean showSelectTime, boolean showReschedule,
                                   boolean showConfirmTransaction, boolean showCancelTransaction,
@@ -565,6 +769,10 @@ public class OffersTabContentController {
         System.out.println("Showing buttons - review: " + showWriteReview);
     }
     
+    /**
+     * @param button
+     * @param visible
+     */
     private void setButtonVisibility(Button button, boolean visible) {
         if (button != null) {
             button.setVisible(visible);
@@ -572,6 +780,9 @@ public class OffersTabContentController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleSchedulePickup() {
         if (currentOffer != null) {
@@ -580,6 +791,9 @@ public class OffersTabContentController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleSelectPickupTime() {
         if (currentOffer != null) {
@@ -588,6 +802,9 @@ public class OffersTabContentController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleReschedulePickup() {
         if (currentOffer != null) {
@@ -596,11 +813,17 @@ public class OffersTabContentController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleCloseDetails() {
         clearDetails();
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleRejectOffer() {
         if (currentOffer != null && onRejectOffer != null) {
@@ -608,6 +831,9 @@ public class OffersTabContentController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCounterOffer() {
         if (currentOffer != null && onCounterOffer != null) {
@@ -615,6 +841,9 @@ public class OffersTabContentController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleAcceptOffer() {
         if (currentOffer != null && onAcceptOffer != null) {
@@ -622,6 +851,9 @@ public class OffersTabContentController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleConfirmTransaction() {
         System.out.println("=== CONFIRM TRANSACTION CLICKED ===");
@@ -646,6 +878,9 @@ public class OffersTabContentController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCancelTransaction() {
         System.out.println("=== CANCEL TRANSACTION CLICKED ===");
@@ -671,6 +906,9 @@ public class OffersTabContentController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleWriteReview() {
         System.out.println("=== WRITE REVIEW CLICKED ===");
@@ -683,6 +921,9 @@ public class OffersTabContentController {
         }
     }
     
+    /**
+     * 
+     */
     public void showEmptyState() {
         detailsContent.setVisible(false);
         detailsContent.setManaged(false);
@@ -691,10 +932,17 @@ public class OffersTabContentController {
         currentOffer = null;
     }
 
+    /**
+     * 
+     */
     public void clearDetails() {
         showEmptyState();
     }
 
+    /**
+     * @param offer
+     * @return
+     */
     private String getOfferTypeDisplayName(OfferViewModel offer) {
         if (offer.getAmount() != null && offer.getAmount().compareTo(BigDecimal.valueOf(0)) > 0) {
             if (offer.getOfferItems() != null && !offer.getOfferItems().isEmpty()) {
@@ -709,6 +957,10 @@ public class OffersTabContentController {
         }
     }
 
+    /**
+     * @param offer
+     * @return
+     */
     private String formatOfferAmount(OfferViewModel offer) {
         if (offer.getAmount() != null && offer.getAmount().compareTo(BigDecimal.valueOf(0)) > 0) {
             String currency = offer.getCurrency() != null ? offer.getCurrency().getSymbol() : "€";
@@ -717,6 +969,10 @@ public class OffersTabContentController {
         return "-";
     }
 
+    /**
+     * @param offer
+     * @return
+     */
     private String formatDate(OfferViewModel offer) {
         if (offer.getCreatedAt() != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -725,6 +981,9 @@ public class OffersTabContentController {
         return "-";
     }
 
+    /**
+     * 
+     */
     private void adjustSplitPaneForDetails() {
         if (mainSplitPane != null) {
             double width = mainSplitPane.getWidth();
@@ -738,6 +997,9 @@ public class OffersTabContentController {
         }
     }
 
+    /**
+     * @param offers
+     */
     public void updateOffersList(List<OfferViewModel> offers) {
         if (sourceOffersList != null) {
             sourceOffersList.clear();
@@ -748,6 +1010,9 @@ public class OffersTabContentController {
         }
     }
 
+    /**
+     * @param predicate
+     */
     public void applyFilter(Predicate<OfferViewModel> predicate) {
         if (filteredOffers != null) {
             filteredOffers.setPredicate(predicate);
@@ -757,6 +1022,10 @@ public class OffersTabContentController {
         }
     }
 
+    /**
+     * @param offer
+     * @return
+     */
     private boolean canOfferBeReviewed(OfferViewModel offer) {
         if (offer == null || offer.getListing() == null) {
             return false;
@@ -768,10 +1037,17 @@ public class OffersTabContentController {
         return offer.getStatus() == OfferStatus.COMPLETED;
     }
 
+    /**
+     * @return
+     */
     public SplitPane getMainSplitPane() {
         return mainSplitPane;
     }
 
+    /**
+     * @param offer
+     * @return
+     */
     private boolean isCurrentUserListingOwner(OfferViewModel offer) {
         if (offer == null || offer.getListing() == null || offer.getListing().getUser() == null) {
             return false;
@@ -781,6 +1057,10 @@ public class OffersTabContentController {
         return currentUserId != null && currentUserId.equals(offer.getListing().getUser().getId());
     }
 
+    /**
+     * @param offer
+     * @return
+     */
     private boolean isCurrentUserOfferCreator(OfferViewModel offer) {
         if (offer == null || offer.getOfferingUser() == null) {
             return false;

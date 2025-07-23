@@ -10,24 +10,45 @@ import javafx.stage.Stage;
 /**
  * Controller for the Terms and Conditions popup view.
  */
+/**
+ * 
+ */
 public class TermsAndConditionsController {
+    /**
+     * 
+     */
     @FXML
     private Label titleLabel;
     
+    /**
+     * 
+     */
     @FXML
     private Label messageLabel;
     
+    /**
+     * 
+     */
     @FXML
     private ImageView alertIcon;
     
+    /**
+     * 
+     */
     @FXML
     private Button primaryButton;
     
+    /**
+     * 
+     */
     @FXML
     private Button secondaryButton;
     
     /**
      * Initializes the controller.
+     */
+    /**
+     * 
      */
     @FXML
     private void initialize() {
@@ -37,6 +58,9 @@ public class TermsAndConditionsController {
      * Handles the primary action (usually OK/Accept).
      * 
      * @param event The action event
+     */
+    /**
+     * @param event
      */
     @FXML
     private void handlePrimaryAction(ActionEvent event) {
@@ -48,6 +72,9 @@ public class TermsAndConditionsController {
      * 
      * @param event The action event
      */
+    /**
+     * @param event
+     */
     @FXML
     private void handleSecondaryAction(ActionEvent event) {
         closeDialog();
@@ -57,6 +84,9 @@ public class TermsAndConditionsController {
      * Sets the message to display in the dialog.
      * 
      * @param message The message to display
+     */
+    /**
+     * @param message
      */
     public void setMessage(String message) {
         if (messageLabel != null) {
@@ -69,6 +99,9 @@ public class TermsAndConditionsController {
      * 
      * @param title The title to display
      */
+    /**
+     * @param title
+     */
     public void setTitle(String title) {
         if (titleLabel != null) {
             titleLabel.setText(title);
@@ -80,6 +113,10 @@ public class TermsAndConditionsController {
      * 
      * @param text The button text
      * @param visible Whether the button should be visible
+     */
+    /**
+     * @param text
+     * @param visible
      */
     public void configurePrimaryButton(String text, boolean visible) {
         if (primaryButton != null) {
@@ -94,6 +131,10 @@ public class TermsAndConditionsController {
      * @param text The button text
      * @param visible Whether the button should be visible
      */
+    /**
+     * @param text
+     * @param visible
+     */
     public void configureSecondaryButton(String text, boolean visible) {
         if (secondaryButton != null) {
             secondaryButton.setText(text);
@@ -103,6 +144,9 @@ public class TermsAndConditionsController {
     
     /**
      * Closes the dialog.
+     */
+    /**
+     * 
      */
     private void closeDialog() {
         Stage stage = (Stage) primaryButton.getScene().getWindow();

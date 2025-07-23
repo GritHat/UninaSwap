@@ -12,16 +12,46 @@ import javafx.collections.ObservableList;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * 
+ */
 public class SearchService {
     
+    /**
+     * 
+     */
     private static SearchService instance;
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient;
+    /**
+     * 
+     */
     private final ObservableList<ListingViewModel> searchResults = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private CompletableFuture<SearchResult> currentSearchFuture;
+    /**
+     * 
+     */
     private boolean isSearching = false;
+    /**
+     * 
+     */
     private String lastQuery = "";
+    /**
+     * 
+     */
     private String lastListingType = "all";
+    /**
+     * 
+     */
     private Category lastCategory = Category.ALL;
+    /**
+     * 
+     */
     public static class SearchResult {
         private final ObservableList<ListingViewModel> results;
         private final long totalResults;
@@ -38,6 +68,9 @@ public class SearchService {
         public boolean hasMore() { return hasMore; }
     }
     
+    /**
+     * @return
+     */
     public static SearchService getInstance() {
         if (instance == null) {
             instance = new SearchService();
@@ -45,6 +78,9 @@ public class SearchService {
         return instance;
     }
     
+    /**
+     * 
+     */
     private SearchService() {
         this.webSocketClient = WebSocketClient.getInstance();
         this.webSocketClient.registerMessageHandler(SearchMessage.class, this::handleSearchResponse);
@@ -58,6 +94,12 @@ public class SearchService {
      * @param category The category to filter results by
      * @return CompletableFuture with SearchResult containing search results
      *         or an exception if the search fails
+     */
+    /**
+     * @param query
+     * @param listingType
+     * @param category
+     * @return
      */
     public CompletableFuture<SearchResult> search(String query, String listingType, Category category) {
         return search(query, listingType, category, 0, 50); // Default pagination
@@ -73,6 +115,14 @@ public class SearchService {
      * @param size The number of results per page
      * @return CompletableFuture with SearchResult containing search results
      *         or an exception if the search fails
+     */
+    /**
+     * @param query
+     * @param listingType
+     * @param category
+     * @param page
+     * @param size
+     * @return
      */
     public CompletableFuture<SearchResult> search(String query, String listingType, Category category, int page, int size) {
         if (currentSearchFuture != null && !currentSearchFuture.isDone()) {
@@ -117,6 +167,9 @@ public class SearchService {
     /**
      * Clear search results and return to normal view
      */
+    /**
+     * 
+     */
     public void clearSearch() {
         Platform.runLater(() -> {
             searchResults.clear();
@@ -130,6 +183,9 @@ public class SearchService {
     /**
      * Check if currently in search mode
      */
+    /**
+     * @return
+     */
     public boolean isInSearchMode() {
         return !lastQuery.isEmpty() || !lastListingType.equals("all") || lastCategory != Category.ALL;
     }
@@ -139,6 +195,9 @@ public class SearchService {
      * 
      * @return ObservableList of ListingViewModel containing current search results
      */
+    /**
+     * @return
+     */
     public ObservableList<ListingViewModel> getSearchResults() {
         return searchResults;
     }
@@ -146,11 +205,26 @@ public class SearchService {
     /**
      * Get last search parameters for reference
      */
+    /**
+     * @return
+     */
     public String getLastQuery() { return lastQuery; }
+    /**
+     * @return
+     */
     public String getLastListingType() { return lastListingType; }
+    /**
+     * @return
+     */
     public Category getLastCategory() { return lastCategory; }
+    /**
+     * @return
+     */
     public boolean isSearching() { return isSearching; }
     
+    /**
+     * @param message
+     */
     private void handleSearchResponse(SearchMessage message) {
         if (message.getType() == SearchMessage.Type.SEARCH_RESPONSE) {
             Platform.runLater(() -> {

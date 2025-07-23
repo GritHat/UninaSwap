@@ -21,6 +21,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import com.uninaswap.client.util.AlertHelper;
+import com.uninaswap.client.util.TextUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,6 +36,7 @@ import com.uninaswap.client.viewmodel.ListingItemViewModel;
 import com.uninaswap.client.viewmodel.ListingViewModel;
 import com.uninaswap.client.viewmodel.UserViewModel;
 import com.uninaswap.client.service.ProfileService;
+import com.uninaswap.client.service.ReviewService;
 import com.uninaswap.client.constants.EventTypes;
 import com.uninaswap.client.mapper.ViewModelMapper;
 import com.uninaswap.client.service.EventBusService;
@@ -42,77 +44,203 @@ import com.uninaswap.client.service.ImageService;
 import com.uninaswap.client.service.ListingService;
 import com.uninaswap.common.message.ProfileUpdateMessage;
 
+/**
+ * 
+ */
 public class ProfileController implements Refreshable {
+    /**
+     * 
+     */
     @FXML
     private Label profileTitleLabel;
+    /**
+     * 
+     */
     @FXML
     private Text usernameField;
+    /**
+     * 
+     */
     @FXML
     private TextField emailField;
+    /**
+     * 
+     */
     @FXML
     private TextField firstNameField;
+    /**
+     * 
+     */
     @FXML
     private TextField lastNameField;
+    /**
+     * 
+     */
     @FXML
     private TextArea bioField;
+    /**
+     * 
+     */
     @FXML
     private ImageView profileImageView;
+    /**
+     * 
+     */
     @FXML
     private Label statusLabel;
+    /**
+     * 
+     */
     @FXML
     private Label emailLabel;
+    /**
+     * 
+     */
     @FXML
     private Label firstNameLabel;
+    /**
+     * 
+     */
     @FXML
     private Label lastNameLabel;
+    /**
+     * 
+     */
     @FXML
     private Label bioLabel;
+    /**
+     * 
+     */
     @FXML
     private Button changeImageButton;
+    /**
+     * 
+     */
     @FXML
     private Button saveButton;
+    /**
+     * 
+     */
     @FXML
     private Button cancelButton;
 
+    /**
+     * 
+     */
     @FXML
     private TextField addressField;
+    /**
+     * 
+     */
     @FXML
     private TextField cityField;
+    /**
+     * 
+     */
     @FXML
     private TextField stateProvinceField;
+    /**
+     * 
+     */
     @FXML
     private TextField countryField;
+    /**
+     * 
+     */
     @FXML
     private TextField zipPostalCodeField;
+    /**
+     * 
+     */
     @FXML
     private VBox userListingsSection;
+    /**
+     * 
+     */
     @FXML
     private VBox userListingsList;
+    /**
+     * 
+     */
     @FXML
     private Label userListingsCountLabel;
+    /**
+     * 
+     */
     @FXML
     private Label ratingReviewsLabel;
+    /**
+     * 
+     */
     @FXML
     private Button analyticsButton;
+    /**
+     * 
+     */
     @FXML
     private Button reportUserButton;
+    /**
+     * 
+     */
     @FXML
     private HBox viewAllButtonContainer;
+    /**
+     * 
+     */
     @FXML
     private Button viewAllListingsButton;
 
+    @FXML
+    private Label memberSinceLabel;
+
+    /**
+     * 
+     */
     private final NavigationService navigationService;
+    /**
+     * 
+     */
     private final LocaleService localeService;
+    /**
+     * 
+     */
     private final UserSessionService sessionService;
+    /**
+     * 
+     */
     private final ProfileService profileService;
+    /**
+     * 
+     */
     private final ListingService listingService = ListingService.getInstance();
+    /**
+     * 
+     */
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
+    /**
+     * 
+     */
     private String tempProfileImagePath;
+    /**
+     * 
+     */
     private File tempSelectedImageFile;
+    /**
+     * 
+     */
     private UserViewModel user;
+    /**
+     * 
+     */
     private boolean isOwnProfile = false;
+    /**
+     * 
+     */
     private UserViewModel viewedUser;
 
+    /**
+     * 
+     */
     public ProfileController() {
         this.navigationService = NavigationService.getInstance();
         this.localeService = LocaleService.getInstance();
@@ -120,6 +248,9 @@ public class ProfileController implements Refreshable {
         this.profileService = new ProfileService();
     }
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         if (!sessionService.isLoggedIn()) {
@@ -130,8 +261,23 @@ public class ProfileController implements Refreshable {
                 showStatus("error.navigation", true);
             }
         }
+
+        // Set max length for fields
+        TextUtils.setMaxLength(emailField, 100);
+        TextUtils.setMaxLength(firstNameField, 50);
+        TextUtils.setMaxLength(lastNameField, 50);
+        TextUtils.setMaxLength(bioField, 500);
+        TextUtils.setMaxLength(addressField, 100);
+        TextUtils.setMaxLength(cityField, 50);
+        TextUtils.setMaxLength(stateProvinceField, 50);
+        TextUtils.setMaxLength(countryField, 50);
+        TextUtils.setMaxLength(zipPostalCodeField, 20);
+        
         registerMessageHandler();
     }
+    /**
+     * @param user
+     */
     public void loadProfile(UserViewModel user) {
         this.viewedUser = user;
         this.user = user;
@@ -147,12 +293,18 @@ public class ProfileController implements Refreshable {
      * Registers this controller's message handler with the ProfileService.
      * Called during initialization.
      */
+    /**
+     * 
+     */
     public void registerMessageHandler() {
         profileService.setUpdateResponseHandler(this::handleProfileResponse);
     }
 
     /**
      * Handle profile update responses from the server
+     */
+    /**
+     * @param response
      */
     private void handleProfileResponse(ProfileUpdateMessage response) {
         Platform.runLater(() -> {
@@ -166,6 +318,9 @@ public class ProfileController implements Refreshable {
         });
     }
 
+    /**
+     * 
+     */
     private void loadUserProfile() {
         if (usernameField != null) {
             usernameField.setText(viewedUser.getUsername());
@@ -189,6 +344,14 @@ public class ProfileController implements Refreshable {
         if (bioField != null) {
             bioField.setText(viewedUser.getBio());
             bioField.setEditable(isOwnProfile);
+        }
+
+        if (memberSinceLabel != null) {
+            memberSinceLabel.setText(localeService.getMessage("profile.member.since") + " " + viewedUser.getCreatedAt().toLocalDate().toString());
+        }
+
+        if (ratingReviewsLabel != null) {
+            updateRatingReviewsLabel();
         }
         if (isOwnProfile) {
             if (addressField != null) {
@@ -228,6 +391,9 @@ public class ProfileController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     private void setupProfileVisibility() {
         if (addressField != null) {
             addressField.setVisible(isOwnProfile);
@@ -271,25 +437,74 @@ public class ProfileController implements Refreshable {
         }
         updateRatingReviewsLabel();
     }
+    /**
+     * 
+     */
     private void updateRatingReviewsLabel() {
         if (ratingReviewsLabel != null && viewedUser != null) {
-            double rating = viewedUser.getRating();
-            int reviewCount = viewedUser.getReviewCount();
-            
-            if (reviewCount > 0) {
-                String ratingText = String.format("⭐ %.2f/5 (%d %s)", 
-                    rating, 
-                    reviewCount, 
-                    reviewCount == 1 ? 
-                        localeService.getMessage("profile.review.singular", "review") : 
-                        localeService.getMessage("profile.reviews.plural", "reviews"));
-                ratingReviewsLabel.setText(ratingText);
-            } else {
-                ratingReviewsLabel.setText(localeService.getMessage("profile.no.reviews", "No reviews yet"));
-            }
+            // Use the same approach as analytics - fetch actual review data
+            fetchUserReviewSummary(viewedUser.getId());
         }
     }
 
+    /**
+     * Fetch actual review summary data for the user
+     * @param userId The ID of the user to fetch reviews for
+     */
+    private void fetchUserReviewSummary(Long userId) {
+        try {
+            // Use the ReviewService to get actual review data
+            ReviewService reviewService = ReviewService.getInstance();
+            
+            reviewService.getUserRatingSummary(userId)
+                .thenAccept(summary -> Platform.runLater(() -> {
+                    double avgRating = summary.getAverageRating();
+                    int totalReviews = summary.getTotalReviews();
+                    
+                    updateRatingReviewsDisplay(avgRating, totalReviews);
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        // Fallback to "No reviews yet" if there's an error
+                        ratingReviewsLabel.setText(localeService.getMessage("profile.no.reviews", "No reviews yet"));
+                        System.err.println("Error fetching review summary for user " + userId + ": " + ex.getMessage());
+                    });
+                    return null;
+                });
+                
+        } catch (Exception e) {
+            // Fallback if ReviewService is not available
+            System.err.println("ReviewService not available, falling back to UserViewModel data: " + e.getMessage());
+            
+            // Use the existing UserViewModel data as fallback
+            double rating = viewedUser.getRating();
+            int reviewCount = viewedUser.getReviewCount();
+            updateRatingReviewsDisplay(rating, reviewCount);
+        }
+    }
+
+    /**
+     * Update the rating/reviews label display
+     * @param rating Average rating
+     * @param reviewCount Total number of reviews
+     */
+    private void updateRatingReviewsDisplay(double rating, int reviewCount) {
+        if (reviewCount > 0) {
+            String ratingText = String.format("⭐ %.2f/5 (%d %s)", 
+                rating, 
+                reviewCount, 
+                reviewCount == 1 ? 
+                    localeService.getMessage("profile.review.singular", "review") : 
+                    localeService.getMessage("profile.reviews.plural", "reviews"));
+            ratingReviewsLabel.setText(ratingText);
+        } else {
+            ratingReviewsLabel.setText(localeService.getMessage("profile.no.reviews", "No reviews yet"));
+        }
+    }
+
+    /**
+     * 
+     */
     private void loadUserListings() {
         if (userListingsList == null) return;
 
@@ -340,6 +555,10 @@ public class ProfileController implements Refreshable {
                 });
     }
 
+    /**
+     * @param listing
+     * @return
+     */
     private VBox createListingPreviewItem(ListingViewModel listing) {
         VBox itemContainer = new VBox(5);
         itemContainer.getStyleClass().add("profile-listing-item");
@@ -395,6 +614,10 @@ public class ProfileController implements Refreshable {
         return itemContainer;
     }
 
+    /**
+     * @param thumbnail
+     * @param listing
+     */
     private void loadListingThumbnail(ImageView thumbnail, ListingViewModel listing) {
         String imagePath = getFirstListingImagePath(listing);
         
@@ -410,6 +633,10 @@ public class ProfileController implements Refreshable {
         }
     }
 
+    /**
+     * @param listing
+     * @return
+     */
     private String getFirstListingImagePath(ListingViewModel listing) {
         if (listing.getItems() != null && !listing.getItems().isEmpty()) {
             for (ListingItemViewModel item : listing.getItems()) {
@@ -421,6 +648,9 @@ public class ProfileController implements Refreshable {
         return null;
     }
 
+    /**
+     * @param imageView
+     */
     private void setDefaultListingThumbnail(ImageView imageView) {
         try {
             Image defaultImage = new Image(getClass().getResourceAsStream("/images/icons/listings.png"));
@@ -430,6 +660,9 @@ public class ProfileController implements Refreshable {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void handleChangeImage(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -452,6 +685,9 @@ public class ProfileController implements Refreshable {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     private void showAnalytics(ActionEvent event) {
         try {
@@ -467,6 +703,10 @@ public class ProfileController implements Refreshable {
      * 
      * @param sourceImage The image to crop
      * @param cropCallback Callback to handle the cropped image
+     */
+    /**
+     * @param sourceImage
+     * @param cropCallback
      */
     private void showImageCropper(Image sourceImage, Consumer<Image> cropCallback) {
         try {
@@ -494,6 +734,10 @@ public class ProfileController implements Refreshable {
      * 
      * @param image The JavaFX Image to convert
      * @return A temporary file containing the image data, or null if conversion failed
+     */
+    /**
+     * @param image
+     * @return
      */
     private File convertImageToTempFile(Image image) {
         try {
@@ -527,6 +771,10 @@ public class ProfileController implements Refreshable {
      * @param color The JavaFX Color to convert
      * @return ARGB int value
      */
+    /**
+     * @param color
+     * @return
+     */
     private int convertColorToARGB(javafx.scene.paint.Color color) {
         int a = (int) (color.getOpacity() * 255);
         int r = (int) (color.getRed() * 255);
@@ -535,6 +783,9 @@ public class ProfileController implements Refreshable {
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void handleSave(ActionEvent event) {
         Button saveButton = (Button) event.getSource();
@@ -561,6 +812,9 @@ public class ProfileController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     private void saveProfileWithImage() {
         if (isOwnProfile) {
             user.setFirstName(firstNameField.getText());
@@ -584,11 +838,17 @@ public class ProfileController implements Refreshable {
         }
     }
 
+    /**
+     * @param newImagePath
+     */
     private void notifyProfileImageChange(String newImagePath) {
         System.out.println("Publishing profile image change event: " + newImagePath);
         EventBusService.getInstance().publishEvent(EventTypes.PROFILE_IMAGE_CHANGED, newImagePath);
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void handleCancel(ActionEvent event) {
         try {
@@ -598,12 +858,19 @@ public class ProfileController implements Refreshable {
         }
     }
 
+    /**
+     * @param messageKey
+     * @param isError
+     */
     private void showStatus(String messageKey, boolean isError) {
         statusLabel.setText(localeService.getMessage(messageKey));
         statusLabel.getStyleClass().clear();
         statusLabel.getStyleClass().add(isError ? "error-message" : "success-message");
     }
 
+    /**
+     *
+     */
     @Override
     public void refreshUI() {
         if (isOwnProfile) {
@@ -620,6 +887,9 @@ public class ProfileController implements Refreshable {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleReportUser() {
         if (viewedUser != null) {
@@ -635,6 +905,9 @@ public class ProfileController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleViewAllListings() {
         if (viewedUser == null) {

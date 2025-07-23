@@ -28,35 +28,92 @@ import javafx.util.Duration;
 
 import java.util.List;
 
+/**
+ * 
+ */
 public class FavoritesDrawerController {
 
+    /**
+     * 
+     */
     @FXML
     private HBox externalDrawerContainer;
+    /**
+     * 
+     */
     @FXML
     private VBox drawerContainer;
+    /**
+     * 
+     */
     @FXML
     private TitledPane favoritesPane;
+    /**
+     * 
+     */
     @FXML
     private VBox favoritesContainer;
+    /**
+     * 
+     */
     @FXML
     private Label favoritesCountLabel;
+    /**
+     * 
+     */
     @FXML
     private TitledPane followingPane;
+    /**
+     * 
+     */
     @FXML
     private VBox followingContainer;
+    /**
+     * 
+     */
     @FXML
     private Label followingCountLabel;
 
+    /**
+     * 
+     */
     private final FavoritesService favoritesService = FavoritesService.getInstance();
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final NavigationService navigationService = NavigationService.getInstance();
+    /**
+     * 
+     */
     private final UserSessionService userSessionService = UserSessionService.getInstance();
+    /**
+     * 
+     */
     private final BooleanProperty drawerVisible = new SimpleBooleanProperty(false);
+    /**
+     * 
+     */
     private MainController mainController;
+    /**
+     * 
+     */
     private ObservableList<FavoriteViewModel> userFavorites;
+    /**
+     * 
+     */
     private Timeline showAnimation;
+    /**
+     * 
+     */
     private Timeline hideAnimation;
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupDrawerToggle();
@@ -76,6 +133,9 @@ public class FavoritesDrawerController {
         drawerContainer.getStyleClass().add("drawer-content-animated");
     }
 
+    /**
+     * 
+     */
     private void setupDrawerToggle() {
         drawerVisible.addListener((_, _, newVal) -> {
             if (newVal) {
@@ -93,6 +153,9 @@ public class FavoritesDrawerController {
 
     /**
      * Show drawer with slide-in animation
+     */
+    /**
+     * 
      */
     private void showDrawerAnimated() {
         if (hideAnimation != null) {
@@ -120,6 +183,9 @@ public class FavoritesDrawerController {
     /**
      * Hide drawer with slide-out animation
      */
+    /**
+     * 
+     */
     private void hideDrawerAnimated() {
         if (showAnimation != null) {
             showAnimation.stop();
@@ -146,6 +212,9 @@ public class FavoritesDrawerController {
         hideAnimation.play();
     }
 
+    /**
+     * 
+     */
     private void setupExpandablePanes() {
         favoritesPane.setExpanded(true);
         followingPane.setExpanded(false);
@@ -168,6 +237,11 @@ public class FavoritesDrawerController {
      * @param pane The TitledPane to animate
      * @param expand True to expand, false to collapse
      */
+    /**
+     * @param pane
+     * @param expand
+     * @return
+     */
     private Timeline createExpandCollapseAnimation(TitledPane pane, boolean expand) {
         Timeline animation = new Timeline();
         
@@ -180,6 +254,9 @@ public class FavoritesDrawerController {
         return animation;
     }
 
+    /**
+     * 
+     */
     private void setupFavoritesObservableList() {
         userFavorites = favoritesService.getUserFavoritesList();
         userFavorites.addListener((ListChangeListener<FavoriteViewModel>) _ -> {
@@ -190,6 +267,9 @@ public class FavoritesDrawerController {
         });
     }
 
+    /**
+     * 
+     */
     @SuppressWarnings("unused")
     private void loadFavorites() {
         if (userFavorites.isEmpty()) {
@@ -200,6 +280,9 @@ public class FavoritesDrawerController {
         }
     }
 
+    /**
+     * 
+     */
     private void loadFollowing() {
         Platform.runLater(() -> {
             populateFollowingList(List.of());
@@ -207,6 +290,9 @@ public class FavoritesDrawerController {
         });
     }
 
+    /**
+     * @param favorites
+     */
     private void populateFavoritesList(ObservableList<FavoriteViewModel> favorites) {
         favoritesContainer.getChildren().clear();
 
@@ -225,6 +311,9 @@ public class FavoritesDrawerController {
         }
     }
 
+    /**
+     * @param following
+     */
     private void populateFollowingList(List<UserViewModel> following) {
         followingContainer.getChildren().clear();
 
@@ -241,6 +330,10 @@ public class FavoritesDrawerController {
         }
     }
 
+    /**
+     * @param listing
+     * @return
+     */
     private VBox createListingItem(ListingViewModel listing) {
         VBox item = new VBox(5);
         item.getStyleClass().add("drawer-item");
@@ -280,6 +373,10 @@ public class FavoritesDrawerController {
         return item;
     }
 
+    /**
+     * @param user
+     * @return
+     */
     private VBox createUserItem(UserViewModel user) {
         VBox item = new VBox(5);
         item.getStyleClass().add("drawer-item");
@@ -319,6 +416,10 @@ public class FavoritesDrawerController {
         return item;
     }
 
+    /**
+     * @param thumbnail
+     * @param listing
+     */
     private void loadThumbnailImage(ImageView thumbnail, ListingViewModel listing) {
         String imagePath = getFirstImagePath(listing);
 
@@ -343,6 +444,10 @@ public class FavoritesDrawerController {
         }
     }
 
+    /**
+     * @param listing
+     * @return
+     */
     private String getFirstImagePath(ListingViewModel listing) {
         if (listing.getItems() != null && !listing.getItems().isEmpty()) {
             for (ListingItemViewModel item : listing.getItems()) {
@@ -355,6 +460,10 @@ public class FavoritesDrawerController {
         return null;
     }
 
+    /**
+     * @param avatar
+     * @param user
+     */
     private void loadAvatarImage(ImageView avatar, UserViewModel user) {
         String imagePath = user.getProfileImagePath();
         
@@ -379,6 +488,9 @@ public class FavoritesDrawerController {
         }
     }
 
+    /**
+     * @param imageView
+     */
     private void setDefaultThumbnail(ImageView imageView) {
         try {
             Image defaultImage = new Image(getClass().getResourceAsStream("/images/icons/immagine_generica.png"));
@@ -388,6 +500,9 @@ public class FavoritesDrawerController {
         }
     }
 
+    /**
+     * @param imageView
+     */
     private void setDefaultAvatar(ImageView imageView) {
         try {
             Image defaultImage = new Image(getClass().getResourceAsStream("/images/icons/default_profile.png"));
@@ -397,6 +512,9 @@ public class FavoritesDrawerController {
         }
     }
 
+    /**
+     * @param listing
+     */
     private void handleListingClick(ListingViewModel listing) {
         try {
             Parent listingDetailsView = navigationService.loadListingDetails(listing);
@@ -409,6 +527,9 @@ public class FavoritesDrawerController {
         }
     }
 
+    /**
+     * @param user
+     */
     private void handleUserClick(UserViewModel user) {
         try {
             Parent profileView = navigationService.loadProfileView(userSessionService.getUserViewModel());
@@ -421,21 +542,33 @@ public class FavoritesDrawerController {
         }
     }
 
+    /**
+     * @param count
+     */
     private void updateFavoritesCount(int count) {
         String countText = localeService.getMessage("favorites.drawer.count", count);
         favoritesCountLabel.setText(countText);
     }
 
+    /**
+     * @param count
+     */
     private void updateFollowingCount(int count) {
         String countText = localeService.getMessage("following.drawer.count", count);
         followingCountLabel.setText(countText);
     }
 
+    /**
+     * 
+     */
     public void refreshData() {
         favoritesService.refreshUserFavorites();
         loadFollowing();
     }
 
+    /**
+     * @param visible
+     */
     public void setDrawerVisibleInstantly(boolean visible) {
         drawerContainer.setVisible(visible);
         drawerContainer.setManaged(visible);
@@ -454,22 +587,37 @@ public class FavoritesDrawerController {
         drawerVisible.set(visible);
     }
 
+    /**
+     * @param mainController
+     */
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }
 
+    /**
+     * @return
+     */
     public boolean isDrawerVisible() {
         return drawerVisible.get();
     }
 
+    /**
+     * @return
+     */
     public BooleanProperty drawerVisibleProperty() {
         return drawerVisible;
     }
 
+    /**
+     * 
+     */
     public void showDrawer() {
         drawerVisible.set(true);
     }
 
+    /**
+     * 
+     */
     public void hideDrawer() {
         drawerVisible.set(false);
     }

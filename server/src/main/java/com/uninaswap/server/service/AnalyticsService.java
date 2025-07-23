@@ -433,72 +433,300 @@ public class AnalyticsService {
         return generateEarningsTimeSeriesData(userId, startDate, endDate); // Simplified
     }
     
-    // Mock calculation methods (implement based on your business logic)
+    // Replace mock calculation methods with actual implementations
     
     private double calculateTotalEarnings(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Mock implementation - replace with actual earnings calculation
-        return Math.random() * 1000;
+        // Calculate earnings from completed sell listings
+        List<ListingEntity> completedSellListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
+            userId, startDate, endDate).stream()
+            .filter(listing -> listing.getStatus() == ListingStatus.COMPLETED && 
+                             "SELL".equals(listing.getListingType()))
+            .collect(Collectors.toList());
+        
+        return completedSellListings.stream()
+            .mapToDouble(listing -> {
+                try {
+                    if (listing instanceof SellListingEntity sellListing) {
+                        return sellListing.getPrice().doubleValue();
+                    }
+                } catch (Exception e) {
+                    logger.warn("Error calculating earnings for listing {}: {}", listing.getId(), e.getMessage());
+                }
+                return 0.0;
+            })
+            .sum();
     }
     
     private int calculateTotalViews(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Mock implementation - replace with actual view tracking
-        return (int) (Math.random() * 500);
+        // Sum up view counts from user's listings
+        // Assuming you have a views/analytics table or field in listings
+        List<ListingEntity> userListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
+            userId, startDate, endDate);
+        
+        // If you have a separate analytics/views table, implement accordingly
+        // For now, return the count of listings as a proxy for engagement
+        return userListings.size() * 10; // Rough estimate - replace with actual view tracking
     }
     
     private int calculateTotalFavorites(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Mock implementation - replace with actual favorites tracking
-        return (int) (Math.random() * 100);
+        // Count favorites on user's listings within the date range
+        List<ListingEntity> userListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
+            userId, startDate, endDate);
+        
+        // If you have a favorites table/repository, use it here
+        // For now, use a heuristic based on completed listings
+        long completedListings = userListings.stream()
+            .filter(l -> l.getStatus() == ListingStatus.COMPLETED)
+            .count();
+        
+        return (int) (completedListings * 2); // Estimate: 2 favorites per completed listing
     }
     
     private double calculateAverageTimeToSell(List<ListingEntity> listings) {
-        // Mock implementation - calculate average time between creation and completion
-        return Math.random() * 30; // 0-30 days
+        if (listings.isEmpty()) {
+            return 0.0;
+        }
+        
+        // Calculate average time between creation and completion
+        return listings.stream()
+            .filter(listing -> listing.getStatus() == ListingStatus.COMPLETED)
+            .mapToLong(listing -> {
+                if (listing.getUpdatedAt() != null && listing.getCreatedAt() != null) {
+                    return ChronoUnit.DAYS.between(listing.getCreatedAt(), listing.getUpdatedAt());
+                }
+                return 0L;
+            })
+            .average()
+            .orElse(0.0);
     }
     
     private double calculateRatingTrend(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Mock implementation - calculate rating trend over time
-        return (Math.random() - 0.5) * 2; // -1 to +1
+        // Calculate the trend in user ratings over time
+        List<ReviewEntity> reviews = reviewRepository.findByReviewedUserIdAndCreatedAtBetween(
+            userId, startDate, endDate);
+        
+        if (reviews.size() < 2) {
+            return 0.0; // No trend with less than 2 reviews
+        }
+        
+        // Sort by creation date
+        reviews.sort((r1, r2) -> r1.getCreatedAt().compareTo(r2.getCreatedAt()));
+        
+        // Calculate trend using first half vs second half of reviews
+        int midPoint = reviews.size() / 2;
+        double firstHalfAvg = reviews.subList(0, midPoint).stream()
+            .mapToDouble(ReviewEntity::getScore)
+            .average()
+            .orElse(0.0);
+        
+        double secondHalfAvg = reviews.subList(midPoint, reviews.size()).stream()
+            .mapToDouble(ReviewEntity::getScore)
+            .average()
+            .orElse(0.0);
+        
+        return secondHalfAvg - firstHalfAvg; // Positive = improving, negative = declining
     }
     
     private double calculateRepeatCustomerRate(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Mock implementation - calculate percentage of repeat customers
-        return Math.random() * 100;
+        // Find users who made multiple offers to this user's listings
+        List<OfferEntity> offersReceived = offerRepository.findByListingCreatorIdAndCreatedAtBetween(
+            userId, startDate, endDate);
+        
+        if (offersReceived.isEmpty()) {
+            return 0.0;
+        }
+        
+        // Group by offering user
+        Map<Long, Long> offersByUser = offersReceived.stream()
+            .collect(Collectors.groupingBy(
+                offer -> offer.getUser().getId(),
+                Collectors.counting()
+            ));
+        
+        // Count users who made more than one offer
+        long repeatCustomers = offersByUser.values().stream()
+            .filter(count -> count > 1)
+            .count();
+        
+        return (double) repeatCustomers / offersByUser.size() * 100.0;
     }
     
     private double calculateDayEarnings(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Mock implementation - calculate earnings for a specific day
-        return Math.random() * 50;
+        // Get completed sell listings for this specific day
+        List<ListingEntity> dayListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
+            userId, startDate, endDate).stream()
+            .filter(listing -> listing.getStatus() == ListingStatus.COMPLETED && 
+                             "SELL".equals(listing.getListingType()))
+            .collect(Collectors.toList());
+        
+        return dayListings.stream()
+            .mapToDouble(listing -> {
+                try {
+                    if (listing instanceof SellListingEntity sellListing) {
+                        return sellListing.getPrice().doubleValue();
+                    }
+                } catch (Exception e) {
+                    logger.warn("Error calculating day earnings for listing {}: {}", listing.getId(), e.getMessage());
+                }
+                return 0.0;
+            })
+            .sum();
     }
     
     private double calculateCategoryEarnings(Long userId, String category, LocalDateTime startDate, LocalDateTime endDate) {
-        // Mock implementation - calculate earnings for a specific category
-        return Math.random() * 300;
+        // Get completed sell listings in specific category
+        List<ListingEntity> categoryListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
+            userId, startDate, endDate).stream()
+            .filter(listing -> {
+                if (!listing.getStatus().equals(ListingStatus.COMPLETED) || 
+                    !"SELL".equals(listing.getListingType())) {
+                    return false;
+                }
+                
+                // Check if listing belongs to the category
+                return listing.getItems().stream()
+                    .anyMatch(item -> category.equalsIgnoreCase(item.getCategory()));
+            })
+            .collect(Collectors.toList());
+        
+        return categoryListings.stream()
+            .mapToDouble(listing -> {
+                try {
+                    if (listing instanceof SellListingEntity sellListing) {
+                        return sellListing.getPrice().doubleValue();
+                    }
+                } catch (Exception e) {
+                    logger.warn("Error calculating category earnings for listing {}: {}", listing.getId(), e.getMessage());
+                }
+                return 0.0;
+            })
+            .sum();
     }
     
     private double calculateCategoryAverageRating(Long userId, String category, LocalDateTime startDate, LocalDateTime endDate) {
-        // Mock implementation - calculate average rating for a category
-        return 3.5 + Math.random() * 1.5; // 3.5 - 5.0
+        // Get reviews for listings in specific category
+        List<ListingEntity> categoryListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
+            userId, startDate, endDate).stream()
+            .filter(listing -> listing.getItems().stream()
+                .anyMatch(item -> category.equalsIgnoreCase(item.getCategory())))
+            .collect(Collectors.toList());
+        
+        if (categoryListings.isEmpty()) {
+            return 0.0;
+        }
+        
+        // For each listing, find associated reviews (this would require linking reviews to listings)
+        // For now, use overall user rating as approximation
+        List<ReviewEntity> userReviews = reviewRepository.findByReviewedUserIdAndCreatedAtBetween(
+            userId, startDate, endDate);
+        
+        return userReviews.stream()
+            .mapToDouble(ReviewEntity::getScore)
+            .average()
+            .orElse(0.0);
     }
     
     private double calculateMonthEarnings(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Mock implementation - calculate earnings for a month
-        return Math.random() * 500;
+        return calculateTotalEarnings(userId, startDate, endDate);
     }
     
     private double calculateMonthAverageRating(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Mock implementation - calculate average rating for a month
-        return 3.5 + Math.random() * 1.5; // 3.5 - 5.0
+        List<ReviewEntity> monthReviews = reviewRepository.findByReviewedUserIdAndCreatedAtBetween(
+            userId, startDate, endDate);
+        
+        return monthReviews.stream()
+            .mapToDouble(ReviewEntity::getScore)
+            .average()
+            .orElse(0.0);
     }
     
     private AnalyticsDTO.PerformanceMetricsDTO calculatePlatformAverages(LocalDateTime startDate, LocalDateTime endDate) {
-        // Mock implementation - calculate platform-wide averages for comparison
         AnalyticsDTO.PerformanceMetricsDTO averages = new AnalyticsDTO.PerformanceMetricsDTO();
-        averages.setListingSuccessRate(65.0);
-        averages.setOfferAcceptanceRate(45.0);
-        averages.setAverageTimeToSell(15.0);
-        averages.setCustomerSatisfactionRate(85.0);
-        averages.setRepeatCustomerRate(30.0);
-        averages.setRatingTrend(0.1);
+        
+        // Calculate actual platform averages
+        List<ListingEntity> allListings = listingRepository.findByCreatedAtBetween(startDate, endDate);
+        List<OfferEntity> allOffers = offerRepository.findByCreatedAtBetween(startDate, endDate);
+        List<ReviewEntity> allReviews = reviewRepository.findByCreatedAtBetween(startDate, endDate);
+        
+        // Platform listing success rate
+        if (!allListings.isEmpty()) {
+            long completedListings = allListings.stream()
+                .filter(l -> l.getStatus() == ListingStatus.COMPLETED)
+                .count();
+            averages.setListingSuccessRate((double) completedListings / allListings.size() * 100);
+        } else {
+            averages.setListingSuccessRate(0.0);
+        }
+        
+        // Platform offer acceptance rate
+        if (!allOffers.isEmpty()) {
+            long acceptedOffers = allOffers.stream()
+                .filter(o -> o.getStatus() == OfferStatus.ACCEPTED || 
+                           o.getStatus() == OfferStatus.COMPLETED)
+                .count();
+            averages.setOfferAcceptanceRate((double) acceptedOffers / allOffers.size() * 100);
+        } else {
+            averages.setOfferAcceptanceRate(0.0);
+        }
+        
+        // Platform average time to sell
+        double avgTimeToSell = allListings.stream()
+            .filter(listing -> listing.getStatus() == ListingStatus.COMPLETED)
+            .mapToLong(listing -> {
+                if (listing.getUpdatedAt() != null && listing.getCreatedAt() != null) {
+                    return ChronoUnit.DAYS.between(listing.getCreatedAt(), listing.getUpdatedAt());
+                }
+                return 0L;
+            })
+            .average()
+            .orElse(0.0);
+        averages.setAverageTimeToSell(avgTimeToSell);
+        
+        // Platform customer satisfaction rate
+        if (!allReviews.isEmpty()) {
+            double satisfactionRate = allReviews.stream()
+                .mapToDouble(ReviewEntity::getScore)
+                .filter(score -> score >= 4) // 4+ stars considered satisfied
+                .count() * 100.0 / allReviews.size();
+            averages.setCustomerSatisfactionRate(satisfactionRate);
+        } else {
+            averages.setCustomerSatisfactionRate(0.0);
+        }
+        
+        // Platform repeat customer rate (simplified calculation)
+        Map<Long, Set<Long>> userInteractions = new HashMap<>();
+        allOffers.forEach(offer -> {
+            Long listingCreator = offer.getListing().getCreator().getId();
+            Long offerUser = offer.getUser().getId();
+            userInteractions.computeIfAbsent(listingCreator, k -> new HashSet<>()).add(offerUser);
+        });
+        
+        double repeatRate = userInteractions.values().stream()
+            .mapToDouble(users -> users.size() > 1 ? 1.0 : 0.0)
+            .average()
+            .orElse(0.0) * 100;
+        averages.setRepeatCustomerRate(repeatRate);
+        
+        // Platform rating trend (compare first half vs second half of period)
+        if (allReviews.size() >= 2) {
+            allReviews.sort((r1, r2) -> r1.getCreatedAt().compareTo(r2.getCreatedAt()));
+            int midPoint = allReviews.size() / 2;
+            
+            double firstHalfAvg = allReviews.subList(0, midPoint).stream()
+                .mapToDouble(ReviewEntity::getScore)
+                .average()
+                .orElse(0.0);
+            
+            double secondHalfAvg = allReviews.subList(midPoint, allReviews.size()).stream()
+                .mapToDouble(ReviewEntity::getScore)
+                .average()
+                .orElse(0.0);
+            
+            averages.setRatingTrend(secondHalfAvg - firstHalfAvg);
+        } else {
+            averages.setRatingTrend(0.0);
+        }
+        
         return averages;
     }
     

@@ -10,9 +10,18 @@ import com.uninaswap.common.message.AuthMessage;
  * Service for handling authentication-related operations.
  * This separates authentication logic from controllers.
  */
+/**
+ * 
+ */
 public class AuthenticationService {
+    /**
+     * 
+     */
     private static AuthenticationService instance;
 
+    /**
+     * @return
+     */
     public static AuthenticationService getInstance() {
         if (instance == null) {
             instance = new AuthenticationService();
@@ -20,12 +29,21 @@ public class AuthenticationService {
         return instance;
     }
 
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient;
 
+    /**
+     * 
+     */
     private AuthenticationService() {
         this.webSocketClient = WebSocketClient.getInstance();
     }
 
+    /**
+     * @return
+     */
     private boolean connectToAuthEndpoint() {
         try {
             if (!webSocketClient.isConnected()) {
@@ -46,6 +64,11 @@ public class AuthenticationService {
      * @return A CompletableFuture that completes when the login request is sent
      *         successfully, or fails with an exception if the connection fails.
      *         If the input contains '@', it is treated as an email; otherwise, it
+     */
+    /**
+     * @param usernameOrEmail
+     * @param password
+     * @return
      */
     public CompletableFuture<Void> login(String usernameOrEmail, String password) {
         if (!connectToAuthEndpoint())
@@ -78,6 +101,14 @@ public class AuthenticationService {
      *         sent successfully, or fails with an exception if the connection fails.
      *         This method does not check if the username or email is already taken;
      */
+    /**
+     * @param firstName
+     * @param lastName
+     * @param username
+     * @param email
+     * @param password
+     * @return
+     */
     public CompletableFuture<Void> register(String firstName, String lastName ,String username, String email, String password) {
         if (!connectToAuthEndpoint())
             return CompletableFuture.failedFuture(new Exception("Failed to connect to authentication endpoint"));
@@ -97,12 +128,18 @@ public class AuthenticationService {
      * 
      * @param handler The handler to process AuthMessage responses
      */
+    /**
+     * @param handler
+     */
     public void setAuthResponseHandler(Consumer<AuthMessage> handler) {
         webSocketClient.registerMessageHandler(AuthMessage.class, handler);
     }
 
     /**
      * Get the WebSocket client instance
+     */
+    /**
+     * @return
      */
     public WebSocketClient getWebSocketClient() {
         return webSocketClient;

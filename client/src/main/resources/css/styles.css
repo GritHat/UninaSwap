@@ -7327,3 +7327,253 @@
 .review-required-section:hover {
     -fx-border-color: #ff8c00;
 }
+
+
+/* File: resources/css/styles.css */
+
+/* =========================
+   ALERT DIALOG
+   ========================= */
+.alert-dialog {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+}
+.alert-dialog .dialog-pane {
+    -fx-pref-width: 400px;
+    -fx-min-height: 200px;
+}
+
+/* header panel if JavaFX exposes it */
+.alert-dialog .header-panel {
+    -fx-background-color: -fx-primary-ultralight;
+    -fx-padding: 10px;
+    -fx-background-radius: 5px 5px 0 0;
+}
+
+/* ...existing styles... */
+
+/* =========================
+   ENHANCED ALERT DIALOG STYLING
+   ========================= */
+
+/* Main alert dialog container */
+.alert-dialog {
+    -fx-background-color: white !important;
+    -fx-background-radius: 12px !important;
+    -fx-border-color: #e9ecef !important;
+    -fx-border-width: 1px !important;
+    -fx-border-radius: 12px !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 16, 0, 0, 4) !important;
+    -fx-padding: 0 !important;
+}
+
+/* Force white background on all dialog components */
+.alert-dialog .dialog-pane {
+    -fx-background-color: white !important;
+    -fx-background-radius: 12px !important;
+}
+
+/* Alert dialog header panel */
+.alert-dialog .header-panel {
+    -fx-background-color: -fx-background-light !important;
+    -fx-background-radius: 12px 12px 0 0 !important;
+    -fx-padding: 20px !important;
+    -fx-border-color: #e9ecef !important;
+    -fx-border-width: 0 0 1px 0 !important;
+}
+
+/* Alert dialog content area */
+.alert-dialog .content {
+    -fx-background-color: white !important;
+    -fx-padding: 20px !important;
+    -fx-background-radius: 0 0 12px 12px !important;
+}
+
+/* Alert dialog header text */
+.alert-dialog .header-panel .label {
+    -fx-font-size: 16px !important;
+    -fx-font-weight: bold !important;
+    -fx-text-fill: -fx-primary !important;
+}
+
+/* Alert dialog content text */
+.alert-dialog .content .label {
+    -fx-font-size: 14px !important;
+    -fx-text-fill: -fx-text-dark !important;
+    -fx-wrap-text: true !important;
+    -fx-line-spacing: 2px !important;
+}
+
+/* Alert dialog button bar */
+.alert-dialog .button-bar {
+    -fx-background-color: white !important;
+    -fx-background-radius: 0 0 12px 12px !important;
+    -fx-padding: 15px 20px 20px 20px !important;
+}
+
+/* Base button styling for alerts */
+.alert-dialog .button {
+    -fx-min-width: 80px !important;
+    -fx-pref-height: 36px !important;
+    -fx-font-size: 14px !important;
+    -fx-font-weight: bold !important;
+    -fx-background-radius: 20px !important;
+    -fx-border-radius: 20px !important;
+    -fx-cursor: hand !important;
+    -fx-padding: 8px 15px !important;
+}
+
+/* Primary button style (OK, Yes, Confirm buttons) */
+.alert-dialog .button.default {
+    -fx-background-color: -fx-primary !important;
+    -fx-text-fill: white !important;
+    -fx-border-color: transparent !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1) !important;
+}
+
+.alert-dialog .button.default:hover {
+    -fx-background-color: -fx-primary-light !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2) !important;
+}
+
+.alert-dialog .button.default:pressed {
+    -fx-background-color: -fx-primary-dark !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0, 0, 1) !important;
+}
+
+/* Secondary button style (Cancel, No buttons) */
+.alert-dialog .button.cancel {
+    -fx-background-color: transparent !important;
+    -fx-text-fill: -fx-text-mid !important;
+    -fx-border-color: #dee2e6 !important;
+    -fx-border-width: 1px !important;
+}
+
+.alert-dialog .button.cancel:hover {
+    -fx-background-color: -fx-primary-ultralight !important;
+    -fx-text-fill: -fx-text-dark !important;
+    -fx-border-color: -fx-primary-light !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 4, 0, 0, 2) !important;
+}
+
+.alert-dialog .button.cancel:pressed {
+    -fx-background-color: #e9ecef !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0, 0, 1) !important;
+}
+
+/* Exception text area styling */
+.alert-dialog .exception-text-area {
+    -fx-background-color: #f8f9fa !important;
+    -fx-border-color: #dee2e6 !important;
+    -fx-border-width: 1px !important;
+    -fx-border-radius: 8px !important;
+    -fx-background-radius: 8px !important;
+    -fx-font-family: "Courier New", monospace !important;
+    -fx-font-size: 12px !important;
+    -fx-text-fill: -fx-text-dark !important;
+}
+
+.alert-dialog .exception-text-area:focused {
+    -fx-border-color: -fx-primary-light !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(74, 43, 107, 0.1), 4, 0, 0, 0) !important;
+}
+
+/* Alert type specific icons and colors */
+.alert-dialog.information .header-panel .label {
+    -fx-text-fill: #17a2b8 !important;
+}
+
+.alert-dialog.warning .header-panel .label {
+    -fx-text-fill: #856404 !important;
+}
+
+.alert-dialog.error .header-panel .label {
+    -fx-text-fill: #dc3545 !important;
+}
+
+.alert-dialog.confirmation .header-panel .label {
+    -fx-text-fill: -fx-primary !important;
+}
+
+/* Expandable content for exception alerts */
+.alert-dialog .expandable-content {
+    -fx-background-color: #f8f9fa !important;
+    -fx-background-radius: 0 0 12px 12px !important;
+    -fx-padding: 15px !important;
+    -fx-border-color: #dee2e6 !important;
+    -fx-border-width: 1px 0 0 0 !important;
+}
+
+/* Override any system defaults that might interfere */
+.alert-dialog * {
+    -fx-accent: -fx-primary;
+}
+
+/* Ensure all nested components have white background */
+.alert-dialog .scroll-pane,
+.alert-dialog .scroll-pane .viewport,
+.alert-dialog .scroll-pane .content {
+    -fx-background-color: white !important;
+}
+
+/* Remove any unwanted focus indicators */
+.alert-dialog .button:focused {
+    -fx-background-insets: 0 !important;
+    -fx-focus-color: transparent !important;
+    -fx-faint-focus-color: transparent !important;
+}
+
+.product-details-titled-pane {
+    -fx-background-color: white;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.product-details-titled-pane .title {
+    -fx-background-color: -fx-background-light;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 12px 15px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary;
+}
+
+.product-details-titled-pane .content {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 8px 8px;
+    -fx-border-color: #e9ecef;
+    -fx-border-width: 1px 0 0 0;
+}
+
+.product-details-titled-pane .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 5px;
+}
+
+.product-details-titled-pane .arrow {
+    -fx-background-color: -fx-primary;
+    -fx-padding: 3px;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+}
+
+.product-details-titled-pane:expanded .arrow {
+    -fx-rotate: 180;
+}
+
+/* Year spinner specific styling */
+.item-spinner.year-spinner .text-field {
+    -fx-prompt-text-fill: #999999;
+}
+
+/* Help text for optional fields */
+.help-text.optional {
+    -fx-fill: #999999;
+    -fx-font-size: 11px;
+    -fx-font-style: italic;
+}

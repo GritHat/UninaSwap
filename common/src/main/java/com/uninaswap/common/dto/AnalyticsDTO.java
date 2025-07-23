@@ -6,44 +6,125 @@ import java.util.List;
 /**
  * DTO for Analytics data, encapsulating various statistics and metrics.
  */
+/**
+ * 
+ */
 public class AnalyticsDTO {
     
+    /**
+     * 
+     */
     private UserStatsDTO userStats;
+    /**
+     * 
+     */
     private List<TimeSeriesDataDTO> listingStats;
+    /**
+     * 
+     */
     private List<TimeSeriesDataDTO> offerStats;
+    /**
+     * 
+     */
     private List<TimeSeriesDataDTO> reviewStats;
+    /**
+     * 
+     */
     private List<TimeSeriesDataDTO> earningsStats;
+    /**
+     * 
+     */
     private List<CategoryStatsDTO> categoryBreakdown;
+    /**
+     * 
+     */
     private List<MonthlyStatsDTO> monthlyBreakdown;
     
+    /**
+     * 
+     */
     private PerformanceMetricsDTO performanceMetrics;
     
+    /**
+     * 
+     */
     public AnalyticsDTO() {}
     
+    /**
+     * @return
+     */
     public UserStatsDTO getUserStats() { return userStats; }
+    /**
+     * @param userStats
+     */
     public void setUserStats(UserStatsDTO userStats) { this.userStats = userStats; }
     
+    /**
+     * @return
+     */
     public List<TimeSeriesDataDTO> getListingStats() { return listingStats; }
+    /**
+     * @param listingStats
+     */
     public void setListingStats(List<TimeSeriesDataDTO> listingStats) { this.listingStats = listingStats; }
     
+    /**
+     * @return
+     */
     public List<TimeSeriesDataDTO> getOfferStats() { return offerStats; }
+    /**
+     * @param offerStats
+     */
     public void setOfferStats(List<TimeSeriesDataDTO> offerStats) { this.offerStats = offerStats; }
     
+    /**
+     * @return
+     */
     public List<TimeSeriesDataDTO> getReviewStats() { return reviewStats; }
+    /**
+     * @param reviewStats
+     */
     public void setReviewStats(List<TimeSeriesDataDTO> reviewStats) { this.reviewStats = reviewStats; }
     
+    /**
+     * @return
+     */
     public List<TimeSeriesDataDTO> getEarningsStats() { return earningsStats; }
+    /**
+     * @param earningsStats
+     */
     public void setEarningsStats(List<TimeSeriesDataDTO> earningsStats) { this.earningsStats = earningsStats; }
     
+    /**
+     * @return
+     */
     public List<CategoryStatsDTO> getCategoryBreakdown() { return categoryBreakdown; }
+    /**
+     * @param categoryBreakdown
+     */
     public void setCategoryBreakdown(List<CategoryStatsDTO> categoryBreakdown) { this.categoryBreakdown = categoryBreakdown; }
     
+    /**
+     * @return
+     */
     public List<MonthlyStatsDTO> getMonthlyBreakdown() { return monthlyBreakdown; }
+    /**
+     * @param monthlyBreakdown
+     */
     public void setMonthlyBreakdown(List<MonthlyStatsDTO> monthlyBreakdown) { this.monthlyBreakdown = monthlyBreakdown; }
     
+    /**
+     * @return
+     */
     public PerformanceMetricsDTO getPerformanceMetrics() { return performanceMetrics; }
+    /**
+     * @param performanceMetrics
+     */
     public void setPerformanceMetrics(PerformanceMetricsDTO performanceMetrics) { this.performanceMetrics = performanceMetrics; }
     
+    /**
+     * 
+     */
     public static class UserStatsDTO {
         private int totalListings;
         private int activeListings;
@@ -97,6 +178,9 @@ public class AnalyticsDTO {
         public void setTotalFavorites(int totalFavorites) { this.totalFavorites = totalFavorites; }
     }
     
+    /**
+     * 
+     */
     public static class TimeSeriesDataDTO {
         private LocalDateTime timestamp;
         private double value;
@@ -120,6 +204,9 @@ public class AnalyticsDTO {
         public void setLabel(String label) { this.label = label; }
     }
     
+    /**
+     * 
+     */
     public static class CategoryStatsDTO {
         private String category;
         private int totalListings;
@@ -149,6 +236,9 @@ public class AnalyticsDTO {
         public void setAverageRating(double averageRating) { this.averageRating = averageRating; }
     }
     
+    /**
+     * 
+     */
     public static class MonthlyStatsDTO {
         private int year;
         private int month;
@@ -178,6 +268,9 @@ public class AnalyticsDTO {
         public void setAverageRating(double averageRating) { this.averageRating = averageRating; }
     }
     
+    /**
+     * 
+     */
     public static class PerformanceMetricsDTO {
         private double listingSuccessRate;
         private double offerAcceptanceRate;

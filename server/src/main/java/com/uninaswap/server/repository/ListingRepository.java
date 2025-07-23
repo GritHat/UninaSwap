@@ -68,6 +68,14 @@ public interface ListingRepository extends JpaRepository<ListingEntity, String> 
     // Text search methods
     Page<ListingEntity> findByTitleContainingIgnoreCaseAndStatus(String title, ListingStatus status, Pageable pageable);
 
+    /**
+     * Find listings created between dates
+     * @param startDate Start date
+     * @param endDate End date
+     * @return List of listings
+     */
+    List<ListingEntity> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+
     // Type filtering methods
     @Query("SELECT DISTINCT l FROM ListingEntity l WHERE TYPE(l) = :listingType AND l.status = :status")
     Page<ListingEntity> findByListingTypeAndStatus(@Param("listingType") Class<?> listingType, @Param("status") ListingStatus status, Pageable pageable);

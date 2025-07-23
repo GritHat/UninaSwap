@@ -20,32 +20,101 @@ import javafx.util.StringConverter;
 
 import java.io.File;
 
+/**
+ * 
+ */
 public class ItemDialogController {
 
+    /**
+     * 
+     */
     @FXML private TextField nameField;
+    /**
+     * 
+     */
     @FXML private TextArea descriptionField;
+    /**
+     * 
+     */
     @FXML private ComboBox<ItemCondition> conditionComboBox;
+    /**
+     * 
+     */
     @FXML private ComboBox<Category> categoryComboBox;
+    /**
+     * 
+     */
     @FXML private TextField brandField;
+    /**
+     * 
+     */
     @FXML private TextField modelField;
+    /**
+     * 
+     */
     @FXML private Spinner<Integer> yearSpinner;
+    /**
+     * 
+     */
     @FXML private Spinner<Integer> stockSpinner;
+    /**
+     * 
+     */
     @FXML private Label availableValueLabel;
+    /**
+     * 
+     */
     @FXML private Label reservedValueLabel;
+    /**
+     * 
+     */
     @FXML private Button imageButton;
+    /**
+     * 
+     */
     @FXML private ImageView imagePreview;
     
+    /**
+     * 
+     */
     private final ImageService imageService = ImageService.getInstance();
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final CategoryService categoryService = CategoryService.getInstance();
     
+    /**
+     * 
+     */
     private ItemDTO item;
+    /**
+     * 
+     */
     private boolean isNewItem;
+    /**
+     * 
+     */
     private int initialStock;
+    /**
+     * 
+     */
     private int initialAvailable;
+    /**
+     * 
+     */
     private int reservedQuantity;
+    /**
+     * 
+     */
     private File selectedImageFile;
     
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         conditionComboBox.setItems(FXCollections.observableArrayList(ItemCondition.values()));
@@ -60,14 +129,61 @@ public class ItemDialogController {
             }
         });
         setupCategoryComboBox();
+        
+        // Year spinner with no initial value - blank by default
         SpinnerValueFactory.IntegerSpinnerValueFactory yearFactory = 
-            new SpinnerValueFactory.IntegerSpinnerValueFactory(1900, 2030, 2023);
+            new SpinnerValueFactory.IntegerSpinnerValueFactory(1900, 2030, 2024) {
+                @Override
+                public void increment(int steps) {
+                    // If current value is null/empty, start from current year
+                    if (getValue() == null || getValue() == 0) {
+                        setValue(2024);
+                    } else {
+                        super.increment(steps);
+                    }
+                }
+                
+                @Override
+                public void decrement(int steps) {
+                    // If current value is null/empty, start from current year
+                    if (getValue() == null || getValue() == 0) {
+                        setValue(2024);
+                    } else {
+                        super.decrement(steps);
+                    }
+                }
+            };
+        
         yearSpinner.setValueFactory(yearFactory);
+        
+        // Make the year spinner show empty initially
+        yearSpinner.getEditor().setText("");
+        yearSpinner.setEditable(true);
+        
+        // Handle manual text input for year
+        yearSpinner.getEditor().textProperty().addListener((obs, oldText, newText) -> {
+            if (newText.isEmpty()) {
+                // Allow empty text
+                return;
+            }
+            try {
+                int year = Integer.parseInt(newText);
+                if (year >= 1900 && year <= 2030) {
+                    yearFactory.setValue(year);
+                }
+            } catch (NumberFormatException e) {
+                // Ignore invalid input
+            }
+        });
+        
         SpinnerValueFactory.IntegerSpinnerValueFactory stockFactory = 
             new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 9999, 1);
         stockSpinner.setValueFactory(stockFactory);
     }
     
+    /**
+     * 
+     */
     private void setupCategoryComboBox() {
         categoryComboBox.setItems(FXCollections.observableArrayList(categoryService.getSelectableCategories()));
         categoryComboBox.setConverter(new StringConverter<Category>() {
@@ -87,6 +203,9 @@ public class ItemDialogController {
         categoryComboBox.setValue(Category.OTHER);
     }
     
+    /**
+     * @param item
+     */
     public void setItem(ItemDTO item) {
         this.item = item;
         isNewItem = item.getId() == null || item.getId().isEmpty();
@@ -105,9 +224,14 @@ public class ItemDialogController {
         brandField.setText(item.getBrand() != null ? item.getBrand() : "");
         modelField.setText(item.getModel() != null ? item.getModel() : "");
         
-        if (item.getYearOfProduction() != null) {
+        // Handle year - keep empty if not set
+        if (item.getYearOfProduction() != null && item.getYearOfProduction() > 0) {
             yearSpinner.getValueFactory().setValue(item.getYearOfProduction());
+        } else {
+            // Keep the spinner empty for new items or items without year
+            yearSpinner.getEditor().setText("");
         }
+        
         SpinnerValueFactory.IntegerSpinnerValueFactory stockFactory = 
             (SpinnerValueFactory.IntegerSpinnerValueFactory) stockSpinner.getValueFactory();
         
@@ -152,6 +276,9 @@ public class ItemDialogController {
         }
     }
     
+    /**
+     * 
+     */
     private void updateImagePreviewVisibility() {
         boolean hasImage = imagePreview.getImage() != null;
         Node uploadPlaceholder = imagePreview.getParent().lookup(".upload-placeholder");
@@ -164,6 +291,9 @@ public class ItemDialogController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleSelectImage() {
         FileChooser fileChooser = new FileChooser();
@@ -190,6 +320,9 @@ public class ItemDialogController {
         }
     }
     
+    /**
+     * @return
+     */
     public ItemDTO getUpdatedItem() {
         item.setName(nameField.getText());
         item.setDescription(descriptionField.getText());
@@ -201,13 +334,33 @@ public class ItemDialogController {
         
         item.setBrand(brandField.getText());
         item.setModel(modelField.getText());
-        item.setYearOfProduction(yearSpinner.getValue());
+        
+        // Handle year - only set if there's a valid value
+        String yearText = yearSpinner.getEditor().getText().trim();
+        if (!yearText.isEmpty()) {
+            try {
+                int year = Integer.parseInt(yearText);
+                if (year >= 1900 && year <= 2030) {
+                    item.setYearOfProduction(year);
+                } else {
+                    item.setYearOfProduction(null);
+                }
+            } catch (NumberFormatException e) {
+                item.setYearOfProduction(null);
+            }
+        } else {
+            item.setYearOfProduction(null);
+        }
+        
         item.setStockQuantity(stockSpinner.getValue());
         item.setAvailableQuantity(Integer.parseInt(availableValueLabel.getText()));
         
         return item;
     }
     
+    /**
+     * @return
+     */
     public File getSelectedImageFile() {
         return selectedImageFile;
     }

@@ -1,6 +1,7 @@
 package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.LocaleService;
+import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.ReviewService;
 import com.uninaswap.client.util.AlertHelper;
 import com.uninaswap.client.viewmodel.ReviewViewModel;
@@ -14,89 +15,186 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+/**
+ * 
+ */
 public class UserReviewsController {
 
+    /**
+     * 
+     */
     @FXML
     private Label titleLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label userNameLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label averageRatingLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label totalReviewsLabel;
 
+    /**
+     * 
+     */
     @FXML
     private HBox ratingStarsBox;
 
+    /**
+     * 
+     */
     @FXML
     private ProgressBar ratingBar;
 
+    /**
+     * 
+     */
     @FXML
     private TabPane reviewsTabPane;
 
+    /**
+     * 
+     */
     @FXML
     private TableView<ReviewViewModel> receivedReviewsTable;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ReviewViewModel, String> receivedReviewerColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ReviewViewModel, String> receivedScoreColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ReviewViewModel, String> receivedCommentColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ReviewViewModel, String> receivedDateColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableView<ReviewViewModel> givenReviewsTable;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ReviewViewModel, String> givenReviewedUserColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ReviewViewModel, String> givenScoreColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ReviewViewModel, String> givenCommentColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ReviewViewModel, String> givenDateColumn;
 
+    /**
+     * 
+     */
     @FXML
     private VBox reviewDetailsSection;
 
+    /**
+     * 
+     */
     @FXML
     private Label detailReviewerLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label detailScoreLabel;
 
+    /**
+     * 
+     */
     @FXML
     private HBox detailStarsBox;
 
+    /**
+     * 
+     */
     @FXML
     private Label detailDateLabel;
 
+    /**
+     * 
+     */
     @FXML
     private TextArea detailCommentArea;
 
+    /**
+     * 
+     */
     @FXML
     private Button refreshButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button closeButton;
 
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final ReviewService reviewService = ReviewService.getInstance();
+    /**
+     * 
+     */
     private UserViewModel currentUser;
+    /**
+     * 
+     */
     private final ObservableList<ReviewViewModel> receivedReviews = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<ReviewViewModel> givenReviews = FXCollections.observableArrayList();
 
+    private final NavigationService navigationService = NavigationService.getInstance();
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupLabels();
@@ -105,12 +203,18 @@ public class UserReviewsController {
         hideReviewDetails();
     }
 
+    /**
+     * 
+     */
     private void setupLabels() {
         titleLabel.setText(localeService.getMessage("reviews.title", "User Reviews"));
         refreshButton.setText(localeService.getMessage("reviews.refresh", "Refresh"));
         closeButton.setText(localeService.getMessage("reviews.close", "Close"));
     }
 
+    /**
+     * 
+     */
     private void setupTables() {
         receivedReviewerColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getReviewerName()));
@@ -149,6 +253,9 @@ public class UserReviewsController {
         givenReviewsTable.setItems(givenReviews);
     }
 
+    /**
+     * 
+     */
     private void setupSelectionHandlers() {
         receivedReviewsTable.getSelectionModel().selectedItemProperty()
                 .addListener((_, _, newSelection) -> {
@@ -166,6 +273,9 @@ public class UserReviewsController {
         });
     }
 
+    /**
+     * @param user
+     */
     public void setUser(UserViewModel user) {
         this.currentUser = user;
 
@@ -177,6 +287,9 @@ public class UserReviewsController {
         }
     }
 
+    /**
+     * 
+     */
     private void updateUserInfo() {
         if (currentUser != null) {
             userNameLabel.setText(currentUser.getDisplayName());
@@ -184,6 +297,9 @@ public class UserReviewsController {
         }
     }
 
+    /**
+     * 
+     */
     private void updateRatingSummary() {
         if (currentUser != null) {
             reviewService.getUserRatingSummary(currentUser.getId())
@@ -209,6 +325,9 @@ public class UserReviewsController {
         }
     }
 
+    /**
+     * @param rating
+     */
     private void updateRatingVisuals(double rating) {
         ratingStarsBox.getChildren().clear();
         int fullStars = (int) Math.floor(rating);
@@ -234,6 +353,9 @@ public class UserReviewsController {
         ratingBar.setProgress(rating / 5.0);
     }
 
+    /**
+     * 
+     */
     private void loadReviews() {
         if (currentUser == null)
             return;
@@ -272,6 +394,9 @@ public class UserReviewsController {
                 });
     }
 
+    /**
+     * @param review
+     */
     private void showReviewDetails(ReviewViewModel review) {
         if (review == null) {
             hideReviewDetails();
@@ -309,19 +434,31 @@ public class UserReviewsController {
         reviewDetailsSection.setVisible(true);
     }
 
+    /**
+     * 
+     */
     private void hideReviewDetails() {
         reviewDetailsSection.setVisible(false);
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleRefresh() {
         updateRatingSummary();
         loadReviews();
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleClose() {
-        Stage stage = (Stage) closeButton.getScene().getWindow();
-        stage.close();
+        try {
+            navigationService.navigateToHomeView();
+        } catch (Exception e) {
+            System.err.println("Failed to navigate to home view: " + e.getMessage());
+        }
     }
 }

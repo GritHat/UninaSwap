@@ -14,26 +14,57 @@ import javafx.scene.text.Text;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * 
+ */
 public class UserCardController {
 
+    /**
+     * 
+     */
     @FXML
     private VBox itemCard;
+    /**
+     * 
+     */
     @FXML
     private ImageView itemImage;
+    /**
+     * 
+     */
     @FXML
     private Text itemName;
 
+    /**
+     * 
+     */
     private UserDTO user;
+    /**
+     * 
+     */
     private List<UserDTO> users;
 
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
 
+    /**
+     * 
+     */
     public UserCardController() {
     }
 
+    /**
+     * @param user
+     */
     public UserCardController(UserDTO user) {
         this.user = user;
     }
+    /**
+     * @param <T>
+     * @param container
+     */
     public <T extends Pane> void loadUserCardsIntoTab(T container) {
         container.getChildren().clear();
         try {
@@ -56,6 +87,9 @@ public class UserCardController {
 
     }
 
+    /**
+     * @param event
+     */
     @FXML
     private void openUserDetails(MouseEvent event) {
         if (user != null) {

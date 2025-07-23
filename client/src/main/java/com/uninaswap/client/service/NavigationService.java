@@ -48,16 +48,46 @@ import com.uninaswap.client.controller.HomeController;
  * Service class to handle navigation between screens.
  * This separates navigation concerns from controller business logic.
  */
+/**
+ * 
+ */
 public class NavigationService {
+    /**
+     * 
+     */
     private static NavigationService instance;
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final ImageService imageService = ImageService.getInstance();
+    /**
+     * 
+     */
     private final ItemService itemService = ItemService.getInstance();
+    /**
+     * 
+     */
     private final UserSessionService sessionService = UserSessionService.getInstance();
+    /**
+     * 
+     */
     private final EventBusService eventBus = EventBusService.getInstance();
+    /**
+     * 
+     */
     private final java.util.Stack<NavigationState> navigationHistory = new java.util.Stack<>();
+    /**
+     * 
+     */
     private MainController mainController;
 
+    /**
+     * 
+     */
     private static class NavigationState {
         private final Parent view;
         private final String title;
@@ -76,6 +106,9 @@ public class NavigationService {
         }
     }
 
+    /**
+     * @return
+     */
     public static NavigationService getInstance() {
         if (instance == null) {
             instance = new NavigationService();
@@ -83,9 +116,15 @@ public class NavigationService {
         return instance;
     }
 
+    /**
+     * 
+     */
     private NavigationService() {
     }
 
+    /**
+     * 
+     */
     private class LoaderBundle {
         private FXMLLoader loader;
         private Parent view;
@@ -110,6 +149,11 @@ public class NavigationService {
      * @param fxmlPath The path to the FXML file
      * @return A LoaderBundle containing the FXMLLoader and the loaded view
      * @throws IOException If an error occurs while loading the view
+     */
+    /**
+     * @param fxmlPath
+     * @return
+     * @throws IOException
      */
     private LoaderBundle loadView(String fxmlPath) throws IOException {
         if (fxmlPath == null || fxmlPath.isEmpty()) {
@@ -136,6 +180,10 @@ public class NavigationService {
      * 
      * @param sourceNode The node that triggered the navigation
      * @throws IOException If an error occurs while loading the view
+     */
+    /**
+     * @param sourceNode
+     * @throws IOException
      */
     public void navigateToLogin(Node sourceNode) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/LoginView.fxml");
@@ -176,6 +224,10 @@ public class NavigationService {
      * @param sourceNode The node that triggered the navigation
      * @throws IOException If an error occurs while loading the view
      */
+    /**
+     * @param sourceNode
+     * @throws IOException
+     */
     public void navigateToRegister(Node sourceNode) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/RegisterView.fxml");
         Parent registerView = loaderBundle.getView();
@@ -215,6 +267,10 @@ public class NavigationService {
      * @param sourceNode The node that triggered the navigation
      * @throws IOException If an error occurs while loading the view
      */
+    /**
+     * @param sourceNode
+     * @throws IOException
+     */
     public void navigateToMainDashboard(Node sourceNode) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/MainView.fxml");
         Parent mainView = loaderBundle.getView();
@@ -229,6 +285,9 @@ public class NavigationService {
         mainController.initialize();
     }
 
+    /**
+     * @param itemId
+     */
     public void navigateToItemDetails(String itemId) {
         System.out.println("Navigating to item details for item: " + itemId);
     }
@@ -238,6 +297,10 @@ public class NavigationService {
      * 
      * @param sourceNode The node that triggered the navigation
      * @throws IOException If an error occurs while loading the view
+     */
+    /**
+     * @param sourceNode
+     * @throws IOException
      */
     public void openTermsAndConditions(Node sourceNode) throws IOException {
         final String TERMS_FXML_PATH = "/fxml/TermsAndConditionsView.fxml";
@@ -271,6 +334,10 @@ public class NavigationService {
      * 
      * @throws IOException If an error occurs while loading the view
      */
+    /**
+     * @return
+     * @throws IOException
+     */
     public Parent loadHomeView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/HomeView.fxml");
         Parent homeView = loaderBundle.getView();
@@ -278,6 +345,9 @@ public class NavigationService {
         return homeView;
     }
 
+    /**
+     * @throws IOException
+     */
     public void navigateToHomeView() throws IOException {
         Parent homeView = loadHomeView();
         mainController.setContent(homeView);
@@ -291,6 +361,11 @@ public class NavigationService {
      * @param user The user to load the profile for
      * @throws IOException If an error occurs while loading the view
      * @return The loaded profile view as a Parent object
+     */
+    /**
+     * @param user
+     * @return
+     * @throws IOException
      */
     public Parent loadProfileView(UserViewModel user) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/ProfileView.fxml");
@@ -309,6 +384,10 @@ public class NavigationService {
      * @throws IOException If an error occurs while loading the view
      * @return The loaded inventory view as a Parent object
      */
+    /**
+     * @return
+     * @throws IOException
+     */
     public Parent loadInventoryView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/InventoryView.fxml");
         Parent inventoryView = loaderBundle.getView();
@@ -316,6 +395,9 @@ public class NavigationService {
         return inventoryView;
     }
 
+    /**
+     * @throws IOException
+     */
     public void navigateToInventoryView() throws IOException {
         Parent inventoryView = loadInventoryView();
         mainController.setContent(inventoryView);
@@ -328,6 +410,10 @@ public class NavigationService {
      * @throws IOException If an error occurs while loading the view
      * @return The loaded notifications view as a Parent object
      */
+    /**
+     * @return
+     * @throws IOException
+     */
     public Parent loadNotificationsView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/NotificationsView.fxml");
         Parent notificationsView = loaderBundle.getView();
@@ -335,6 +421,9 @@ public class NavigationService {
         return notificationsView;
     }
 
+    /**
+     * @throws IOException
+     */
     public void navigateToNotificationsView() throws IOException {
         mainController.setContent(loadNotificationsView());
         mainController.updateSidebarButtonSelection("notifications");
@@ -346,6 +435,10 @@ public class NavigationService {
      * @throws IOException If an error occurs while loading the view
      * @return The loaded listing creation view as a Parent object
      */
+    /**
+     * @return
+     * @throws IOException
+     */
     public Parent loadListingCreationView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/ListingCreationView.fxml");
         Parent listingCreationView = loaderBundle.getView();
@@ -353,11 +446,18 @@ public class NavigationService {
         return listingCreationView;
     }
 
+    /**
+     * @throws IOException
+     */
     public void navigateToListingCreationView() throws IOException {
         mainController.setContent(loadListingCreationView());
         mainController.sidebarClearAllSelection();
     }
 
+    /**
+     * @return
+     * @throws IOException
+     */
     public Parent loadAnalyticsView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/AnalyticsView.fxml");
         Parent analyticsView = loaderBundle.getView();
@@ -365,6 +465,9 @@ public class NavigationService {
         return analyticsView;
     }
 
+    /**
+     * @throws IOException
+     */
     public void navigateToAnalyticsView() throws IOException {
     if (mainController != null) {
         Parent analyticsView = loadAnalyticsView();
@@ -381,6 +484,10 @@ public class NavigationService {
      * @throws IOException If an error occurs while loading the view
      * @return The loaded support view as a Parent object
      */
+    /**
+     * @return
+     * @throws IOException
+     */
     public Parent loadSupportView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/SupportView.fxml");
         Parent supportView = loaderBundle.getView();
@@ -388,6 +495,9 @@ public class NavigationService {
         return supportView;
     }
 
+    /**
+     * @throws IOException
+     */
     public void navigateToSupportView() throws IOException {
         Parent supportView = loadSupportView();
         mainController.setContent(supportView);
@@ -395,6 +505,10 @@ public class NavigationService {
         mainController.sidebarClearAllSelection();
     }
 
+    /**
+     * @return
+     * @throws IOException
+     */
     public Parent loadSettingsView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/SettingsView.fxml");
         Parent settingsView = loaderBundle.getView();
@@ -402,6 +516,9 @@ public class NavigationService {
         return settingsView;
     }
 
+    /**
+     * @throws IOException
+     */
     public void navigateToSettingsView() throws IOException {
         Parent settingsView = loadSettingsView();
         mainController.setContent(settingsView);
@@ -409,6 +526,10 @@ public class NavigationService {
         mainController.sidebarClearAllSelection();
     }
 
+    /**
+     * @return
+     * @throws IOException
+     */
     public Parent loadUserFollowersView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/UserFollowersView.fxml");
         Parent userFollowersView = loaderBundle.getView();
@@ -416,12 +537,19 @@ public class NavigationService {
         return userFollowersView;
     }
 
+    /**
+     * @throws IOException
+     */
     public void navigateToUserFollowersView() throws IOException {
         Parent userFollowersView = loadUserFollowersView();
         mainController.setContent(userFollowersView);
         mainController.sidebarClearAllSelection();
     }
 
+    /**
+     * @return
+     * @throws IOException
+     */
     public Parent loadUserFavoritesView() throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/UserFavoritesView.fxml");
         Parent userFavoritesView = loaderBundle.getView();
@@ -429,6 +557,9 @@ public class NavigationService {
         return userFavoritesView;
     }
 
+    /**
+     * @throws IOException
+     */
     public void navigateToUserFavoritesView() throws IOException {
         Parent userFavoritesView = loadUserFavoritesView();
         mainController.setContent(userFavoritesView);
@@ -440,6 +571,9 @@ public class NavigationService {
      * Logout the current user and navigate to the login screen
      * 
      * @throws IOException If an error occurs while logging out
+     */
+    /**
+     * @throws IOException
      */
     public void logout() throws IOException {
         sessionService.endSession();
@@ -453,6 +587,10 @@ public class NavigationService {
      * @param event The ActionEvent from which to get the Stage
      * @return The Stage associated with the ActionEvent    
      */
+    /**
+     * @param event
+     * @return
+     */
     public Stage getStageFromEvent(ActionEvent event) {
         return (Stage) ((Node) event.getSource()).getScene().getWindow();
     }
@@ -463,6 +601,10 @@ public class NavigationService {
      * @throws IOException If an error occurs while loading the view
      * @return The loaded offers view as a Parent object
      */
+    /**
+     * @return
+     * @throws IOException
+     */
     public Parent loadOffersView() throws IOException {
 
         LoaderBundle loaderBundle = loadView("/fxml/OffersView.fxml");
@@ -471,17 +613,29 @@ public class NavigationService {
         return offersView;
     }
 
+    /**
+     * @throws IOException
+     */
     public void navigateToOffersView() throws IOException {
         Parent offersView = loadOffersView();
         mainController.setContent(offersView);
         mainController.updateSidebarButtonSelection("offers");
     }
 
+    /**
+     * @param user
+     * @throws IOException
+     */
     public void navigateToProfileView(UserViewModel user) throws IOException {
         mainController.setContent(loadProfileView(user));
         mainController.updateSidebarButtonSelection("profile");
     }
 
+    /**
+     * @param listing
+     * @return
+     * @throws IOException
+     */
     public Parent loadListingDetails(ListingViewModel listing) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/ListingDetailsView.fxml");
         Parent detailsView = loaderBundle.getView();
@@ -491,11 +645,19 @@ public class NavigationService {
         return detailsView;
     }
 
+    /**
+     * @param listing
+     * @throws IOException
+     */
     public void navigateToListingDetails(ListingViewModel listing) throws IOException {
         mainController.setContent(loadListingDetails(listing));
         mainController.sidebarClearAllSelection();
     }
 
+    /**
+     * @return
+     * @throws IOException
+     */
     public Parent loadListingsView() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListingsView.fxml"));
         Parent listingsView = loader.load();
@@ -503,12 +665,20 @@ public class NavigationService {
         return listingsView;
     }
 
+    /**
+     * @throws IOException
+     */
     public void navigateToListingsView() throws IOException {
         Parent listingsView = loadListingsView();
         mainController.setContent(listingsView);
         mainController.updateSidebarButtonSelection("listings");
     }
 
+    /**
+     * @param userMenuPopup
+     * @return
+     * @throws IOException
+     */
     public Parent loadUserDropdownMenu(Popup userMenuPopup) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/UserMenuDropdownView.fxml");
         Parent userMenuDropdown = loaderBundle.getView();
@@ -522,6 +692,11 @@ public class NavigationService {
         return userMenuDropdown;
     }
 
+    /**
+     * @param notificationPopup
+     * @return
+     * @throws IOException
+     */
     public Parent loadNotificationDropdownMenu(Popup notificationPopup) throws IOException {
         LoaderBundle loaderBundle = loadView("/fxml/NotificationDropdownView.fxml");
         Parent notificationDropdown = loaderBundle.getView();
@@ -539,10 +714,16 @@ public class NavigationService {
      * 
      * @param mainController The main controller to set
      */
+    /**
+     * @param mainController
+     */
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }
 
+    /**
+     * @param itemViewModel
+     */
     public void openItemDialog(ItemViewModel itemViewModel) {
         try {
             ItemDTO item = ViewModelMapper.getInstance().toDTO(itemViewModel);
@@ -593,6 +774,10 @@ public class NavigationService {
         }
     }
 
+    /**
+     * @param offer
+     * @param parentStage
+     */
     public void openPickupScheduling(OfferViewModel offer, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PickupSchedulingView.fxml"));
@@ -627,6 +812,10 @@ public class NavigationService {
      * @param offer The offer for which to select a pickup time
      * @param parentStage The parent stage for the dialog
      */
+    /**
+     * @param offer
+     * @param parentStage
+     */
     public void openPickupSelection(OfferViewModel offer, Stage parentStage) {
         try {
             PickupService pickupService = PickupService.getInstance();
@@ -659,6 +848,10 @@ public class NavigationService {
         }
     }
 
+    /**
+     * @param pickup
+     * @param parentStage
+     */
     private void openPickupSelectionDialog(PickupViewModel pickup, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PickupSelectionView.fxml"));
@@ -689,6 +882,10 @@ public class NavigationService {
         }
     }
 
+    /**
+     * @param offer
+     * @param parentStage
+     */
     public void openReviewCreate(OfferViewModel offer, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ReviewCreateView.fxml"));
@@ -719,6 +916,10 @@ public class NavigationService {
         }
     }
 
+    /**
+     * @param user
+     * @param parentStage
+     */
     public void openUserReviews(UserViewModel user, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserReviewsView.fxml"));
@@ -745,6 +946,10 @@ public class NavigationService {
         }
     }
 
+    /**
+     * @param user
+     * @param parentStage
+     */
     public void openReportDialog(UserViewModel user, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ReportDialogView.fxml"));
@@ -771,6 +976,10 @@ public class NavigationService {
         }
     }
 
+    /**
+     * @param listing
+     * @param parentStage
+     */
     public void openReportDialog(ListingViewModel listing, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ReportDialogView.fxml"));
@@ -797,6 +1006,10 @@ public class NavigationService {
         }
     }
 
+    /**
+     * @param user
+     * @param parentStage
+     */
     public void openUserFollowers(UserViewModel user, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserFollowersView.fxml"));
@@ -823,6 +1036,10 @@ public class NavigationService {
         }
     }
 
+    /**
+     * @param user
+     * @param parentStage
+     */
     public void openUserFavorites(UserViewModel user, Stage parentStage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserFavoritesView.fxml"));
@@ -851,6 +1068,9 @@ public class NavigationService {
 
     /**
      * Navigate back to the previous view
+     */
+    /**
+     * 
      */
     public void goBack() {
         if (!navigationHistory.isEmpty()) {
@@ -891,6 +1111,10 @@ public class NavigationService {
      * @param view The view to load
      * @param title The title for the view
      */
+    /**
+     * @param view
+     * @param title
+     */
     public void loadView(Parent view, String title) {
         if (mainController != null) {
             Platform.runLater(() -> {
@@ -909,6 +1133,10 @@ public class NavigationService {
      * @param view The view to add
      * @param title The title for the view
      */
+    /**
+     * @param view
+     * @param title
+     */
     private void addToHistory(Parent view, String title) {
         NavigationState state = new NavigationState(view, title);
         navigationHistory.push(state);
@@ -920,12 +1148,18 @@ public class NavigationService {
     /**
      * Clear navigation history
      */
+    /**
+     * 
+     */
     public void clearHistory() {
         navigationHistory.clear();
     }
 
     /**
      * Check if there's a previous view to go back to
+     */
+    /**
+     * @return
      */
     public boolean canGoBack() {
         return navigationHistory.size() > 1;
@@ -936,6 +1170,9 @@ public class NavigationService {
      * 
      * @param title The new title for the window
      */
+    /**
+     * @param title
+     */
     private void updateWindowTitle(String title) {
         System.out.println("Navigation: " + title);
     }
@@ -945,6 +1182,10 @@ public class NavigationService {
      * 
      * @param offerId The ID of the offer to reschedule
      * @param parentStage The parent stage for the dialog
+     */
+    /**
+     * @param offerId
+     * @param parentStage
      */
     public void openPickupRescheduling(String offerId, Stage parentStage) {
         try {
@@ -981,6 +1222,10 @@ public class NavigationService {
      * 
      * @param userId The ID of the user whose listings to display
      * @throws IOException If an error occurs while loading the home view
+     */
+    /**
+     * @param userId
+     * @throws IOException
      */
     public void navigateToHomeViewAndSearchListingsByUserId(Long userId) throws IOException {
         Parent homeView = loadHomeView();

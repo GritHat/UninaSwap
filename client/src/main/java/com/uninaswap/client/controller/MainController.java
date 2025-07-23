@@ -30,106 +30,271 @@ import javafx.util.StringConverter;
 import javafx.stage.Popup;
 import javafx.stage.PopupWindow;
 
+/**
+ * 
+ */
 public class MainController implements Refreshable {
+    /**
+     * 
+     */
     @FXML
     private Label usernameLabel;
+    /**
+     * 
+     */
     @FXML
     private Label statusLabel;
+    /**
+     * 
+     */
     @FXML
     private Label contentAreaTitleLabel;
+    /**
+     * 
+     */
     @FXML
     private Label contentAreaSubtitleLabel;
+    /**
+     * 
+     */
     @FXML
     private StackPane contentArea;
+    /**
+     * 
+     */
     @FXML
     private TextField searchField;
+    /**
+     * 
+     */
     @FXML
     private Button searchButton;
+    /**
+     * 
+     */
     @FXML
     private Button notificationsButton;
+    /**
+     * 
+     */
     @FXML
     private Button userMenuButton;
+    /**
+     * 
+     */
     @FXML
     private Button allItemsButton;
+    /**
+     * 
+     */
     @FXML
     private Button auctionsButton;
+    /**
+     * 
+     */
     @FXML
     private Button tradesButton;
+    /**
+     * 
+     */
     @FXML
     private Button salesButton;
+    /**
+     * 
+     */
     @FXML
     private Button giftsButton;
+    /**
+     * 
+     */
     @FXML
     private Button dashboardMenuItem;
+    /**
+     * 
+     */
     @FXML
     private Button marketsMenuItem;
+    /**
+     * 
+     */
     @FXML
     private Button portfolioMenuItem;
+    /**
+     * 
+     */
     @FXML
     private Button tradeMenuItem;
+    /**
+     * 
+     */
     @FXML
     private Button settingsMenuItem;
+    /**
+     * 
+     */
     @FXML
     private Button profileMenuItem;
+    /**
+     * 
+     */
     @FXML
     private Button inventoryMenuItem;
+    /**
+     * 
+     */
     @FXML
     private Button createListingMenuItem;
+    /**
+     * 
+     */
     @FXML
     private Button logoutButton;
+    /**
+     * 
+     */
     @FXML
     private Button quickTradeButton;
+    /**
+     * 
+     */
     @FXML
     private Button viewMarketsButton;
+    /**
+     * 
+     */
     @FXML
     private VBox sidebarInclude;
+    /**
+     * 
+     */
     @FXML
     private SidebarController sidebarIncludeController;
+    /**
+     * 
+     */
     @FXML
     private HBox favoriteListingsContainer;
+    /**
+     * 
+     */
     @FXML
     private HBox favoriteUsersContainer;
+    /**
+     * 
+     */
     @FXML
     private HBox favoriteAuctionsContainer;
+    /**
+     * 
+     */
     @FXML
     private HBox favoritesDrawerInclude;
+    /**
+     * 
+     */
     @FXML
     private FavoritesDrawerController favoritesDrawerIncludeController;
+    /**
+     * 
+     */
     @FXML
     private ImageView addListingIcon;
+    /**
+     * 
+     */
     @FXML
     private ImageView favoritesIcon;
+    /**
+     * 
+     */
     @FXML
     private ImageView notificationsIcon;
+    /**
+     * 
+     */
     @FXML
     private ImageView userAvatarImage;
+    /**
+     * 
+     */
     @FXML
     private Button addListingButton;
+    /**
+     * 
+     */
     @FXML
     private Button favoritesButton;
+    /**
+     * 
+     */
     @FXML
     private ComboBox<Category> categoryComboBox;
 
+    /**
+     * 
+     */
     private final NavigationService navigationService;
+    /**
+     * 
+     */
     private final LocaleService localeService;
+    /**
+     * 
+     */
     private final UserSessionService sessionService;
+    /**
+     * 
+     */
     private final EventBusService eventBus = EventBusService.getInstance();
+    /**
+     * 
+     */
     private final ImageService imageService = ImageService.getInstance();
+    /**
+     * 
+     */
     private final CategoryService categoryService = CategoryService.getInstance();
+    /**
+     * 
+     */
     private final SearchService searchService = SearchService.getInstance();
+    /**
+     * 
+     */
     private final NotificationService notificationService = NotificationService.getInstance();
+    /**
+     * 
+     */
     private String currentFilter = "all";
+    /**
+     * 
+     */
     private boolean isInSearchMode = false;
+    /**
+     * 
+     */
     private Popup notificationPopup;
+    /**
+     * 
+     */
     private Popup userMenuPopup;
+    /**
+     * 
+     */
     private Label notificationBadge;
 
+    /**
+     * 
+     */
     public MainController() {
         this.navigationService = NavigationService.getInstance();
         this.localeService = LocaleService.getInstance();
         this.sessionService = UserSessionService.getInstance();
     }
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         try {
@@ -169,6 +334,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     private void initializeNotifications() {
         System.out.println("Initializing notifications in MainController...");
         notificationService.initializeNotifications();
@@ -181,6 +349,9 @@ public class MainController implements Refreshable {
         });
     }
 
+    /**
+     * @param unreadCount
+     */
     private void updateNotificationButtonBadge(int unreadCount) {
         System.out.println("updating badge " + unreadCount);
         Platform.runLater(() -> {
@@ -197,6 +368,9 @@ public class MainController implements Refreshable {
         });
     }
     
+    /**
+     * @param unreadCount
+     */
     private void createNotificationBadge(int unreadCount) {
         if (!(notificationsButton.getParent() instanceof StackPane)) {
             wrapNotificationButtonInStackPane();
@@ -217,6 +391,9 @@ public class MainController implements Refreshable {
 
     }
     
+    /**
+     * 
+     */
     private void wrapNotificationButtonInStackPane() {
         javafx.scene.Parent currentParent = notificationsButton.getParent();
         if (currentParent instanceof javafx.scene.layout.HBox) {
@@ -229,15 +406,24 @@ public class MainController implements Refreshable {
         }
     }
     
+    /**
+     * @param notification
+     */
     private void showNewNotificationAlert(com.uninaswap.client.viewmodel.NotificationViewModel notification) {
         System.out.println("📢 " + notification.getTitle() + ": " + notification.getMessage());
     }
 
+    /**
+     * 
+     */
     private void initializeHeaderButtonStates() {
         setupHeaderButtonClickHandlers();
         updateAllHeaderButtonStates();
     }
 
+    /**
+     * 
+     */
     private void setupHeaderButtonClickHandlers() {
         if (addListingButton != null) {
             addListingButton.setOnAction(event -> {
@@ -266,6 +452,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     private void updateNotificationButtonSelection() {
         if (notificationPopup != null && notificationPopup.isShowing()) {
             setHeaderButtonSelected(notificationsButton, true);
@@ -277,6 +466,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     private void updateUserMenuButtonSelection() {
         if (userMenuPopup != null && userMenuPopup.isShowing()) {
             setHeaderButtonSelected(userMenuButton, true);
@@ -288,6 +480,10 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param button
+     * @param selected
+     */
     private void setHeaderButtonSelected(Button button, boolean selected) {
         if (button == null) return;
         
@@ -302,6 +498,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param button
+     */
     private void resetHeaderIconToNormal(Button button) {
         ImageView iconView = getHeaderIconFromButton(button);
         String normalIconPath = getNormalHeaderIconPath(button);
@@ -316,6 +515,10 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param button
+     * @return
+     */
     private String getNormalHeaderIconPath(Button button) {
         if (button == addListingButton) return "/images/icons/add.png";
         if (button == favoritesButton) return "/images/icons/favorites_add.png";
@@ -323,21 +526,33 @@ public class MainController implements Refreshable {
         return null;
     }
 
+    /**
+     * 
+     */
     private void updateAllHeaderButtonStates() {
         updateAddListingButtonState();
         updateFavoritesButtonState();
     }
 
+    /**
+     * 
+     */
     private void updateAddListingButtonState() {
         boolean isOnCreationView = isCurrentViewListingCreation();
         setHeaderButtonSelected(addListingButton, isOnCreationView);
     }
 
+    /**
+     * 
+     */
     private void updateFavoritesButtonState() {
         boolean drawerVisible = favoritesDrawerIncludeController.isDrawerVisible();
         setHeaderButtonSelected(favoritesButton, drawerVisible);
     }
 
+    /**
+     * @return
+     */
     private boolean isCurrentViewListingCreation() {
         if (contentArea.getChildren().isEmpty()) {
             return false;
@@ -354,6 +569,9 @@ public class MainController implements Refreshable {
         return false;
     }
 
+    /**
+     * @param button
+     */
     private void setWhiteHeaderIcon(Button button) {
         ImageView iconView = getHeaderIconFromButton(button);
         String whiteIconPath = getWhiteHeaderIconPath(button);
@@ -368,6 +586,10 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param button
+     * @return
+     */
     private ImageView getHeaderIconFromButton(Button button) {
         if (button == addListingButton) return addListingIcon;
         if (button == favoritesButton) return favoritesIcon;
@@ -376,6 +598,10 @@ public class MainController implements Refreshable {
         return null;
     }
 
+    /**
+     * @param button
+     * @return
+     */
     private String getWhiteHeaderIconPath(Button button) {
         if (button == addListingButton) return "/images/icons/add_w.png";
         if (button == favoritesButton) return "/images/icons/favorites_add_w.png";
@@ -383,6 +609,9 @@ public class MainController implements Refreshable {
         return null;
     }
 
+    /**
+     * 
+     */
     private void initializeHeader() {
         loadUserAvatar();
         eventBus.subscribe(EventTypes.PROFILE_IMAGE_CHANGED, data -> {
@@ -394,6 +623,9 @@ public class MainController implements Refreshable {
         updateFilterButtons();
     }
 
+    /**
+     * 
+     */
     private void setupCategoryComboBox() {
         if (categoryComboBox != null) {
             categoryComboBox.setItems(FXCollections.observableArrayList(categoryService.getCategories()));
@@ -427,6 +659,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void handleSearch(ActionEvent event) {
         String searchQuery = searchField.getText().trim();
@@ -434,6 +669,9 @@ public class MainController implements Refreshable {
         performSearch(searchQuery, currentFilter, selectedCategory);
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void showNotifications(ActionEvent event) {
         if (userMenuPopup != null && userMenuPopup.isShowing()) {
@@ -460,6 +698,9 @@ public class MainController implements Refreshable {
         }
     }
     
+    /**
+     * @param event
+     */
     @FXML
     public void showUserMenu(ActionEvent event) {
         if (notificationPopup != null && notificationPopup.isShowing()) {
@@ -488,6 +729,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void filterAll(ActionEvent event) {
         setCurrentFilter("all");
@@ -498,6 +742,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void filterAuctions(ActionEvent event) {
         setCurrentFilter("auctions");
@@ -508,6 +755,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void filterTrades(ActionEvent event) {
         setCurrentFilter("trades");
@@ -518,6 +768,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void filterSales(ActionEvent event) {
         setCurrentFilter("sales");
@@ -528,6 +781,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void filterGifts(ActionEvent event) {
         setCurrentFilter("gifts");
@@ -538,11 +794,17 @@ public class MainController implements Refreshable {
         }
     }
     
+    /**
+     * @param filter
+     */
     private void setCurrentFilter(String filter) {
         currentFilter = filter;
         updateFilterButtons();
     }
 
+    /**
+     * 
+     */
     private void updateFilterButtons() {
         allItemsButton.getStyleClass().removeAll("active");
         auctionsButton.getStyleClass().removeAll("active");
@@ -558,6 +820,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     private void triggerSearch() {
         String searchQuery = searchField.getText().trim();
         Category selectedCategory = categoryComboBox.getValue();
@@ -565,6 +830,11 @@ public class MainController implements Refreshable {
         eventBus.publishEvent(EventTypes.SEARCH_REQUESTED, searchData);
     }
 
+    /**
+     * @param query
+     * @param listingType
+     * @param category
+     */
     private void performSearch(String query, String listingType, Category category) {
         System.out.println("Performing search: query='" + query + "', type='" + listingType + "', category=" + category);
         
@@ -583,12 +853,18 @@ public class MainController implements Refreshable {
             });
     }
 
+    /**
+     * 
+     */
     private void performCurrentSearch() {
         String query = searchField.getText().trim();
         Category selectedCategory = categoryComboBox.getValue();
         performSearch(query, currentFilter, selectedCategory);
     }
     
+    /**
+     * 
+     */
     public void clearSearch() {
         searchService.clearSearch();
         isInSearchMode = false;
@@ -603,6 +879,9 @@ public class MainController implements Refreshable {
         }
     }
     
+    /**
+     * @param searchResult
+     */
     private void updateContentWithSearchResults(SearchService.SearchResult searchResult) {
         try {
             Parent homeView = navigationService.loadHomeView();
@@ -618,6 +897,9 @@ public class MainController implements Refreshable {
         }
     }
     
+    /**
+     * @param searchResult
+     */
     private void showSearchResultsMessage(SearchService.SearchResult searchResult) {
         String query = searchService.getLastQuery();
         String message;
@@ -630,25 +912,40 @@ public class MainController implements Refreshable {
         System.out.println(message);
     }
     
+    /**
+     * @param error
+     */
     private void showSearchError(String error) {
         System.err.println("Search error: " + error);
     }
     
+    /**
+     * @param data
+     */
     private void handleSearchRequest(Object data) {
         if (data instanceof SearchData searchData) {
             performSearch(searchData.getQuery(), searchData.getFilter(), searchData.getCategory());
         }
     }
     
+    /**
+     * @return
+     */
     public boolean isInSearchMode() {
         return isInSearchMode;
     }
     
+    /**
+     * 
+     */
     private void loadUserAvatar() {
         String profileImagePath = sessionService.getUser().getProfileImagePath();
         loadUserAvatar(profileImagePath);
     }
 
+    /**
+     * @param imagePath
+     */
     private void loadUserAvatar(String imagePath) {
         if (imagePath == null || imagePath.isEmpty()) {
             return;
@@ -666,6 +963,9 @@ public class MainController implements Refreshable {
                 });
     }
 
+    /**
+     * 
+     */
     private void checkAuthentication() {
         if (!sessionService.isLoggedIn()) {
             Platform.runLater(() -> {
@@ -678,11 +978,17 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     private void refreshAllViews() {
         refreshUI();
         refreshCurrentContentView();
     }
 
+    /**
+     *
+     */
     public void refreshUI() {
         statusLabel.setText(localeService.getMessage("label.ready"));
         contentAreaSubtitleLabel.setText(localeService.getMessage("dashboard.contentared.title"));
@@ -728,6 +1034,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param e
+     */
     public void toggleFavoritesDrawer(ActionEvent e) {
         boolean currentlyVisible = favoritesDrawerIncludeController.isDrawerVisible();
         
@@ -736,6 +1045,9 @@ public class MainController implements Refreshable {
         updateFavoritesButtonState();
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void addListing(ActionEvent event) {
         try {
@@ -747,6 +1059,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     private void refreshCurrentContentView() {
         if (contentArea.getChildren().isEmpty())
             return;
@@ -765,6 +1080,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     private void reloadCurrentView() {
         if (contentArea.getChildren().isEmpty())
             return;
@@ -774,15 +1092,24 @@ public class MainController implements Refreshable {
         System.out.println("Reloading view: " + viewId);
     }
 
+    /**
+     * @param newContent
+     */
     public void setContent(Parent newContent) {
         contentArea.getChildren().setAll(newContent);
         updateHeaderButtonStatesForContent(newContent);
     }
 
+    /**
+     * @param content
+     */
     private void updateHeaderButtonStatesForContent(Parent content) {
         updateAddListingButtonState();
     }
 
+    /**
+     * @param buttonType
+     */
     public void updateHeaderButtonSelection(String buttonType) {
         switch (buttonType.toLowerCase()) {
             case "addlisting", "create" -> updateAddListingButtonState();
@@ -793,6 +1120,9 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * @param buttonType
+     */
     public void updateSidebarButtonSelection(String buttonType) {
         if (sidebarIncludeController != null) {
             switch (buttonType.toLowerCase()) {
@@ -807,18 +1137,30 @@ public class MainController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     public void sidebarClearAllSelection() {
         sidebarIncludeController.clearAllSelections();
     }
 
+    /**
+     * 
+     */
     public void onLeavingListingCreation() {
         updateAddListingButtonState();
     }
 
+    /**
+     * 
+     */
     public void onFavoritesDrawerStateChanged() {
         updateFavoritesButtonState();
     }
 
+    /**
+     * 
+     */
     public static class SearchData {
         private final String query;
         private final String filter;

@@ -17,13 +17,34 @@ import javafx.beans.property.SimpleObjectProperty;
  * Service for managing application messages and internationalization.
  * This separates message handling from controllers.
  */
+/**
+ * 
+ */
 public class LocaleService {
+    /**
+     * 
+     */
     private static LocaleService instance;
+    /**
+     * 
+     */
     private ResourceBundle messageBundle;
+    /**
+     * 
+     */
     private final Map<String, String> fallbackMessages = new HashMap<>();
+    /**
+     * 
+     */
     private final ObjectProperty<Locale> currentLocale = new SimpleObjectProperty<>(Locale.getDefault());
+    /**
+     * 
+     */
     private final EventBusService eventBus = EventBusService.getInstance();
 
+    /**
+     * @return
+     */
     public static LocaleService getInstance() {
         if (instance == null) {
             instance = new LocaleService();
@@ -31,6 +52,9 @@ public class LocaleService {
         return instance;
     }
 
+    /**
+     * 
+     */
     private LocaleService() {
         loadSavedLocale();
     }
@@ -39,6 +63,9 @@ public class LocaleService {
      * Load the resource bundle for the given locale
      * 
      * @param locale The locale to load messages for
+     */
+    /**
+     * @param locale
      */
     private void loadResourceBundle(Locale locale) {
         try {
@@ -56,6 +83,9 @@ public class LocaleService {
      * Set the locale for messages
      * 
      * @param locale The new locale to set
+     */
+    /**
+     * @param locale
      */
     public void setLocale(Locale locale) {
         if (locale == null)
@@ -77,6 +107,9 @@ public class LocaleService {
      * 
      * @param language The language code to set
      */
+    /**
+     * @param language
+     */
     public void setLanguage(String language) {
         setLocale(Locale.of(language));
     }
@@ -85,6 +118,9 @@ public class LocaleService {
      * Get the current locale
      * 
      * @return The current locale used for messages
+     */
+    /**
+     * @return
      */
     public Locale getCurrentLocale() {
         return currentLocale.get();
@@ -95,6 +131,9 @@ public class LocaleService {
      * 
      * @return The current locale property
      */
+    /**
+     * @return
+     */
     public ObjectProperty<Locale> currentLocaleProperty() {
         return currentLocale;
     }
@@ -103,6 +142,9 @@ public class LocaleService {
      * Get the current resource bundle
      * 
      * @return The resource bundle containing messages for the current locale
+     */
+    /**
+     * @return
      */
     public ResourceBundle getResourceBundle() {
         return messageBundle;
@@ -113,6 +155,10 @@ public class LocaleService {
      * 
      * @param key The key for the message
      * @return The message string for the given key, or a fallback message if not found
+     */
+    /**
+     * @param key
+     * @return
      */
     public String getMessage(String key) {
         try {
@@ -132,11 +178,19 @@ public class LocaleService {
      * @param params Parameters to format the message with
      * @return The formatted message
      */
+    /**
+     * @param key
+     * @param params
+     * @return
+     */
     public String getMessage(String key, Object... params) {
         String pattern = getMessage(key);
         return MessageFormat.format(pattern, params);
     }
 
+    /**
+     * 
+     */
     private void initializeFallbackMessages() {
         fallbackMessages.put("login.error.username.required", "Username is required");
         fallbackMessages.put("login.error.password.required", "Password is required");
@@ -180,6 +234,9 @@ public class LocaleService {
      * This method reads the user's saved locale from preferences
      * and sets the current locale accordingly.
      * If no saved locale is found, it defaults to English.
+     */
+    /**
+     * 
      */
     private void loadSavedLocale() {
         Preferences prefs = Preferences.userNodeForPackage(LocaleService.class);

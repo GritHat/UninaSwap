@@ -24,51 +24,129 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ */
 public class OffersController {
+    /**
+     * 
+     */
     @FXML
     private TextField searchField;
+    /**
+     * 
+     */
     @FXML
     private ComboBox<String> statusFilterComboBox;
+    /**
+     * 
+     */
     @FXML
     private ComboBox<String> typeFilterComboBox;
+    /**
+     * 
+     */
     @FXML
     private Button clearFiltersButton;
+    /**
+     * 
+     */
     @FXML
     private TabPane offersTabPane;
+    /**
+     * 
+     */
     @FXML
     private Tab receivedTab;
+    /**
+     * 
+     */
     @FXML
     private Tab sentTab;
+    /**
+     * 
+     */
     @FXML
     private Tab historyTab;
+    /**
+     * 
+     */
     @FXML
     private SplitPane receivedOffersContent;
+    /**
+     * 
+     */
     @FXML
     private OffersTabContentController receivedOffersContentController;
+    /**
+     * 
+     */
     @FXML
     private SplitPane sentOffersContent;
+    /**
+     * 
+     */
     @FXML
     private OffersTabContentController sentOffersContentController;
+    /**
+     * 
+     */
     @FXML
     private SplitPane historyOffersContent;
+    /**
+     * 
+     */
     @FXML
     private OffersTabContentController historyOffersContentController;
+    /**
+     * 
+     */
     @FXML
     private Button refreshButton;
+    /**
+     * 
+     */
     @FXML
     private Button acceptOfferButton;
+    /**
+     * 
+     */
     @FXML
     private Button rejectOfferButton;
+    /**
+     * 
+     */
     @FXML
     private Button counterOfferButton;
 
+    /**
+     * 
+     */
     private final OfferService offerService = OfferService.getInstance();
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final EventBusService eventBus = EventBusService.getInstance();
+    /**
+     * 
+     */
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
+    /**
+     * 
+     */
     private final NavigationService navigationService = NavigationService.getInstance();
+    /**
+     * 
+     */
     private OfferViewModel selectedOffer;
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupFilters();
@@ -84,6 +162,9 @@ public class OffersController {
         refreshOffers();
     }
 
+    /**
+     * 
+     */
     private void setupFilters() {
         statusFilterComboBox.setItems(FXCollections.observableArrayList(
                 localeService.getMessage("offers.filter.all.statuses", "All Statuses"),
@@ -112,6 +193,9 @@ public class OffersController {
         searchField.textProperty().addListener((_, _, _) -> updateFilters());
     }
 
+    /**
+     * @param offer
+     */
     private void showOfferDetails(OfferViewModel offer) {
     selectedOffer = offer;
     OffersTabContentController currentController = getCurrentTabController();
@@ -120,6 +204,9 @@ public class OffersController {
         }
     }
 
+    /**
+     * @param actionsColumn
+     */
     private void setupReceivedActionButtons(TableColumn<OfferViewModel, Void> actionsColumn) {
         actionsColumn.setCellFactory(_ -> new TableCell<>() {
             private final Button viewButton = new Button(localeService.getMessage("offers.button.view", "View"));
@@ -168,6 +255,9 @@ public class OffersController {
         });
     }
 
+    /**
+     * @param actionsColumn
+     */
     private void setupSentActionButtons(TableColumn<OfferViewModel, Void> actionsColumn) {
         actionsColumn.setCellFactory(_ -> new TableCell<>() {
             private final Button viewButton = new Button(localeService.getMessage("offers.button.view", "View"));
@@ -206,6 +296,9 @@ public class OffersController {
         });
     }
 
+    /**
+     * 
+     */
     private void setupTabControllers() {
         if (receivedOffersContentController != null) {
             receivedOffersContentController.initialize(
@@ -246,6 +339,9 @@ public class OffersController {
         }
     }
 
+    /**
+     * 
+     */
     private void setupTabChangeHandlers() {
         offersTabPane.getSelectionModel().selectedItemProperty().addListener((_, oldTab, newTab) -> {
             clearOfferDetails();
@@ -253,6 +349,9 @@ public class OffersController {
         });
     }
 
+    /**
+     * 
+     */
     private void updateFilters() {
         String searchText = searchField.getText().toLowerCase().trim();
         String statusFilter = statusFilterComboBox.getValue();
@@ -295,6 +394,9 @@ public class OffersController {
         }
     }
 
+    /**
+     * 
+     */
     private void clearOfferDetails() {
         selectedOffer = null;
         OffersTabContentController currentController = getCurrentTabController();
@@ -303,6 +405,9 @@ public class OffersController {
         }
     }
 
+    /**
+     * @return
+     */
     private OffersTabContentController getCurrentTabController() {
         Tab selectedTab = offersTabPane.getSelectionModel().getSelectedItem();
         
@@ -317,6 +422,9 @@ public class OffersController {
         return null;
     }
 
+    /**
+     * 
+     */
     private void clearAllTabs() {
         if (receivedOffersContentController != null) {
             receivedOffersContentController.clearDetails();
@@ -329,6 +437,9 @@ public class OffersController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleClearFilters() {
         searchField.clear();
@@ -337,16 +448,25 @@ public class OffersController {
         updateFilters();
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleRefreshOffers() {
         refreshOffers();
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleAcceptOffer() {
         handleAcceptOffer(selectedOffer);
     }
 
+    /**
+     * @param offer
+     */
     private void handleAcceptOffer(OfferViewModel offer) {
         if (offer == null) return;
         
@@ -407,11 +527,17 @@ public class OffersController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleRejectOffer() {
         handleRejectOffer(selectedOffer);
     }
 
+    /**
+     * @param offer
+     */
     private void handleRejectOffer(OfferViewModel offer) {
         if (offer == null) return;
         
@@ -451,11 +577,17 @@ public class OffersController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCounterOffer() {
         handleCounterOffer(selectedOffer);
     }
 
+    /**
+     * @param offer
+     */
     private void handleCounterOffer(OfferViewModel offer) {
         if (offer == null) return;
         
@@ -467,6 +599,9 @@ public class OffersController {
                         "Counter offer functionality will be available soon"));
     }
 
+    /**
+     * @param offer
+     */
     private void handleWithdrawOffer(OfferViewModel offer) {
         Alert confirmation = AlertHelper.createConfirmationDialog(
                 localeService.getMessage("offers.withdraw.title", "Withdraw Offer"),
@@ -503,16 +638,25 @@ public class OffersController {
         }
     }
 
+    /**
+     * @param offer
+     */
     private void handleSchedulePickup(OfferViewModel offer) {
         Stage stage = (Stage) offersTabPane.getScene().getWindow();
         navigationService.openPickupScheduling(offer, stage);
     }
 
+    /**
+     * @param offer
+     */
     private void handleCreateReview(OfferViewModel offer) {
         Stage stage = (Stage) offersTabPane.getScene().getWindow();
         navigationService.openReviewCreate(offer, stage);
     }
 
+    /**
+     * 
+     */
     private void refreshOffers() {
         offerService.getReceivedOffers()
             .thenCompose(_ -> offerService.getSentOffers())
@@ -532,6 +676,10 @@ public class OffersController {
             });
     }
 
+    /**
+     * @param statusFilter
+     * @return
+     */
     private OfferStatus mapStatusFilterToEnum(String statusFilter) {
         String pendingText = localeService.getMessage("offers.status.pending", "Pending");
         String acceptedText = localeService.getMessage("offers.status.accepted", "Accepted");
@@ -560,6 +708,10 @@ public class OffersController {
         return null;
     }
 
+    /**
+     * @param offer
+     * @return
+     */
     private String getOfferTypeDisplayName(OfferViewModel offer) {
         if (offer.getAmount() != null && offer.getAmount().compareTo(BigDecimal.valueOf(0)) > 0) {
             if (offer.getOfferItems() != null && !offer.getOfferItems().isEmpty()) {
@@ -574,6 +726,10 @@ public class OffersController {
         }
     }
 
+    /**
+     * @param offer
+     * @return
+     */
     private String formatOfferAmount(OfferViewModel offer) {
         if (offer.getAmount() != null && offer.getAmount().compareTo(BigDecimal.valueOf(0)) > 0) {
             String currency = offer.getCurrency() != null ? offer.getCurrency().getSymbol() : "€";
@@ -582,6 +738,10 @@ public class OffersController {
         return "-";
     }
 
+    /**
+     * @param offer
+     * @return
+     */
     private String formatDate(OfferViewModel offer) {
         if (offer.getCreatedAt() != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -590,6 +750,9 @@ public class OffersController {
         return "-";
     }
 
+    /**
+     * 
+     */
     public void refreshFilters() {
         String currentStatusValue = statusFilterComboBox.getValue();
         String currentTypeValue = typeFilterComboBox.getValue();
@@ -598,11 +761,17 @@ public class OffersController {
         typeFilterComboBox.setValue(localeService.getMessage("offers.filter.all.types", "All Types"));
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCloseDetails() {
         clearOfferDetails();
     }
 
+    /**
+     * @param offer
+     */
     private void handleConfirmTransaction(OfferViewModel offer) {
         if (offer == null) return;
         
@@ -634,6 +803,9 @@ public class OffersController {
                 });
     }
 
+    /**
+     * @param offer
+     */
     private void handleCancelTransaction(OfferViewModel offer) {
         if (offer == null) return;
         
@@ -665,6 +837,9 @@ public class OffersController {
                 });
     }
 
+    /**
+     * @param offer
+     */
     private void handleWriteReview(OfferViewModel offer) {
         if (offer == null) return;
         
@@ -681,6 +856,10 @@ public class OffersController {
         navigationService.openReviewCreate(offer, stage);
     }
 
+    /**
+     * @param offer
+     * @return
+     */
     private boolean canOfferBeReviewed(OfferViewModel offer) {
         if (offer == null || offer.getListing() == null) {
             return false;

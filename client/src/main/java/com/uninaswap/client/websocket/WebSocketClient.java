@@ -14,45 +14,83 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.uninaswap.common.message.Message;
 import com.uninaswap.client.service.UserSessionService;
 
+/**
+ * 
+ */
 @ClientEndpoint
 public class WebSocketClient {
+    /**
+     * 
+     */
     private static WebSocketClient instance;
+    /**
+     * @return
+     */
     public static WebSocketClient getInstance() {
         if (instance == null) {
             instance = new WebSocketClient();
         }
         return instance;
     }
+    /**
+     * 
+     */
     private WebSocketClient() {}
 
+    /**
+     * 
+     */
     private Session session;
+    /**
+     * 
+     */
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule())
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    /**
+     * 
+     */
     private final Map<Class<? extends Message>, Consumer<Message>> messageHandlers = new HashMap<>();
 
+    /**
+     * @param uri
+     * @throws Exception
+     */
     public void connect(String uri) throws Exception {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         container.connectToServer(this, new URI(uri));
     }
 
+    /**
+     * @throws Exception
+     */
     public void disconnect() throws Exception {
         if (session != null && session.isOpen()) {
             session.close();
         }
     }
 
+    /**
+     * @param session
+     */
     @OnOpen
     public void onOpen(Session session) {
         System.out.println("Connected to server");
         this.session = session;
     }
 
+    /**
+     * @param session
+     * @param closeReason
+     */
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
         System.out.println("Connection closed: " + closeReason.getReasonPhrase());
         this.session = null;
     }
 
+    /**
+     * @param message
+     */
     @OnMessage
     public void onMessage(String message) {
         try {
@@ -74,6 +112,11 @@ public class WebSocketClient {
         }
     }
 
+    /**
+     * @param <T>
+     * @param message
+     * @return
+     */
     public <T extends Message> CompletableFuture<Void> sendMessage(T message) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
@@ -114,11 +157,19 @@ public class WebSocketClient {
      * @param messageType The class of the message type to handle
      * @param handler     The handler function for messages of this type
      */
+    /**
+     * @param <T>
+     * @param messageType
+     * @param handler
+     */
     @SuppressWarnings("unchecked")
     public <T extends Message> void registerMessageHandler(Class<T> messageType, Consumer<T> handler) {
         messageHandlers.put(messageType, message -> handler.accept((T) message));
     }
 
+    /**
+     * @return
+     */
     public boolean isConnected() {
         return session != null && session.isOpen();
     }

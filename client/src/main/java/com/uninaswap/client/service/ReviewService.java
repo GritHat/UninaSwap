@@ -15,20 +15,50 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ */
 public class ReviewService {
+    /**
+     * 
+     */
     private static ReviewService instance;
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+    /**
+     * 
+     */
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
+    /**
+     * 
+     */
     private CompletableFuture<?> futureToComplete;
+    /**
+     * 
+     */
     private Consumer<ReviewMessage> messageCallback;
 
+    /**
+     * 
+     */
     private final ObservableList<ReviewViewModel> userReceivedReviews = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<ReviewViewModel> userGivenReviews = FXCollections.observableArrayList();
 
+    /**
+     * 
+     */
     private ReviewService() {
         this.webSocketClient.registerMessageHandler(ReviewMessage.class, this::handleReviewMessage);
     }
 
+    /**
+     * @return
+     */
     public static synchronized ReviewService getInstance() {
         if (instance == null) {
             instance = new ReviewService();
@@ -42,6 +72,10 @@ public class ReviewService {
      * @param reviewViewModel The ViewModel containing review details
      * @return CompletableFuture with the created ReviewViewModel
      *         or an exception if the review creation fails
+     */
+    /**
+     * @param reviewViewModel
+     * @return
      */
     public CompletableFuture<ReviewViewModel> createReview(ReviewViewModel reviewViewModel) {
         CompletableFuture<ReviewViewModel> future = new CompletableFuture<>();
@@ -70,6 +104,11 @@ public class ReviewService {
      * @param reviewViewModel The ViewModel containing updated review details
      * @return CompletableFuture with the updated ReviewViewModel
      *         or an exception if the update fails
+     */
+    /**
+     * @param reviewId
+     * @param reviewViewModel
+     * @return
      */
     public CompletableFuture<ReviewViewModel> updateReview(String reviewId, ReviewViewModel reviewViewModel) {
         CompletableFuture<ReviewViewModel> future = new CompletableFuture<>();
@@ -100,6 +139,10 @@ public class ReviewService {
      * @return CompletableFuture with a list of ReviewDTOs
      *         or an exception if the request fails
      */
+    /**
+     * @param userId
+     * @return
+     */
     public CompletableFuture<List<ReviewDTO>> getReceivedReviews(Long userId) {
         CompletableFuture<List<ReviewDTO>> future = new CompletableFuture<>();
 
@@ -125,6 +168,10 @@ public class ReviewService {
      * @param userId The ID of the user whose given reviews to fetch
      * @return CompletableFuture with a list of ReviewDTOs
      *         or an exception if the request fails
+     */
+    /**
+     * @param userId
+     * @return
      */
     public CompletableFuture<List<ReviewDTO>> getGivenReviews(Long userId) {
         CompletableFuture<List<ReviewDTO>> future = new CompletableFuture<>();
@@ -152,6 +199,10 @@ public class ReviewService {
      * @return CompletableFuture with UserRatingSummary
      *         or an exception if the request fails
      */
+    /**
+     * @param userId
+     * @return
+     */
     public CompletableFuture<UserRatingSummary> getUserRatingSummary(Long userId) {
         CompletableFuture<UserRatingSummary> future = new CompletableFuture<>();
 
@@ -177,6 +228,10 @@ public class ReviewService {
      * @param offerId The ID of the offer to get the review for
      * @return CompletableFuture with the ReviewViewModel
      *         or an exception if the request fails
+     */
+    /**
+     * @param offerId
+     * @return
      */
     public CompletableFuture<ReviewViewModel> getOfferReview(String offerId) {
         CompletableFuture<ReviewViewModel> future = new CompletableFuture<>();
@@ -204,6 +259,10 @@ public class ReviewService {
      * @return CompletableFuture that completes with true if deletion was successful
      *         or an exception if the deletion fails
      */
+    /**
+     * @param reviewId
+     * @return
+     */
     public CompletableFuture<Boolean> deleteReview(String reviewId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -223,6 +282,9 @@ public class ReviewService {
         return future;
     }
 
+    /**
+     * @param message
+     */
     @SuppressWarnings("unchecked")
     private void handleReviewMessage(ReviewMessage message) {
         if (message.getType() == null) {
@@ -387,6 +449,10 @@ public class ReviewService {
         }
     }
 
+    /**
+     * @param list
+     * @param updatedReview
+     */
     private void updateReviewInList(ObservableList<ReviewViewModel> list, ReviewViewModel updatedReview) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId().equals(updatedReview.getId())) {
@@ -396,23 +462,38 @@ public class ReviewService {
         }
     }
 
+    /**
+     * @return
+     */
     public ObservableList<ReviewViewModel> getUserReceivedReviewsList() {
         return userReceivedReviews;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<ReviewViewModel> getUserGivenReviewsList() {
         return userGivenReviews;
     }
 
+    /**
+     * 
+     */
     public void clearData() {
         userReceivedReviews.clear();
         userGivenReviews.clear();
     }
 
+    /**
+     * @param callback
+     */
     public void setMessageCallback(Consumer<ReviewMessage> callback) {
         this.messageCallback = callback;
     }
 
+    /**
+     * 
+     */
     public static class UserRatingSummary {
         private final Double averageRating;
         private final Integer totalReviews;

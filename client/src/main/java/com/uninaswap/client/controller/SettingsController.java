@@ -14,29 +14,83 @@ import com.uninaswap.client.util.AlertHelper;
 
 import java.util.Locale;
 
+/**
+ * 
+ */
 public class SettingsController {
     
+    /**
+     * 
+     */
     @FXML private TextField emailField;
+    /**
+     * 
+     */
     @FXML private PasswordField currentPasswordField;
+    /**
+     * 
+     */
     @FXML private PasswordField newPasswordField;
+    /**
+     * 
+     */
     @FXML private PasswordField confirmPasswordField;
+    /**
+     * 
+     */
     @FXML private Button changePasswordButton;
     
+    /**
+     * 
+     */
     @FXML private CheckBox emailNotificationsCheckBox;
+    /**
+     * 
+     */
     @FXML private CheckBox appNotificationsCheckBox;
+    /**
+     * 
+     */
     @FXML private CheckBox offerNotificationsCheckBox;
+    /**
+     * 
+     */
     @FXML private CheckBox messageNotificationsCheckBox;
     
+    /**
+     * 
+     */
     @FXML private ComboBox<String> languageComboBox;
+    /**
+     * 
+     */
     @FXML private ComboBox<String> themeComboBox;
+    /**
+     * 
+     */
     @FXML private Slider fontSizeSlider;
     
+    /**
+     * 
+     */
     @FXML private Button saveButton;
+    /**
+     * 
+     */
     @FXML private Button cancelButton;
     
+    /**
+     * 
+     */
     private final UserSessionService userSessionService = UserSessionService.getInstance();
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
     
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         if (userSessionService.isLoggedIn()) {
@@ -54,6 +108,9 @@ public class SettingsController {
         messageNotificationsCheckBox.setSelected(true);
     }
     
+    /**
+     * @param event
+     */
     @FXML
     public void handleChangePassword(ActionEvent event) {
         String currentPassword = currentPasswordField.getText();
@@ -87,6 +144,9 @@ public class SettingsController {
         confirmPasswordField.clear();
     }
     
+    /**
+     * @param event
+     */
     @FXML
     public void handleSave(ActionEvent event) {
         String selectedLanguage = languageComboBox.getValue();
@@ -104,6 +164,9 @@ public class SettingsController {
         );
     }
     
+    /**
+     * @param event
+     */
     @FXML
     public void handleCancel(ActionEvent event) {
     }

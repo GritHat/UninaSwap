@@ -29,42 +29,105 @@ import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+/**
+ * 
+ */
 public class NotificationsController implements Initializable, Refreshable {
 
+    /**
+     * 
+     */
     @FXML
     private TabPane notificationTabPane;
+    /**
+     * 
+     */
     @FXML
     private Tab allNotificationsTab;
+    /**
+     * 
+     */
     @FXML
     private Tab purchasesSalesTab;
+    /**
+     * 
+     */
     @FXML
     private Tab auctionsTab;
+    /**
+     * 
+     */
     @FXML
     private Tab socialTab;
+    /**
+     * 
+     */
     @FXML
     private VBox allNotificationsContainer;
+    /**
+     * 
+     */
     @FXML
     private VBox purchasesSalesContainer;
+    /**
+     * 
+     */
     @FXML
     private VBox auctionsContainer;
+    /**
+     * 
+     */
     @FXML
     private VBox socialContainer;
+    /**
+     * 
+     */
     @FXML
     private Button markAllReadButton;
+    /**
+     * 
+     */
     @FXML
     private Text titleText;
+    /**
+     * 
+     */
     @FXML
     private ImageView notificationIcon;
 
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final NotificationService notificationService = NotificationService.getInstance();
+    /**
+     * 
+     */
     private final NavigationService navigationService = NavigationService.getInstance();
 
+    /**
+     * 
+     */
     private ObservableList<NotificationViewModel> allNotifications;
+    /**
+     * 
+     */
     private FilteredList<NotificationViewModel> purchasesSalesNotifications;
+    /**
+     * 
+     */
     private FilteredList<NotificationViewModel> auctionNotifications;
+    /**
+     * 
+     */
     private FilteredList<NotificationViewModel> socialNotifications;
 
+    /**
+     *
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupLabels();
@@ -74,6 +137,9 @@ public class NotificationsController implements Initializable, Refreshable {
         loadNotifications();
     }
 
+    /**
+     * 
+     */
     private void setupLabels() {
         titleText.setText(localeService.getMessage("notification.center", "Notification Center"));
         markAllReadButton.setText(localeService.getMessage("notification.mark.all.read", "Mark All as Read"));
@@ -83,6 +149,9 @@ public class NotificationsController implements Initializable, Refreshable {
         socialTab.setText(localeService.getMessage("notification.tab.social", "Social"));
     }
 
+    /**
+     * 
+     */
     private void setupObservableList() {
         allNotifications = notificationService.getAllNotifications();
         purchasesSalesNotifications = new FilteredList<>(allNotifications, notification -> {
@@ -107,6 +176,9 @@ public class NotificationsController implements Initializable, Refreshable {
         });
     }
 
+    /**
+     * 
+     */
     private void setupNotificationTabs() {
         if (notificationTabPane != null) {
             notificationTabPane.getSelectionModel().selectedItemProperty().addListener(
@@ -118,12 +190,18 @@ public class NotificationsController implements Initializable, Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     private void setupEventHandlers() {
         if (markAllReadButton != null) {
             markAllReadButton.setOnAction(_ -> handleMarkAllAsRead());
         }
     }
 
+    /**
+     * 
+     */
     private void loadNotifications() {
         if (allNotifications.isEmpty()) {
             notificationService.getNotifications(0, 100)
@@ -142,10 +220,16 @@ public class NotificationsController implements Initializable, Refreshable {
         }
     }
 
+    /**
+     * @param selectedTab
+     */
     private void loadNotificationsForTab(Tab selectedTab) {
         updateNotificationDisplays();
     }
 
+    /**
+     * 
+     */
     private void updateNotificationDisplays() {
         updateTabContent(allNotificationsContainer, allNotifications);
         updateTabContent(purchasesSalesContainer, purchasesSalesNotifications);
@@ -153,6 +237,10 @@ public class NotificationsController implements Initializable, Refreshable {
         updateTabContent(socialContainer, socialNotifications);
     }
 
+    /**
+     * @param container
+     * @param notifications
+     */
     private void updateTabContent(VBox container, ObservableList<? extends NotificationViewModel> notifications) {
         if (container == null) return;
 
@@ -168,6 +256,10 @@ public class NotificationsController implements Initializable, Refreshable {
         }
     }
 
+    /**
+     * @param notification
+     * @return
+     */
     private VBox createNotificationItem(NotificationViewModel notification) {
         VBox item = new VBox(8);
         item.getStyleClass().addAll("notification-item", notification.isRead() ? "read" : "unread");
@@ -210,6 +302,10 @@ public class NotificationsController implements Initializable, Refreshable {
         return item;
     }
 
+    /**
+     * @param notification
+     * @return
+     */
     private HBox createActionButtons(NotificationViewModel notification) {
         HBox buttonContainer = new HBox(10);
         buttonContainer.setAlignment(Pos.CENTER_LEFT);
@@ -244,6 +340,10 @@ public class NotificationsController implements Initializable, Refreshable {
         return buttonContainer.getChildren().isEmpty() ? null : buttonContainer;
     }
 
+    /**
+     * @param type
+     * @return
+     */
     private Image getNotificationIcon(String type) {
         String iconPath = switch (type) {
             case "OFFER_RECEIVED", "OFFER_ACCEPTED", "OFFER_REJECTED", "OFFER_WITHDRAWN" -> "/images/icons/offers.png";
@@ -262,6 +362,10 @@ public class NotificationsController implements Initializable, Refreshable {
         }
     }
 
+    /**
+     * @param timestamp
+     * @return
+     */
     private String formatTime(java.time.LocalDateTime timestamp) {
         if (timestamp == null) return "";
 
@@ -279,6 +383,9 @@ public class NotificationsController implements Initializable, Refreshable {
         }
     }
 
+    /**
+     * @param container
+     */
     private void addEmptyPlaceholder(VBox container) {
         VBox placeholder = new VBox(10);
         placeholder.setAlignment(Pos.CENTER);
@@ -297,6 +404,9 @@ public class NotificationsController implements Initializable, Refreshable {
         container.getChildren().add(placeholder);
     }
 
+    /**
+     * @param errorMessage
+     */
     private void showErrorPlaceholder(String errorMessage) {
         VBox errorPlaceholder = new VBox(10);
         errorPlaceholder.setAlignment(Pos.CENTER);
@@ -316,6 +426,9 @@ public class NotificationsController implements Initializable, Refreshable {
         allNotificationsContainer.getChildren().add(errorPlaceholder);
     }
 
+    /**
+     * @param notification
+     */
     private void markAsRead(NotificationViewModel notification) {
         if (!notification.isRead()) {
             notificationService.markAsRead(notification.getId())
@@ -335,6 +448,9 @@ public class NotificationsController implements Initializable, Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleMarkAllAsRead() {
         notificationService.markAllAsRead()
@@ -352,6 +468,9 @@ public class NotificationsController implements Initializable, Refreshable {
             });
     }
 
+    /**
+     * @param notification
+     */
     private void handleNotificationClick(NotificationViewModel notification) {
         markAsRead(notification);
         switch (notification.getType()) {
@@ -362,6 +481,9 @@ public class NotificationsController implements Initializable, Refreshable {
         }
     }
 
+    /**
+     * @param notification
+     */
     private void handleViewOffer(NotificationViewModel notification) {
         try {
             navigationService.navigateToOffersView();
@@ -371,20 +493,32 @@ public class NotificationsController implements Initializable, Refreshable {
         System.out.println("Navigate to offer from notification: " + notification.getTitle());
     }
 
+    /**
+     * @param notification
+     */
     private void handleViewAuction(NotificationViewModel notification) {
         System.out.println("Navigate to auction from notification: " + notification.getTitle());
     }
 
+    /**
+     * @param notification
+     */
     private void handleViewPickup(NotificationViewModel notification) {
         System.out.println("Navigate to pickup from notification: " + notification.getTitle());
     }
 
+    /**
+     *
+     */
     @Override
     public void refreshUI() {
         setupLabels();
         updateNotificationDisplays();
     }
 
+    /**
+     * @param unreadCount
+     */
     public void updateNotificationBadge(int unreadCount) {
         Platform.runLater(() -> {
             System.out.println("Unread notifications: " + unreadCount);

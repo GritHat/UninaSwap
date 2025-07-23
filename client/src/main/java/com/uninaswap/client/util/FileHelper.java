@@ -12,6 +12,9 @@ import java.awt.image.BufferedImage;
 /**
  * Utility class with helper methods for file operations
  */
+/**
+ * 
+ */
 public class FileHelper {
     
     /**
@@ -19,6 +22,11 @@ public class FileHelper {
      * @param file The file to read
      * @return The file contents as a byte array
      * @throws IOException If the file cannot be read
+     */
+    /**
+     * @param file
+     * @return
+     * @throws IOException
      */
     public static byte[] readFile(File file) throws IOException {
         return Files.readAllBytes(file.toPath());
@@ -29,6 +37,11 @@ public class FileHelper {
      * @param data The data to write
      * @param filePath The path to write the file to
      * @throws IOException If the file cannot be written
+     */
+    /**
+     * @param data
+     * @param filePath
+     * @throws IOException
      */
     public static void writeFile(byte[] data, String filePath) throws IOException {
         Path path = Paths.get(filePath);
@@ -41,6 +54,11 @@ public class FileHelper {
      * @return The Base64 encoded string
      * @throws IOException If the file cannot be read
      */
+    /**
+     * @param file
+     * @return
+     * @throws IOException
+     */
     public static String fileToBase64(File file) throws IOException {
         byte[] fileContent = readFile(file);
         return Base64.getEncoder().encodeToString(fileContent);
@@ -52,6 +70,11 @@ public class FileHelper {
      * @param filePath The path to save the file to
      * @throws IOException If the file cannot be written
      */
+    /**
+     * @param base64
+     * @param filePath
+     * @throws IOException
+     */
     public static void base64ToFile(String base64, String filePath) throws IOException {
         byte[] data = Base64.getDecoder().decode(base64);
         writeFile(data, filePath);
@@ -61,6 +84,10 @@ public class FileHelper {
      * Create a JavaFX Image from a Base64 encoded string
      * @param base64 The Base64 encoded image data
      * @return A JavaFX Image
+     */
+    /**
+     * @param base64
+     * @return
      */
     public static Image createImageFromBase64(String base64) {
         try {
@@ -83,6 +110,10 @@ public class FileHelper {
      * @param directoryPath The directory path to ensure
      * @throws IOException If the directory cannot be created
      */
+    /**
+     * @param directoryPath
+     * @throws IOException
+     */
     public static void ensureDirectoryExists(String directoryPath) throws IOException {
         Path path = Paths.get(directoryPath);
         if (!Files.exists(path)) {
@@ -94,6 +125,10 @@ public class FileHelper {
      * Get the file extension from a file name
      * @param fileName The file name
      * @return The file extension (without the dot)
+     */
+    /**
+     * @param fileName
+     * @return
      */
     public static String getFileExtension(String fileName) {
         int lastDotIndex = fileName.lastIndexOf('.');
@@ -107,6 +142,10 @@ public class FileHelper {
      * Check if a file is an image based on its extension
      * @param fileName The file name to check
      * @return true if the file is an image, false otherwise
+     */
+    /**
+     * @param fileName
+     * @return
      */
     public static boolean isImageFile(String fileName) {
         String extension = getFileExtension(fileName);
@@ -122,6 +161,12 @@ public class FileHelper {
      * @return The created temporary file
      * @throws IOException If the file cannot be created
      */
+    /**
+     * @param prefix
+     * @param suffix
+     * @return
+     * @throws IOException
+     */
     public static File createTempFile(String prefix, String suffix) throws IOException {
         return File.createTempFile(prefix, suffix);
     }
@@ -132,6 +177,12 @@ public class FileHelper {
      * @param fileName The desired file name
      * @return The path to the saved file
      * @throws IOException If the file cannot be saved
+     */
+    /**
+     * @param base64
+     * @param fileName
+     * @return
+     * @throws IOException
      */
     public static String saveImageToCache(String base64, String fileName) throws IOException {
         String cacheDir = System.getProperty("user.home") + "/.uninaswap/cache/images";

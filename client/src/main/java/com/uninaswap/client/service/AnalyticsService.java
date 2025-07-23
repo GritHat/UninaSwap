@@ -12,21 +12,51 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.time.LocalDateTime;
 
+/**
+ * 
+ */
 public class AnalyticsService {
+    /**
+     * 
+     */
     private static AnalyticsService instance;
     
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient;
+    /**
+     * 
+     */
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
+    /**
+     * 
+     */
     private AnalyticsViewModel cachedAnalytics;
+    /**
+     * 
+     */
     private LocalDateTime lastRefresh;
+    /**
+     * 
+     */
     private static final long CACHE_DURATION_MINUTES = 15;
+    /**
+     * 
+     */
     private final Map<String, CompletableFuture<?>> pendingFutures = new ConcurrentHashMap<>();
     
+    /**
+     * 
+     */
     private AnalyticsService() {
         webSocketClient = WebSocketClient.getInstance();
         webSocketClient.registerMessageHandler(AnalyticsMessage.class, this::handleAnalyticsMessage);
     }
     
+    /**
+     * @return
+     */
     public static synchronized AnalyticsService getInstance() {
         if (instance == null) {
             instance = new AnalyticsService();
@@ -39,6 +69,10 @@ public class AnalyticsService {
      * 
      * @param period The time period for analytics (e.g., "daily", "weekly", "monthly", "yearly")
      * @return CompletableFuture with AnalyticsViewModel containing the analytics data
+     */
+    /**
+     * @param period
+     * @return
      */
     public CompletableFuture<AnalyticsViewModel> getAnalytics(String period) {
         // Check cache first
@@ -65,6 +99,11 @@ public class AnalyticsService {
      * @param endDate End date for the analytics
      * @return CompletableFuture with AnalyticsViewModel containing the analytics data
      */
+    /**
+     * @param startDate
+     * @param endDate
+     * @return
+     */
     public CompletableFuture<AnalyticsViewModel> getAnalytics(LocalDateTime startDate, LocalDateTime endDate) {
         CompletableFuture<AnalyticsViewModel> future = new CompletableFuture<>();
         
@@ -86,6 +125,11 @@ public class AnalyticsService {
      * @param period The time period for analytics (e.g., "daily", "weekly", "monthly", "yearly")
      * @return CompletableFuture with AnalyticsViewModel containing the category analytics data
      */
+    /**
+     * @param category
+     * @param period
+     * @return
+     */
     public CompletableFuture<AnalyticsViewModel> getCategoryAnalytics(String category, String period) {
         CompletableFuture<AnalyticsViewModel> future = new CompletableFuture<>();
         
@@ -106,6 +150,10 @@ public class AnalyticsService {
      * @param period The time period for comparison (e.g., "daily", "weekly", "monthly", "yearly")
      * @return CompletableFuture with AnalyticsViewModel containing the performance comparison data
      */
+    /**
+     * @param period
+     * @return
+     */
     public CompletableFuture<AnalyticsViewModel> getPerformanceComparison(String period) {
         CompletableFuture<AnalyticsViewModel> future = new CompletableFuture<>();
         
@@ -122,6 +170,9 @@ public class AnalyticsService {
     /**
      * Refresh analytics data
      */
+    /**
+     * @return
+     */
     public CompletableFuture<AnalyticsViewModel> refreshAnalytics() {
         clearCache();
         return getAnalytics("all");
@@ -133,6 +184,11 @@ public class AnalyticsService {
      * @param format The format to export (e.g., "csv", "json")
      * @param period The time period for export (e.g., "daily", "weekly", "monthly", "yearly")
      * @return CompletableFuture with the file path of the exported analytics data
+     */
+    /**
+     * @param format
+     * @param period
+     * @return
      */
     public CompletableFuture<String> exportAnalytics(String format, String period) {
         CompletableFuture<String> future = new CompletableFuture<>();
@@ -152,6 +208,9 @@ public class AnalyticsService {
      * Handle incoming WebSocket messages
      * 
      * @param message The AnalyticsMessage received from the WebSocket
+     */
+    /**
+     * @param message
      */
     @SuppressWarnings("unchecked")
     private void handleAnalyticsMessage(AnalyticsMessage message) {
@@ -225,6 +284,10 @@ public class AnalyticsService {
      * 
      * @param dto The AnalyticsDTO to convert
      * @return AnalyticsViewModel containing the converted data
+     */
+    /**
+     * @param dto
+     * @return
      */
     private AnalyticsViewModel convertToViewModel(AnalyticsDTO dto) {
         if (dto == null) return new AnalyticsViewModel();
@@ -307,6 +370,9 @@ public class AnalyticsService {
     /**
      * Check if cache is still valid
      */
+    /**
+     * @return
+     */
     private boolean isCacheValid() {
         if (lastRefresh == null) return false;
         return LocalDateTime.now().minusMinutes(CACHE_DURATION_MINUTES).isBefore(lastRefresh);
@@ -317,6 +383,9 @@ public class AnalyticsService {
      * 
      * @param analytics The AnalyticsViewModel to cache
      */
+    /**
+     * @param analytics
+     */
     private void updateCache(AnalyticsViewModel analytics) {
         this.cachedAnalytics = analytics;
         this.lastRefresh = LocalDateTime.now();
@@ -325,6 +394,9 @@ public class AnalyticsService {
     /**
      * Clear cache
      */
+    /**
+     * 
+     */
     public void clearCache() {
         this.cachedAnalytics = null;
         this.lastRefresh = null;
@@ -332,6 +404,9 @@ public class AnalyticsService {
     
     /**
      * Get cached analytics if available
+     */
+    /**
+     * @return
      */
     public AnalyticsViewModel getCachedAnalytics() {
         return isCacheValid() ? cachedAnalytics : null;

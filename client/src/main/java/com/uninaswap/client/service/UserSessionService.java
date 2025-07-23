@@ -12,13 +12,34 @@ import com.uninaswap.common.message.AuthMessage;
 /**
  * Service for managing the current user's session throughout the application.
  */
+/**
+ * 
+ */
 public class UserSessionService {
+    /**
+     * 
+     */
     private static UserSessionService instance;
+    /**
+     * 
+     */
     private UserDTO user;
+    /**
+     * 
+     */
     private boolean loggedIn = false;
+    /**
+     * 
+     */
     private final Map<String, Object> sessionData = new HashMap<>();
+    /**
+     * 
+     */
     private final EventBusService eventBus = EventBusService.getInstance();
     
+    /**
+     * @return
+     */
     public static UserSessionService getInstance() {
         if (instance == null) {
             instance = new UserSessionService();
@@ -26,6 +47,9 @@ public class UserSessionService {
         return instance;
     }
     
+    /**
+     * 
+     */
     private UserSessionService() {
     }
     
@@ -33,6 +57,9 @@ public class UserSessionService {
      * Start a new user session after successful login
      * 
      * @param response The AuthMessage containing user data and token
+     */
+    /**
+     * @param response
      */
     public void startSession(AuthMessage response) {
         this.user = response.getUser();
@@ -50,6 +77,9 @@ public class UserSessionService {
     /**
      * End the user session (logout)
      */
+    /**
+     * 
+     */
     public void endSession() {
         eventBus.publishEvent(EventTypes.USER_LOGGED_OUT, null);
         this.user = null;
@@ -64,10 +94,16 @@ public class UserSessionService {
      * 
      * @return The UserDTO representing the current user, or null if not logged in
      */
+    /**
+     * @return
+     */
     public UserDTO getUser() {
         return user;
     }
 
+    /**
+     * @return
+     */
     public UserViewModel getUserViewModel() {
         return ViewModelMapper.getInstance().toViewModel(user);
     }
@@ -76,6 +112,9 @@ public class UserSessionService {
      * Check if a user is logged in
      * 
      * @return true if a user is logged in, false otherwise
+     */
+    /**
+     * @return
      */
     public boolean isLoggedIn() {
         return loggedIn;
@@ -86,6 +125,10 @@ public class UserSessionService {
      * 
      * @param key The key to store the data under
      * @param value The value to store
+     */
+    /**
+     * @param key
+     * @param value
      */
     public void put(String key, Object value) {
         sessionData.put(key, value);
@@ -103,6 +146,11 @@ public class UserSessionService {
      * @return The value cast to the expected type, or null if not found
      * @throws ClassCastException if the value cannot be cast to the expected type
      */
+    /**
+     * @param <T>
+     * @param key
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public <T> T get(String key) {
         return (T) sessionData.get(key);
@@ -114,6 +162,10 @@ public class UserSessionService {
      * @param key The key to check for
      * @return true if the key exists in the session, false otherwise
      */
+    /**
+     * @param key
+     * @return
+     */
     public boolean contains(String key) {
         return sessionData.containsKey(key);
     }
@@ -123,12 +175,18 @@ public class UserSessionService {
      * 
      * @param key The key to remove
      */
+    /**
+     * @param key
+     */
     public void remove(String key) {
         sessionData.remove(key);
     }
     
     /**
      * Get the authentication token
+     */
+    /**
+     * @return
      */
     public String getToken() {
         return (String) sessionData.get("token");

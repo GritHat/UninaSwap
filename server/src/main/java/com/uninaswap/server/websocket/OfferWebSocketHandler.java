@@ -2,6 +2,7 @@ package com.uninaswap.server.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uninaswap.common.dto.OfferDTO;
+import com.uninaswap.common.enums.ListingStatus;
 import com.uninaswap.common.enums.OfferStatus;
 import com.uninaswap.common.message.OfferMessage;
 import com.uninaswap.server.entity.UserEntity;
@@ -206,7 +207,7 @@ public class OfferWebSocketHandler extends TextWebSocketHandler {
         try {
             OfferDTO updatedOffer = offerService.updateOfferStatus(offerId, OfferStatus.ACCEPTED,
                     currentUser.getId());
-
+            updatedOffer.getListing().setStatus(ListingStatus.PENDING);
             response.setType(OfferMessage.Type.ACCEPT_OFFER_RESPONSE);
             response.setOffer(updatedOffer);
             response.setSuccess(true);

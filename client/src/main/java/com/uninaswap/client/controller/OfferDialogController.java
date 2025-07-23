@@ -22,70 +22,184 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * 
+ */
 public class OfferDialogController {
+    /**
+     * 
+     */
     @FXML
     private ImageView listingImage;
+    /**
+     * 
+     */
     @FXML
     private Text listingTitle;
+    /**
+     * 
+     */
     @FXML
     private Text listingPrice;
+    /**
+     * 
+     */
     @FXML
     private VBox moneyOfferSection;
+    /**
+     * 
+     */
     @FXML
     private CheckBox includeMoneyCheckBox;
+    /**
+     * 
+     */
     @FXML
     private VBox moneyInputSection;
+    /**
+     * 
+     */
     @FXML
     private TextField moneyAmountField;
+    /**
+     * 
+     */
     @FXML
     private ComboBox<Currency> currencyComboBox;
+    /**
+     * 
+     */
     @FXML
     private Label priceConstraintLabel;
+    /**
+     * 
+     */
     @FXML
     private VBox itemsOfferSection;
+    /**
+     * 
+     */
     @FXML
     private Button addNewItemButton;
+    /**
+     * 
+     */
     @FXML
     private TableView<ItemViewModel> availableItemsTable;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ItemViewModel, String> itemNameColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ItemViewModel, String> itemConditionColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ItemViewModel, Integer> itemAvailableColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ItemViewModel, Void> itemQuantityColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ItemViewModel, Void> itemActionColumn;
+    /**
+     * 
+     */
     @FXML
     private TableView<OfferItemViewModel> selectedItemsTable;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<OfferItemViewModel, String> selectedNameColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<OfferItemViewModel, String> selectedConditionColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<OfferItemViewModel, Integer> selectedQuantityColumn;
+    /**
+     * 
+     */
     @FXML
     private TableColumn<OfferItemViewModel, Void> selectedRemoveColumn;
+    /**
+     * 
+     */
     @FXML
     private TextArea messageArea;
+    /**
+     * 
+     */
     @FXML
     private VBox offerSummaryContent;
+    /**
+     * 
+     */
     @FXML
     private ComboBox<DeliveryType> deliveryMethodComboBox;
 
+    /**
+     * 
+     */
     private final ItemService itemService = ItemService.getInstance();
+    /**
+     * 
+     */
     private final ImageService imageService = ImageService.getInstance();
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final OfferService offerService = OfferService.getInstance();
+    /**
+     * 
+     */
     private final NavigationService navigationService = NavigationService.getInstance();
+    /**
+     * 
+     */
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
+    /**
+     * 
+     */
     private final EventBusService eventBus = EventBusService.getInstance();
+    /**
+     * 
+     */
     private ListingViewModel currentListing;
+    /**
+     * 
+     */
     private final ObservableList<OfferItemViewModel> selectedItems = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final Map<String, Integer> tempReservedQuantities = new HashMap<>();
+    /**
+     * 
+     */
     private final Map<Integer, Spinner<Integer>> rowSpinners = new HashMap<>();
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupCurrencyComboBox();
@@ -102,6 +216,9 @@ public class OfferDialogController {
         });
     }
 
+    /**
+     * @param listing
+     */
     public void setListing(ListingViewModel listing) {
         this.currentListing = listing;
 
@@ -114,12 +231,18 @@ public class OfferDialogController {
         }
     }
 
+    /**
+     * 
+     */
     private void setupCurrencyComboBox() {
         List<Currency> currencies = List.of(Currency.EUR, Currency.USD, Currency.GBP);
         currencyComboBox.setItems(FXCollections.observableArrayList(currencies));
         currencyComboBox.setValue(Currency.EUR);
     }
 
+    /**
+     * 
+     */
     private void setupMoneyOfferHandlers() {
         includeMoneyCheckBox.selectedProperty().addListener((_, _, newVal) -> {
             moneyInputSection.setVisible(newVal);
@@ -135,6 +258,9 @@ public class OfferDialogController {
         });
     }
 
+    /**
+     * 
+     */
     private void setupAvailableItemsTable() {
         itemNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
@@ -215,11 +341,18 @@ public class OfferDialogController {
         });
     }
 
+    /**
+     * @param rowIndex
+     * @return
+     */
     private int getQuantityFromRow(int rowIndex) {
         Spinner<Integer> spinner = rowSpinners.get(rowIndex);
         return spinner != null ? spinner.getValue() : 1;
     }
 
+    /**
+     * 
+     */
     private void setupSelectedItemsTable() {
         selectedNameColumn.setCellValueFactory(cellData -> cellData.getValue().itemNameProperty());
 
@@ -248,10 +381,16 @@ public class OfferDialogController {
         selectedItemsTable.setItems(selectedItems);
     }
 
+    /**
+     * 
+     */
     public void handleAddNewItem() {
         navigationService.openItemDialog(new ItemViewModel());
     }
 
+    /**
+     * 
+     */
     private void populateListingInfo() {
         listingTitle.setText(currentListing.getTitle());
         if (currentListing instanceof SellListingViewModel) {
@@ -286,6 +425,9 @@ public class OfferDialogController {
         }
     }
 
+    /**
+     * 
+     */
     private void setDefaultListingImage() {
         try {
             Image defaultImage = new Image(getClass().getResourceAsStream("/images/icons/immagine_generica.png"));
@@ -295,6 +437,9 @@ public class OfferDialogController {
         }
     }
 
+    /**
+     * 
+     */
     private void configureOfferSections() {
         String listingType = currentListing.getListingTypeValue().toUpperCase();
 
@@ -329,6 +474,9 @@ public class OfferDialogController {
         }
     }
 
+    /**
+     * 
+     */
     private void loadAvailableItems() {
         ObservableList<ItemViewModel> itemViewModels = FXCollections.observableArrayList();
         itemService.getUserItemsList().forEach(itemDTO -> {
@@ -337,6 +485,10 @@ public class OfferDialogController {
         availableItemsTable.setItems(itemViewModels);
     }
 
+    /**
+     * @param item
+     * @param quantity
+     */
     private void addItemToOffer(ItemViewModel item, int quantity) {
         Optional<OfferItemViewModel> existingItem = selectedItems.stream()
                 .filter(offerItem -> offerItem.getItemId().equals(item.getId()))
@@ -383,6 +535,9 @@ public class OfferDialogController {
         updateOfferSummary();
     }
 
+    /**
+     * @param offerItem
+     */
     private void removeItemFromOffer(OfferItemViewModel offerItem) {
         selectedItems.remove(offerItem);
         int currentReserved = tempReservedQuantities.getOrDefault(offerItem.getItemId(), 0);
@@ -397,6 +552,9 @@ public class OfferDialogController {
         updateOfferSummary();
     }
 
+    /**
+     * 
+     */
     private void updateOfferSummary() {
         offerSummaryContent.getChildren().clear();
         if (includeMoneyCheckBox.isSelected() && !moneyAmountField.getText().trim().isEmpty()) {
@@ -444,6 +602,9 @@ public class OfferDialogController {
         }
     }
 
+    /**
+     * @return
+     */
     public boolean isValidOffer() {
         boolean hasMoneyOffer = includeMoneyCheckBox.isSelected() &&
                 !moneyAmountField.getText().trim().isEmpty();
@@ -472,6 +633,9 @@ public class OfferDialogController {
         return true;
     }
 
+    /**
+     * @return
+     */
     public CompletableFuture<Boolean> createOffer() {
         if (!isValidOffer()) {
             return CompletableFuture.completedFuture(false);
@@ -499,19 +663,31 @@ public class OfferDialogController {
                 .exceptionally(_ -> false);
     }
 
+    /**
+     * 
+     */
     public void cleanup() {
         tempReservedQuantities.clear();
         rowSpinners.clear();
     }
 
+    /**
+     * @return
+     */
     public CheckBox getIncludeMoneyCheckBox() {
         return includeMoneyCheckBox;
     }
 
+    /**
+     * @return
+     */
     public TextField getMoneyAmountField() {
         return moneyAmountField;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<OfferItemViewModel> getSelectedItems() {
         return selectedItems;
     }

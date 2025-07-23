@@ -16,28 +16,79 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ */
 public class FavoritesService {
+    /**
+     * 
+     */
     private static FavoritesService instance;
 
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+    /**
+     * 
+     */
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
+    /**
+     * 
+     */
     private final Set<String> favoriteItemIds = new HashSet<>();
+    /**
+     * 
+     */
     private final Set<String> favoriteListingIds = new HashSet<>();
+    /**
+     * 
+     */
     private final Set<Long> favoriteUserIds = new HashSet<>();
+    /**
+     * 
+     */
     private final ObservableList<FavoriteViewModel> userFavorites = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<ListingDTO> favoriteListings = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<ListingViewModel> favoriteListingViewModels = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final List<Consumer<String>> listingFavoriteChangeListeners = new ArrayList<>();
+    /**
+     * 
+     */
     private final List<Consumer<String>> itemFavoriteChangeListeners = new ArrayList<>();
+    /**
+     * 
+     */
     private final List<Consumer<Long>> userFavoriteChangeListeners = new ArrayList<>();
 
+    /**
+     * 
+     */
     private CompletableFuture<?> futureToComplete;
+    /**
+     * 
+     */
     private Consumer<FavoriteMessage> messageCallback;
 
+    /**
+     * 
+     */
     private FavoritesService() {
         webSocketClient.registerMessageHandler(FavoriteMessage.class, this::handleFavoriteMessage);
     }
 
+    /**
+     * @return
+     */
     public static synchronized FavoritesService getInstance() {
         if (instance == null) {
             instance = new FavoritesService();
@@ -52,6 +103,10 @@ public class FavoritesService {
      * @return A CompletableFuture that completes with the FavoriteViewModel if the
      *         request is successful, or fails with an exception if the connection
      *         fails or the request is invalid.
+     */
+    /**
+     * @param listingId
+     * @return
      */
     public CompletableFuture<FavoriteViewModel> addFavoriteToServer(String listingId) {
         CompletableFuture<FavoriteViewModel> future = new CompletableFuture<>();
@@ -79,6 +134,10 @@ public class FavoritesService {
      * @return A CompletableFuture that completes with true if the request is successful,
      *         or false if the listing was not favorited or the request failed.
      */
+    /**
+     * @param listingId
+     * @return
+     */
     public CompletableFuture<Boolean> removeFavoriteFromServer(String listingId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -104,6 +163,9 @@ public class FavoritesService {
      * @return A CompletableFuture that completes with a list of FavoriteDTOs if the request is successful,
      *         or fails with an exception if the connection fails or the request is invalid.
      *         This method retrieves all favorites for the current user, including listings, items, and
+     */
+    /**
+     * @return
      */
     public CompletableFuture<List<FavoriteDTO>> getUserFavorites() {
         CompletableFuture<List<FavoriteDTO>> future = new CompletableFuture<>();
@@ -133,6 +195,10 @@ public class FavoritesService {
      *         It does not check local favorites, so it should be used when the server state
      *         needs to be verified (e.g., after a sync or when the UI is initialized).
      */
+    /**
+     * @param listingId
+     * @return
+     */
     public CompletableFuture<Boolean> isFavoriteOnServer(String listingId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -160,6 +226,10 @@ public class FavoritesService {
      *         or false if it is now unfavorited, or fails with an exception if the request fails.
      *         This method toggles the favorite status of a listing on the server
      */
+    /**
+     * @param listingId
+     * @return
+     */
     public CompletableFuture<Boolean> toggleFavoriteOnServer(String listingId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -184,6 +254,9 @@ public class FavoritesService {
      * 
      * @param callback The callback to set
      */
+    /**
+     * @param itemId
+     */
     public void addFavorite(String itemId) {
         favoriteItemIds.add(itemId);
         System.out.println("Added item to favorites: " + itemId);
@@ -195,20 +268,33 @@ public class FavoritesService {
      * 
      * @param itemId The ID of the item to remove from favorites
      */
+    /**
+     * @param itemId
+     */
     public void removeFavorite(String itemId) {
         favoriteItemIds.remove(itemId);
         System.out.println("Removed item from favorites: " + itemId);
         notifyItemFavoriteChange(itemId);
     }
 
+    /**
+     * @param itemId
+     * @return
+     */
     public boolean isFavorite(String itemId) {
         return favoriteItemIds.contains(itemId);
     }
 
+    /**
+     * @return
+     */
     public Set<String> getAllFavorites() {
         return Collections.unmodifiableSet(favoriteItemIds);
     }
 
+    /**
+     * @param listingId
+     */
     public void addFavoriteListing(String listingId) {
         favoriteListingIds.add(listingId);
         System.out.println("Added listing to favorites: " + listingId);
@@ -220,6 +306,9 @@ public class FavoritesService {
                 });
     }
 
+    /**
+     * @param listingId
+     */
     public void removeFavoriteListing(String listingId) {
         favoriteListingIds.remove(listingId);
         System.out.println("Removed listing from favorites: " + listingId);
@@ -231,42 +320,71 @@ public class FavoritesService {
                 });
     }
 
+    /**
+     * @param listingId
+     * @return
+     */
     public boolean isFavoriteListing(String listingId) {
         return favoriteListingIds.contains(listingId);
     }
 
+    /**
+     * @return
+     */
     public Set<String> getAllFavoriteListings() {
         return Collections.unmodifiableSet(favoriteListingIds);
     }
 
+    /**
+     * @param userId
+     */
     public void addFavoriteUser(Long userId) {
         favoriteUserIds.add(userId);
         System.out.println("Added user to favorites: " + userId);
         notifyUserFavoriteChange(userId);
     }
 
+    /**
+     * @param userId
+     */
     public void removeFavoriteUser(Long userId) {
         favoriteUserIds.remove(userId);
         System.out.println("Removed user from favorites: " + userId);
         notifyUserFavoriteChange(userId);
     }
 
+    /**
+     * @param userId
+     * @return
+     */
     public boolean isFavoriteUser(Long userId) {
         return favoriteUserIds.contains(userId);
     }
 
+    /**
+     * @return
+     */
     public Set<Long> getAllFavoriteUsers() {
         return Collections.unmodifiableSet(favoriteUserIds);
     }
 
+    /**
+     * @param listener
+     */
     public void addListingFavoriteChangeListener(Consumer<String> listener) {
         listingFavoriteChangeListeners.add(listener);
     }
 
+    /**
+     * @param listener
+     */
     public void removeListingFavoriteChangeListener(Consumer<String> listener) {
         listingFavoriteChangeListeners.remove(listener);
     }
 
+    /**
+     * @param listingId
+     */
     private void notifyListingFavoriteChange(String listingId) {
         for (Consumer<String> listener : listingFavoriteChangeListeners) {
             try {
@@ -277,14 +395,23 @@ public class FavoritesService {
         }
     }
 
+    /**
+     * @param listener
+     */
     public void addItemFavoriteChangeListener(Consumer<String> listener) {
         itemFavoriteChangeListeners.add(listener);
     }
 
+    /**
+     * @param listener
+     */
     public void removeItemFavoriteChangeListener(Consumer<String> listener) {
         itemFavoriteChangeListeners.remove(listener);
     }
 
+    /**
+     * @param itemId
+     */
     private void notifyItemFavoriteChange(String itemId) {
         for (Consumer<String> listener : itemFavoriteChangeListeners) {
             try {
@@ -294,14 +421,23 @@ public class FavoritesService {
             }
         }
     }
+    /**
+     * @param listener
+     */
     public void addUserFavoriteChangeListener(Consumer<Long> listener) {
         userFavoriteChangeListeners.add(listener);
     }
 
+    /**
+     * @param listener
+     */
     public void removeUserFavoriteChangeListener(Consumer<Long> listener) {
         userFavoriteChangeListeners.remove(listener);
     }
 
+    /**
+     * @param userId
+     */
     private void notifyUserFavoriteChange(Long userId) {
         for (Consumer<Long> listener : userFavoriteChangeListeners) {
             try {
@@ -312,6 +448,9 @@ public class FavoritesService {
         }
     }
 
+    /**
+     * 
+     */
     public void clearAllFavorites() {
         favoriteItemIds.clear();
         favoriteListingIds.clear();
@@ -321,10 +460,16 @@ public class FavoritesService {
         System.out.println("Cleared all favorites");
     }
 
+    /**
+     * @return
+     */
     public int getTotalFavoritesCount() {
         return favoriteItemIds.size() + favoriteListingIds.size() + favoriteUserIds.size();
     }
 
+    /**
+     * @return
+     */
     public ObservableList<FavoriteViewModel> getUserFavoritesList() {
         if (userFavorites.isEmpty()) {
             refreshUserFavorites();
@@ -332,6 +477,9 @@ public class FavoritesService {
         return userFavorites;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<ListingDTO> getFavoriteListingsList() {
         if (favoriteListings.isEmpty()) {
             refreshUserFavorites();
@@ -339,6 +487,9 @@ public class FavoritesService {
         return favoriteListings;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<ListingViewModel> getFavoriteListingViewModels() {
         if (favoriteListingViewModels.isEmpty()) {
             refreshUserFavorites();
@@ -346,6 +497,9 @@ public class FavoritesService {
         return favoriteListingViewModels;
     }
 
+    /**
+     * 
+     */
     public void refreshUserFavorites() {
         getUserFavorites()
                 .thenAccept(favorites -> {
@@ -372,6 +526,9 @@ public class FavoritesService {
                 });
     }
 
+    /**
+     * @param favorites
+     */
     private void syncLocalFavoriteIds(List<FavoriteDTO> favorites) {
         Set<String> serverListingIds = favorites.stream()
                 .map(FavoriteDTO::getListingId)
@@ -382,6 +539,9 @@ public class FavoritesService {
         favoriteListingIds.addAll(serverListingIds);
     }
 
+    /**
+     * @param message
+     */
     @SuppressWarnings("unchecked")
     private void handleFavoriteMessage(FavoriteMessage message) {
         if (message.getType() == null) {

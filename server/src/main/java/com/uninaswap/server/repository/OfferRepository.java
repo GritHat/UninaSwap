@@ -44,6 +44,14 @@ public interface OfferRepository extends JpaRepository<OfferEntity, String> {
     List<OfferEntity> findByListingCreatorIdOrderByCreatedAtDesc(@Param("userId") Long userId);
 
     /**
+     * Find offers created between dates
+     * @param startDate Start date
+     * @param endDate End date
+     * @return List of offers
+     */
+    List<OfferEntity> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    /**
      * Find offers by status
      */
     List<OfferEntity> findByStatusOrderByCreatedAtDesc(OfferStatus status);
@@ -52,6 +60,17 @@ public interface OfferRepository extends JpaRepository<OfferEntity, String> {
      * Find offers for a listing with pagination
      */
     Page<OfferEntity> findByListingIdOrderByCreatedAtDesc(String listingId, Pageable pageable);
+
+    /**
+     * Find offers for a listing excluding a specific offer
+     */
+    @Query("SELECT o FROM OfferEntity o " +
+            "JOIN FETCH o.listing l " +
+            "LEFT JOIN FETCH l.listingItems li " +
+            "LEFT JOIN FETCH li.item " +
+            "WHERE l.id = :listingId AND o.id <> :excludeOfferId " +
+            "ORDER BY o.createdAt DESC")
+    List<OfferEntity> findByListingIdAndIdNot(@Param("listingId") String listingId, @Param("excludeOfferId") String excludeOfferId);
 
     /**
      * Find user offers with pagination

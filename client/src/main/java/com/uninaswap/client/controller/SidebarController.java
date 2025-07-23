@@ -12,50 +12,113 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
+/**
+ * 
+ */
 public class SidebarController {
+    /**
+     * 
+     */
     @FXML
     private ImageView ProfileImageIcon;
+    /**
+     * 
+     */
     @FXML
     private ImageView homeIcon;
+    /**
+     * 
+     */
     @FXML
     private ImageView inventoryIcon;
+    /**
+     * 
+     */
     @FXML
     private ImageView notificationsIcon;
+    /**
+     * 
+     */
     @FXML
     private ImageView listingIcon;
+    /**
+     * 
+     */
     @FXML
     private VBox homeButton;
+    /**
+     * 
+     */
     @FXML
     private VBox offersButton;
+    /**
+     * 
+     */
     @FXML
     private VBox inventoryButton;
+    /**
+     * 
+     */
     @FXML
     private VBox notificationsButton;
+    /**
+     * 
+     */
     @FXML
     private VBox listingButton;
+    /**
+     * 
+     */
     @FXML
     private VBox profileButton;
 
+    /**
+     * 
+     */
     @FXML
     private javafx.scene.control.Label statusLabel;
 
+    /**
+     * 
+     */
     private final NavigationService navigationService;
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final UserSessionService userSessionService = UserSessionService.getInstance();
 
+    /**
+     * 
+     */
     private MainController mainController;
+    /**
+     * 
+     */
     @FXML
     private ImageView offersIcon;
 
+    /**
+     * 
+     */
     public SidebarController() {
         this.navigationService = NavigationService.getInstance();
     }
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setSelectedButton(homeButton);
     }
 
+    /**
+     * @param selectedButton
+     */
     private void setSelectedButton(VBox selectedButton) {
         clearAllSelections();
         if (selectedButton != null) {
@@ -64,6 +127,9 @@ public class SidebarController {
         }
     }
 
+    /**
+     * 
+     */
     public void clearAllSelections() {
         if (homeButton != null) {
             homeButton.getStyleClass().remove("selected");
@@ -91,6 +157,9 @@ public class SidebarController {
         }
     }
 
+    /**
+     * @param button
+     */
     private void setWhiteIcon(VBox button) {
         ImageView iconView = getIconFromButton(button);
         String whiteIconPath = getWhiteIconPath(button);
@@ -105,6 +174,11 @@ public class SidebarController {
         }
     }
 
+    /**
+     * @param button
+     * @param iconView
+     * @param normalIconPath
+     */
     private void setNormalIcon(VBox button, ImageView iconView, String normalIconPath) {
         if (iconView != null && normalIconPath != null) {
             try {
@@ -116,6 +190,10 @@ public class SidebarController {
         }
     }
 
+    /**
+     * @param button
+     * @return
+     */
     private ImageView getIconFromButton(VBox button) {
         if (button == homeButton) return homeIcon;
         if (button == offersButton) return offersIcon;
@@ -126,6 +204,10 @@ public class SidebarController {
         return null;
     }
 
+    /**
+     * @param button
+     * @return
+     */
     private String getWhiteIconPath(VBox button) {
         if (button == homeButton) return "/images/icons/home_w.png";
         if (button == offersButton) return "/images/icons/offers_w.png";
@@ -136,6 +218,9 @@ public class SidebarController {
         return null;
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void showProfile(MouseEvent event) {
         setSelectedButton(profileButton);
@@ -147,6 +232,9 @@ public class SidebarController {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void showHome(MouseEvent event) {
         setSelectedButton(homeButton);
@@ -159,6 +247,9 @@ public class SidebarController {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void showInventory(MouseEvent event) {
         setSelectedButton(inventoryButton);
@@ -171,6 +262,9 @@ public class SidebarController {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void showListings(MouseEvent event) {
         setSelectedButton(listingButton);
@@ -183,6 +277,9 @@ public class SidebarController {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void showNotifications(MouseEvent event) {
         setSelectedButton(notificationsButton);
@@ -194,6 +291,9 @@ public class SidebarController {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void showSettings(MouseEvent event) {
         try {
@@ -204,6 +304,9 @@ public class SidebarController {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void showSupport(MouseEvent event) {
         try {
@@ -214,6 +317,9 @@ public class SidebarController {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void showOffers(MouseEvent event) {
         setSelectedButton(offersButton);
@@ -226,6 +332,9 @@ public class SidebarController {
         }
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void logout(MouseEvent event) {
         try {
@@ -237,34 +346,58 @@ public class SidebarController {
         }
     }
 
+    /**
+     * 
+     */
     public void selectHomeButton() {
         setSelectedButton(homeButton);
     }
 
+    /**
+     * 
+     */
     public void selectOffersButton() {
         setSelectedButton(offersButton);
     }
 
+    /**
+     * 
+     */
     public void selectInventoryButton() {
         setSelectedButton(inventoryButton);
     }
 
+    /**
+     * 
+     */
     public void selectNotificationsButton() {
         setSelectedButton(notificationsButton);
     }
 
+    /**
+     * 
+     */
     public void selectAddListingButton() {
         setSelectedButton(listingButton);
     }
 
+    /**
+     * 
+     */
     public void selectProfileButton() {
         setSelectedButton(profileButton);
     }
 
+    /**
+     * 
+     */
     public void selectListingsButton() {
         setSelectedButton(listingButton);
     }
 
+    /**
+     * @param mainController
+     */
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }

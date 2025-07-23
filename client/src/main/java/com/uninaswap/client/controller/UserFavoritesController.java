@@ -17,48 +17,105 @@ import javafx.stage.Stage;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * 
+ */
 public class UserFavoritesController {
 
+    /**
+     * 
+     */
     @FXML
     private Label titleLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label userNameLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label totalFavoritesLabel;
 
+    /**
+     * 
+     */
     @FXML
     private TableView<ListingViewModel> favoritesTable;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingViewModel, String> listingTitleColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingViewModel, String> listingTypeColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingViewModel, String> listingPriceColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingViewModel, String> listingDateColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingViewModel, Void> listingActionsColumn;
 
+    /**
+     * 
+     */
     @FXML
     private Button refreshButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button closeButton;
 
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final FavoritesService favoritesService = FavoritesService.getInstance();
+    /**
+     * 
+     */
     private final NavigationService navigationService = NavigationService.getInstance();
+    /**
+     * 
+     */
     private UserViewModel currentUser;
+    /**
+     * 
+     */
     private ObservableList<ListingViewModel> favoriteListings;
+    /**
+     * 
+     */
     private ObservableList<FavoriteViewModel> userFavorites;
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupLabels();
@@ -67,12 +124,18 @@ public class UserFavoritesController {
         updateCounts();
     }
 
+    /**
+     * 
+     */
     private void setupLabels() {
         titleLabel.setText(localeService.getMessage("favorites.title", "Favorite Listings"));
         refreshButton.setText(localeService.getMessage("favorites.refresh", "Refresh"));
         closeButton.setText(localeService.getMessage("favorites.close", "Close"));
     }
 
+    /**
+     * 
+     */
     private void setupObservableLists() {
         favoriteListings = favoritesService.getFavoriteListingViewModels();
         userFavorites = favoritesService.getUserFavoritesList();
@@ -89,6 +152,9 @@ public class UserFavoritesController {
         });
     }
 
+    /**
+     * 
+     */
     private void setupTable() {
         listingTitleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
 
@@ -116,6 +182,9 @@ public class UserFavoritesController {
         favoritesTable.setItems(favoriteListings);
     }
 
+    /**
+     * 
+     */
     private void setupActionsColumn() {
         listingActionsColumn.setCellFactory(_ -> new TableCell<>() {
             private final Button viewButton = new Button("View");
@@ -145,6 +214,9 @@ public class UserFavoritesController {
         });
     }
 
+    /**
+     * @param user
+     */
     public void setUser(UserViewModel user) {
         this.currentUser = user;
 
@@ -158,6 +230,9 @@ public class UserFavoritesController {
         }
     }
 
+    /**
+     * 
+     */
     private void updateUserInfo() {
         if (currentUser != null) {
             userNameLabel.setText(currentUser.getDisplayName());
@@ -165,12 +240,18 @@ public class UserFavoritesController {
         }
     }
 
+    /**
+     * 
+     */
     private void updateCounts() {
         totalFavoritesLabel.setText(String.format(
-                localeService.getMessage("favorites.total.count", "%d favorites"),
+                localeService.getMessage("favorites.total.count"),
                 favoriteListings.size()));
     }
 
+    /**
+     * @param listing
+     */
     private void handleViewListing(ListingViewModel listing) {
         try {
             navigationService.navigateToListingDetails(listing);
@@ -183,6 +264,9 @@ public class UserFavoritesController {
         }
     }
 
+    /**
+     * @param listing
+     */
     private void handleRemoveFavorite(ListingViewModel listing) {
         Alert confirmation = AlertHelper.createConfirmationDialog(
                 localeService.getMessage("favorites.remove.title", "Remove Favorite"),
@@ -211,26 +295,44 @@ public class UserFavoritesController {
         });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleRefresh() {
         favoritesService.refreshUserFavorites();
         updateCounts();
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleClose() {
-        Stage stage = (Stage) closeButton.getScene().getWindow();
-        stage.close();
+        try {
+            navigationService.navigateToHomeView();
+        } catch (Exception e) {
+            System.err.println("Failed to navigate to home view: " + e.getMessage());
+        }
     }
 
+    /**
+     * @return
+     */
     public boolean hasFavorites() {
         return !favoriteListings.isEmpty();
     }
     
+    /**
+     * @return
+     */
     public int getFavoritesCount() {
         return favoriteListings.size();
     }
 
+    /**
+     * 
+     */
     public void refreshData() {
         favoritesService.refreshUserFavorites();
     }

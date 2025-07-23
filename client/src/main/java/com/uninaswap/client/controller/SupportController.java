@@ -8,16 +8,34 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
+/**
+ * 
+ */
 public class SupportController {
     
+    /**
+     * 
+     */
     @FXML private TextField subjectField;
+    /**
+     * 
+     */
     @FXML private TextArea messageField;
+    /**
+     * 
+     */
     @FXML private Button sendButton;
    
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
     }
     
+    /**
+     * @param event
+     */
     @FXML
     public void handleSendMessage(ActionEvent event) {
         if (validateForm()) {
@@ -31,6 +49,9 @@ public class SupportController {
         }
     }
     
+    /**
+     * @return
+     */
     private boolean validateForm() {
         String subject = subjectField.getText().trim();
         String message = messageField.getText().trim();
@@ -53,6 +74,10 @@ public class SupportController {
         return true;
     }
     
+    /**
+     * @param title
+     * @param message
+     */
     private void showError(String title, String message) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(title);

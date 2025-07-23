@@ -21,62 +21,131 @@ import javafx.scene.layout.HBox;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * 
+ */
 public class ListingsController implements Refreshable {
 
+    /**
+     * 
+     */
     @FXML
     private Label titleLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label userListingsActiveCountLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label userListingsCompletedCountLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label userListingsTotalCountLabel;
 
+    /**
+     * 
+     */
     @FXML
     private ComboBox<String> statusFilterComboBox;
 
+    /**
+     * 
+     */
     @FXML
     private ComboBox<String> typeFilterComboBox;
 
+    /**
+     * 
+     */
     @FXML
     private TextField searchField;
 
+    /**
+     * 
+     */
     @FXML
     private Button refreshButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button createNewButton;
 
+    /**
+     * 
+     */
     @FXML
     private TableView<ListingViewModel> listingsTable;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingViewModel, String> titleColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingViewModel, String> typeColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingViewModel, String> statusColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingViewModel, String> priceColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingViewModel, String> dateColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingViewModel, Void> actionsColumn;
 
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final ListingService listingService = ListingService.getInstance();
+    /**
+     * 
+     */
     private final NavigationService navigationService = NavigationService.getInstance();
+    /**
+     * 
+     */
     private ObservableList<ListingViewModel> userListings;
+    /**
+     * 
+     */
     private FilteredList<ListingViewModel> filteredListings;
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupLabels();
@@ -87,6 +156,9 @@ public class ListingsController implements Refreshable {
         loadUserListings();
     }
 
+    /**
+     * 
+     */
     private void setupLabels() {
         titleLabel.setText(localeService.getMessage("listings.title", "My Listings"));
         refreshButton.setText(localeService.getMessage("listings.refresh", "Refresh"));
@@ -94,6 +166,9 @@ public class ListingsController implements Refreshable {
         searchField.setPromptText(localeService.getMessage("listings.search.placeholder", "Search listings..."));
     }
 
+    /**
+     * 
+     */
     private void setupFilters() {
         statusFilterComboBox.setItems(FXCollections.observableArrayList(
                 "All Statuses",
@@ -115,6 +190,9 @@ public class ListingsController implements Refreshable {
         typeFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
     }
 
+    /**
+     * 
+     */
     private void setupObservableList() {
         userListings = listingService.getUserListingsObservable();
         filteredListings = new FilteredList<>(userListings);
@@ -125,6 +203,9 @@ public class ListingsController implements Refreshable {
         });
     }
 
+    /**
+     * 
+     */
     private void setupTable() {
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
         typeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getListingTypeValue()));
@@ -183,6 +264,9 @@ public class ListingsController implements Refreshable {
         });
     }
 
+    /**
+     * 
+     */
     private void setupActionsColumn() {
             actionsColumn.setCellFactory(_ -> new TableCell<>() {
             private final Button viewButton = new Button("View");
@@ -232,10 +316,16 @@ public class ListingsController implements Refreshable {
         });
     }
 
+    /**
+     * 
+     */
     private void setupSearchFilter() {
         searchField.textProperty().addListener((_, _, _) -> updateFilters());
     }
 
+    /**
+     * 
+     */
     private void updateFilters() {
         filteredListings.setPredicate(listing -> {
             String searchText = searchField.getText().toLowerCase().trim();
@@ -261,6 +351,9 @@ public class ListingsController implements Refreshable {
         });
     }
 
+    /**
+     * 
+     */
     private void loadUserListings() {
         if (userListings.isEmpty()) {
             listingService.refreshUserListings();
@@ -268,6 +361,9 @@ public class ListingsController implements Refreshable {
         updateListingsCount();
     }
 
+    /**
+     * 
+     */
     private void updateListingsCount() {
         long total = userListings.size();
         long active = userListings.stream().filter(l -> l.getStatus() == ListingStatus.ACTIVE).count();
@@ -277,6 +373,9 @@ public class ListingsController implements Refreshable {
         userListingsTotalCountLabel.setText(String.valueOf(total));
     }
 
+    /**
+     * @param listing
+     */
     private void handleViewListing(ListingViewModel listing) {
         try {
             navigationService.navigateToListingDetails(listing);
@@ -289,6 +388,9 @@ public class ListingsController implements Refreshable {
         }
     }
 
+    /**
+     * @param listing
+     */
     private void handleEditListing(ListingViewModel listing) {
         if (listing.getStatus() != ListingStatus.ACTIVE) {
             AlertHelper.showWarningAlert(
@@ -314,6 +416,9 @@ public class ListingsController implements Refreshable {
         }
     }
 
+    /**
+     * @param listing
+     */
     private void handleDeleteListing(ListingViewModel listing) {
         if (listing.getStatus() == ListingStatus.COMPLETED) {
             AlertHelper.showWarningAlert(
@@ -353,12 +458,18 @@ public class ListingsController implements Refreshable {
         });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleRefresh() {
         listingService.refreshUserListings();
         updateListingsCount();
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCreateNew() {
         try {
@@ -372,6 +483,9 @@ public class ListingsController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleClearFilters() {
         statusFilterComboBox.setValue("All Statuses");
@@ -379,22 +493,37 @@ public class ListingsController implements Refreshable {
         searchField.clear();
     }
 
+    /**
+     * @return
+     */
     public boolean hasListings() {
         return !userListings.isEmpty();
     }
 
+    /**
+     * @return
+     */
     public int getListingsCount() {
         return userListings.size();
     }
 
+    /**
+     * @return
+     */
     public int getActiveListingsCount() {
         return (int) userListings.stream().filter(l -> l.getStatus() == ListingStatus.ACTIVE).count();
     }
 
+    /**
+     * 
+     */
     public void refreshData() {
         listingService.refreshUserListings();
     }
 
+    /**
+     *
+     */
     @Override
     public void refreshUI() {
         setupLabels();

@@ -131,7 +131,7 @@ public class AuctionListingEntity extends ListingEntity {
     
     @Override
     public String getListingType() {
-        return "Auction";
+        return "AUCTION";
     }
     
     @Override

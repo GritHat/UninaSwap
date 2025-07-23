@@ -16,21 +16,60 @@ import javafx.stage.Stage;
 
 import java.util.function.Consumer;
 
+/**
+ * 
+ */
 public class ImageCropperController {
 
+    /**
+     * 
+     */
     @FXML private ImageView sourceImageView;
+    /**
+     * 
+     */
     @FXML private StackPane cropperContainer;
+    /**
+     * 
+     */
     @FXML private StackPane cropOverlay;
+    /**
+     * 
+     */
     @FXML private Region cropCircle;
+    /**
+     * 
+     */
     @FXML private Slider zoomSlider;
     
+    /**
+     * 
+     */
     private double dragStartX;
+    /**
+     * 
+     */
     private double dragStartY;
+    /**
+     * 
+     */
     private double imageStartX;
+    /**
+     * 
+     */
     private double imageStartY;
+    /**
+     * 
+     */
     private Consumer<Image> cropCallback;
+    /**
+     * 
+     */
     private double circleDiameter;
     
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         cropperContainer.setOnMousePressed(this::handleMousePressed);
@@ -66,6 +105,9 @@ public class ImageCropperController {
         });
     }
     
+    /**
+     * 
+     */
     private void updateCropCircleSize() {
         double size = 200.0;
         cropCircle.setPrefSize(size, size);
@@ -80,12 +122,18 @@ public class ImageCropperController {
      * Ensures the crop overlay remains centered in the viewport
      * regardless of image size
      */
+    /**
+     * 
+     */
     private void centerCropOverlay() {
         cropOverlay.setTranslateX(0);
         cropOverlay.setTranslateY(0);
         StackPane.setAlignment(cropOverlay, javafx.geometry.Pos.CENTER);
     }
     
+    /**
+     * @param image
+     */
     public void setImage(Image image) {
         sourceImageView.setImage(image);
         double maxInitialDimension = 800;
@@ -129,6 +177,9 @@ public class ImageCropperController {
     /**
      * Centers the image in the viewport when it's too large
      */
+    /**
+     * 
+     */
     private void centerImageInViewport() {
         StackPane.setAlignment(sourceImageView, javafx.geometry.Pos.CENTER);
         double offsetX = (cropperContainer.getWidth() - sourceImageView.getBoundsInLocal().getWidth()) / 2;
@@ -139,6 +190,9 @@ public class ImageCropperController {
         }
     }
     
+    /**
+     * @param event
+     */
     private void handleMousePressed(MouseEvent event) {
         dragStartX = event.getSceneX();
         dragStartY = event.getSceneY();
@@ -146,6 +200,9 @@ public class ImageCropperController {
         imageStartY = sourceImageView.getTranslateY();
     }
     
+    /**
+     * @param event
+     */
     private void handleMouseDragged(MouseEvent event) {
         double offsetX = event.getSceneX() - dragStartX;
         double offsetY = event.getSceneY() - dragStartY;
@@ -154,12 +211,18 @@ public class ImageCropperController {
         event.consume();
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleCancel() {
         Stage stage = (Stage) sourceImageView.getScene().getWindow();
         stage.close();
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleApply() {
         if (cropCallback != null) {
@@ -170,6 +233,9 @@ public class ImageCropperController {
         stage.close();
     }
     
+    /**
+     * @return
+     */
     private Image createCroppedImage() {
         Image sourceImage = sourceImageView.getImage();
         double displayedImageWidth = sourceImageView.getBoundsInLocal().getWidth();
@@ -230,6 +296,9 @@ public class ImageCropperController {
         return result;
     }
     
+    /**
+     * @param callback
+     */
     public void setCropCallback(Consumer<Image> callback) {
         this.cropCallback = callback;
     }

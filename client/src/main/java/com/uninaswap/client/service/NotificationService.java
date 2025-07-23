@@ -15,21 +15,54 @@ import java.util.function.Consumer;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ */
 public class NotificationService {
+    /**
+     * 
+     */
     private static NotificationService instance;
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient;
+    /**
+     * 
+     */
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
+    /**
+     * 
+     */
     private final ObservableList<NotificationViewModel> allNotifications = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<NotificationViewModel> recentNotifications = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private int unreadCount = 0;
+    /**
+     * 
+     */
     private Consumer<Integer> unreadCountCallback;
+    /**
+     * 
+     */
     private Consumer<NotificationViewModel> newNotificationCallback;
     
+    /**
+     * 
+     */
     private NotificationService() {
         webSocketClient = WebSocketClient.getInstance();
         webSocketClient.registerMessageHandler(NotificationMessage.class, this::handleNotificationMessage);
     }
     
+    /**
+     * @return
+     */
     public static synchronized NotificationService getInstance() {
         if (instance == null) {
             instance = new NotificationService();
@@ -45,6 +78,11 @@ public class NotificationService {
      * @return A CompletableFuture that will complete with the list of notifications
      *         or an empty list if no notifications are available.
      *         The future will complete exceptionally if an error occurs.
+     */
+    /**
+     * @param page
+     * @param size
+     * @return
      */
     public CompletableFuture<List<NotificationDTO>> getNotifications(int page, int size) {
         CompletableFuture<List<NotificationDTO>> future = new CompletableFuture<>();
@@ -69,6 +107,12 @@ public class NotificationService {
      *         or an empty list if no notifications are available.
      *         The future will complete exceptionally if an error occurs.
      */
+    /**
+     * @param type
+     * @param page
+     * @param size
+     * @return
+     */
     public CompletableFuture<List<NotificationDTO>> getNotificationsByType(String type, int page, int size) {
         CompletableFuture<List<NotificationDTO>> future = new CompletableFuture<>();
         
@@ -92,6 +136,10 @@ public class NotificationService {
      *         or false if the notification was not found or could not be marked as read.
      *         The future will complete exceptionally if an error occurs.
      */
+    /**
+     * @param notificationId
+     * @return
+     */
     public CompletableFuture<Boolean> markAsRead(String notificationId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         
@@ -112,6 +160,9 @@ public class NotificationService {
      *         or false if there were no notifications to mark as read.
      *         The future will complete exceptionally if an error occurs.
      */
+    /**
+     * @return
+     */
     public CompletableFuture<Boolean> markAllAsRead() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         
@@ -130,6 +181,9 @@ public class NotificationService {
      * @return A CompletableFuture that will complete with the count of unread notifications.
      *         The future will complete exceptionally if an error occurs.
      */
+    /**
+     * @return
+     */
     public CompletableFuture<Integer> getUnreadCountFromServer() {
         CompletableFuture<Integer> future = new CompletableFuture<>();
         
@@ -145,6 +199,9 @@ public class NotificationService {
     /**
      * Refresh recent notifications for dropdown
      */
+    /**
+     * 
+     */
     public void refreshRecentNotifications() {
         getNotifications(0, 10).thenAccept(notifications -> {
             Platform.runLater(() -> {
@@ -158,6 +215,9 @@ public class NotificationService {
     
     /**
      * Initialize notifications when user logs in
+     */
+    /**
+     * 
      */
     public void initializeNotifications() {
         System.out.println("Initializing notifications for logged-in user...");
@@ -184,6 +244,9 @@ public class NotificationService {
     /**
      * Clear notifications when user logs out
      */
+    /**
+     * 
+     */
     public void clearNotifications() {
         Platform.runLater(() -> {
             allNotifications.clear();
@@ -193,8 +256,14 @@ public class NotificationService {
         });
     }
     
+    /**
+     * 
+     */
     private final java.util.Map<String, CompletableFuture<?>> pendingFutures = new java.util.concurrent.ConcurrentHashMap<>();
     
+    /**
+     * @param message
+     */
     @SuppressWarnings("unchecked")
     private void handleNotificationMessage(NotificationMessage message) {
         switch (message.getType()) {
@@ -288,6 +357,10 @@ public class NotificationService {
         }
     }
     
+    /**
+     * @param notificationId
+     * @param read
+     */
     private void updateNotificationReadState(String notificationId, boolean read) {
         allNotifications.stream()
             .filter(n -> n.getId().equals(notificationId))
@@ -299,6 +372,9 @@ public class NotificationService {
             .ifPresent(n -> n.setRead(read));
     }
     
+    /**
+     * @param newCount
+     */
     private void updateUnreadCount(int newCount) {
         this.unreadCount = newCount;
         if (unreadCountCallback != null) {
@@ -306,22 +382,37 @@ public class NotificationService {
         }
     }
     
+    /**
+     * @return
+     */
     public ObservableList<NotificationViewModel> getAllNotifications() {
         return allNotifications;
     }
     
+    /**
+     * @return
+     */
     public ObservableList<NotificationViewModel> getRecentNotifications() {
         return recentNotifications;
     }
     
+    /**
+     * @return
+     */
     public int getUnreadCount() {
         return unreadCount;
     }
     
+    /**
+     * @param callback
+     */
     public void setUnreadCountCallback(Consumer<Integer> callback) {
         this.unreadCountCallback = callback;
     }
     
+    /**
+     * @param callback
+     */
     public void setNewNotificationCallback(Consumer<NotificationViewModel> callback) {
         this.newNotificationCallback = callback;
     }

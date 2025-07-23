@@ -16,43 +16,94 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+/**
+ * 
+ */
 public class ReportDialogController {
 
+    /**
+     * 
+     */
     @FXML
     private Label titleLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label instructionsLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label targetLabel;
 
+    /**
+     * 
+     */
     @FXML
     private ComboBox<UserReportReason> userReasonComboBox;
 
+    /**
+     * 
+     */
     @FXML
     private ComboBox<ListingReportReason> listingReasonComboBox;
 
+    /**
+     * 
+     */
     @FXML
     private TextArea descriptionTextArea;
 
+    /**
+     * 
+     */
     @FXML
     private Label characterCountLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Button submitButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button cancelButton;
 
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final ReportService reportService = ReportService.getInstance();
+    /**
+     * 
+     */
     private final UserSessionService sessionService = UserSessionService.getInstance();
 
+    /**
+     * 
+     */
     private UserViewModel reportedUser;
+    /**
+     * 
+     */
     private ListingViewModel reportedListing;
+    /**
+     * 
+     */
     private boolean isUserReport;
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupLabels();
@@ -61,6 +112,9 @@ public class ReportDialogController {
         updateSubmitButton();
     }
 
+    /**
+     * 
+     */
     private void setupLabels() {
         titleLabel.setText(localeService.getMessage("report.dialog.title", "Report"));
         instructionsLabel.setText(localeService.getMessage("report.dialog.instructions",
@@ -70,6 +124,9 @@ public class ReportDialogController {
         cancelButton.setText(localeService.getMessage("report.dialog.cancel", "Cancel"));
     }
 
+    /**
+     * 
+     */
     private void setupReasonComboBoxes() {
         userReasonComboBox.getItems().addAll(UserReportReason.values());
         userReasonComboBox.setConverter(new javafx.util.StringConverter<UserReportReason>() {
@@ -101,6 +158,9 @@ public class ReportDialogController {
         listingReasonComboBox.valueProperty().addListener((_, _, _) -> updateSubmitButton());
     }
 
+    /**
+     * 
+     */
     private void setupDescriptionArea() {
         descriptionTextArea.setPromptText(localeService.getMessage("report.dialog.description.prompt",
                 "Provide additional details about this report (optional)"));
@@ -114,6 +174,9 @@ public class ReportDialogController {
         updateCharacterCount();
     }
 
+    /**
+     * @param user
+     */
     public void setReportedUser(UserViewModel user) {
         this.reportedUser = user;
         this.isUserReport = true;
@@ -132,6 +195,9 @@ public class ReportDialogController {
         }
     }
 
+    /**
+     * @param listing
+     */
     public void setReportedListing(ListingViewModel listing) {
         this.reportedListing = listing;
         this.isUserReport = false;
@@ -150,6 +216,9 @@ public class ReportDialogController {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleSubmit() {
         if (!validateReport()) {
@@ -165,6 +234,9 @@ public class ReportDialogController {
         }
     }
 
+    /**
+     * 
+     */
     private void submitUserReport() {
         UserViewModel currentUser = ViewModelMapper.getInstance().toViewModel(sessionService.getUser());
         UserReportViewModel report = new UserReportViewModel(
@@ -194,6 +266,9 @@ public class ReportDialogController {
                 });
     }
 
+    /**
+     * 
+     */
     private void submitListingReport() {
         UserViewModel currentUser = ViewModelMapper.getInstance().toViewModel(sessionService.getUser());
         ListingReportViewModel report = new ListingReportViewModel(
@@ -223,11 +298,17 @@ public class ReportDialogController {
                 });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCancel() {
         closeWindow();
     }
 
+    /**
+     * @return
+     */
     private boolean validateReport() {
         if (isUserReport && userReasonComboBox.getValue() == null) {
             AlertHelper.showWarningAlert(
@@ -258,6 +339,9 @@ public class ReportDialogController {
         return true;
     }
 
+    /**
+     * 
+     */
     private void updateCharacterCount() {
         int length = descriptionTextArea.getText().length();
         int maxLength = 1000;
@@ -270,6 +354,9 @@ public class ReportDialogController {
         }
     }
 
+    /**
+     * 
+     */
     private void updateSubmitButton() {
         boolean hasValidReason = (isUserReport && userReasonComboBox.getValue() != null) ||
                 (!isUserReport && listingReasonComboBox.getValue() != null);
@@ -278,6 +365,9 @@ public class ReportDialogController {
         submitButton.setDisable(!hasValidReason || !hasValidDescription);
     }
 
+    /**
+     * 
+     */
     private void closeWindow() {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();

@@ -17,23 +17,56 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ */
 public class ReportService {
+    /**
+     * 
+     */
     private static ReportService instance;
 
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+    /**
+     * 
+     */
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
+    /**
+     * 
+     */
     private final UserSessionService sessionService = UserSessionService.getInstance();
 
+    /**
+     * 
+     */
     private CompletableFuture<?> futureToComplete;
+    /**
+     * 
+     */
     private Consumer<ReportMessage> messageCallback;
 
+    /**
+     * 
+     */
     private final ObservableList<UserReportViewModel> userReports = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<ListingReportViewModel> listingReports = FXCollections.observableArrayList();
 
+    /**
+     * 
+     */
     private ReportService() {
         webSocketClient.registerMessageHandler(ReportMessage.class, this::handleReportMessage);
     }
 
+    /**
+     * @return
+     */
     public static synchronized ReportService getInstance() {
         if (instance == null) {
             instance = new ReportService();
@@ -47,6 +80,10 @@ public class ReportService {
      * @param reportViewModel The ViewModel containing report details
      * @return CompletableFuture with the created UserReportViewModel
      *         or an exception if the report creation fails
+     */
+    /**
+     * @param reportViewModel
+     * @return
      */
     public CompletableFuture<UserReportViewModel> createUserReport(UserReportViewModel reportViewModel) {
         CompletableFuture<UserReportViewModel> future = new CompletableFuture<>();
@@ -75,6 +112,10 @@ public class ReportService {
      * @return CompletableFuture with the created ListingReportViewModel
      *         or an exception if the report creation fails
      */
+    /**
+     * @param reportViewModel
+     * @return
+     */
     public CompletableFuture<ListingReportViewModel> createListingReport(ListingReportViewModel reportViewModel) {
         CompletableFuture<ListingReportViewModel> future = new CompletableFuture<>();
         ListingReportDTO reportDTO = viewModelMapper.toDTO(reportViewModel);
@@ -101,6 +142,9 @@ public class ReportService {
      * @return CompletableFuture with a list of UserReportDTOs
      *         or an exception if the request fails
      */
+    /**
+     * @return
+     */
     public CompletableFuture<List<UserReportDTO>> getUserReports() {
         CompletableFuture<List<UserReportDTO>> future = new CompletableFuture<>();
 
@@ -126,6 +170,9 @@ public class ReportService {
      * @return CompletableFuture with a list of ListingReportDTOs
      *         or an exception if the request fails
      */
+    /**
+     * @return
+     */
     public CompletableFuture<List<ListingReportDTO>> getListingReports() {
         CompletableFuture<List<ListingReportDTO>> future = new CompletableFuture<>();
 
@@ -145,6 +192,9 @@ public class ReportService {
         return future;
     }
 
+    /**
+     * @param message
+     */
     @SuppressWarnings("unchecked")
     private void handleReportMessage(ReportMessage message) {
         if (message.getType() == null) {
@@ -253,19 +303,31 @@ public class ReportService {
         }
     }
 
+    /**
+     * @return
+     */
     public ObservableList<UserReportViewModel> getUserReportsList() {
         return userReports;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<ListingReportViewModel> getListingReportsList() {
         return listingReports;
     }
 
+    /**
+     * 
+     */
     public void clearData() {
         userReports.clear();
         listingReports.clear();
     }
 
+    /**
+     * @param callback
+     */
     public void setMessageCallback(Consumer<ReportMessage> callback) {
         this.messageCallback = callback;
     }

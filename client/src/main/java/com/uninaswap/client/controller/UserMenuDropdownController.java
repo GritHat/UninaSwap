@@ -16,34 +16,100 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * 
+ */
 public class UserMenuDropdownController {
     
+    /**
+     * 
+     */
     @FXML private ImageView userAvatar;
+    /**
+     * 
+     */
     @FXML private Text displayNameText;
+    /**
+     * 
+     */
     @FXML private Text usernameText;
+    /**
+     * 
+     */
     @FXML private Button viewProfileBtn;
+    /**
+     * 
+     */
     @FXML private Button inventoryBtn;
+    /**
+     * 
+     */
     @FXML private Button listingsBtn;
+    /**
+     * 
+     */
     @FXML private Button favoritesBtn;
+    /**
+     * 
+     */
     @FXML private Button offersBtn;
+    /**
+     * 
+     */
     @FXML private Button followersBtn;
+    /**
+     * 
+     */
     @FXML private Button settingsBtn;
+    /**
+     * 
+     */
     @FXML private Button supportBtn;
+    /**
+     * 
+     */
     @FXML private ComboBox<String> themeCombo;
+    /**
+     * 
+     */
     @FXML private ComboBox<Locale> languageCombo;
+    /**
+     * 
+     */
     @FXML private Button logoutBtn;
     
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final NavigationService navigationService = NavigationService.getInstance();
+    /**
+     * 
+     */
     private final UserSessionService userSessionService = UserSessionService.getInstance();
+    /**
+     * 
+     */
     private final ImageService imageService = ImageService.getInstance();
     
+    /**
+     * 
+     */
     private Consumer<Void> onCloseCallback;
+    /**
+     * 
+     */
     private static final Map<String, Locale> SUPPORTED_LANGUAGES = Map.of(
         "English", Locale.ENGLISH,
         "Italiano", Locale.ITALIAN
     );
     
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupUserInfo();
@@ -51,10 +117,16 @@ public class UserMenuDropdownController {
         setupLanguageComboBox();
     }
     
+    /**
+     * @param callback
+     */
     public void setOnCloseCallback(Consumer<Void> callback) {
         this.onCloseCallback = callback;
     }
     
+    /**
+     * 
+     */
     private void setupUserInfo() {
         if (userSessionService.isLoggedIn()) {
             displayNameText.setText(userSessionService.getUser().getUsername());
@@ -75,6 +147,9 @@ public class UserMenuDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     private void setupThemeComboBox() {
         themeCombo.setItems(FXCollections.observableArrayList(
             localeService.getMessage("theme.light", "Light"),
@@ -89,6 +164,9 @@ public class UserMenuDropdownController {
         });
     }
     
+    /**
+     * 
+     */
     private void setupLanguageComboBox() {
         languageCombo.setItems(FXCollections.observableArrayList(SUPPORTED_LANGUAGES.values()));        languageCombo.setConverter(new StringConverter<Locale>() {
             @Override
@@ -113,6 +191,9 @@ public class UserMenuDropdownController {
         });
     }
     
+    /**
+     * 
+     */
     private void refreshLocalizedLabels() {
         String currentTheme = themeCombo.getValue();
         themeCombo.setItems(FXCollections.observableArrayList(
@@ -131,6 +212,9 @@ public class UserMenuDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleViewProfile() {
         closeDropdown();
@@ -141,6 +225,9 @@ public class UserMenuDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleInventory() {
         closeDropdown();
@@ -151,6 +238,9 @@ public class UserMenuDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleMyListings() {
         closeDropdown();
@@ -161,6 +251,9 @@ public class UserMenuDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleFavorites() {
         closeDropdown();
@@ -171,6 +264,9 @@ public class UserMenuDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleOffers() {
         closeDropdown();
@@ -181,6 +277,9 @@ public class UserMenuDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleFollowers() {
         closeDropdown();
@@ -191,6 +290,9 @@ public class UserMenuDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleSettings() {
         closeDropdown();
@@ -201,6 +303,9 @@ public class UserMenuDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleSupport() {
         closeDropdown();
@@ -211,6 +316,9 @@ public class UserMenuDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleLogout() {
         closeDropdown();
@@ -230,6 +338,9 @@ public class UserMenuDropdownController {
         });
     }
     
+    /**
+     * @param theme
+     */
     private void applyTheme(String theme) {
         try {
             System.out.println("Applying theme: " + theme);
@@ -238,6 +349,9 @@ public class UserMenuDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     private void closeDropdown() {
         if (onCloseCallback != null) {
             onCloseCallback.accept(null);

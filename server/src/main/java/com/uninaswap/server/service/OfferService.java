@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,15 +133,94 @@ public class OfferService {
             // Reserve the items
             itemService.reserveItems(itemIds, quantities);
         }
-        notificationService.createNotification(
-                listing.getCreator().getId(),
-                NotificationType.OFFER_RECEIVED,
-                "New Offer Received",
-                "You have received a new offer on your listing: " + listing.getTitle(),
-                savedOffer.getId()
-        );
-        logger.info("Successfully created offer with ID: {}", savedOffer.getId());
+
+        // Check if this is a "Buy Now" full-price offer that should be auto-accepted
+        boolean shouldAutoAccept = shouldAutoAcceptOffer(savedOffer, listing);
+        if (shouldAutoAccept) {
+            logger.info("Auto-accepting full-price offer {} for sell listing", savedOffer.getId());
+            
+            // Determine next status based on delivery type (same logic as acceptOffer)
+            OfferStatus nextStatus;
+            if (savedOffer.getDeliveryType() == DeliveryType.PICKUP) {
+                // For pickup delivery, go to ACCEPTED (waiting for pickup scheduling)
+                nextStatus = OfferStatus.ACCEPTED;
+            } else {
+                // For shipping delivery, go directly to CONFIRMED
+                nextStatus = OfferStatus.CONFIRMED;
+            }
+
+            // Update the offer status
+            OfferStatus oldStatus = savedOffer.getStatus();
+            savedOffer.setStatus(nextStatus);
+            savedOffer.setUpdatedAt(LocalDateTime.now());
+            listing.setStatus(ListingStatus.PENDING);
+            
+            // Handle item reservations for the status change
+            handleItemReservationsOnStatusChange(savedOffer, oldStatus, nextStatus);
+            
+            savedOffer = offerRepository.save(savedOffer);
+        } else {
+            // Send notification for regular offers that need manual review
+            notificationService.createNotification(
+                    listing.getCreator().getId(),
+                    NotificationType.OFFER_RECEIVED,
+                    "New Offer Received",
+                    "You have received a new offer on your listing: " + listing.getTitle(),
+                    savedOffer.getId()
+            );
+        }
+
+        logger.info("Successfully created offer with ID: {} (auto-accepted: {})", savedOffer.getId(), shouldAutoAccept);
         return offerMapper.toDto(savedOffer);
+    }
+
+    /**
+     * Determine if an offer should be automatically accepted
+     * This applies to "Buy Now" scenarios where the offer matches the full asking price
+     * and Gift requests
+     */
+    private boolean shouldAutoAcceptOffer(OfferEntity offer, ListingEntity listing) {
+        // Auto-accept gift requests
+        if (listing.getListingType().equals("GIFT")) {
+            logger.info("Auto-accepting gift request for gift listing {}", listing.getId());
+            return true;
+        }
+        
+        // Auto-accept full-price sell offers
+        if (!listing.getListingType().equals("SELL")) {
+            return false;
+        }
+        
+        logger.info("Checking if offer {} should be auto-accepted for listing {}", offer.getId(), listing.getId());
+        
+        // Must have a monetary offer
+        if (offer.getAmount() == null || offer.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            return false;
+        }
+
+        logger.info("Offer amount: {}", offer.getAmount());
+        
+        // Must not have any item offers (pure money offer)
+        if (offer.getOfferItems() != null && !offer.getOfferItems().isEmpty()) {
+            return false;
+        }
+
+        logger.info("Offer has no item offers, checking listing price...");
+        logger.info("Listing price: {}", ((SellListingEntity)listing).getPrice());
+        logger.info("Offer amount: {}", offer.getAmount());
+        logger.info("compareTo result: {}", ((SellListingEntity)listing).getPrice().compareTo(offer.getAmount()));
+        
+        // Check if this is a SellListing and compare prices
+        try {
+            BigDecimal listingPrice = ((SellListingEntity)listing).getPrice();
+            if (listingPrice.compareTo(offer.getAmount()) == 0) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            logger.warn("Error checking if offer should be auto-accepted: {}", e.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -321,6 +401,7 @@ public class OfferService {
             ListingEntity listing = offer.getListing();
             listing.setStatus(ListingStatus.COMPLETED);
             listing.setUpdatedAt(LocalDateTime.now());
+            cancelAllOtherOffers(listing.getId(), savedOffer.getId());
             listingRepository.save(listing);
             
             logger.info("Transaction completed - offer {} and listing {} marked as completed", offerId, listing.getId());
@@ -328,6 +409,18 @@ public class OfferService {
 
         logger.info("Successfully confirmed transaction for offer {} - status updated to {}", offerId, newStatus);
         return offerMapper.toDto(savedOffer);
+    }
+
+    @Transactional
+    public void cancelAllOtherOffers(String listingId, String excludeOfferId) {
+        logger.info("Cancelling all other offers for listing {} except offer {}", listingId, excludeOfferId);
+
+        List<OfferEntity> offersToCancel = offerRepository.findByListingIdAndIdNot(listingId, excludeOfferId);
+        for (OfferEntity offer : offersToCancel) {
+            offer.setStatus(OfferStatus.CANCELLED);
+            offer.setUpdatedAt(LocalDateTime.now());
+        }
+        offerRepository.saveAll(offersToCancel);
     }
 
     /**
@@ -366,7 +459,7 @@ public class OfferService {
         offer.setUpdatedAt(LocalDateTime.now());
         OfferEntity savedOffer = offerRepository.save(offer);
 
-        offer.getListing().setStatus(ListingStatus.PENDING);
+        offer.getListing().setStatus(ListingStatus.ACTIVE);
 
         // If there's an associated pickup, cancel it too
         Optional<PickupEntity> pickup = pickupRepository.findByOfferId(offerId);
@@ -395,7 +488,8 @@ public class OfferService {
                            newStatus == OfferStatus.CONFIRMED; // Direct to CONFIRMED for non-pickup
                 } else {
                     // Offer creator can only withdraw
-                    return newStatus == OfferStatus.WITHDRAWN;
+                    return newStatus == OfferStatus.WITHDRAWN ||
+                           newStatus == OfferStatus.ACCEPTED;
                 }
                 
             case ACCEPTED:

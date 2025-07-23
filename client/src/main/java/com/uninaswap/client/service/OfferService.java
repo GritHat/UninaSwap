@@ -16,21 +16,51 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ */
 public class OfferService {
+    /**
+     * 
+     */
     private static OfferService instance;
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+    /**
+     * 
+     */
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
 
+    /**
+     * 
+     */
     private CompletableFuture<?> futureToComplete;
+    /**
+     * 
+     */
     private Consumer<OfferMessage> messageCallback;
 
+    /**
+     * 
+     */
     private final ObservableList<OfferViewModel> userOffers = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<OfferViewModel> receivedOffers = FXCollections.observableArrayList();
 
+    /**
+     * 
+     */
     private OfferService() {
         this.webSocketClient.registerMessageHandler(OfferMessage.class, this::handleOfferMessage);
     }
 
+    /**
+     * @return
+     */
     public static synchronized OfferService getInstance() {
         if (instance == null) {
             instance = new OfferService();
@@ -43,6 +73,10 @@ public class OfferService {
      * 
      * @param offerViewModel The offer to create
      * @return CompletableFuture with the created OfferViewModel
+     */
+    /**
+     * @param offerViewModel
+     * @return
      */
     public CompletableFuture<OfferViewModel> createOffer(OfferViewModel offerViewModel) {
         CompletableFuture<OfferViewModel> future = new CompletableFuture<>();
@@ -71,6 +105,10 @@ public class OfferService {
      * @param listingId The ID of the listing to get offers for
      * @return CompletableFuture with a list of OfferViewModels
      */
+    /**
+     * @param listingId
+     * @return
+     */
     public CompletableFuture<List<OfferViewModel>> getListingOffers(String listingId) {
         CompletableFuture<List<OfferViewModel>> future = new CompletableFuture<>();
 
@@ -96,6 +134,11 @@ public class OfferService {
      * @param offerId The ID of the offer to update
      * @param status The new status for the offer
      * @return CompletableFuture with the updated OfferViewModel
+     */
+    /**
+     * @param offerId
+     * @param status
+     * @return
      */
     public CompletableFuture<OfferViewModel> updateOfferStatus(String offerId, OfferStatus status) {
         CompletableFuture<OfferViewModel> future = new CompletableFuture<>();
@@ -125,6 +168,9 @@ public class OfferService {
      * 
      * @return CompletableFuture with a list of OfferDTOs
      */
+    /**
+     * @return
+     */
     public CompletableFuture<List<OfferDTO>> getReceivedOffers() {
         CompletableFuture<List<OfferDTO>> future = new CompletableFuture<>();
 
@@ -148,6 +194,9 @@ public class OfferService {
      * 
      * @return CompletableFuture with a list of OfferDTOs
      */
+    /**
+     * @return
+     */
     public CompletableFuture<List<OfferDTO>> getSentOffers() {
         CompletableFuture<List<OfferDTO>> future = new CompletableFuture<>();
 
@@ -170,6 +219,9 @@ public class OfferService {
      * Get offer history for the current user
      * 
      * @return CompletableFuture with a list of OfferDTOs
+     */
+    /**
+     * @return
      */
     public CompletableFuture<List<OfferDTO>> getOfferHistory() {
         CompletableFuture<List<OfferDTO>> future = new CompletableFuture<>();
@@ -220,6 +272,10 @@ public class OfferService {
      * @param offerId The ID of the offer to reject
      * @return CompletableFuture with true if successful
      */
+    /**
+     * @param offerId
+     * @return
+     */
     public CompletableFuture<Boolean> rejectOffer(String offerId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -244,6 +300,10 @@ public class OfferService {
      * 
      * @param offerId The ID of the offer to withdraw
      * @return CompletableFuture with true if successful
+     */
+    /**
+     * @param offerId
+     * @return
      */
     public CompletableFuture<Boolean> withdrawOffer(String offerId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -295,6 +355,10 @@ public class OfferService {
      * @param offerId The ID of the offer to cancel
      * @return CompletableFuture with true if successful
      */
+    /**
+     * @param offerId
+     * @return
+     */
     public CompletableFuture<Boolean> cancelTransaction(String offerId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -314,6 +378,9 @@ public class OfferService {
         return future;
     }
 
+    /**
+     * @param message
+     */
     @SuppressWarnings("unchecked")
     private void handleOfferMessage(OfferMessage message) {
         if (message.getType() == null) {
@@ -500,6 +567,10 @@ public class OfferService {
         }
     }
 
+    /**
+     * @param list
+     * @param updatedOffer
+     */
     private void updateOfferInList(ObservableList<OfferViewModel> list, OfferViewModel updatedOffer) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId().equals(updatedOffer.getId())) {
@@ -509,14 +580,23 @@ public class OfferService {
         }
     }
 
+    /**
+     * @return
+     */
     public ObservableList<OfferViewModel> getUserOffersList() {
         return userOffers;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<OfferViewModel> getReceivedOffersList() {
         return receivedOffers;
     }
     
+    /**
+     * @param callback
+     */
     public void setMessageCallback(Consumer<OfferMessage> callback) {
         this.messageCallback = callback;
     }

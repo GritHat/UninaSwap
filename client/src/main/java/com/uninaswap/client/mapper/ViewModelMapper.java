@@ -6,13 +6,25 @@ import com.uninaswap.common.dto.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ */
 public class ViewModelMapper {
 
+    /**
+     * 
+     */
     private static ViewModelMapper instance;
 
+    /**
+     * 
+     */
     private ViewModelMapper() {
     }
 
+    /**
+     * @return
+     */
     public static synchronized ViewModelMapper getInstance() {
         if (instance == null) {
             instance = new ViewModelMapper();
@@ -20,6 +32,10 @@ public class ViewModelMapper {
         return instance;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public OfferViewModel toViewModel(OfferDTO dto) {
         if (dto == null)
             return null;
@@ -47,6 +63,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public OfferDTO toDTO(OfferViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -74,6 +94,10 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public OfferItemViewModel toViewModel(OfferItemDTO dto) {
         if (dto == null)
             return null;
@@ -87,6 +111,10 @@ public class ViewModelMapper {
                 toViewModel(dto.getItem()));
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public OfferItemDTO toDTO(OfferItemViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -100,6 +128,10 @@ public class ViewModelMapper {
                 toDTO(viewModel.getItem()));
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public UserViewModel toViewModel(UserDTO dto) {
         if (dto == null)
             return null;
@@ -124,6 +156,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public UserDTO toDTO(UserViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -149,6 +185,10 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public ItemViewModel toViewModel(ItemDTO dto) {
         if (dto == null)
             return null;
@@ -174,6 +214,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public ItemDTO toDTO(ItemViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -200,6 +244,10 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public ListingViewModel toViewModel(ListingDTO dto) {
         if (dto == null)
             return null;
@@ -238,6 +286,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public ListingDTO toDTO(ListingViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -271,6 +323,10 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public ListingItemViewModel toViewModel(ListingItemDTO dto) {
         if (dto == null)
             return null;
@@ -286,6 +342,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public ListingItemDTO toDTO(ListingItemViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -300,6 +360,10 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public ReviewViewModel toViewModel(ReviewDTO dto) {
         if (dto == null)
             return null;
@@ -317,6 +381,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public ReviewDTO toDTO(ReviewViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -334,6 +402,10 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public NotificationViewModel toViewModel(NotificationDTO dto) {
         if (dto == null) return null;
         
@@ -351,6 +423,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public NotificationDTO toDTO(NotificationViewModel viewModel) {
         if (viewModel == null) return null;
         
@@ -368,6 +444,10 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public UserReportViewModel toViewModel(UserReportDTO dto) {
         if (dto == null)
             return null;
@@ -386,6 +466,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public UserReportDTO toDTO(UserReportViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -404,6 +488,10 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public ListingReportViewModel toViewModel(ListingReportDTO dto) {
         if (dto == null)
             return null;
@@ -422,6 +510,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public ListingReportDTO toDTO(ListingReportViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -440,6 +532,10 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public FavoriteViewModel toViewModel(FavoriteDTO dto) {
         if (dto == null)
             return null;
@@ -455,6 +551,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public FavoriteDTO toDTO(FavoriteViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -470,6 +570,10 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public FollowerViewModel toViewModel(FollowerDTO dto) {
         if (dto == null)
             return null;
@@ -485,6 +589,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public FollowerDTO toDTO(FollowerViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -500,6 +608,10 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dto
+     * @return
+     */
     public PickupViewModel toViewModel(PickupDTO dto) {
         if (dto == null)
             return null;
@@ -520,6 +632,10 @@ public class ViewModelMapper {
         return viewModel;
     }
 
+    /**
+     * @param viewModel
+     * @return
+     */
     public PickupDTO toDTO(PickupViewModel viewModel) {
         if (viewModel == null)
             return null;
@@ -540,96 +656,160 @@ public class ViewModelMapper {
         return dto;
     }
 
+    /**
+     * @param dtos
+     * @return
+     */
     public List<UserViewModel> toUserViewModels(List<UserDTO> dtos) {
         if (dtos == null)
             return null;
         return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
     }
 
+    /**
+     * @param dtos
+     * @return
+     */
     public List<ItemViewModel> toItemViewModels(List<ItemDTO> dtos) {
         if (dtos == null)
             return null;
         return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
     }
 
+    /**
+     * @param dtos
+     * @return
+     */
     public List<OfferViewModel> toOfferViewModels(List<OfferDTO> dtos) {
         if (dtos == null)
             return null;
         return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
     }
 
+    /**
+     * @param dtos
+     * @return
+     */
     public List<ReviewViewModel> toReviewViewModels(List<ReviewDTO> dtos) {
         if (dtos == null)
             return null;
         return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
     }
 
+    /**
+     * @param viewModels
+     * @return
+     */
     public List<UserDTO> toUserDTOs(List<UserViewModel> viewModels) {
         if (viewModels == null)
             return null;
         return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * @param viewModels
+     * @return
+     */
     public List<ItemDTO> toItemDTOs(List<ItemViewModel> viewModels) {
         if (viewModels == null)
             return null;
         return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * @param viewModels
+     * @return
+     */
     public List<OfferDTO> toOfferDTOs(List<OfferViewModel> viewModels) {
         if (viewModels == null)
             return null;
         return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * @param viewModels
+     * @return
+     */
     public List<ReviewDTO> toReviewDTOs(List<ReviewViewModel> viewModels) {
         if (viewModels == null)
             return null;
         return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * @param dtos
+     * @return
+     */
     public List<UserReportViewModel> toUserReportViewModels(List<UserReportDTO> dtos) {
         if (dtos == null)
             return null;
         return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
     }
 
+    /**
+     * @param viewModels
+     * @return
+     */
     public List<UserReportDTO> toUserReportDTOs(List<UserReportViewModel> viewModels) {
         if (viewModels == null)
             return null;
         return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * @param dtos
+     * @return
+     */
     public List<ListingReportViewModel> toListingReportViewModels(List<ListingReportDTO> dtos) {
         if (dtos == null)
             return null;
         return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
     }
 
+    /**
+     * @param viewModels
+     * @return
+     */
     public List<ListingReportDTO> toListingReportDTOs(List<ListingReportViewModel> viewModels) {
         if (viewModels == null)
             return null;
         return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * @param dtos
+     * @return
+     */
     public List<FavoriteViewModel> toFavoriteViewModels(List<FavoriteDTO> dtos) {
         if (dtos == null)
             return null;
         return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
     }
 
+    /**
+     * @param viewModels
+     * @return
+     */
     public List<FavoriteDTO> toFavoriteDTOs(List<FavoriteViewModel> viewModels) {
         if (viewModels == null)
             return null;
         return viewModels.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    /**
+     * @param dtos
+     * @return
+     */
     public List<FollowerViewModel> toFollowerViewModels(List<FollowerDTO> dtos) {
         if (dtos == null)
             return null;
         return dtos.stream().map(this::toViewModel).collect(Collectors.toList());
     }
 
+    /**
+     * @param viewModels
+     * @return
+     */
     public List<FollowerDTO> toFollowerDTOs(List<FollowerViewModel> viewModels) {
         if (viewModels == null)
             return null;

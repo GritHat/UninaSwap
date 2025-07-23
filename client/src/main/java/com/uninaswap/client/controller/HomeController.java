@@ -28,35 +28,97 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ */
 public class HomeController {
+    /**
+     * 
+     */
     @FXML
     private FlowPane allListingsContainer;
+    /**
+     * 
+     */
     @FXML
     private HBox favoriteListingsContainer;
+    /**
+     * 
+     */
     @FXML
     private HBox UserCardBox;
+    /**
+     * 
+     */
     @FXML
     private HBox astePreferiteBox;
+    /**
+     * 
+     */
     @FXML
     private VBox auctionSection;
+    /**
+     * 
+     */
     @FXML
     private VBox allListingsSection;
+    /**
+     * 
+     */
     @FXML
     private ScrollPane allListingsContainerWrapper;
     
+    /**
+     * 
+     */
     private static final int LISTINGS_PER_PAGE = 50;
+    /**
+     * 
+     */
     private int currentPage = 0;
+    /**
+     * 
+     */
     private boolean isLoadingMore = false;
+    /**
+     * 
+     */
     private boolean hasMoreListings = true;
 
+    /**
+     * 
+     */
     private final ListingService listingService = ListingService.getInstance();
+    /**
+     * 
+     */
     private final FavoritesService favoritesService = FavoritesService.getInstance();
+    /**
+     * 
+     */
     private boolean listenerRegistered = false;
+    /**
+     * 
+     */
     private Timeline updateTimeline;
+    /**
+     * 
+     */
     private static final Duration DEBOUNCE_DELAY = Duration.millis(100);
+    /**
+     * 
+     */
     private ObservableList<ListingViewModel> favoriteListingViewModels;
+    /**
+     * 
+     */
     private boolean isDisplayingSearchResults = false;
 
+    ObservableList<ListingViewModel> allListings = FXCollections.observableArrayList();
+
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         System.out.println("Home view initialized.");
@@ -70,6 +132,9 @@ public class HomeController {
         });
     }
 
+    /**
+     * 
+     */
     private void setupFavoritesListener() {
         favoriteListingViewModels = favoritesService.getFavoriteListingViewModels();
         favoriteListingViewModels.addListener((ListChangeListener<ListingViewModel>) _ -> {
@@ -77,6 +142,9 @@ public class HomeController {
         });
     }
 
+    /**
+     * 
+     */
     private void setupAllListingsScrollListener() {
         Platform.runLater(() -> {
             allListingsContainerWrapper.vvalueProperty().addListener((_, _, newValue) -> {
@@ -88,8 +156,12 @@ public class HomeController {
         });
     }
 
+    /**
+     * 
+     */
     private void loadHomeData() {
-        ObservableList<ListingViewModel> allListings = listingService.getAllListingsObservable();
+        System.out.println("Loading home data...");
+        allListings = listingService.getAllListingsObservable();
         if (!listenerRegistered) {
             allListings.addListener((ListChangeListener<ListingViewModel>) _ -> {
                 debouncedUpdate(allListings);
@@ -98,13 +170,7 @@ public class HomeController {
         }
         currentPage = 0;
         hasMoreListings = true;
-        if (allListings.isEmpty()) {
-            System.out.println("List is empty, refreshing from server...");
-            listingService.refreshAllListings();
-        } else {
-            System.out.println("List already has " + allListings.size() + " items, updating view...");
-            updateHomeViewWithListings(allListings);
-        }
+        listingService.refreshAllListings();
         if (favoriteListingViewModels.isEmpty()) {
             System.out.println("Favorites list is empty, refreshing from server...");
             favoritesService.refreshUserFavorites();
@@ -112,6 +178,9 @@ public class HomeController {
             updateFavoritesContainer();
         }
     }
+    /**
+     * 
+     */
     private void loadMoreListings() {
         if (isLoadingMore || !hasMoreListings) {
             return;
@@ -152,6 +221,9 @@ public class HomeController {
                 });
     }
 
+    /**
+     * 
+     */
     private void showLoadingIndicator() {
         if (allListingsContainer != null && !isLoadingMore) {
             VBox loadingBox = new VBox();
@@ -166,13 +238,20 @@ public class HomeController {
         }
     }
 
+    /**
+     * 
+     */
     private void hideLoadingIndicator() {
         if (allListingsContainer != null) {
             allListingsContainer.getChildren().removeIf(node -> node.getStyleClass().contains("loading-indicator"));
         }
     }
 
+    /**
+     * @param listings
+     */
     private void debouncedUpdate(ObservableList<ListingViewModel> listings) {
+        System.out.println("Debounced update called with " + listings.size() + " listings");
         if (updateTimeline != null) {
             updateTimeline.stop();
         }
@@ -186,6 +265,11 @@ public class HomeController {
         updateTimeline.play();
     }
 
+    /**
+     * @param listing
+     * @return
+     * @throws IOException
+     */
     private Node createListingCard(ListingViewModel listing) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ListingCardView.fxml"));
         ListingCardController controller = new ListingCardController(listing);
@@ -194,6 +278,9 @@ public class HomeController {
         return loader.load();
     }
 
+    /**
+     * 
+     */
     private void updateFavoritesContainer() {
         if (favoriteListingsContainer != null) {
             favoriteListingsContainer.getChildren().clear();
@@ -217,6 +304,9 @@ public class HomeController {
      * Display search results instead of normal listings
      * 
      * @param searchResults The results to display
+     */
+    /**
+     * @param searchResults
      */
     public void displaySearchResults(ObservableList<ListingViewModel> searchResults) {
         isDisplayingSearchResults = true;
@@ -245,6 +335,9 @@ public class HomeController {
      * 
      * @param searchResults The search results to display
      */
+    /**
+     * @param searchResults
+     */
     private void populateSearchResults(ObservableList<ListingViewModel> searchResults) {
         if (allListingsContainer != null) {
             allListingsContainer.getChildren().clear();
@@ -267,6 +360,9 @@ public class HomeController {
         }
     }
     
+    /**
+     * 
+     */
     private void addNoResultsPlaceholder() {
         VBox noResultsContainer = new VBox(10);
         noResultsContainer.setAlignment(Pos.CENTER);
@@ -289,6 +385,9 @@ public class HomeController {
      * This reuses the existing search results infrastructure
      * 
      * @param userId The ID of the user whose listings to display
+     */
+    /**
+     * @param userId
      */
     public void displayUserListings(Long userId) {
         listingService.getUserListings(userId)
@@ -314,6 +413,9 @@ public class HomeController {
             });
     }
 
+    /**
+     * 
+     */
     private void addUserListingsErrorPlaceholder() {
         if (allListingsContainer != null) {
             allListingsContainer.getChildren().clear();
@@ -338,6 +440,9 @@ public class HomeController {
     /**
      * Return to normal view (called when search is cleared)
      */
+    /**
+     * 
+     */
     public void returnToNormalView() {
         isDisplayingSearchResults = false;
         
@@ -348,10 +453,16 @@ public class HomeController {
     /**
      * Check if currently displaying search results
      */
+    /**
+     * @return
+     */
     public boolean isDisplayingSearchResults() {
         return isDisplayingSearchResults;
     }
     
+    /**
+     * @param listings
+     */
     private void updateHomeViewWithListings(ObservableList<ListingViewModel> listings) {
         if (isDisplayingSearchResults) {
             return;
@@ -382,6 +493,9 @@ public class HomeController {
         addPlaceholdersIfEmpty();
     }
 
+    /**
+     * @param hasAuctions
+     */
     private void updateAuctionSectionVisibility(boolean hasAuctions) {
         if (auctionSection != null && allListingsSection != null) {
             auctionSection.setVisible(hasAuctions);
@@ -397,6 +511,9 @@ public class HomeController {
         }
     }
 
+    /**
+     * 
+     */
     private void clearAllContainers() {
         if (allListingsContainer != null) {
             allListingsContainer.getChildren().clear();
@@ -410,6 +527,9 @@ public class HomeController {
         }
     }
 
+    /**
+     * 
+     */
     private void addPlaceholdersIfEmpty() {
         if (allListingsContainer != null && allListingsContainer.getChildren().isEmpty() && !isLoadingMore) {
             javafx.scene.text.Text placeholder = new javafx.scene.text.Text("Nessuna inserzione disponibile");
@@ -423,6 +543,9 @@ public class HomeController {
         }
     }
 
+    /**
+     * 
+     */
     public void handleUserAction() {
         System.out.println("User action handled in home view.");
     }

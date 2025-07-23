@@ -18,26 +18,68 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ */
 public class FollowerService {
+    /**
+     * 
+     */
     private static FollowerService instance;
 
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient = WebSocketClient.getInstance();
+    /**
+     * 
+     */
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
+    /**
+     * 
+     */
     private final ObservableList<UserViewModel> followingUsers = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<UserViewModel> followerUsers = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<FollowerViewModel> followers = FXCollections.observableArrayList();
 
+    /**
+     * 
+     */
     private final Set<Long> followingIds = new HashSet<>();
+    /**
+     * 
+     */
     private long followingCount = 0;
+    /**
+     * 
+     */
     private long followerCount = 0;
 
+    /**
+     * 
+     */
     private CompletableFuture<?> futureToComplete;
+    /**
+     * 
+     */
     private Consumer<FollowerMessage> messageCallback;
 
+    /**
+     * 
+     */
     private FollowerService() {
         webSocketClient.registerMessageHandler(FollowerMessage.class, this::handleFollowerMessage);
     }
 
+    /**
+     * @return
+     */
     public static synchronized FollowerService getInstance() {
         if (instance == null) {
             instance = new FollowerService();
@@ -52,6 +94,10 @@ public class FollowerService {
      * @return A CompletableFuture that completes with the FollowerViewModel if the
      *         follow is successful, or fails with an exception if the connection
      *         fails or the follow request is rejected.
+     */
+    /**
+     * @param followedId
+     * @return
      */
     public CompletableFuture<FollowerViewModel> followUser(Long followedId) {
         CompletableFuture<FollowerViewModel> future = new CompletableFuture<>();
@@ -82,6 +128,10 @@ public class FollowerService {
      *         If the user is not following the other user, it will complete with
      *         false.
      */
+    /**
+     * @param followedId
+     * @return
+     */
     public CompletableFuture<Boolean> unfollowUser(Long followedId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -108,6 +158,9 @@ public class FollowerService {
      *         the users that the current user is following, or fails with an exception
      *         if the connection fails or the request is rejected.
      *         The list will be empty if the user is not following anyone.
+     */
+    /**
+     * @return
      */
     public CompletableFuture<List<UserDTO>> getFollowing() {
         CompletableFuture<List<UserDTO>> future = new CompletableFuture<>();
@@ -140,6 +193,9 @@ public class FollowerService {
      *         If the user is logged in and has followers, it will complete with a list
      *         of UserDTOs representing the followers.
      */
+    /**
+     * @return
+     */
     public CompletableFuture<List<UserDTO>> getFollowers() {
         CompletableFuture<List<UserDTO>> future = new CompletableFuture<>();
 
@@ -165,6 +221,10 @@ public class FollowerService {
      * @return A CompletableFuture that completes with true if the current user is
      *         following the user, false if not, or fails with an exception if the
      *         connection fails or the request is rejected.
+     */
+    /**
+     * @param userId
+     * @return
      */
     public CompletableFuture<Boolean> isFollowing(Long userId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -193,6 +253,9 @@ public class FollowerService {
      *         The statistics include the number of followers and the number of users
      *         the current user is following.
      */
+    /**
+     * @return
+     */
     public CompletableFuture<Void> getFollowStats() {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
@@ -219,6 +282,10 @@ public class FollowerService {
      *         following the other user, false if not, or fails with an exception if
      *         the connection fails or the request is rejected.
      */
+    /**
+     * @param userId
+     * @return
+     */
     public CompletableFuture<Boolean> toggleFollow(Long userId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -238,6 +305,9 @@ public class FollowerService {
         return future;
     }
 
+    /**
+     * @param message
+     */
     @SuppressWarnings("unchecked")
     private void handleFollowerMessage(FollowerMessage message) {
         if (message.getType() == null) {
@@ -431,6 +501,10 @@ public class FollowerService {
      *         This is a local check and does not require a server request.
      *         It checks the local followingIds set.
      */
+    /**
+     * @param userId
+     * @return
+     */
     public boolean isFollowingLocally(Long userId) {
         return followingIds.contains(userId);
     }
@@ -439,6 +513,9 @@ public class FollowerService {
      * Add user to local following set (for optimistic UI updates)
      * 
      * @param userId The ID of the user to add
+     */
+    /**
+     * @param userId
      */
     public void addToLocalFollowing(Long userId) {
         followingIds.add(userId);
@@ -449,34 +526,58 @@ public class FollowerService {
      * 
      * @param userId The ID of the user to remove
      */
+    /**
+     * @param userId
+     */
     public void removeFromLocalFollowing(Long userId) {
         followingIds.remove(userId);
     }
 
+    /**
+     * @return
+     */
     public ObservableList<UserViewModel> getFollowingUsersList() {
         return followingUsers;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<UserViewModel> getFollowerUsersList() {
         return followerUsers;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<FollowerViewModel> getFollowersList() {
         return followers;
     }
 
+    /**
+     * @return
+     */
     public long getFollowingCount() {
         return followingCount;
     }
 
+    /**
+     * @return
+     */
     public long getFollowerCount() {
         return followerCount;
     }
 
+    /**
+     * @return
+     */
     public Set<Long> getFollowingIds() {
         return new HashSet<>(followingIds);
     }
 
+    /**
+     * 
+     */
     public void clearData() {
         followingUsers.clear();
         followerUsers.clear();
@@ -486,6 +587,9 @@ public class FollowerService {
         followerCount = 0;
     }
 
+    /**
+     * @param callback
+     */
     public void setMessageCallback(Consumer<FollowerMessage> callback) {
         this.messageCallback = callback;
     }

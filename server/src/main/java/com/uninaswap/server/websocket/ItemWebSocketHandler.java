@@ -167,10 +167,12 @@ public class ItemWebSocketHandler extends TextWebSocketHandler {
         }
         
         itemService.deleteItem(itemId);
-        
+        ItemDTO deletedItem = new ItemDTO();
+        deletedItem.setId(itemId);
         response.setType(ItemMessage.Type.DELETE_ITEM_RESPONSE);
         response.setSuccess(true);
-        
+        response.setItem(deletedItem);
+
         logger.info("Deleted item: {} for user {}", itemId, currentUser.getUsername());
     }
 }

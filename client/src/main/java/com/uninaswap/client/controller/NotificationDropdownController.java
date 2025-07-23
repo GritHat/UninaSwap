@@ -23,26 +23,62 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 
+/**
+ * 
+ */
 public class NotificationDropdownController {
     
+    /**
+     * 
+     */
     @FXML private Text titleText;
+    /**
+     * 
+     */
     @FXML private Button markAllReadBtn;
+    /**
+     * 
+     */
     @FXML private ScrollPane notificationsScrollPane;
+    /**
+     * 
+     */
     @FXML private VBox notificationsContainer;
+    /**
+     * 
+     */
     @FXML private Label noNotificationsLabel;
+    /**
+     * 
+     */
     @FXML private Button viewAllBtn;
     
+    /**
+     * 
+     */
     private final NavigationService navigationService = NavigationService.getInstance();
+    /**
+     * 
+     */
     private final NotificationService notificationService = NotificationService.getInstance();
     
+    /**
+     * 
+     */
     private Consumer<Void> onCloseCallback;
     
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupRealtimeUpdates();
         loadNotifications();
     }
     
+    /**
+     * 
+     */
     private void setupRealtimeUpdates() {
         notificationService.getRecentNotifications().addListener((ListChangeListener<NotificationViewModel>) _ -> {
             Platform.runLater(this::updateNotificationsDisplay);
@@ -54,10 +90,16 @@ public class NotificationDropdownController {
         });
     }
     
+    /**
+     * @param callback
+     */
     public void setOnCloseCallback(Consumer<Void> callback) {
         this.onCloseCallback = callback;
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleMarkAllAsRead() {
         notificationService.markAllAsRead()
@@ -74,17 +116,26 @@ public class NotificationDropdownController {
             });
     }
     
+    /**
+     * 
+     */
     @FXML
     private void handleViewAll() {
         closeDropdown();
         navigateToNotificationCenter();
     }
     
+    /**
+     * 
+     */
     private void loadNotifications() {
         notificationService.refreshRecentNotifications();
         updateNotificationsDisplay();
     }
     
+    /**
+     * 
+     */
     private void updateNotificationsDisplay() {
         notificationsContainer.getChildren().clear();
         
@@ -105,6 +156,10 @@ public class NotificationDropdownController {
         }
     }
     
+    /**
+     * @param notification
+     * @return
+     */
     private VBox createNotificationItem(NotificationViewModel notification) {
         VBox item = new VBox(5);
         item.getStyleClass().addAll("notification-item", notification.isRead() ? "read" : "unread");
@@ -141,6 +196,10 @@ public class NotificationDropdownController {
         return item;
     }
     
+    /**
+     * @param type
+     * @return
+     */
     private Image getNotificationIcon(String type) {
         String iconPath = switch (type) {
             case "OFFER_RECEIVED", "OFFER_ACCEPTED", "OFFER_REJECTED", "OFFER_WITHDRAWN" -> "/images/icons/offer.png";
@@ -158,6 +217,10 @@ public class NotificationDropdownController {
         }
     }
     
+    /**
+     * @param timestamp
+     * @return
+     */
     private String formatTime(LocalDateTime timestamp) {
         if (timestamp == null) return "";
         
@@ -169,6 +232,9 @@ public class NotificationDropdownController {
         }
     }
     
+    /**
+     * @param notification
+     */
     private void markAsRead(NotificationViewModel notification) {
         if (!notification.isRead()) {
             notificationService.markAsRead(notification.getId())
@@ -181,6 +247,9 @@ public class NotificationDropdownController {
         }
     }
     
+    /**
+     * @param notification
+     */
     private void handleNotificationClick(NotificationViewModel notification) {
         closeDropdown();
         switch (notification.getType()) {
@@ -203,6 +272,9 @@ public class NotificationDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     private void navigateToNotificationCenter() {
         try {
             navigationService.navigateToNotificationsView();
@@ -211,6 +283,9 @@ public class NotificationDropdownController {
         }
     }
     
+    /**
+     * 
+     */
     private void closeDropdown() {
         if (onCloseCallback != null) {
             onCloseCallback.accept(null);

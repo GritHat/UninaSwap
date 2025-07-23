@@ -53,6 +53,14 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
     Optional<ReviewEntity> findByOfferId(String offerId);
 
     /**
+     * Find reviews created between dates
+     * @param startDate Start date
+     * @param endDate End date
+     * @return List of reviews
+     */
+    List<ReviewEntity> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    /**
      * Check if a review exists for a specific offer and reviewer
      */
     @Query("SELECT r FROM ReviewEntity r " +

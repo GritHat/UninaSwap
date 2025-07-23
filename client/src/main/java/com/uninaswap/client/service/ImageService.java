@@ -22,15 +22,33 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+/**
+ * 
+ */
 public class ImageService {
     
+    /**
+     * 
+     */
     private static ImageService instance;
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient;
+    /**
+     * 
+     */
     private final Map<String, Image> imageCache = new HashMap<>();
     
+    /**
+     * 
+     */
     private final Map<String, CompletableFuture<Image>> pendingRequests = new ConcurrentHashMap<>();
     
     // Singleton pattern
+    /**
+     * @return
+     */
     public static ImageService getInstance() {
         if (instance == null) {
             instance = new ImageService();
@@ -38,6 +56,9 @@ public class ImageService {
         return instance;
     }
     
+    /**
+     * 
+     */
     private ImageService() {
         this.webSocketClient = WebSocketClient.getInstance();
         this.webSocketClient.registerMessageHandler(ImageMessage.class, this::handleImageResponse);
@@ -47,6 +68,10 @@ public class ImageService {
      * Upload an image via HTTP for profile pictures
      * @param imageFile The image file to upload
      * @return A CompletableFuture with the image path on success
+     */
+    /**
+     * @param imageFile
+     * @return
      */
     public CompletableFuture<String> uploadImageViaHttp(File imageFile) {
         CompletableFuture<String> future = new CompletableFuture<>();
@@ -81,6 +106,10 @@ public class ImageService {
      * @param imageId The ID of the image to fetch
      * @return A CompletableFuture with the Image on success
      */
+    /**
+     * @param imageId
+     * @return
+     */
     public CompletableFuture<Image> fetchImage(String imageId) {
         if (imageCache.containsKey(imageId)) {
             return CompletableFuture.completedFuture(imageCache.get(imageId));
@@ -112,6 +141,9 @@ public class ImageService {
         return future;
     }
     
+    /**
+     * @param message
+     */
     private void handleImageResponse(ImageMessage message) {
         if (message.getType() == ImageMessage.Type.FETCH_RESPONSE) {
             String imageId = message.getImageId();
@@ -138,14 +170,23 @@ public class ImageService {
         }
     }
 
+    /**
+     * 
+     */
     public void clearPendingRequests() {
         pendingRequests.clear();
     }
     
+    /**
+     * 
+     */
     public void clearCache() {
         imageCache.clear();
     }
     
+    /**
+     * 
+     */
     private static class MultipartFormData {
         private final String boundary;
         private final ByteArrayOutputStream baos;

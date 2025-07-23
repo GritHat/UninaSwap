@@ -60,7 +60,7 @@ public class SellListingEntity extends ListingEntity {
     
     @Override
     public String getListingType() {
-        return "Sell";
+        return "SELL";
     }
     
     @Override

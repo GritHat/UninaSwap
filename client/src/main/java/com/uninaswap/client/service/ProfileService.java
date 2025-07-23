@@ -7,10 +7,19 @@ import com.uninaswap.client.websocket.WebSocketClient;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+/**
+ * 
+ */
 public class ProfileService {
     
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient;
     
+    /**
+     * 
+     */
     public ProfileService() {
         this.webSocketClient = WebSocketClient.getInstance();
     }
@@ -19,6 +28,9 @@ public class ProfileService {
      * Set the handler for profile update responses and register it with WebSocketClient
      * 
      * @param handler The handler to process profile update messages
+     */
+    /**
+     * @param handler
      */
     public void setUpdateResponseHandler(Consumer<ProfileUpdateMessage> handler) {
         // Register the handler with the WebSocketClient
@@ -30,6 +42,10 @@ public class ProfileService {
      * 
      * @param user The user object containing updated profile information
      * @return CompletableFuture that completes when the update is sent
+     */
+    /**
+     * @param user
+     * @return
      */
     public CompletableFuture<Void> updateProfile(UserDTO user) {
         ProfileUpdateMessage message = new ProfileUpdateMessage();

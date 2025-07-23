@@ -25,152 +25,316 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ */
 public class ListingCreationController implements Refreshable {
 
+    /**
+     * 
+     */
     @FXML
     private TabPane listingTypeTabs;
 
+    /**
+     * 
+     */
     @FXML
     private TextField titleField;
 
+    /**
+     * 
+     */
     @FXML
     private TextArea descriptionArea;
 
+    /**
+     * 
+     */
     @FXML
     private TableView<ItemDTO> itemsTable;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ItemDTO, String> nameColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ItemDTO, String> conditionColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ItemDTO, Integer> availableQuantityColumn;
 
+    /**
+     * 
+     */
     @FXML
     private Spinner<Integer> quantitySpinner;
 
+    /**
+     * 
+     */
     @FXML
     private Button addItemButton;
 
+    /**
+     * 
+     */
     @FXML
     private TableView<ListingItemDTO> selectedItemsTable;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingItemDTO, String> selectedNameColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingItemDTO, Integer> selectedQuantityColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TableColumn<ListingItemDTO, String> selectedActionColumn;
 
+    /**
+     * 
+     */
     @FXML
     private TextField sellPriceField;
 
+    /**
+     * 
+     */
     @FXML
     private ComboBox<Currency> sellCurrencyComboBox;
 
+    /**
+     * 
+     */
     @FXML
     private TextField sellLocationField;
 
+    /**
+     * 
+     */
     @FXML
     private CheckBox acceptMoneyOffersCheckBox;
 
+    /**
+     * 
+     */
     @FXML
     private TextField referencePriceField;
 
+    /**
+     * 
+     */
     @FXML
     private ComboBox<Currency> tradeCurrencyComboBox;
 
+    /**
+     * 
+     */
     @FXML
     private CheckBox acceptMixedOffersCheckBox;
 
+    /**
+     * 
+     */
     @FXML
     private CheckBox acceptOtherOffersCheckBox;
 
+    /**
+     * 
+     */
     @FXML
     private TextField tradeLocationField;
 
+    /**
+     * 
+     */
     @FXML
     private CheckBox pickupOnlyCheckBox;
 
+    /**
+     * 
+     */
     @FXML
     private CheckBox allowThankYouOffersCheckBox;
 
+    /**
+     * 
+     */
     @FXML
     private TextArea restrictionsArea;
 
+    /**
+     * 
+     */
     @FXML
     private ComboBox<Category> availableCategoriesComboBox;
 
+    /**
+     * 
+     */
     @FXML
     private Button addCategoryButton;
     
+    /**
+     * 
+     */
     @FXML
     private TextField giftLocationField;
 
+    /**
+     * 
+     */
     @FXML
     private TextField startingPriceField;
 
+    /**
+     * 
+     */
     @FXML
     private TextField reservePriceField;
 
+    /**
+     * 
+     */
     @FXML
     private VBox selectedCategoriesContainer;
 
+    /**
+     * 
+     */
     @FXML
     private ComboBox<Currency> auctionCurrencyComboBox;
 
+    /**
+     * 
+     */
     @FXML
     private ComboBox<DurationOption> durationComboBox;
 
+    /**
+     * 
+     */
     @FXML
     private TextField bidIncrementField;
 
+    /**
+     * 
+     */
     @FXML
     private TextField auctionLocationField;
     
+    /**
+     * 
+     */
     @FXML
     private Button createButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button cancelButton;
 
+    /**
+     * 
+     */
     private final List<Category> selectedCategories = new ArrayList<>();
 
 
+    /**
+     * 
+     */
     private final ItemService itemService = ItemService.getInstance();
+    /**
+     * 
+     */
     private final ListingService listingService = ListingService.getInstance();
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final UserSessionService sessionService = UserSessionService.getInstance();
 
+    /**
+     * 
+     */
     private final List<ListingItemDTO> selectedItems = new ArrayList<>();
+    /**
+     * 
+     */
     private final Map<String, Integer> tempReservedQuantities = new HashMap<>();
+    /**
+     * 
+     */
     private List<DurationOption> durationOptions;
 
+    /**
+     * 
+     */
     public class DurationOption {
+        /**
+         * 
+         */
         private final int days;
+        /**
+         * 
+         */
         private final String messageKey;
+        /**
+         * 
+         */
         private final LocaleService localeService;
 
+        /**
+         * @param days
+         * @param messageKey
+         * @param localeService
+         */
         public DurationOption(int days, String messageKey, LocaleService localeService) {
             this.days = days;
             this.messageKey = messageKey;
             this.localeService = localeService;
         }
 
+        /**
+         * @return
+         */
         public int getDays() {
             return days;
         }
 
+        /**
+         *
+         */
         @Override
         public String toString() {
             return localeService.getMessage(messageKey);
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupItemsTable();
@@ -205,6 +369,9 @@ public class ListingCreationController implements Refreshable {
         itemsTable.setItems(itemService.getUserItemsList());
     }
 
+    /**
+     * 
+     */
     private void setupCategorySelection() {
         List<Category> availableCategories = Arrays.stream(Category.values())
                 .filter(category -> category != Category.ALL)
@@ -238,6 +405,9 @@ public class ListingCreationController implements Refreshable {
         updateSelectedCategoriesDisplay();
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleAddCategory() {
         Category selectedCategory = availableCategoriesComboBox.getValue();
@@ -248,6 +418,9 @@ public class ListingCreationController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     private void updateSelectedCategoriesDisplay() {
         selectedCategoriesContainer.getChildren().clear();
         
@@ -263,6 +436,10 @@ public class ListingCreationController implements Refreshable {
         }
     }
 
+    /**
+     * @param category
+     * @return
+     */
     private HBox createCategoryChip(Category category) {
         HBox chip = new HBox(8.0);
         chip.getStyleClass().add("category-chip");
@@ -280,6 +457,9 @@ public class ListingCreationController implements Refreshable {
         return chip;
     }
 
+    /**
+     * @return
+     */
     private TradeListingDTO createTradeListing() {
         if (tradeLocationField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
@@ -318,6 +498,9 @@ public class ListingCreationController implements Refreshable {
         return listing;
     }
 
+    /**
+     * 
+     */
     private void setupItemsTable() {
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
@@ -354,6 +537,9 @@ public class ListingCreationController implements Refreshable {
         });
     }
 
+    /**
+     * 
+     */
     private void setupSelectedItemsTable() {
         selectedNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getItemName()));
 
@@ -392,10 +578,16 @@ public class ListingCreationController implements Refreshable {
         updateSelectedItemsTable();
     }
 
+    /**
+     * 
+     */
     private void updateSelectedItemsTable() {
         selectedItemsTable.setItems(FXCollections.observableArrayList(selectedItems));
     }
 
+    /**
+     * 
+     */
     private void refreshItemsTable() {
         ItemDTO selectedItem = itemsTable.getSelectionModel().getSelectedItem();
         List<ItemDTO> currentItems = new ArrayList<>(itemsTable.getItems());
@@ -407,6 +599,9 @@ public class ListingCreationController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleAddItem() {
         ItemDTO selectedItem = itemsTable.getSelectionModel().getSelectedItem();
@@ -425,6 +620,9 @@ public class ListingCreationController implements Refreshable {
         }
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCreateListing() {
         if (!validateCommonFields()) {
@@ -470,12 +668,18 @@ public class ListingCreationController implements Refreshable {
                 });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCancel() {
         tempReservedQuantities.clear();
         clearForm();
     }
 
+    /**
+     * 
+     */
     private void clearForm() {
         titleField.clear();
         descriptionArea.clear();
@@ -520,6 +724,9 @@ public class ListingCreationController implements Refreshable {
         }
     }
 
+    /**
+     * @return
+     */
     private boolean validateCommonFields() {
         if (titleField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
@@ -548,6 +755,9 @@ public class ListingCreationController implements Refreshable {
         return true;
     }
 
+    /**
+     * @return
+     */
     private SellListingDTO createSellListing() {
         if (sellPriceField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
@@ -583,6 +793,9 @@ public class ListingCreationController implements Refreshable {
         }
     }
 
+    /**
+     * @return
+     */
     private GiftListingDTO createGiftListing() {
         GiftListingDTO listing = new GiftListingDTO();
         setupCommonFields(listing);
@@ -595,6 +808,9 @@ public class ListingCreationController implements Refreshable {
         return listing;
     }
 
+    /**
+     * @return
+     */
     private AuctionListingDTO createAuctionListing() {
         if (startingPriceField.getText().trim().isEmpty()) {
             AlertHelper.showWarningAlert(
@@ -653,6 +869,9 @@ public class ListingCreationController implements Refreshable {
         }
     }
 
+    /**
+     * @param listing
+     */
     private void setupCommonFields(ListingDTO listing) {
         listing.setTitle(titleField.getText().trim());
         listing.setDescription(descriptionArea.getText().trim());
@@ -663,6 +882,9 @@ public class ListingCreationController implements Refreshable {
         listing.setItems(new ArrayList<>(selectedItems));
     }
 
+    /**
+     *
+     */
     public void refreshUI() {
         durationComboBox.setItems(FXCollections.observableArrayList(durationOptions));
     }

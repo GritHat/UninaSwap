@@ -18,47 +18,104 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+/**
+ * 
+ */
 public class ReviewCreateController {
 
+    /**
+     * 
+     */
     @FXML
     private Label titleLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label instructionsLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label reviewingUserLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Label offerDetailsLabel;
 
+    /**
+     * 
+     */
     @FXML
     private HBox starsContainer;
 
+    /**
+     * 
+     */
     @FXML
     private Label scoreLabel;
 
+    /**
+     * 
+     */
     @FXML
     private TextArea commentTextArea;
 
+    /**
+     * 
+     */
     @FXML
     private Label characterCountLabel;
 
+    /**
+     * 
+     */
     @FXML
     private Button submitButton;
 
+    /**
+     * 
+     */
     @FXML
     private Button cancelButton;
 
+    /**
+     * 
+     */
     private final LocaleService localeService = LocaleService.getInstance();
+    /**
+     * 
+     */
     private final ReviewService reviewService = ReviewService.getInstance();
+    /**
+     * 
+     */
     private final UserSessionService sessionService = UserSessionService.getInstance();
 
+    /**
+     * 
+     */
     private OfferViewModel currentOffer;
+    /**
+     * 
+     */
     private UserViewModel reviewedUser;
+    /**
+     * 
+     */
     private double selectedScore = 0.0;
+    /**
+     * 
+     */
     private ToggleButton[] starButtons = new ToggleButton[5];
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
         setupLabels();
@@ -67,6 +124,9 @@ public class ReviewCreateController {
         updateSubmitButton();
     }
 
+    /**
+     * 
+     */
     private void setupLabels() {
         titleLabel.setText(localeService.getMessage("review.create.title", "Write a Review"));
         instructionsLabel.setText(localeService.getMessage("review.create.instructions",
@@ -76,6 +136,9 @@ public class ReviewCreateController {
         cancelButton.setText(localeService.getMessage("review.create.cancel", "Cancel"));
     }
 
+    /**
+     * 
+     */
     private void setupStarRating() {
         starsContainer.getChildren().clear();
 
@@ -102,6 +165,9 @@ public class ReviewCreateController {
         updateScoreDisplay();
     }
 
+    /**
+     * 
+     */
     private void setupCommentArea() {
         commentTextArea.setPromptText(localeService.getMessage("review.create.comment.prompt",
                 "Write your review here (optional)"));
@@ -115,6 +181,9 @@ public class ReviewCreateController {
         updateCharacterCount();
     }
 
+    /**
+     * @param offer
+     */
     public void setOffer(OfferViewModel offer) {
         this.currentOffer = offer;
 
@@ -132,6 +201,9 @@ public class ReviewCreateController {
         }
     }
 
+    /**
+     * 
+     */
     private void updateUI() {
         if (reviewedUser != null) {
             reviewingUserLabel.setText(String.format(
@@ -147,6 +219,9 @@ public class ReviewCreateController {
         }
     }
 
+    /**
+     * @param rating
+     */
     private void setStarRating(int rating) {
         selectedScore = rating;
         for (int i = 0; i < 5; i++) {
@@ -166,6 +241,9 @@ public class ReviewCreateController {
         updateSubmitButton();
     }
 
+    /**
+     * 
+     */
     private void updateScoreDisplay() {
         String scoreText = selectedScore > 0
                 ? String.format("%.1f/5.0", selectedScore)
@@ -173,6 +251,9 @@ public class ReviewCreateController {
         scoreLabel.setText(scoreText);
     }
 
+    /**
+     * 
+     */
     private void updateCharacterCount() {
         int length = commentTextArea.getText().length();
         int maxLength = 1000;
@@ -185,21 +266,33 @@ public class ReviewCreateController {
         }
     }
     
+    /**
+     * @return
+     */
     private DoubleProperty scoreProperty() {
         return new SimpleDoubleProperty(selectedScore);
     }
 
 
+    /**
+     * 
+     */
     private void updateSubmitButton() {
         boolean hasValidRating = selectedScore > 0;
         boolean hasValidComment = commentTextArea.getText().length() <= 1000; // Comment length check only
         submitButton.setDisable(!hasValidRating || !hasValidComment);
     }
 
-     private boolean isValidReview() {
+     /**
+     * @return
+     */
+    private boolean isValidReview() {
         return selectedScore > 0 && commentTextArea.getText().length() <= 1000;
     }
 
+    /**
+     * @param externalSubmitButton
+     */
     public void bindSubmitButton(Button externalSubmitButton) {
         externalSubmitButton.disableProperty().bind(
             javafx.beans.binding.Bindings.createBooleanBinding(
@@ -210,6 +303,9 @@ public class ReviewCreateController {
         );
     }
 
+    /**
+     * 
+     */
     public void submitReview() {
         if (!validateReview()) {
             return;
@@ -242,6 +338,9 @@ public class ReviewCreateController {
                 });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleSubmit() {
         if (!validateReview()) {
@@ -279,11 +378,17 @@ public class ReviewCreateController {
             });
     }
 
+    /**
+     * 
+     */
     @FXML
     private void handleCancel() {
         closeWindow();
     }
 
+    /**
+     * @return
+     */
     private boolean validateReview() {
         if (selectedScore <= 0) {
             AlertHelper.showWarningAlert(
@@ -304,6 +409,10 @@ public class ReviewCreateController {
         return true;
     }
 
+    /**
+     * @param offer
+     * @return
+     */
     private String getOfferTypeDisplayName(OfferViewModel offer) {
         if (offer.hasMoneyOffer() && offer.hasItemOffer()) {
             return localeService.getMessage("offers.type.mixed", "Mixed");
@@ -316,6 +425,9 @@ public class ReviewCreateController {
         }
     }
 
+    /**
+     * 
+     */
     private void closeWindow() {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();

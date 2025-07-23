@@ -6,9 +6,18 @@ import java.util.regex.Pattern;
  * Service for validating user input in forms.
  * This separates validation logic from controllers.
  */
+/**
+ * 
+ */
 public class ValidationService {
+    /**
+     * 
+     */
     private static ValidationService instance;
     
+    /**
+     * @return
+     */
     public static ValidationService getInstance() {
         if (instance == null) {
             instance = new ValidationService();
@@ -16,15 +25,24 @@ public class ValidationService {
         return instance;
     }
     
+    /**
+     * 
+     */
     private ValidationService() {
     }
     
     // Email regex pattern
+    /**
+     * 
+     */
     private final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     
     /**
      * Result class to contain both validation status and message key
+     */
+    /**
+     * 
      */
     public static class ValidationResult {
         private final boolean valid;
@@ -51,6 +69,11 @@ public class ValidationService {
      * @param password The password input
      * @return ValidationResult containing validity and message key
      */
+    /**
+     * @param username
+     * @param password
+     * @return
+     */
     public ValidationResult validateLogin(String username, String password) {
         if (username == null || username.trim().isEmpty()) {
             return new ValidationResult(false, "login.error.username.required");
@@ -71,6 +94,13 @@ public class ValidationService {
      * @param password The password input
      * @param confirmPassword The confirm password input
      * @return ValidationResult containing validity and message key
+     */
+    /**
+     * @param username
+     * @param email
+     * @param password
+     * @param confirmPassword
+     * @return
      */
     public ValidationResult validateRegistration(String username, String email, 
                                              String password, String confirmPassword) {

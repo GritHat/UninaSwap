@@ -10,22 +10,50 @@ import javafx.scene.Node;
 import com.uninaswap.client.service.NavigationService;
 import com.uninaswap.client.service.AuthenticationService;
 import com.uninaswap.client.service.UserSessionService;
+import com.uninaswap.client.util.TextUtils;
 import com.uninaswap.client.service.LocaleService;
 import com.uninaswap.common.message.AuthMessage;
 
+/**
+ * 
+ */
 public class LoginController {
+    /**
+     * 
+     */
     @FXML
     private TextField loginField;
+    /**
+     * 
+     */
     @FXML
     private PasswordField passwordField;
+    /**
+     * 
+     */
     @FXML
     private Label messageLabel;
 
+    /**
+     * 
+     */
     private final NavigationService navigationService;
+    /**
+     * 
+     */
     private final AuthenticationService authService;
+    /**
+     * 
+     */
     private final LocaleService localeService;
+    /**
+     * 
+     */
     private final UserSessionService sessionService;
 
+    /**
+     * 
+     */
     public LoginController() {
         this.navigationService = NavigationService.getInstance();
         this.authService = AuthenticationService.getInstance();
@@ -33,11 +61,21 @@ public class LoginController {
         this.sessionService = UserSessionService.getInstance();
     }
 
+    /**
+     * 
+     */
     @FXML
     public void initialize() {
+        // Set max length for login field
+        TextUtils.setMaxLength(loginField, 50);
+        // Set max length for password field
+        TextUtils.setMaxLength(passwordField, 50);
         registerMessageHandler();
     }
 
+    /**
+     * @param event
+     */
     @FXML
     private void handleLogin(ActionEvent event) {
         Node source = (Node) event.getSource();
@@ -84,6 +122,9 @@ public class LoginController {
                 });
     }
 
+    /**
+     * @param event
+     */
     @FXML
     public void showRegister(ActionEvent event) {
         try {
@@ -96,6 +137,9 @@ public class LoginController {
         }
     }
 
+    /**
+     * @param response
+     */
     private void handleAuthResponse(AuthMessage response) {
         Platform.runLater(() -> {
             if (response.getType() == AuthMessage.Type.AUTH_ERROR_RESPONSE && !response.isSuccess()) {
@@ -136,6 +180,10 @@ public class LoginController {
      * @param messageKey The key for the localized message
      * @param styleClass The CSS class to apply to the message label
      */
+    /**
+     * @param messageKey
+     * @param styleClass
+     */
     private void showMessage(String messageKey, String styleClass) {
 
         messageLabel.setText(localeService.getMessage(messageKey));
@@ -146,6 +194,9 @@ public class LoginController {
     /**
      * Registers this controller's message handler with the AuthenticationService.
      * Called by NavigationService when this view is loaded.
+     */
+    /**
+     * 
      */
     public void registerMessageHandler() {
         authService.setAuthResponseHandler(this::handleAuthResponse);

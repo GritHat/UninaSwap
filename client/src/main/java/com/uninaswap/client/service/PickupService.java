@@ -15,29 +15,71 @@ import java.time.LocalTime;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+/**
+ * 
+ */
 public class PickupService {
+    /**
+     * 
+     */
     private static PickupService instance;
 
+    /**
+     * 
+     */
     private final WebSocketClient webSocketClient;
+    /**
+     * 
+     */
     private final UserSessionService sessionService;
 
+    /**
+     * 
+     */
     private final ObservableList<PickupDTO> userPickups = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<PickupDTO> upcomingPickups = FXCollections.observableArrayList();
+    /**
+     * 
+     */
     private final ObservableList<PickupDTO> pastPickups = FXCollections.observableArrayList();
 
+    /**
+     * 
+     */
     private Consumer<PickupMessage> createPickupHandler;
+    /**
+     * 
+     */
     private Consumer<PickupMessage> acceptPickupHandler;
+    /**
+     * 
+     */
     private Consumer<PickupMessage> updatePickupHandler;
+    /**
+     * 
+     */
     private Consumer<PickupMessage> getPickupHandler;
 
+    /**
+     * 
+     */
     private final ViewModelMapper viewModelMapper = ViewModelMapper.getInstance();
 
+    /**
+     * 
+     */
     private PickupService() {
         this.webSocketClient = WebSocketClient.getInstance();
         this.sessionService = UserSessionService.getInstance();
         webSocketClient.registerMessageHandler(PickupMessage.class, this::handlePickupMessage);
     }
 
+    /**
+     * @return
+     */
     public static PickupService getInstance() {
         if (instance == null) {
             instance = new PickupService();
@@ -50,6 +92,10 @@ public class PickupService {
      * 
      * @param pickupViewModel The view model containing pickup details
      * @return CompletableFuture with true if successful
+     */
+    /**
+     * @param pickupViewModel
+     * @return
      */
     public CompletableFuture<Boolean> createPickup(PickupViewModel pickupViewModel) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -88,6 +134,12 @@ public class PickupService {
      * @param selectedTime The time selected for the pickup
      * @return CompletableFuture with true if successful
      */
+    /**
+     * @param pickupId
+     * @param selectedDate
+     * @param selectedTime
+     * @return
+     */
     public CompletableFuture<Boolean> acceptPickup(Long pickupId, LocalDate selectedDate, LocalTime selectedTime) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         acceptPickupHandler = response -> {
@@ -121,6 +173,11 @@ public class PickupService {
      * @param status The new status for the pickup
      * @return CompletableFuture with true if successful
      */
+    /**
+     * @param pickupId
+     * @param status
+     * @return
+     */
     public CompletableFuture<Boolean> updatePickupStatus(Long pickupId, PickupStatus status) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
@@ -153,6 +210,10 @@ public class PickupService {
      * @param pickupId The ID of the pickup to cancel
      * @return CompletableFuture with true if successful
      */
+    /**
+     * @param pickupId
+     * @return
+     */
     public CompletableFuture<Boolean> cancelPickupArrangement(Long pickupId) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         updatePickupHandler = response -> {
@@ -182,6 +243,9 @@ public class PickupService {
      * 
      * @return CompletableFuture with user's pickups
      */
+    /**
+     * @return
+     */
     public CompletableFuture<Void> getUserPickups() {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
@@ -203,6 +267,9 @@ public class PickupService {
      * Get upcoming pickups
      * 
      * @return CompletableFuture with upcoming pickups
+     */
+    /**
+     * @return
      */
     public CompletableFuture<Void> getUpcomingPickups() {
         CompletableFuture<Void> future = new CompletableFuture<>();
@@ -226,6 +293,10 @@ public class PickupService {
      * 
      * @param offerId The ID of the offer to get the pickup for
      * @return CompletableFuture with the PickupViewModel if found, null otherwise
+     */
+    /**
+     * @param offerId
+     * @return
      */
     public CompletableFuture<PickupViewModel> getPickupByOfferId(String offerId) {
         CompletableFuture<PickupViewModel> future = new CompletableFuture<>();
@@ -254,6 +325,9 @@ public class PickupService {
         return future;
     }
 
+    /**
+     * @param message
+     */
     private void handlePickupMessage(PickupMessage message) {
         Platform.runLater(() -> {
             switch (message.getType()) {
@@ -307,6 +381,9 @@ public class PickupService {
         });
     }
 
+    /**
+     * @param message
+     */
     private void handleGetUserPickupsResponse(PickupMessage message) {
         if (message.isSuccess() && message.getPickups() != null) {
             userPickups.clear();
@@ -314,6 +391,9 @@ public class PickupService {
         }
     }
 
+    /**
+     * @param message
+     */
     private void handleGetUpcomingPickupsResponse(PickupMessage message) {
         if (message.isSuccess() && message.getPickups() != null) {
             upcomingPickups.clear();
@@ -321,6 +401,9 @@ public class PickupService {
         }
     }
 
+    /**
+     * @param message
+     */
     private void handleGetPastPickupsResponse(PickupMessage message) {
         if (message.isSuccess() && message.getPickups() != null) {
             pastPickups.clear();
@@ -328,12 +411,19 @@ public class PickupService {
         }
     }
 
+    /**
+     * @param updatedPickup
+     */
     private void updatePickupInLists(PickupDTO updatedPickup) {
         updatePickupInList(userPickups, updatedPickup);
         updatePickupInList(upcomingPickups, updatedPickup);
         updatePickupInList(pastPickups, updatedPickup);
     }
 
+    /**
+     * @param list
+     * @param updatedPickup
+     */
     private void updatePickupInList(ObservableList<PickupDTO> list, PickupDTO updatedPickup) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId().equals(updatedPickup.getId())) {
@@ -343,18 +433,30 @@ public class PickupService {
         }
     }
 
+    /**
+     * @return
+     */
     public ObservableList<PickupDTO> getUserPickupsList() {
         return userPickups;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<PickupDTO> getUpcomingPickupsList() {
         return upcomingPickups;
     }
 
+    /**
+     * @return
+     */
     public ObservableList<PickupDTO> getPastPickupsList() {
         return pastPickups;
     }
 
+    /**
+     * 
+     */
     public void clearData() {
         userPickups.clear();
         upcomingPickups.clear();

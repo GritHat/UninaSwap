@@ -99,7 +99,7 @@ public class TradeListingEntity extends ListingEntity {
 
     @Override
     public String getListingType() {
-        return "Trade";
+        return "TRADE";
     }
 
     @Override

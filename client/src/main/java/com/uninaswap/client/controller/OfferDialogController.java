@@ -341,6 +341,12 @@ public class OfferDialogController {
         });
     }
 
+    public Currency getCurrencyComboBoxValue() {
+        if (currencyComboBox == null)
+            return Currency.EUR;
+        return currencyComboBox.getValue();
+    }
+
     /**
      * @param rowIndex
      * @return
@@ -465,6 +471,18 @@ public class OfferDialogController {
                 } else {
                     priceConstraintLabel.setText(localeService.getMessage("offer.constraint.trade.no.limit"));
                 }
+                break;
+            
+            case "GIFT":
+                // For gift listings, enable both money and item offers for thank-you offers
+                moneyOfferSection.setVisible(true);
+                itemsOfferSection.setVisible(true);
+                includeMoneyCheckBox.setSelected(false);
+                includeMoneyCheckBox.setDisable(false);
+                
+                String thankYouText = localeService.getMessage("offer.constraint.gift.thankyou", 
+                        "Thank-you offers can include money, items, or both");
+                priceConstraintLabel.setText(thankYouText);
                 break;
 
             default:

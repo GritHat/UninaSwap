@@ -1546,9 +1546,7 @@ public class ListingDetailsController {
             try {
                 BigDecimal amount = new BigDecimal(controller.getMoneyAmountField().getText().trim());
                 offer.setAmount(amount);
-                offer.setCurrency(controller.getMoneyAmountField().getParent() != null ? 
-                    ((ComboBox<Currency>) controller.getMoneyAmountField().getParent()
-                        .lookup(".currency-combo")).getValue() : Currency.EUR);
+                offer.setCurrency(controller.getCurrencyComboBoxValue());
             } catch (NumberFormatException e) {
                 // Handle error - could log or set default
                 System.err.println("Error parsing money amount: " + e.getMessage());

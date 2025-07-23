@@ -42,4 +42,12 @@ public final class EventTypes {
      * 
      */
     public static final String ANALYTICS_VIEW_REQUESTED = "analytics_view_requested";
+    /**
+     * 
+     */
+    public static final String LISTING_CREATED = "listing.created";
+    /**
+     * 
+     */
+    public static final String LISTING_DELETED = "listing.deleted";
 }

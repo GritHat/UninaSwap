@@ -314,11 +314,32 @@ public class InventoryController {
      */
     private void setupEventSubscriptions() {
         eventBus.subscribe(EventTypes.ITEM_UPDATED, _ -> {
-            refreshItems();
+            Platform.runLater(() -> {
+                System.out.println("InventoryController: ITEM_UPDATED event received");
+                refreshItems();
+            });
         });
+        
+        eventBus.subscribe(EventTypes.LISTING_CREATED, _ -> {
+            Platform.runLater(() -> {
+                System.out.println("InventoryController: LISTING_CREATED event received - refreshing items for quantity sync");
+                refreshItems();
+            });
+        });
+        
+        eventBus.subscribe(EventTypes.LISTING_DELETED, _ -> {
+            Platform.runLater(() -> {
+                System.out.println("InventoryController: LISTING_DELETED event received - refreshing items for quantity sync");
+                refreshItems();
+            });
+        });
+        
         eventBus.subscribe(EventTypes.USER_LOGGED_OUT, _ -> {
             Platform.runLater(() -> {
-                itemsTable.getItems().clear();
+                System.out.println("InventoryController: USER_LOGGED_OUT event received");
+                if (itemsTable != null) {
+                    itemsTable.getItems().clear();
+                }
                 clearItemDetails();
                 System.out.println("InventoryController: Cleared view on logout");
             });

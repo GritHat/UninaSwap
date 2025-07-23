@@ -8,6 +8,7 @@ import com.uninaswap.client.viewmodel.ItemViewModel;
 import com.uninaswap.common.dto.ItemDTO;
 import com.uninaswap.common.message.ItemMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -271,24 +272,22 @@ public class ItemService {
             case GET_ITEMS_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
+                        List<ItemDTO> items = message.getItems() != null ? message.getItems() : new ArrayList<>();
+                        System.out.println("ItemService: Received " + items.size() + " items from server");
+                        
+                        // Clear and update the lists
                         userItems.clear();
-                        userItems.addAll(message.getItems());
                         userItemViewModels.clear();
-                        message.getItems().forEach(itemDTO -> {
-                            ItemViewModel itemViewModel = ViewModelMapper.getInstance().toViewModel(itemDTO);
-                            userItemViewModels.add(itemViewModel);
-                        });
-
-                        if (futureToComplete != null) {
-                            ((CompletableFuture<List<ItemDTO>>) futureToComplete).complete(message.getItems());
-                            futureToComplete = null;
+                        
+                        for (ItemDTO item : items) {
+                            userItems.add(item);
+                            userItemViewModels.add(ViewModelMapper.getInstance().toViewModel(item));
                         }
+                        
+                        needsRefresh = false;
+                        System.out.println("ItemService: Updated user items - total: " + userItems.size());
                     } else {
-                        if (futureToComplete != null) {
-                            futureToComplete.completeExceptionally(
-                                    new Exception("Failed to get items: " + message.getErrorMessage()));
-                            futureToComplete = null;
-                        }
+                        System.err.println("Failed to get items: " + message.getErrorMessage());
                     }
                 });
                 break;
@@ -296,12 +295,12 @@ public class ItemService {
             case ADD_ITEM_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
-                        userItems.add(message.getItem());
-                        ItemViewModel itemViewModel = ViewModelMapper.getInstance().toViewModel(message.getItem());
-                        userItemViewModels.add(itemViewModel);
+                        ItemDTO newItem = message.getItem();
+                        userItems.add(newItem);
+                        userItemViewModels.add(ViewModelMapper.getInstance().toViewModel(newItem));
 
                         if (futureToComplete != null) {
-                            ((CompletableFuture<ItemDTO>) futureToComplete).complete(message.getItem());
+                            ((CompletableFuture<ItemDTO>) futureToComplete).complete(newItem);
                             futureToComplete = null;
                         }
                     } else {
@@ -317,15 +316,7 @@ public class ItemService {
             case UPDATE_ITEM_RESPONSE:
                 Platform.runLater(() -> {
                     if (message.isSuccess()) {
-                        for (int i = 0; i < userItems.size(); i++) {
-                            if (userItems.get(i).getId().equals(message.getItem().getId())) {
-                                userItems.set(i, message.getItem());
-                                ItemViewModel updatedViewModel = ViewModelMapper.getInstance()
-                                        .toViewModel(message.getItem());
-                                userItemViewModels.set(i, updatedViewModel);
-                                break;
-                            }
-                        }
+                        updateItemInCollections(message.getItem());
 
                         if (futureToComplete != null) {
                             ((CompletableFuture<ItemDTO>) futureToComplete).complete(message.getItem());
@@ -367,6 +358,30 @@ public class ItemService {
         }
         if (messageCallback != null) {
             messageCallback.accept(message);
+        }
+    }
+    
+    /**
+     * Update an item in both collections when server confirms changes
+     */
+    private void updateItemInCollections(ItemDTO updatedItem) {
+        // Update in userItems list
+        for (int i = 0; i < userItems.size(); i++) {
+            if (userItems.get(i).getId().equals(updatedItem.getId())) {
+                userItems.set(i, updatedItem);
+                System.out.println("Updated item " + updatedItem.getId() + " in userItems - Available: " + updatedItem.getAvailableQuantity());
+                break;
+            }
+        }
+        
+        // Update in userItemViewModels list
+        for (int i = 0; i < userItemViewModels.size(); i++) {
+            if (userItemViewModels.get(i).getId().equals(updatedItem.getId())) {
+                ItemViewModel updatedViewModel = ViewModelMapper.getInstance().toViewModel(updatedItem);
+                userItemViewModels.set(i, updatedViewModel);
+                System.out.println("Updated item " + updatedItem.getId() + " in userItemViewModels - Available: " + updatedViewModel.getAvailableQuantity());
+                break;
+            }
         }
     }
 

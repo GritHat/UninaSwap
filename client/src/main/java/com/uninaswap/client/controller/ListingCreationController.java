@@ -1,5 +1,7 @@
 package com.uninaswap.client.controller;
 
+import com.uninaswap.client.constants.EventTypes;
+import com.uninaswap.client.service.EventBusService;
 import com.uninaswap.client.service.ItemService;
 import com.uninaswap.client.service.ListingService;
 import com.uninaswap.client.service.LocaleService;
@@ -9,6 +11,8 @@ import com.uninaswap.common.dto.*;
 import com.uninaswap.common.enums.Category;
 import com.uninaswap.common.enums.Currency;
 import com.uninaswap.common.enums.ListingStatus;
+
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -690,6 +694,9 @@ public class ListingCreationController implements Refreshable {
                         
                         // Refresh items to get server-confirmed quantities
                         refreshItemsTable();
+                        
+                        // Publish event to notify other components
+                        EventBusService.getInstance().publishEvent(EventTypes.LISTING_CREATED, createdListing);
                         
                         System.out.println("Listing created successfully, quantities confirmed by server");
                     });

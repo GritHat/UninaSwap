@@ -277,7 +277,36 @@ public class InventoryController {
      */
     private void setupActionButtons() {
         editButton.disableProperty().bind(itemsTable.getSelectionModel().selectedItemProperty().isNull());
-        deleteButton.disableProperty().bind(itemsTable.getSelectionModel().selectedItemProperty().isNull());
+        
+        // Disable delete button when no item is selected OR when selected item has reserved quantities
+        deleteButton.disableProperty().bind(
+            itemsTable.getSelectionModel().selectedItemProperty().isNull()
+            .or(
+                javafx.beans.binding.Bindings.createBooleanBinding(() -> {
+                    ItemViewModel selectedItem = itemsTable.getSelectionModel().getSelectedItem();
+                    if (selectedItem == null) {
+                        return false; // Already handled by isNull() check above
+                    }
+                    int reservedQuantity = selectedItem.getTotalQuantity() - selectedItem.getAvailableQuantity();
+                    return reservedQuantity > 0;
+                }, itemsTable.getSelectionModel().selectedItemProperty())
+            )
+        );
+        
+        // Add tooltip to delete button that updates based on selection
+        itemsTable.getSelectionModel().selectedItemProperty().addListener((_, _, newSelection) -> {
+            if (newSelection == null) {
+                deleteButton.setTooltip(new Tooltip(localeService.getMessage("item.delete.tooltip.no.selection", "Select an item to delete")));
+            } else {
+                int reservedQuantity = newSelection.getTotalQuantity() - newSelection.getAvailableQuantity();
+                if (reservedQuantity > 0) {
+                    deleteButton.setTooltip(new Tooltip(localeService.getMessage("item.delete.tooltip.reserved", 
+                            "Cannot delete: " + reservedQuantity + " quantities are reserved")));
+                } else {
+                    deleteButton.setTooltip(new Tooltip(localeService.getMessage("item.delete.tooltip.available", "Delete selected item")));
+                }
+            }
+        });
     }
     
     /**
@@ -399,6 +428,18 @@ public class InventoryController {
     private void handleDeleteItem() {
         ItemViewModel selectedItem = itemsTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
+            // Check if item has reserved quantities
+            int reservedQuantity = selectedItem.getTotalQuantity() - selectedItem.getAvailableQuantity();
+            if (reservedQuantity > 0) {
+                AlertHelper.showWarningAlert(
+                        localeService.getMessage("item.delete.warning.title", "Cannot Delete Item"),
+                        localeService.getMessage("item.delete.warning.header", "Item Cannot Be Deleted"),
+                        localeService.getMessage("item.delete.warning.reserved.message", 
+                                "This item cannot be deleted because it has " + reservedQuantity + 
+                                " reserved quantities. Reserved items are currently part of active offers or listings."));
+                return;
+            }
+            
             Alert confirmation = AlertHelper.createConfirmationDialog(
                     localeService.getMessage("item.delete.title"),
                     localeService.getMessage("item.delete.header"),
@@ -444,23 +485,35 @@ public class InventoryController {
      * 
      */
     private void refreshItems() {
-        // Get fresh data from the service
-        ObservableList<ItemViewModel> newItems = itemService.getUserItemsListAsViewModel();
+        System.out.println("InventoryController: refreshItems() called");
         
-        // Update the source list for the filtered list
-        if (filteredItems != null) {
-            // Get the source list and update it
-            ObservableList<ItemViewModel> sourceList = (ObservableList<ItemViewModel>) filteredItems.getSource();
-            sourceList.setAll(newItems);
-        } else {
-            // Fallback: recreate the filtered list
+        try {
+            // Get fresh data from the service
+            ObservableList<ItemViewModel> newItems = itemService.getUserItemsListAsViewModel();
+            System.out.println("InventoryController: Got " + newItems.size() + " items from service");
+            
+            // Always recreate the FilteredList to avoid synchronization issues
             filteredItems = new FilteredList<>(newItems);
+            
+            // Apply current filter settings before setting to table
+            updateFilters();
+            
+            // Set to table
             itemsTable.setItems(filteredItems);
+            
+            // Re-setup listeners
             setupSearchAndFilters();
+            
+            // Force refresh
+            Platform.runLater(() -> {
+                itemsTable.refresh();
+                System.out.println("InventoryController: Table refresh completed. Filtered items count: " + filteredItems.size());
+            });
+            
+        } catch (Exception e) {
+            System.err.println("Error refreshing items: " + e.getMessage());
+            e.printStackTrace();
         }
-        
-        // Refresh the table view
-        itemsTable.refresh();
     }
 
     /**
@@ -557,6 +610,24 @@ public class InventoryController {
                     setGraphic(null);
                 } else {
                     setGraphic(actionBox);
+                    
+                    // Update delete button state based on item's reserved quantity
+                    ItemViewModel currentItem = getTableView().getItems().get(getIndex());
+                    if (currentItem != null) {
+                        int reservedQuantity = currentItem.getTotalQuantity() - currentItem.getAvailableQuantity();
+                        boolean hasReservedQuantities = reservedQuantity > 0;
+                        
+                        deleteButton.setDisable(hasReservedQuantities);
+                        
+                        if (hasReservedQuantities) {
+                            deleteButton.setTooltip(new Tooltip(localeService.getMessage("item.delete.tooltip.reserved", 
+                                    "Cannot delete: " + reservedQuantity + " quantities are reserved")));
+                            deleteButton.getStyleClass().add("disabled-button");
+                        } else {
+                            deleteButton.setTooltip(new Tooltip(localeService.getMessage("item.delete.tooltip.available", "Delete this item")));
+                            deleteButton.getStyleClass().remove("disabled-button");
+                        }
+                    }
                 }
             }
         });
@@ -566,6 +637,18 @@ public class InventoryController {
      * @param item
      */
     private void handleDeleteItem(ItemViewModel item) {
+        // Check if item has reserved quantities
+        int reservedQuantity = item.getTotalQuantity() - item.getAvailableQuantity();
+        if (reservedQuantity > 0) {
+            AlertHelper.showWarningAlert(
+                    localeService.getMessage("item.delete.warning.title", "Cannot Delete Item"),
+                    localeService.getMessage("item.delete.warning.header", "Item Cannot Be Deleted"),
+                    localeService.getMessage("item.delete.warning.reserved.message", 
+                            "This item cannot be deleted because it has " + reservedQuantity + 
+                            " reserved quantities. Reserved items are currently part of active offers or listings."));
+            return;
+        }
+        
         Alert confirmation = AlertHelper.createConfirmationDialog(
                 localeService.getMessage("item.delete.title"),
                 localeService.getMessage("item.delete.header"),

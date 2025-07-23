@@ -649,21 +649,78 @@ public class ListingCreationController implements Refreshable {
         if (listing == null) {
             return;
         }
+        
+        // Store original quantities for rollback if needed
+        Map<String, Integer> originalAvailableQuantities = new HashMap<>();
+        
+        // Apply optimistic updates to item quantities
+        for (ListingItemDTO listingItem : selectedItems) {
+            String itemId = listingItem.getItemId();
+            int reservedQuantity = listingItem.getQuantity();
+            
+            // Find the actual item in the service
+            ItemDTO item = itemService.getUserItemsList().stream()
+                    .filter(i -> i.getId().equals(itemId))
+                    .findFirst()
+                    .orElse(null);
+                    
+            if (item != null) {
+                // Store original for potential rollback
+                originalAvailableQuantities.put(itemId, item.getAvailableQuantity());
+                
+                // Apply optimistic update
+                int newAvailable = Math.max(0, item.getAvailableQuantity() - reservedQuantity);
+                item.setAvailableQuantity(newAvailable);
+                
+                System.out.println("Optimistically updated item " + itemId + " - Available: " + 
+                                 originalAvailableQuantities.get(itemId) + " -> " + newAvailable);
+            }
+        }
+        
         listingService.createListing(listing)
-                .thenAccept(_ -> {
-                    tempReservedQuantities.clear();
+                .thenAccept(createdListing -> {
+                    Platform.runLater(() -> {
+                        tempReservedQuantities.clear();
 
-                    AlertHelper.showInformationAlert(
-                            localeService.getMessage("listing.create.success.title"),
-                            localeService.getMessage("listing.create.success.header"),
-                            localeService.getMessage("listing.create.success.content"));
-                    clearForm();
+                        AlertHelper.showInformationAlert(
+                                localeService.getMessage("listing.create.success.title"),
+                                localeService.getMessage("listing.create.success.header"),
+                                localeService.getMessage("listing.create.success.content"));
+                        clearForm();
+                        
+                        // Refresh items to get server-confirmed quantities
+                        refreshItemsTable();
+                        
+                        System.out.println("Listing created successfully, quantities confirmed by server");
+                    });
                 })
                 .exceptionally(ex -> {
-                    AlertHelper.showErrorAlert(
-                            localeService.getMessage("listing.create.error.title"),
-                            localeService.getMessage("listing.create.error.header"),
-                            ex.getMessage());
+                    Platform.runLater(() -> {
+                        // Rollback optimistic updates on error
+                        for (Map.Entry<String, Integer> entry : originalAvailableQuantities.entrySet()) {
+                            String itemId = entry.getKey();
+                            int originalQuantity = entry.getValue();
+                            
+                            ItemDTO item = itemService.getUserItemsList().stream()
+                                    .filter(i -> i.getId().equals(itemId))
+                                    .findFirst()
+                                    .orElse(null);
+                                    
+                            if (item != null) {
+                                item.setAvailableQuantity(originalQuantity);
+                                System.out.println("Rolled back item " + itemId + " to original quantity: " + originalQuantity);
+                            }
+                        }
+                        
+                        // Clear temp reservations on error
+                        tempReservedQuantities.clear();
+                        refreshItemsTable();
+                        
+                        AlertHelper.showErrorAlert(
+                                localeService.getMessage("listing.create.error.title"),
+                                localeService.getMessage("listing.create.error.header"),
+                                ex.getMessage());
+                    });
                     return null;
                 });
     }

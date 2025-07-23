@@ -7577,3 +7577,23 @@
     -fx-font-size: 11px;
     -fx-font-style: italic;
 }
+
+.table-action-button.disabled-button {
+    -fx-opacity: 0.5;
+    -fx-text-fill: #6c757d;
+}
+
+.table-action-button.disabled-button:hover {
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #6c757d;
+}
+
+/* Enhanced tooltip styling */
+.tooltip {
+    -fx-background-color: rgba(0, 0, 0, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 8px;
+    -fx-background-radius: 4px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 4, 0, 0, 2);
+}

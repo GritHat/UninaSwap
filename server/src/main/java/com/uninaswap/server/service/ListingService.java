@@ -32,7 +32,7 @@ public class ListingService {
     private final UserRepository userRepository;
     private final ItemService itemService;
 
-    // Mappers
+    
     private final ListingMapper listingMapper;
     private final SellListingMapper sellListingMapper;
     private final TradeListingMapper tradeListingMapper;
@@ -70,7 +70,7 @@ public class ListingService {
     public Page<ListingDTO> getActiveListings(Pageable pageable) {
         logger.info("Getting active listings with pagination: {}", pageable);
 
-        // Use JOIN FETCH to eagerly load the listingItems collection
+        
         Page<ListingEntity> listingEntities = listingRepository.findByStatusWithItems(ListingStatus.ACTIVE, pageable);
 
         return listingEntities.map(listingMapper::toDto);
@@ -111,18 +111,18 @@ public class ListingService {
         logger.info("Creating new {} listing for user ID: {}",
                 listingType, listingDTO.getCreator().getId());
 
-        // Validate the creator
+        
         Optional<UserEntity> creatorOpt = userRepository.findById(listingDTO.getCreator().getId());
         if (!creatorOpt.isPresent()) {
             throw new IllegalArgumentException("Creator with ID " + listingDTO.getCreator().getId() + " not found");
         }
         UserEntity creator = creatorOpt.get();
 
-        // Prepare items to add to listing
+        
         List<String> itemIds = new ArrayList<>();
         List<Integer> quantities = new ArrayList<>();
 
-        // Create the appropriate listing type
+        
         ListingEntity listing;
 
         switch (listingType.toUpperCase()) {
@@ -146,7 +146,7 @@ public class ListingService {
                 throw new IllegalArgumentException("Unsupported listing type: " + listingType);
         }
 
-        // Add common fields
+        
         listing.setTitle(listingDTO.getTitle());
         listing.setDescription(listingDTO.getDescription());
         listing.setCreator(creator);
@@ -155,19 +155,19 @@ public class ListingService {
         listing.setUpdatedAt(LocalDateTime.now());
         listing.setPickupLocation(listingDTO.getPickupLocation());
 
-        // Set image path from the first item's image if available
+        
         if (listingDTO.getItems() != null && !listingDTO.getItems().isEmpty() &&
                 listingDTO.getItems().get(0).getItemImagePath() != null) {
             listing.setImagePath(listingDTO.getItems().get(0).getItemImagePath());
         } else {
-            // Use a default image path if no item image is available
+            
             listing.setImagePath("default-listing-image.jpg");
         }
 
-        // Save the listing first to get the ID
+        
         ListingEntity savedListing = listingRepository.save(listing);
 
-        // Now add items to the listing
+        
         for (ListingItemDTO itemDTO : listingDTO.getItems()) {
             Optional<ItemEntity> itemOpt = itemRepository.findById(itemDTO.getItemId());
             if (!itemOpt.isPresent()) {
@@ -176,16 +176,16 @@ public class ListingService {
 
             ItemEntity item = itemOpt.get();
 
-            // Verify ownership
+            
             if (!item.getOwner().getId().equals(creator.getId())) {
                 throw new IllegalArgumentException("Item " + item.getName() + " is not owned by the creator");
             }
 
-            // Add to lists for reservation
+            
             itemIds.add(item.getId());
             quantities.add(itemDTO.getQuantity());
 
-            // Create listing item
+            
             ListingItemEntity listingItem = new ListingItemEntity();
             listingItem.setListing(savedListing);
             listingItem.setItem(item);
@@ -194,10 +194,10 @@ public class ListingService {
             listingItemRepository.save(listingItem);
         }
 
-        // Reserve the items
+        
         itemService.reserveItems(itemIds, quantities);
 
-        // Return the DTO using the appropriate mapper based on the listing type
+        
         switch (listingType.toUpperCase()) {
             case "SELL":
                 return sellListingMapper.toDto((SellListingEntity) savedListing);
@@ -228,23 +228,23 @@ public class ListingService {
     private TradeListingEntity createTradeListing(TradeListingDTO dto, UserEntity creator) {
         TradeListingEntity tradeListing = new TradeListingEntity();
 
-        // Set basic trade parameters
+        
         tradeListing.setAcceptOtherOffers(dto.isAcceptOtherOffers());
         tradeListing.setAcceptMixedOffers(dto.isAcceptMixedOffers());
         tradeListing.setAcceptMoneyOffers(dto.isAcceptMoneyOffers());
 
-        // Set categories
+        
         if (dto.getDesiredCategories() != null) {
             tradeListing.setDesiredCategories(dto.getDesiredCategories());
         }
 
-        // Set reference price if accepting money offers
+        
         if (dto.isAcceptMoneyOffers()) {
             tradeListing.setReferencePrice(dto.getReferencePrice());
             tradeListing.setCurrency(dto.getCurrency() != null ? dto.getCurrency() : Currency.EUR);
         }
 
-        // Add desired items if any
+        
         if (dto.getDesiredItems() != null && !dto.getDesiredItems().isEmpty()) {
             for (ItemDTO desiredItemDTO : dto.getDesiredItems()) {
                 Optional<ItemEntity> itemOpt = itemRepository.findById(desiredItemDTO.getId());
@@ -278,14 +278,14 @@ public class ListingService {
         auctionListing.setMinimumBidIncrement(dto.getMinimumBidIncrement());
         auctionListing.setCurrency(dto.getCurrency() != null ? dto.getCurrency() : Currency.EUR);
 
-        // Set the start time to now
+        
         LocalDateTime now = LocalDateTime.now();
         auctionListing.setStartTime(now);
 
-        // Set duration based on the DTO's durationInDays field
+        
         int days = dto.getDurationInDays();
         if (days <= 0) {
-            // Default to 7 days if not specified
+            
             days = 7;
         }
         auctionListing.setEndTime(now.plusDays(days));
@@ -300,7 +300,7 @@ public class ListingService {
     public ListingDTO updateListing(ListingDTO listingDTO, String listingType) {
         logger.info("Updating {} listing with ID: {}", listingType, listingDTO.getId());
 
-        // Find the existing listing
+        
         Optional<ListingEntity> listingOpt = listingRepository.findById(listingDTO.getId());
         if (!listingOpt.isPresent()) {
             throw new IllegalArgumentException("Listing with ID " + listingDTO.getId() + " not found");
@@ -308,12 +308,12 @@ public class ListingService {
 
         ListingEntity listing = listingOpt.get();
 
-        // Update common fields
+        
         listing.setTitle(listingDTO.getTitle());
         listing.setDescription(listingDTO.getDescription());
         listing.setUpdatedAt(LocalDateTime.now());
 
-        // Update type-specific fields
+        
         switch (listingType.toUpperCase()) {
             case "SELL":
                 updateSellListing((SellListingEntity) listing, (SellListingDTO) listingDTO);
@@ -331,13 +331,13 @@ public class ListingService {
                 throw new IllegalArgumentException("Unsupported listing type: " + listingType);
         }
 
-        // Update the listing first
+        
         ListingEntity savedListing = listingRepository.save(listing);
 
-        // Handle items - this is more complex for updates
-        // For simplicity, we'll assume no item changes in updates right now
+        
+        
 
-        // Return the DTO using the appropriate mapper
+        
         switch (listingType.toUpperCase()) {
             case "SELL":
                 return sellListingMapper.toDto((SellListingEntity) savedListing);
@@ -383,7 +383,7 @@ public class ListingService {
             }
         }
 
-        // Handling desired items is more complex - omitted for brevity
+        
     }
 
     /**
@@ -401,7 +401,7 @@ public class ListingService {
      * Update an auction listing
      */
     private void updateAuctionListing(AuctionListingEntity listing, AuctionListingDTO dto) {
-        // Only allow certain fields to be updated if the auction hasn't started
+        
         if (listing.getHasBids()) {
             throw new IllegalStateException("Cannot modify an auction that has bids");
         }
@@ -419,7 +419,7 @@ public class ListingService {
             listing.setCurrency(dto.getCurrency());
         }
 
-        // Adjust end time if duration changed
+        
         if (dto.getDurationInDays() > 0) {
             listing.setEndTime(listing.getStartTime().plusDays(dto.getDurationInDays()));
         }
@@ -432,7 +432,7 @@ public class ListingService {
     public void deleteListing(String listingId) {
         logger.info("Deleting listing with ID: {}", listingId);
 
-        // Find the listing
+        
         Optional<ListingEntity> listingOpt = listingRepository.findById(listingId);
         if (!listingOpt.isPresent()) {
             throw new IllegalArgumentException("Listing with ID " + listingId + " not found");
@@ -440,7 +440,7 @@ public class ListingService {
 
         ListingEntity listing = listingOpt.get();
 
-        // Release reserved items
+        
         List<ListingItemEntity> listingItems = listingItemRepository.findByListingId(listingId);
         for (ListingItemEntity listingItem : listingItems) {
             ItemEntity item = listingItem.getItem();
@@ -448,7 +448,7 @@ public class ListingService {
             itemRepository.save(item);
         }
 
-        // Delete the listing
+        
         listingRepository.delete(listing);
     }
 
@@ -467,7 +467,7 @@ public class ListingService {
     /**
      * Search listings by text query
      */
-    @Transactional(readOnly = true)  // Add this annotation
+    @Transactional(readOnly = true)  
     public Page<ListingDTO> searchListingsByText(String query, Pageable pageable) {
         try {
             Page<ListingEntity> entities = listingRepository.findByTitleContainingIgnoreCaseAndStatus(
@@ -482,7 +482,7 @@ public class ListingService {
     /**
      * Get listings by type
      */
-    @Transactional(readOnly = true)  // Add this annotation
+    @Transactional(readOnly = true)  
     public Page<ListingDTO> getListingsByType(String listingType, Pageable pageable) {
         try {
             Page<ListingEntity> entities;
@@ -500,7 +500,7 @@ public class ListingService {
     /**
      * Search listings by text and type
      */
-    @Transactional(readOnly = true)  // Add this annotation
+    @Transactional(readOnly = true)  
     public Page<ListingDTO> searchListingsByTextAndType(String query, String listingType, Pageable pageable) {
         try {
             Page<ListingEntity> entities;
@@ -524,7 +524,7 @@ public class ListingService {
     /**
      * Get listings by category
      */
-    @Transactional(readOnly = true)  // Add this annotation
+    @Transactional(readOnly = true)  
     public Page<ListingDTO> getListingsByCategory(Category category, Pageable pageable) {
         try {
             Page<ListingEntity> entities = listingRepository.findByItemsCategoryAndStatus(
@@ -539,7 +539,7 @@ public class ListingService {
     /**
      * Get listings by type and category
      */
-    @Transactional(readOnly = true)  // Add this annotation
+    @Transactional(readOnly = true)  
     public Page<ListingDTO> getListingsByTypeAndCategory(String listingType, Category category, Pageable pageable) {
         try {
             Class<?> entityClass = mapListingTypeToClass(listingType);
@@ -560,7 +560,7 @@ public class ListingService {
         }
     }
 
-    @Transactional(readOnly = true)  // Add this annotation
+    @Transactional(readOnly = true)  
     public Page<ListingDTO> searchListingsByTextAndCategory(String query, Category category, Pageable pageable) {
         try {
             Page<ListingEntity> entities = listingRepository.findByTitleContainingIgnoreCaseAndItemsCategoryAndStatus(
@@ -575,7 +575,7 @@ public class ListingService {
     /**
      * Search listings by text, type, and category
      */
-    @Transactional(readOnly = true)  // Add this annotation
+    @Transactional(readOnly = true)  
     public Page<ListingDTO> searchListingsByTextTypeAndCategory(String query, String listingType, Category category, Pageable pageable) {
         try {
             Class<?> entityClass = mapListingTypeToClass(listingType);
@@ -616,7 +616,7 @@ public class ListingService {
             case "gift":
                 return com.uninaswap.server.entity.GiftListingEntity.class;
             default:
-                return null; // Will use fallback methods
+                return null; 
         }
     }
 

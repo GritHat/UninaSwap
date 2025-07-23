@@ -21,7 +21,7 @@ public class SellListingDTO extends ListingDTO {
      */
     private String pickupLocation;
     
-    // Default constructor
+    
     /**
      * 
      */
@@ -43,7 +43,7 @@ public class SellListingDTO extends ListingDTO {
         return price + " " + currency;
     }
     
-    // Getters and setters
+    
     /**
      * @return
      */

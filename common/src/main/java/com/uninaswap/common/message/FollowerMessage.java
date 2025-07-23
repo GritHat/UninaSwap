@@ -14,7 +14,7 @@ public class FollowerMessage extends Message {
      * 
      */
     public enum Type {
-        // Requests
+        
         FOLLOW_USER_REQUEST,
         UNFOLLOW_USER_REQUEST,
         GET_FOLLOWING_REQUEST,
@@ -23,7 +23,7 @@ public class FollowerMessage extends Message {
         GET_FOLLOW_STATS_REQUEST,
         TOGGLE_FOLLOW_REQUEST,
 
-        // Responses
+        
         FOLLOW_USER_RESPONSE,
         UNFOLLOW_USER_RESPONSE,
         GET_FOLLOWING_RESPONSE,
@@ -90,7 +90,7 @@ public class FollowerMessage extends Message {
      */
     private int totalPages = 0;
 
-    // Default constructor
+    
     /**
      * 
      */
@@ -99,7 +99,7 @@ public class FollowerMessage extends Message {
         setMessageType("follower");
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

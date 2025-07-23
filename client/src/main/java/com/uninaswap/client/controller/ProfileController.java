@@ -262,7 +262,7 @@ public class ProfileController implements Refreshable {
             }
         }
 
-        // Set max length for fields
+        
         TextUtils.setMaxLength(emailField, 100);
         TextUtils.setMaxLength(firstNameField, 50);
         TextUtils.setMaxLength(lastNameField, 50);
@@ -361,13 +361,13 @@ public class ProfileController implements Refreshable {
                 cityField.setText(viewedUser.getCity());
             }
             if (stateProvinceField != null) {
-                stateProvinceField.setText(viewedUser.getStateProvince()); // You might need a separate state field in UserViewModel
+                stateProvinceField.setText(viewedUser.getStateProvince()); 
             }
             if (countryField != null) {
                 countryField.setText(viewedUser.getCountry());
             }
             if (zipPostalCodeField != null) {
-                zipPostalCodeField.setText(viewedUser.getZipPostalCode()); // You might need a separate zip field in UserViewModel
+                zipPostalCodeField.setText(viewedUser.getZipPostalCode()); 
             }
         }
         String imagePath = viewedUser.getProfileImagePath();
@@ -442,7 +442,7 @@ public class ProfileController implements Refreshable {
      */
     private void updateRatingReviewsLabel() {
         if (ratingReviewsLabel != null && viewedUser != null) {
-            // Use the same approach as analytics - fetch actual review data
+            
             fetchUserReviewSummary(viewedUser.getId());
         }
     }
@@ -453,7 +453,7 @@ public class ProfileController implements Refreshable {
      */
     private void fetchUserReviewSummary(Long userId) {
         try {
-            // Use the ReviewService to get actual review data
+            
             ReviewService reviewService = ReviewService.getInstance();
             
             reviewService.getUserRatingSummary(userId)
@@ -465,7 +465,7 @@ public class ProfileController implements Refreshable {
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
-                        // Fallback to "No reviews yet" if there's an error
+                        
                         ratingReviewsLabel.setText(localeService.getMessage("profile.no.reviews", "No reviews yet"));
                         System.err.println("Error fetching review summary for user " + userId + ": " + ex.getMessage());
                     });
@@ -473,10 +473,10 @@ public class ProfileController implements Refreshable {
                 });
                 
         } catch (Exception e) {
-            // Fallback if ReviewService is not available
+            
             System.err.println("ReviewService not available, falling back to UserViewModel data: " + e.getMessage());
             
-            // Use the existing UserViewModel data as fallback
+            
             double rating = viewedUser.getRating();
             int reviewCount = viewedUser.getReviewCount();
             updateRatingReviewsDisplay(rating, reviewCount);
@@ -606,7 +606,7 @@ public class ProfileController implements Refreshable {
             }
         });
 
-        // Add hover effect
+        
         itemContainer.setOnMouseEntered(_ -> itemContainer.getStyleClass().add("listing-item-hover"));
         itemContainer.setOnMouseExited(_ -> itemContainer.getStyleClass().remove("listing-item-hover"));
 
@@ -894,7 +894,7 @@ public class ProfileController implements Refreshable {
     private void handleReportUser() {
         if (viewedUser != null) {
             try {
-                //navigationService.openReportDialog(viewedUser);
+                
             } catch (Exception e) {
                 System.err.println("Error opening report dialog: " + e.getMessage());
                 AlertHelper.showErrorAlert(

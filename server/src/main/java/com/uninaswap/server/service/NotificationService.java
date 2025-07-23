@@ -63,7 +63,7 @@ public class NotificationService {
         
         NotificationDTO notificationDTO = notificationMapper.toDto(notification);
         
-        // Publish event instead of direct WebSocket call
+        
         eventPublisher.publishEvent(new NotificationCreatedEvent(recipientId, notificationDTO));
         
         return notificationDTO;
@@ -111,7 +111,7 @@ public class NotificationService {
         List<NotificationEntity> notifications = notificationRepository.findRecentNotifications(userId, since);
         
         return notifications.stream()
-            .limit(10) // Limit to 10 most recent
+            .limit(10) 
             .map(notificationMapper::toDto)
             .collect(Collectors.toList());
     }
@@ -131,7 +131,7 @@ public class NotificationService {
         int updated = notificationRepository.markAsRead(notificationId, userId, LocalDateTime.now());
         
         if (updated > 0) {
-            // Publish event for unread count update
+            
             long unreadCount = getUnreadCount(userId);
             eventPublisher.publishEvent(new UnreadCountChangedEvent(userId, unreadCount));
             return true;
@@ -146,7 +146,7 @@ public class NotificationService {
         int updated = notificationRepository.markAllAsRead(userId, LocalDateTime.now());
         
         if (updated > 0) {
-            // Publish event for unread count update
+            
             eventPublisher.publishEvent(new UnreadCountChangedEvent(userId, 0L));
         }
         
@@ -160,7 +160,7 @@ public class NotificationService {
         int updated = notificationRepository.markTypeAsRead(userId, type, LocalDateTime.now());
         
         if (updated > 0) {
-            // Publish event for unread count update
+            
             long unreadCount = getUnreadCount(userId);
             eventPublisher.publishEvent(new UnreadCountChangedEvent(userId, unreadCount));
         }
@@ -177,7 +177,7 @@ public class NotificationService {
         if (notification.isPresent() && notification.get().getRecipient().getId().equals(userId)) {
             notificationRepository.delete(notification.get());
             
-            // Publish event for unread count update
+            
             long unreadCount = getUnreadCount(userId);
             eventPublisher.publishEvent(new UnreadCountChangedEvent(userId, unreadCount));
             
@@ -189,9 +189,9 @@ public class NotificationService {
     /**
      * Cleanup old notifications (runs daily)
      */
-    @Scheduled(cron = "0 0 2 * * ?") // Run at 2 AM daily
+    @Scheduled(cron = "0 0 2 * * ?") 
     public void cleanupOldNotifications() {
-        // Delete notifications older than 30 days
+        
         LocalDateTime cutoffDate = LocalDateTime.now().minusDays(30);
         int deleted = notificationRepository.deleteOldNotifications(cutoffDate);
         
@@ -200,7 +200,7 @@ public class NotificationService {
         }
     }
     
-    // Convenience methods for common notification types
+    
     
     public NotificationDTO createOfferReceivedNotification(Long recipientId, String listingTitle, String offerAmount) {
         String title = "New Offer Received";
@@ -224,7 +224,7 @@ public class NotificationService {
         return createNotification(recipientId, NotificationType.SYSTEM_ANNOUNCEMENT, title, message);
     }
     
-    // Event classes for decoupling
+    
     public static class NotificationCreatedEvent {
         private final Long recipientId;
         private final NotificationDTO notification;

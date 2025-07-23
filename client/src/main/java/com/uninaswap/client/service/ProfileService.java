@@ -33,7 +33,7 @@ public class ProfileService {
      * @param handler
      */
     public void setUpdateResponseHandler(Consumer<ProfileUpdateMessage> handler) {
-        // Register the handler with the WebSocketClient
+        
         webSocketClient.registerMessageHandler(ProfileUpdateMessage.class, handler);
     }
     

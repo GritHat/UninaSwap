@@ -25,7 +25,7 @@ public class AuctionListingEntity extends ListingEntity {
     private Currency currency;
     
     @Column(nullable = false)
-    private LocalDateTime startTime; // Added missing startTime field
+    private LocalDateTime startTime; 
     
     @Column(nullable = false)
     private LocalDateTime endTime;
@@ -45,13 +45,13 @@ public class AuctionListingEntity extends ListingEntity {
     
     private String pickupLocation;
 
-    // Default constructor
+    
     public AuctionListingEntity() {
         super();
-        this.startTime = LocalDateTime.now(); // Initialize start time to now by default
+        this.startTime = LocalDateTime.now(); 
     }
     
-    // Constructor with required fields
+    
     public AuctionListingEntity(String title, String description, UserEntity creator, String imagePath,
                          BigDecimal startingPrice, BigDecimal reservePrice, Currency currency,
                          LocalDateTime endTime, BigDecimal minimumBidIncrement, String pickupLocation) {
@@ -63,11 +63,11 @@ public class AuctionListingEntity extends ListingEntity {
         this.startingPrice = startingPrice;
         this.reservePrice = reservePrice;
         this.currency = currency;
-        this.startTime = LocalDateTime.now(); // Set start time to now
+        this.startTime = LocalDateTime.now(); 
         this.endTime = endTime;
         this.minimumBidIncrement = minimumBidIncrement;
         this.pickupLocation = pickupLocation;
-        // Do not set current highest bid yet - it will be null until first bid
+        
     }
     
     /**
@@ -87,17 +87,17 @@ public class AuctionListingEntity extends ListingEntity {
      * @return true if bid was successful, false otherwise
      */
     public boolean placeBid(UserEntity bidder, BigDecimal bidAmount) {
-        // Validate bid amount
+        
         if (bidAmount == null || bidAmount.compareTo(getMinimumNextBid()) < 0) {
             return false;
         }
         
-        // Check if auction has ended
+        
         if (isEnded()) {
             return false;
         }
         
-        // Update bid info
+        
         this.currentHighestBid = bidAmount;
         this.highestBidder = bidder;
         this.hasBids = true;
@@ -151,7 +151,7 @@ public class AuctionListingEntity extends ListingEntity {
         return LocalDateTime.now().isAfter(endTime);
     }
     
-    // Getters and Setters
+    
     public BigDecimal getStartingPrice() {
         return startingPrice;
     }

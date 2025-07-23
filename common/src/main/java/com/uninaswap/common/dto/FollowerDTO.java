@@ -40,14 +40,14 @@ public class FollowerDTO implements Serializable {
      */
     private LocalDateTime createdAt;
 
-    // Default constructor
+    
     /**
      * 
      */
     public FollowerDTO() {
     }
 
-    // Constructor
+    
     /**
      * @param followerId
      * @param followedId
@@ -58,7 +58,7 @@ public class FollowerDTO implements Serializable {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

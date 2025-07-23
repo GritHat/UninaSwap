@@ -16,7 +16,7 @@ public class ImageService {
     private final String uploadDir;
     
     public ImageService() {
-        // Create uploads directory in project root
+        
         this.uploadDir = "uploads";
         File directory = new File(uploadDir);
         if (!directory.exists()) {
@@ -31,17 +31,17 @@ public class ImageService {
      * @return The unique image ID that can be used to retrieve the image
      */
     public String saveImage(String base64Image, String format) throws IOException {
-        // Generate a unique ID for the image
+        
         String imageId = UUID.randomUUID().toString();
         
-        // Decode the base64 string
+        
         byte[] imageBytes = Base64.getDecoder().decode(base64Image);
         
-        // Create the file path
+        
         String filename = imageId + "." + format;
         String filePath = uploadDir + File.separator + filename;
         
-        // Write the file to disk
+        
         try (FileOutputStream fos = new FileOutputStream(filePath)) {
             fos.write(imageBytes);
         }

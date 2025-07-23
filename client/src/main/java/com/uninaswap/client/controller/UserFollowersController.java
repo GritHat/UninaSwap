@@ -153,8 +153,8 @@ public class UserFollowersController {
         followingUsernameColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
 
-        followingDateColumn.setCellValueFactory(_ -> new SimpleStringProperty("N/A")); // You can add join date
-                                                                                              // if available
+        followingDateColumn.setCellValueFactory(_ -> new SimpleStringProperty("N/A")); 
+                                                                                              
 
         followersNameColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDisplayName()));
@@ -162,8 +162,8 @@ public class UserFollowersController {
         followersUsernameColumn
                 .setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
 
-        followersDateColumn.setCellValueFactory(_ -> new SimpleStringProperty("N/A")); // You can add join date
-                                                                                              // if available
+        followersDateColumn.setCellValueFactory(_ -> new SimpleStringProperty("N/A")); 
+                                                                                              
 
         setupFollowingActionsColumn();
         setupFollowersActionsColumn();
@@ -286,7 +286,7 @@ public class UserFollowersController {
                 .thenAccept(following -> Platform.runLater(() -> {
                     followingUsers.clear();
                     following.forEach(userDTO -> {
-                    //    followingUsers.add(viewModelMapper.toViewModel(userDTO));
+                    
                     });
                     updateCounts();
                 }))
@@ -302,7 +302,7 @@ public class UserFollowersController {
                 .thenAccept(followers -> Platform.runLater(() -> {
                     followerUsers.clear();
                     followers.forEach(userDTO -> {
-                       // followerUsers.add(viewModelMapper.toViewModel(userDTO));
+                       
                     });
                     updateCounts();
                 }))

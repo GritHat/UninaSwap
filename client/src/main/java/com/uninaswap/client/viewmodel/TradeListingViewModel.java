@@ -60,7 +60,7 @@ public class TradeListingViewModel extends ListingViewModel {
      */
     private final SimpleStringProperty pickupLocation = new SimpleStringProperty();
 
-    // Constructors
+    
     /**
      * 
      */
@@ -86,7 +86,7 @@ public class TradeListingViewModel extends ListingViewModel {
         setTradeDetails(tradeDetails);
     }
 
-    // Property getters
+    
     /**
      * @return
      */

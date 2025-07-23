@@ -61,26 +61,26 @@ public class OfferService {
     public OfferDTO createOffer(OfferDTO offerDTO, Long userId) {
         logger.info("Creating new offer for listing {} by user {}", offerDTO.getListingId(), userId);
 
-        // Validate the user
+        
         Optional<UserEntity> userOpt = userRepository.findById(userId);
         if (!userOpt.isPresent()) {
             throw new IllegalArgumentException("User with ID " + userId + " not found");
         }
         UserEntity user = userOpt.get();
 
-        // Validate the listing
+        
         Optional<ListingEntity> listingOpt = listingRepository.findById(offerDTO.getListingId());
         if (!listingOpt.isPresent()) {
             throw new IllegalArgumentException("Listing with ID " + offerDTO.getListingId() + " not found");
         }
         ListingEntity listing = listingOpt.get();
 
-        // Check if user is trying to make an offer on their own listing
+        
         if (listing.getCreator().getId().equals(userId)) {
             throw new IllegalArgumentException("Cannot make an offer on your own listing");
         }
 
-        // Create the offer entity
+        
         OfferEntity offer = new OfferEntity();
         offer.setListing(listing);
         offer.setUser(user);
@@ -90,16 +90,16 @@ public class OfferService {
         offer.setDeliveryType(offerDTO.getDeliveryType());
         offer.setStatus(OfferStatus.PENDING);
 
-        // Save the offer first
+        
         OfferEntity savedOffer = offerRepository.save(offer);
 
-        // Handle offer items if present
+        
         if (offerDTO.getOfferItems() != null && !offerDTO.getOfferItems().isEmpty()) {
             List<String> itemIds = new ArrayList<>();
             List<Integer> quantities = new ArrayList<>();
 
             for (OfferItemDTO offerItemDTO : offerDTO.getOfferItems()) {
-                // Validate item exists and belongs to the user
+                
                 Optional<ItemEntity> itemOpt = itemRepository.findById(offerItemDTO.getItemId());
                 if (!itemOpt.isPresent()) {
                     throw new IllegalArgumentException("Item with ID " + offerItemDTO.getItemId() + " not found");
@@ -107,17 +107,17 @@ public class OfferService {
 
                 ItemEntity item = itemOpt.get();
 
-                // Verify ownership
+                
                 if (!item.getOwner().getId().equals(userId)) {
                     throw new IllegalArgumentException("Item " + item.getName() + " is not owned by the user");
                 }
 
-                // Check availability
+                
                 if (item.getAvailableQuantity() < offerItemDTO.getQuantity()) {
                     throw new IllegalArgumentException("Insufficient quantity for item " + item.getName());
                 }
 
-                // Create offer item
+                
                 OfferItemEntity offerItem = new OfferItemEntity();
                 offerItem.setOffer(savedOffer);
                 offerItem.setItem(item);
@@ -125,42 +125,42 @@ public class OfferService {
 
                 offerItemRepository.save(offerItem);
 
-                // Add to lists for reservation
+                
                 itemIds.add(item.getId());
                 quantities.add(offerItemDTO.getQuantity());
             }
 
-            // Reserve the items
+            
             itemService.reserveItems(itemIds, quantities);
         }
 
-        // Check if this is a "Buy Now" full-price offer that should be auto-accepted
+        
         boolean shouldAutoAccept = shouldAutoAcceptOffer(savedOffer, listing);
         if (shouldAutoAccept) {
             logger.info("Auto-accepting full-price offer {} for sell listing", savedOffer.getId());
             
-            // Determine next status based on delivery type (same logic as acceptOffer)
+            
             OfferStatus nextStatus;
             if (savedOffer.getDeliveryType() == DeliveryType.PICKUP) {
-                // For pickup delivery, go to ACCEPTED (waiting for pickup scheduling)
+                
                 nextStatus = OfferStatus.ACCEPTED;
             } else {
-                // For shipping delivery, go directly to CONFIRMED
+                
                 nextStatus = OfferStatus.CONFIRMED;
             }
 
-            // Update the offer status
+            
             OfferStatus oldStatus = savedOffer.getStatus();
             savedOffer.setStatus(nextStatus);
             savedOffer.setUpdatedAt(LocalDateTime.now());
             listing.setStatus(ListingStatus.PENDING);
             
-            // Handle item reservations for the status change
+            
             handleItemReservationsOnStatusChange(savedOffer, oldStatus, nextStatus);
             
             savedOffer = offerRepository.save(savedOffer);
         } else {
-            // Send notification for regular offers that need manual review
+            
             notificationService.createNotification(
                     listing.getCreator().getId(),
                     NotificationType.OFFER_RECEIVED,
@@ -180,27 +180,27 @@ public class OfferService {
      * and Gift requests
      */
     private boolean shouldAutoAcceptOffer(OfferEntity offer, ListingEntity listing) {
-        // Auto-accept gift requests
+        
         if (listing.getListingType().equals("GIFT")) {
             logger.info("Auto-accepting gift request for gift listing {}", listing.getId());
             return true;
         }
         
-        // Auto-accept full-price sell offers
+        
         if (!listing.getListingType().equals("SELL")) {
             return false;
         }
         
         logger.info("Checking if offer {} should be auto-accepted for listing {}", offer.getId(), listing.getId());
         
-        // Must have a monetary offer
+        
         if (offer.getAmount() == null || offer.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             return false;
         }
 
         logger.info("Offer amount: {}", offer.getAmount());
         
-        // Must not have any item offers (pure money offer)
+        
         if (offer.getOfferItems() != null && !offer.getOfferItems().isEmpty()) {
             return false;
         }
@@ -210,7 +210,7 @@ public class OfferService {
         logger.info("Offer amount: {}", offer.getAmount());
         logger.info("compareTo result: {}", ((SellListingEntity)listing).getPrice().compareTo(offer.getAmount()));
         
-        // Check if this is a SellListing and compare prices
+        
         try {
             BigDecimal listingPrice = ((SellListingEntity)listing).getPrice();
             if (listingPrice.compareTo(offer.getAmount()) == 0) {
@@ -276,7 +276,7 @@ public class OfferService {
 
         OfferEntity offer = offerOpt.get();
 
-        // Verify user has permission to update this offer
+        
         boolean isOfferOwner = offer.getUser().getId().equals(userId);
         boolean isListingOwner = offer.getListing().getCreator().getId().equals(userId);
 
@@ -284,7 +284,7 @@ public class OfferService {
             throw new IllegalArgumentException("User does not have permission to update this offer");
         }
 
-        // Validate status transition
+        
         if (!isValidStatusTransition(offer.getStatus(), newStatus, isListingOwner)) {
             throw new IllegalArgumentException(
                     "Invalid status transition from " + offer.getStatus() + " to " + newStatus);
@@ -294,7 +294,7 @@ public class OfferService {
         offer.setStatus(newStatus);
         offer.setUpdatedAt(LocalDateTime.now());
 
-        // Handle item reservations based on status change
+        
         handleItemReservationsOnStatusChange(offer, oldStatus, newStatus);
 
         OfferEntity savedOffer = offerRepository.save(offer);
@@ -345,7 +345,7 @@ public class OfferService {
 
         OfferEntity offer = offerOpt.get();
 
-        // Verify user is involved in the offer
+        
         boolean isOfferOwner = offer.getUser().getId().equals(userId);
         boolean isListingOwner = offer.getListing().getCreator().getId().equals(userId);
 
@@ -356,17 +356,17 @@ public class OfferService {
         OfferStatus currentStatus = offer.getStatus();
         OfferStatus newStatus;
 
-        // Determine new status based on current status and user role
+        
         if (currentStatus == OfferStatus.CONFIRMED) {
             if (offer.getDeliveryType() == DeliveryType.PICKUP) {
-                // For pickup: both parties need to verify
+                
                 if (isListingOwner) {
                     newStatus = OfferStatus.SELLERVERIFIED;
                 } else {
                     newStatus = OfferStatus.BUYERVERIFIED;
                 }
             } else {
-                // For shipping: only buyer verifies and it goes to COMPLETED
+                
                 if (isOfferOwner) {
                     newStatus = OfferStatus.COMPLETED;
                 } else {
@@ -374,14 +374,14 @@ public class OfferService {
                 }
             }
         } else if (currentStatus == OfferStatus.SELLERVERIFIED) {
-            // Seller already verified, buyer confirming should complete
+            
             if (isOfferOwner) {
                 newStatus = OfferStatus.COMPLETED;
             } else {
                 throw new IllegalStateException("Seller already verified, waiting for buyer");
             }
         } else if (currentStatus == OfferStatus.BUYERVERIFIED) {
-            // Buyer already verified, seller confirming should complete
+            
             if (isListingOwner) {
                 newStatus = OfferStatus.COMPLETED;
             } else {
@@ -391,12 +391,12 @@ public class OfferService {
             throw new IllegalStateException("Cannot confirm transaction for offer in status: " + currentStatus);
         }
 
-        // Update offer status
+        
         offer.setStatus(newStatus);
         offer.setUpdatedAt(LocalDateTime.now());
         OfferEntity savedOffer = offerRepository.save(offer);
 
-        // If completed, update listing status
+        
         if (newStatus == OfferStatus.COMPLETED) {
             ListingEntity listing = offer.getListing();
             listing.setStatus(ListingStatus.COMPLETED);
@@ -437,7 +437,7 @@ public class OfferService {
 
         OfferEntity offer = offerOpt.get();
 
-        // Verify user is involved in the offer
+        
         boolean isOfferOwner = offer.getUser().getId().equals(userId);
         boolean isListingOwner = offer.getListing().getCreator().getId().equals(userId);
 
@@ -447,21 +447,21 @@ public class OfferService {
 
         OfferStatus currentStatus = offer.getStatus();
 
-        // Can only cancel from verification states
+        
         if (currentStatus != OfferStatus.CONFIRMED && 
             currentStatus != OfferStatus.SELLERVERIFIED && 
             currentStatus != OfferStatus.BUYERVERIFIED) {
             throw new IllegalStateException("Cannot cancel transaction for offer in status: " + currentStatus);
         }
 
-        // Update offer status to CANCELLED
+        
         offer.setStatus(OfferStatus.CANCELLED);
         offer.setUpdatedAt(LocalDateTime.now());
         OfferEntity savedOffer = offerRepository.save(offer);
 
         offer.getListing().setStatus(ListingStatus.ACTIVE);
 
-        // If there's an associated pickup, cancel it too
+        
         Optional<PickupEntity> pickup = pickupRepository.findByOfferId(offerId);
         if (pickup.isPresent()) {
             PickupEntity pickupEntity = pickup.get();
@@ -482,52 +482,52 @@ public class OfferService {
         switch (currentStatus) {
             case PENDING:
                 if (isListingOwner) {
-                    // Listing owner can accept or reject
+                    
                     return newStatus == OfferStatus.ACCEPTED || 
                            newStatus == OfferStatus.REJECTED ||
-                           newStatus == OfferStatus.CONFIRMED; // Direct to CONFIRMED for non-pickup
+                           newStatus == OfferStatus.CONFIRMED; 
                 } else {
-                    // Offer creator can only withdraw
+                    
                     return newStatus == OfferStatus.WITHDRAWN ||
                            newStatus == OfferStatus.ACCEPTED;
                 }
                 
             case ACCEPTED:
-                // From ACCEPTED, can go to PICKUPSCHEDULING, CONFIRMED, or CANCELLED
+                
                 return newStatus == OfferStatus.PICKUPSCHEDULING ||
                        newStatus == OfferStatus.CONFIRMED ||
                        newStatus == OfferStatus.CANCELLED;
                        
             case PICKUPSCHEDULING:
-                // From PICKUPSCHEDULING, can go to CONFIRMED, CANCELLED, or PICKUPRESCHEDULING
+                
                 return newStatus == OfferStatus.CONFIRMED ||
                        newStatus == OfferStatus.CANCELLED ||
                        newStatus == OfferStatus.PICKUPRESCHEDULING;
                        
             case PICKUPRESCHEDULING:
-                // From PICKUPRESCHEDULING, can go to CONFIRMED or CANCELLED
+                
                 return newStatus == OfferStatus.CONFIRMED ||
                        newStatus == OfferStatus.CANCELLED;
                        
             case CONFIRMED:
-                // From CONFIRMED, can go to SELLERVERIFIED, BUYERVERIFIED, COMPLETED, or CANCELLED
+                
                 return newStatus == OfferStatus.SELLERVERIFIED ||
                        newStatus == OfferStatus.BUYERVERIFIED ||
                        newStatus == OfferStatus.COMPLETED ||
                        newStatus == OfferStatus.CANCELLED;
                        
             case SELLERVERIFIED:
-                // From SELLERVERIFIED, can go to COMPLETED or CANCELLED
+                
                 return newStatus == OfferStatus.COMPLETED ||
                        newStatus == OfferStatus.CANCELLED;
                        
             case BUYERVERIFIED:
-                // From BUYERVERIFIED, can go to COMPLETED or CANCELLED
+                
                 return newStatus == OfferStatus.COMPLETED ||
                        newStatus == OfferStatus.CANCELLED;
                        
             case COMPLETED:
-                // From COMPLETED, can only go to REVIEWED (when review is submitted)
+                
                 return newStatus == OfferStatus.REVIEWED;
                        
             case REVIEWED:
@@ -535,7 +535,7 @@ public class OfferService {
             case WITHDRAWN:
             case EXPIRED:
             case CANCELLED:
-                return false; // Terminal states
+                return false; 
                 
             default:
                 return false;
@@ -556,24 +556,24 @@ public class OfferService {
 
         OfferEntity offer = offerOpt.get();
 
-        // Verify user is the listing owner
+        
         if (!offer.getListing().getCreator().getId().equals(userId)) {
             throw new IllegalArgumentException("Only the listing owner can accept offers");
         }
 
-        // Validate current status
+        
         if (offer.getStatus() != OfferStatus.PENDING) {
             throw new IllegalStateException("Can only accept pending offers");
         }
 
-        // Determine next status based on delivery type
+        
         OfferStatus nextStatus;
         if (offer.getDeliveryType() == DeliveryType.PICKUP) {
-            // For pickup delivery, go to ACCEPTED (waiting for pickup scheduling)
+            
             nextStatus = OfferStatus.ACCEPTED;
             logger.info("Offer {} accepted with PICKUP delivery, status set to ACCEPTED", offerId);
         } else {
-            // For shipping delivery, go directly to CONFIRMED
+            
             nextStatus = OfferStatus.CONFIRMED;
             logger.info("Offer {} accepted with SHIPPING delivery, status set to CONFIRMED", offerId);
         }
@@ -582,7 +582,7 @@ public class OfferService {
         offer.setStatus(nextStatus);
         offer.setUpdatedAt(LocalDateTime.now());
 
-        // Handle item reservations
+        
         handleItemReservationsOnStatusChange(offer, oldStatus, nextStatus);
 
         OfferEntity savedOffer = offerRepository.save(offer);
@@ -607,17 +607,17 @@ public class OfferService {
             quantities.add(offerItem.getQuantity());
         }
 
-        // Release reservations when offer is rejected, withdrawn, or expired
+        
         if (newStatus == OfferStatus.REJECTED || newStatus == OfferStatus.WITHDRAWN
                 || newStatus == OfferStatus.EXPIRED) {
             itemService.releaseReservations(itemIds, quantities);
         }
 
-        // Transfer items when offer is completed
+        
         if (newStatus == OfferStatus.COMPLETED) {
-            // TODO: Implement item transfer logic
-            // This would involve transferring ownership of items from offer creator to
-            // listing creator
+            
+            
+            
             logger.info("Item transfer needed for completed offer: {}", offer.getId());
         }
     }

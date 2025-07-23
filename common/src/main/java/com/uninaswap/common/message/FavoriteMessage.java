@@ -14,14 +14,14 @@ public class FavoriteMessage extends Message {
      * 
      */
     public enum Type {
-        // Requests
+        
         ADD_FAVORITE_REQUEST,
         REMOVE_FAVORITE_REQUEST,
         GET_USER_FAVORITES_REQUEST,
         IS_FAVORITE_REQUEST,
         TOGGLE_FAVORITE_REQUEST,
 
-        // Responses
+        
         ADD_FAVORITE_RESPONSE,
         REMOVE_FAVORITE_RESPONSE,
         GET_USER_FAVORITES_RESPONSE,
@@ -74,7 +74,7 @@ public class FavoriteMessage extends Message {
      */
     private int totalPages = 0;
 
-    // Default constructor
+    
     /**
      * 
      */
@@ -83,7 +83,7 @@ public class FavoriteMessage extends Message {
         setMessageType("favorite");
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

@@ -45,7 +45,7 @@ public class WebSocketMessageRouter extends TextWebSocketHandler {
         this.objectMapper = objectMapper;
         this.sessionService = sessionService;
 
-        // Register handlers for different message types
+        
         handlerMap.put("auth", authHandler);
         handlerMap.put("profile", profileHandler);
         handlerMap.put("favorite", favoriteHandler);
@@ -66,11 +66,11 @@ public class WebSocketMessageRouter extends TextWebSocketHandler {
         System.out.println("SERVER RECEIVED: " + payload);
 
         try {
-            // First parse as JsonNode to extract the message type
+            
             JsonNode jsonNode = objectMapper.readTree(payload);
             JsonNode typeNode = jsonNode.get("messageType");
             
-            // Check for token-based authentication
+            
             JsonNode tokenNode = jsonNode.get("token");
             if (typeNode != null && !typeNode.asText().equals("auth"))
             {
@@ -79,7 +79,7 @@ public class WebSocketMessageRouter extends TextWebSocketHandler {
                     UserEntity user = sessionService.validateToken(token);
 
                     if (user != null) {
-                        // Update session authentication if token is valid
+                        
                         sessionService.createAuthenticatedSession(session, user);
                     } else {
                         logger.info("Invalid token for session: {}", session.getId());
@@ -112,7 +112,7 @@ public class WebSocketMessageRouter extends TextWebSocketHandler {
             TextWebSocketHandler handler = handlerMap.get(messageType);
 
             if (handler != null) {
-                // Forward to the appropriate handler
+                
                 handler.handleMessage(session, message);
             } else {
                 System.err.println("No handler registered for message type: " + messageType);

@@ -895,7 +895,7 @@ public class OffersTabContentController {
 
             confirmation.showAndWait().ifPresent(response -> {
                 if (response == ButtonType.OK) {
-                    // Call the service to cancel transaction
+                    
                     if (onCancelTransaction != null) {
                         onCancelTransaction.accept(currentOffer);
                     }

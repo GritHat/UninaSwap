@@ -311,22 +311,22 @@ public class HomeController {
     public void displaySearchResults(ObservableList<ListingViewModel> searchResults) {
         isDisplayingSearchResults = true;
         
-        // Clear all containers
+        
         clearAllContainers();
         
-        // Hide auction section when showing search results
+        
         if (auctionSection != null) {
             auctionSection.setVisible(false);
             auctionSection.setManaged(false);
         }
         
-        // Ensure all listings section takes full space
+        
         if (allListingsSection != null) {
             VBox.setVgrow(allListingsSection, Priority.ALWAYS);
             allListingsSection.setMaxHeight(Double.MAX_VALUE);
         }
         
-        // Populate search results
+        
         populateSearchResults(searchResults);
     }
     
@@ -343,10 +343,10 @@ public class HomeController {
             allListingsContainer.getChildren().clear();
             
             if (searchResults.isEmpty()) {
-                // Show "no results" message
+                
                 addNoResultsPlaceholder();
             } else {
-                // Add search result cards
+                
                 for (ListingViewModel listing : searchResults) {
                     try {
                         Node listingCard = createListingCard(listing);
@@ -446,7 +446,7 @@ public class HomeController {
     public void returnToNormalView() {
         isDisplayingSearchResults = false;
         
-        // Reload normal data
+        
         loadHomeData();
     }
     

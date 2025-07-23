@@ -130,12 +130,12 @@ public class ItemDialogController {
         });
         setupCategoryComboBox();
         
-        // Year spinner with no initial value - blank by default
+        
         SpinnerValueFactory.IntegerSpinnerValueFactory yearFactory = 
             new SpinnerValueFactory.IntegerSpinnerValueFactory(1900, 2030, 2024) {
                 @Override
                 public void increment(int steps) {
-                    // If current value is null/empty, start from current year
+                    
                     if (getValue() == null || getValue() == 0) {
                         setValue(2024);
                     } else {
@@ -145,7 +145,7 @@ public class ItemDialogController {
                 
                 @Override
                 public void decrement(int steps) {
-                    // If current value is null/empty, start from current year
+                    
                     if (getValue() == null || getValue() == 0) {
                         setValue(2024);
                     } else {
@@ -156,14 +156,14 @@ public class ItemDialogController {
         
         yearSpinner.setValueFactory(yearFactory);
         
-        // Make the year spinner show empty initially
+        
         yearSpinner.getEditor().setText("");
         yearSpinner.setEditable(true);
         
-        // Handle manual text input for year
+        
         yearSpinner.getEditor().textProperty().addListener((obs, oldText, newText) -> {
             if (newText.isEmpty()) {
-                // Allow empty text
+                
                 return;
             }
             try {
@@ -172,7 +172,7 @@ public class ItemDialogController {
                     yearFactory.setValue(year);
                 }
             } catch (NumberFormatException e) {
-                // Ignore invalid input
+                
             }
         });
         
@@ -224,11 +224,11 @@ public class ItemDialogController {
         brandField.setText(item.getBrand() != null ? item.getBrand() : "");
         modelField.setText(item.getModel() != null ? item.getModel() : "");
         
-        // Handle year - keep empty if not set
+        
         if (item.getYearOfProduction() != null && item.getYearOfProduction() > 0) {
             yearSpinner.getValueFactory().setValue(item.getYearOfProduction());
         } else {
-            // Keep the spinner empty for new items or items without year
+            
             yearSpinner.getEditor().setText("");
         }
         
@@ -335,7 +335,7 @@ public class ItemDialogController {
         item.setBrand(brandField.getText());
         item.setModel(modelField.getText());
         
-        // Handle year - only set if there's a valid value
+        
         String yearText = yearSpinner.getEditor().getText().trim();
         if (!yearText.isEmpty()) {
             try {

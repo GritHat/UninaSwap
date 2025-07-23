@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     
     @Override
     public void registerWebSocketHandlers(@NonNull WebSocketHandlerRegistry registry) {
-        // Use the router as the main entry point for all WebSocket messages
+        
         registry.addHandler(webSocketMessageRouter, "/ws").setAllowedOrigins("*");
     }
 }

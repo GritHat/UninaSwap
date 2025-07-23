@@ -84,14 +84,14 @@ public class PickupViewModel {
      */
     private ObjectProperty<UserDTO> updatedBy = new SimpleObjectProperty<>();
 
-    // Default constructor
+    
     /**
      * 
      */
     public PickupViewModel() {
     }
 
-    // Constructor for creating new pickup
+    
     /**
      * @param offerId
      * @param offer
@@ -122,7 +122,7 @@ public class PickupViewModel {
         setUpdatedAt(LocalDateTime.now());
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -221,7 +221,7 @@ public class PickupViewModel {
         return updatedBy;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

@@ -47,14 +47,14 @@ public class UserReportViewModel {
      */
     private final StringProperty adminNotes = new SimpleStringProperty();
 
-    // Default constructor
+    
     /**
      * 
      */
     public UserReportViewModel() {
     }
 
-    // Constructor with required fields
+    
     /**
      * @param reportingUser
      * @param reportedUser
@@ -72,7 +72,7 @@ public class UserReportViewModel {
         setReviewed(false);
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -136,7 +136,7 @@ public class UserReportViewModel {
         return adminNotes;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */
@@ -263,7 +263,7 @@ public class UserReportViewModel {
         this.adminNotes.set(adminNotes);
     }
 
-    // Utility methods
+    
     /**
      * @return
      */

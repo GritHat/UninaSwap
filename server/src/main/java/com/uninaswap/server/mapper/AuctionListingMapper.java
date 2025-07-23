@@ -24,10 +24,10 @@ public class AuctionListingMapper {
 
         AuctionListingDTO dto = new AuctionListingDTO();
 
-        // Map common fields using the utility
+        
         commonListingMapper.mapCommonFields(entity, dto);
 
-        // Map auction-specific fields
+        
         dto.setStartingPrice(entity.getStartingPrice());
         dto.setReservePrice(entity.getReservePrice());
         dto.setCurrency(entity.getCurrency());
@@ -42,7 +42,7 @@ public class AuctionListingMapper {
             dto.setHighestBidder(userMapper.toDto(entity.getHighestBidder()));
         }
 
-        // Calculate duration in days for the DTO
+        
         if (entity.getStartTime() != null && entity.getEndTime() != null) {
             long days = java.time.Duration.between(entity.getStartTime(), entity.getEndTime()).toDays();
             dto.setDurationInDays((int) days);

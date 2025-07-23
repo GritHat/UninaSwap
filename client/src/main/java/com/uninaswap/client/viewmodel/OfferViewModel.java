@@ -47,7 +47,7 @@ public class OfferViewModel {
      */
     private final ObjectProperty<DeliveryType> deliveryType = new SimpleObjectProperty<>();
 
-    // Money component
+    
     /**
      * 
      */
@@ -57,19 +57,19 @@ public class OfferViewModel {
      */
     private final ObjectProperty<Currency> currency = new SimpleObjectProperty<>();
 
-    // Items component
+    
     /**
      * 
      */
     private final ObservableList<OfferItemViewModel> offerItems = FXCollections.observableArrayList();
 
-    // Message
+    
     /**
      * 
      */
     private final StringProperty message = new SimpleStringProperty();
 
-    // Constructors
+    
     /**
      * 
      */
@@ -98,7 +98,7 @@ public class OfferViewModel {
         setMessage(message);
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -176,7 +176,7 @@ public class OfferViewModel {
         return deliveryType;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */
@@ -324,7 +324,7 @@ public class OfferViewModel {
         return listing.get();
     }
 
-    // Utility methods
+    
     /**
      * @return
      */

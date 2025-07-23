@@ -21,26 +21,26 @@ public class AuthService {
     }
 
     public boolean register(UserDTO user) {
-        // Check if username or email already exists
+        
         if (userRepository.existsByUsername(user.getUsername()) ||
                 userRepository.existsByEmail(user.getEmail())) {
             return false;
         }
 
-        // Create new user with encrypted password
+        
         UserEntity entity = new UserEntity();
         entity.setUsername(user.getUsername());
         entity.setEmail(user.getEmail());
         entity.setPassword(passwordEncoder.encode(user.getPassword()));
-        // Set the required timestamp fields
+        
         LocalDateTime now = LocalDateTime.now();
         entity.setCreatedAt(now);
         entity.setLastLoginAt(now);
 
-        // Set default values for required fields
+        
         entity.setActive(false);
 
-        // Set optional profile fields if provided
+        
         if (user.getFirstName() != null) {
             entity.setFirstName(user.getFirstName());
         }

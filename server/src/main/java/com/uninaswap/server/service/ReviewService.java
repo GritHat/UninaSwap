@@ -46,44 +46,44 @@ public class ReviewService {
     public ReviewDTO createReview(ReviewDTO reviewDTO, Long reviewerId) {
         logger.info("Creating review for offer {} by user {}", reviewDTO.getOfferId(), reviewerId);
 
-        // Validate reviewer
+        
         UserEntity reviewer = userRepository.findById(reviewerId)
                 .orElseThrow(() -> new IllegalArgumentException("Reviewer not found: " + reviewerId));
 
-        // Validate offer
+        
         OfferEntity offer = offerRepository.findById(reviewDTO.getOfferId())
                 .orElseThrow(() -> new IllegalArgumentException("Offer not found: " + reviewDTO.getOfferId()));
 
-        // Validate offer is completed
+        
         if (offer.getStatus() != OfferStatus.COMPLETED) {
             throw new IllegalArgumentException("Can only review completed offers");
         }
 
-        // Determine who should be reviewed
+        
         UserEntity reviewedUser;
         if (offer.getUser().getId().equals(reviewerId)) {
-            // Reviewer is the one who made the offer, so review the listing creator
+            
             reviewedUser = offer.getListing().getCreator();
         } else if (offer.getListing().getCreator().getId().equals(reviewerId)) {
-            // Reviewer is the listing creator, so review the offer maker
+            
             reviewedUser = offer.getUser();
         } else {
             throw new IllegalArgumentException("User is not involved in this offer");
         }
 
-        // Check if review already exists
+        
         Optional<ReviewEntity> existingReview = reviewRepository.findByOfferIdAndReviewerId(
                 reviewDTO.getOfferId(), reviewerId);
         if (existingReview.isPresent()) {
             throw new IllegalArgumentException("Review already exists for this offer");
         }
 
-        // Validate score
+        
         if (reviewDTO.getScore() < 0.0 || reviewDTO.getScore() > 5.0) {
             throw new IllegalArgumentException("Score must be between 0.0 and 5.0");
         }
 
-        // Create review entity
+        
         ReviewEntity review = new ReviewEntity();
         review.setReviewer(reviewer);
         review.setReviewedUser(reviewedUser);
@@ -91,10 +91,10 @@ public class ReviewService {
         review.setScore(reviewDTO.getScore());
         review.setComment(reviewDTO.getComment());
 
-        // Save review
+        
         ReviewEntity savedReview = reviewRepository.save(review);
 
-        // UPDATE: Change offer status from COMPLETED to REVIEWED
+        
         offer.setStatus(OfferStatus.REVIEWED);
         offer.setUpdatedAt(LocalDateTime.now());
         offerRepository.save(offer);
@@ -114,17 +114,17 @@ public class ReviewService {
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("Review not found: " + reviewId));
 
-        // Verify user owns the review
+        
         if (!review.getReviewer().getId().equals(userId)) {
             throw new IllegalArgumentException("User does not own this review");
         }
 
-        // Validate score
+        
         if (reviewDTO.getScore() < 0.0 || reviewDTO.getScore() > 5.0) {
             throw new IllegalArgumentException("Score must be between 0.0 and 5.0");
         }
 
-        // Update fields
+        
         review.setScore(reviewDTO.getScore());
         review.setComment(reviewDTO.getComment());
         review.setUpdatedAt(LocalDateTime.now());
@@ -205,7 +205,7 @@ public class ReviewService {
     public boolean canUserReviewOffer(String offerId, Long userId) {
         logger.info("Checking if user {} can review offer {}", userId, offerId);
 
-        // Check if offer exists and is completed
+        
         Optional<OfferEntity> offerOpt = offerRepository.findById(offerId);
         if (!offerOpt.isPresent() || offerOpt.get().getStatus() != OfferStatus.COMPLETED) {
             return false;
@@ -213,14 +213,14 @@ public class ReviewService {
 
         OfferEntity offer = offerOpt.get();
 
-        // Check if user is involved in the offer
+        
         boolean isInvolved = offer.getUser().getId().equals(userId) ||
                 offer.getListing().getCreator().getId().equals(userId);
         if (!isInvolved) {
             return false;
         }
 
-        // Check if review already exists
+        
         Optional<ReviewEntity> existingReview = reviewRepository.findByOfferIdAndReviewerId(offerId, userId);
         return !existingReview.isPresent();
     }
@@ -235,7 +235,7 @@ public class ReviewService {
         ReviewEntity review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("Review not found: " + reviewId));
 
-        // Verify user owns the review
+        
         if (!review.getReviewer().getId().equals(userId)) {
             throw new IllegalArgumentException("User does not own this review");
         }

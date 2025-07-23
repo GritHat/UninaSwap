@@ -46,7 +46,7 @@ public class OfferWebSocketHandler extends TextWebSocketHandler {
             OfferMessage response = new OfferMessage();
 
             try {
-                // All offer operations require authentication
+                
                 UserEntity currentUser = sessionService.validateSession(session);
                 if (currentUser == null) {
                     throw new UnauthorizedException("Not authenticated");
@@ -112,7 +112,7 @@ public class OfferWebSocketHandler extends TextWebSocketHandler {
                 logger.error("Error processing offer message", e);
             }
 
-            // Send the response back to the client
+            
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
 
         } catch (Exception e) {
@@ -127,7 +127,7 @@ public class OfferWebSocketHandler extends TextWebSocketHandler {
     private void handleCreateOffer(OfferMessage request, OfferMessage response, UserEntity currentUser) {
         OfferDTO newOffer = request.getOffer();
 
-        // Create the offer
+        
         OfferDTO createdOffer = offerService.createOffer(newOffer, currentUser.getId());
 
         response.setType(OfferMessage.Type.CREATE_OFFER_RESPONSE);
@@ -161,7 +161,7 @@ public class OfferWebSocketHandler extends TextWebSocketHandler {
     private void handleGetListingOffers(OfferMessage request, OfferMessage response, UserEntity currentUser) {
         String listingId = request.getListingId();
 
-        // TODO: Add permission check - user should own the listing to see its offers
+        
 
         List<OfferDTO> listingOffers = offerService.getOffersForListing(listingId);
 
@@ -175,11 +175,11 @@ public class OfferWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void handleGetOfferHistory(OfferMessage request, OfferMessage response, UserEntity currentUser) {
-        // Get all offers where the user was involved (sent or received)
+        
         List<OfferDTO> userOffers = offerService.getUserOffers(currentUser.getId());
         List<OfferDTO> receivedOffers = offerService.getReceivedOffers(currentUser.getId());
 
-        // Combine and filter for completed/rejected/withdrawn offers only
+        
         List<OfferDTO> historyOffers = new ArrayList<>();
 
         userOffers.stream()

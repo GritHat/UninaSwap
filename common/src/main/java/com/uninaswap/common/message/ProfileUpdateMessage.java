@@ -71,7 +71,7 @@ public class ProfileUpdateMessage extends Message {
     private String city;
 
 
-    // Getters and setters
+    
     /**
      * @return
      */

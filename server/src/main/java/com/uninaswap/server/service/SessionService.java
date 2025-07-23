@@ -17,10 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SessionService {
     private static final Logger logger = LoggerFactory.getLogger(SessionService.class);
     
-    // Map WebSocketSession IDs to UserEntities for authenticated users
+    
     private final Map<WebSocketSession, UserEntity> authenticatedSessions = new ConcurrentHashMap<>();
     
-    // Map tokens to UserEntities for token-based authentication
+    
     private final Map<String, UserEntity> tokenToUserMap = new ConcurrentHashMap<>();
     
     /**
@@ -43,10 +43,10 @@ public class SessionService {
     }
     
     public void InvalidateTokenAndSessionForUser(UserEntity user) {
-        // Remove the user from the authenticated sessions
+        
         authenticatedSessions.entrySet().removeIf(entry -> entry.getValue().getId().equals(user.getId()));
         
-        // Invalidate all tokens associated with this user
+        
         tokenToUserMap.entrySet().removeIf(entry -> entry.getValue().getId().equals(user.getId()));
         
         logger.info("Invalidated session and tokens for user: {}", user.getUsername());
@@ -62,7 +62,7 @@ public class SessionService {
     public String createAuthenticatedSession(WebSocketSession session, UserEntity user) {
         authenticatedSessions.put(session, user);
         
-        // Generate a token that can be used for authentication in other contexts (like HTTP requests)
+        
         String token = UUID.randomUUID().toString();
         tokenToUserMap.put(token, user);
         
@@ -92,7 +92,7 @@ public class SessionService {
         if (user != null) {
             logger.info("Removed authenticated session for user: {}", user.getUsername());
             
-            // Also remove any tokens associated with this user
+            
             tokenToUserMap.entrySet().removeIf(entry -> entry.getValue().equals(user));
         }
     }
@@ -112,7 +112,7 @@ public class SessionService {
     public WebSocketSession getSessionByUserId(long userId) {
         for (Map.Entry<WebSocketSession, UserEntity> entry : authenticatedSessions.entrySet()) {
             if (entry.getValue().getId() == userId) {
-                // Assuming you have a way to get the WebSocketSession by session ID
+                
                 return entry.getKey();
             }
         }

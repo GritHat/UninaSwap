@@ -86,11 +86,11 @@ public class NotificationWebSocketHandler extends TextWebSocketHandler {
         response.setType(NotificationMessage.NotificationMessageType.MARK_AS_READ_RESPONSE);
         response.setSuccess(success);
         response.setMessageId(request.getMessageId());
-        response.setNotificationId(notificationId); // Include the notification ID in response
+        response.setNotificationId(notificationId); 
     
         
         if (success) {
-            // Get the updated unread count and include it in the response
+            
             long unreadCount = notificationService.getUnreadCount(userId);
             response.setUnreadCount((int) unreadCount);
         } else {

@@ -74,7 +74,7 @@ public class ItemViewModel {
      */
     private final BooleanProperty isVisible = new SimpleBooleanProperty(true);
 
-    // Additional UI-specific properties
+    
     /**
      * 
      */
@@ -84,7 +84,7 @@ public class ItemViewModel {
      */
     private final IntegerProperty selectedQuantity = new SimpleIntegerProperty(0);
 
-    // Constructors
+    
     /**
      * 
      */
@@ -107,7 +107,7 @@ public class ItemViewModel {
         setAvailableQuantity(availableQuantity);
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -234,7 +234,7 @@ public class ItemViewModel {
         return brand;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */
@@ -487,7 +487,7 @@ public class ItemViewModel {
         return brand.get();
     }
 
-    // Utility methods
+    
     /**
      * @return
      */
@@ -575,7 +575,7 @@ public class ItemViewModel {
         setSelectedQuantity(0);
     }
 
-    // Create a display string for lists/tables
+    
     /**
      * @return
      */

@@ -59,7 +59,7 @@ public class SearchMessage extends Message {
      */
     private boolean hasMore;
     
-    // Constructors
+    
     /**
      * 
      */
@@ -68,7 +68,7 @@ public class SearchMessage extends Message {
         setMessageType("search");
     }
     
-    // Getters and setters
+    
     /**
      * @return
      */

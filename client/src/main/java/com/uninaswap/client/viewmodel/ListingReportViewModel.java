@@ -47,14 +47,14 @@ public class ListingReportViewModel {
      */
     private final StringProperty adminNotes = new SimpleStringProperty();
 
-    // Default constructor
+    
     /**
      * 
      */
     public ListingReportViewModel() {
     }
 
-    // Constructor with required fields
+    
     /**
      * @param reportingUser
      * @param reportedListing
@@ -72,7 +72,7 @@ public class ListingReportViewModel {
         setReviewed(false);
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -136,7 +136,7 @@ public class ListingReportViewModel {
         return adminNotes;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */
@@ -263,7 +263,7 @@ public class ListingReportViewModel {
         this.adminNotes.set(adminNotes);
     }
 
-    // Utility methods
+    
     /**
      * @return
      */

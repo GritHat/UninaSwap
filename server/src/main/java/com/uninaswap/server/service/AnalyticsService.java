@@ -46,7 +46,7 @@ public class AnalyticsService {
         
         AnalyticsDTO analytics = new AnalyticsDTO();
         
-        // Generate all analytics components
+        
         analytics.setUserStats(generateUserStats(userId, startDate, endDate));
         analytics.setPerformanceMetrics(generatePerformanceMetrics(userId, startDate, endDate));
         analytics.setListingStats(generateListingTimeSeriesData(userId, startDate, endDate));
@@ -78,7 +78,7 @@ public class AnalyticsService {
         
         AnalyticsDTO analytics = new AnalyticsDTO();
         
-        // Generate category-filtered analytics
+        
         analytics.setUserStats(generateCategoryUserStats(userId, category, startDate, endDate));
         analytics.setPerformanceMetrics(generateCategoryPerformanceMetrics(userId, category, startDate, endDate));
         analytics.setListingStats(generateCategoryListingTimeSeriesData(userId, category, startDate, endDate));
@@ -97,12 +97,12 @@ public class AnalyticsService {
         
         AnalyticsDTO analytics = getUserAnalytics(userId, startDate, endDate);
         
-        // Add comparison metrics (platform averages)
+        
         AnalyticsDTO.PerformanceMetricsDTO userMetrics = analytics.getPerformanceMetrics();
         AnalyticsDTO.PerformanceMetricsDTO platformAverages = calculatePlatformAverages(startDate, endDate);
         
-        // You could enhance this to include comparison data
-        // For now, we'll just return the user analytics
+        
+        
         
         return analytics;
     }
@@ -128,7 +128,7 @@ public class AnalyticsService {
         }
     }
     
-    // Private helper methods
+    
     
     private LocalDateTime calculateStartDate(String period, LocalDateTime endDate) {
         return switch (period.toLowerCase()) {
@@ -136,7 +136,7 @@ public class AnalyticsService {
             case "month" -> endDate.minus(1, ChronoUnit.MONTHS);
             case "quarter" -> endDate.minus(3, ChronoUnit.MONTHS);
             case "year" -> endDate.minus(1, ChronoUnit.YEARS);
-            case "all" -> LocalDateTime.of(2020, 1, 1, 0, 0); // Platform start date
+            case "all" -> LocalDateTime.of(2020, 1, 1, 0, 0); 
             default -> endDate.minus(1, ChronoUnit.MONTHS);
         };
     }
@@ -144,13 +144,13 @@ public class AnalyticsService {
     private AnalyticsDTO.UserStatsDTO generateUserStats(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
         AnalyticsDTO.UserStatsDTO stats = new AnalyticsDTO.UserStatsDTO();
         
-        // Get user registration date
+        
         Optional<UserEntity> userOpt = userRepository.findById(userId);
         if (userOpt.isPresent()) {
             stats.setMemberSince(userOpt.get().getCreatedAt());
         }
         
-        // Listing statistics
+        
         List<ListingEntity> userListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
             userId, startDate, endDate);
         stats.setTotalListings(userListings.size());
@@ -161,7 +161,7 @@ public class AnalyticsService {
             .filter(l -> l.getStatus() == ListingStatus.COMPLETED)
             .count());
         
-        // Offer statistics
+        
         List<OfferEntity> offersMade = offerRepository.findByUserIdAndCreatedAtBetween(
             userId, startDate, endDate);
         stats.setTotalOffersMade(offersMade.size());
@@ -173,7 +173,7 @@ public class AnalyticsService {
             userId, startDate, endDate);
         stats.setTotalOffersReceived(offersReceived.size());
         
-        // Review and rating statistics
+        
         List<ReviewEntity> reviewsReceived = reviewRepository.findByReviewedUserIdAndCreatedAtBetween(
             userId, startDate, endDate);
         stats.setTotalReviews(reviewsReceived.size());
@@ -186,11 +186,11 @@ public class AnalyticsService {
             stats.setAverageRating(averageRating);
         }
         
-        // Calculate earnings (mock calculation - you'd implement based on your business logic)
+        
         double totalEarnings = calculateTotalEarnings(userId, startDate, endDate);
         stats.setTotalEarnings(totalEarnings);
         
-        // Views and favorites (mock data - you'd implement based on your tracking)
+        
         stats.setTotalViews(calculateTotalViews(userId, startDate, endDate));
         stats.setTotalFavorites(calculateTotalFavorites(userId, startDate, endDate));
         
@@ -207,7 +207,7 @@ public class AnalyticsService {
         List<OfferEntity> offersReceived = offerRepository.findByListingCreatorIdAndCreatedAtBetween(
             userId, startDate, endDate);
         
-        // Listing success rate (completed / total)
+        
         if (!userListings.isEmpty()) {
             long completedListings = userListings.stream()
                 .filter(l -> l.getStatus() == ListingStatus.COMPLETED)
@@ -215,7 +215,7 @@ public class AnalyticsService {
             metrics.setListingSuccessRate((double) completedListings / userListings.size() * 100);
         }
         
-        // Offer acceptance rate
+        
         if (!offersReceived.isEmpty()) {
             long acceptedOffers = offersReceived.stream()
                 .filter(o -> o.getStatus() == OfferStatus.ACCEPTED)
@@ -223,24 +223,24 @@ public class AnalyticsService {
             metrics.setOfferAcceptanceRate((double) acceptedOffers / offersReceived.size() * 100);
         }
         
-        // Average time to sell (mock calculation)
+        
         metrics.setAverageTimeToSell(calculateAverageTimeToSell(userListings));
         
-        // Customer satisfaction rate (based on reviews)
+        
         List<ReviewEntity> reviews = reviewRepository.findByReviewedUserIdAndCreatedAtBetween(
             userId, startDate, endDate);
         if (!reviews.isEmpty()) {
             double satisfactionRate = reviews.stream()
                 .mapToDouble(ReviewEntity::getScore)
-                .filter(score -> score >= 4) // 4+ stars considered satisfied
+                .filter(score -> score >= 4) 
                 .count() * 100.0 / reviews.size();
             metrics.setCustomerSatisfactionRate(satisfactionRate);
         }
         
-        // Rating trend (mock calculation)
+        
         metrics.setRatingTrend(calculateRatingTrend(userId, startDate, endDate));
         
-        // Repeat customer rate (mock calculation)
+        
         metrics.setRepeatCustomerRate(calculateRepeatCustomerRate(userId, startDate, endDate));
         
         return metrics;
@@ -249,7 +249,7 @@ public class AnalyticsService {
     private List<AnalyticsDTO.TimeSeriesDataDTO> generateListingTimeSeriesData(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
         List<AnalyticsDTO.TimeSeriesDataDTO> data = new ArrayList<>();
         
-        // Generate daily data points
+        
         LocalDateTime current = startDate;
         while (current.isBefore(endDate)) {
             LocalDateTime dayEnd = current.plusDays(1);
@@ -325,7 +325,7 @@ public class AnalyticsService {
         while (current.isBefore(endDate)) {
             LocalDateTime dayEnd = current.plusDays(1);
             
-            // Mock earnings calculation - implement based on your business logic
+            
             double dayEarnings = calculateDayEarnings(userId, current, dayEnd);
             
             data.add(new AnalyticsDTO.TimeSeriesDataDTO(
@@ -343,7 +343,7 @@ public class AnalyticsService {
     private List<AnalyticsDTO.CategoryStatsDTO> generateCategoryBreakdown(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
         List<AnalyticsDTO.CategoryStatsDTO> breakdown = new ArrayList<>();
         
-        // Get all listings grouped by category
+        
         List<ListingEntity> userListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
             userId, startDate, endDate);
         
@@ -366,7 +366,7 @@ public class AnalyticsService {
                 .filter(l -> l.getStatus() == ListingStatus.COMPLETED)
                 .count());
             
-            // Mock calculations
+            
             categoryStats.setTotalEarnings(calculateCategoryEarnings(userId, category, startDate, endDate));
             categoryStats.setAverageRating(calculateCategoryAverageRating(userId, category, startDate, endDate));
             
@@ -394,7 +394,7 @@ public class AnalyticsService {
                 .filter(l -> l.getStatus() == ListingStatus.COMPLETED)
                 .count());
             
-            // Mock calculations
+            
             monthStats.setEarnings(calculateMonthEarnings(userId, current, monthEnd));
             monthStats.setAverageRating(calculateMonthAverageRating(userId, current, monthEnd));
             
@@ -405,38 +405,38 @@ public class AnalyticsService {
         return breakdown;
     }
     
-    // Category-specific methods (simplified implementations)
+    
     
     private AnalyticsDTO.UserStatsDTO generateCategoryUserStats(Long userId, String category, LocalDateTime startDate, LocalDateTime endDate) {
-        // Similar to generateUserStats but filtered by category
-        // Implementation would filter queries by category
-        return generateUserStats(userId, startDate, endDate); // Simplified
+        
+        
+        return generateUserStats(userId, startDate, endDate); 
     }
     
     private AnalyticsDTO.PerformanceMetricsDTO generateCategoryPerformanceMetrics(Long userId, String category, LocalDateTime startDate, LocalDateTime endDate) {
-        // Similar to generatePerformanceMetrics but filtered by category
-        return generatePerformanceMetrics(userId, startDate, endDate); // Simplified
+        
+        return generatePerformanceMetrics(userId, startDate, endDate); 
     }
     
     private List<AnalyticsDTO.TimeSeriesDataDTO> generateCategoryListingTimeSeriesData(Long userId, String category, LocalDateTime startDate, LocalDateTime endDate) {
-        // Similar to generateListingTimeSeriesData but filtered by category
-        return generateListingTimeSeriesData(userId, startDate, endDate); // Simplified
+        
+        return generateListingTimeSeriesData(userId, startDate, endDate); 
     }
     
     private List<AnalyticsDTO.TimeSeriesDataDTO> generateCategoryOfferTimeSeriesData(Long userId, String category, LocalDateTime startDate, LocalDateTime endDate) {
-        // Similar to generateOfferTimeSeriesData but filtered by category
-        return generateOfferTimeSeriesData(userId, startDate, endDate); // Simplified
+        
+        return generateOfferTimeSeriesData(userId, startDate, endDate); 
     }
     
     private List<AnalyticsDTO.TimeSeriesDataDTO> generateCategoryEarningsTimeSeriesData(Long userId, String category, LocalDateTime startDate, LocalDateTime endDate) {
-        // Similar to generateEarningsTimeSeriesData but filtered by category
-        return generateEarningsTimeSeriesData(userId, startDate, endDate); // Simplified
+        
+        return generateEarningsTimeSeriesData(userId, startDate, endDate); 
     }
     
-    // Replace mock calculation methods with actual implementations
+    
     
     private double calculateTotalEarnings(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Calculate earnings from completed sell listings
+        
         List<ListingEntity> completedSellListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
             userId, startDate, endDate).stream()
             .filter(listing -> listing.getStatus() == ListingStatus.COMPLETED && 
@@ -458,28 +458,28 @@ public class AnalyticsService {
     }
     
     private int calculateTotalViews(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Sum up view counts from user's listings
-        // Assuming you have a views/analytics table or field in listings
+        
+        
         List<ListingEntity> userListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
             userId, startDate, endDate);
         
-        // If you have a separate analytics/views table, implement accordingly
-        // For now, return the count of listings as a proxy for engagement
-        return userListings.size() * 10; // Rough estimate - replace with actual view tracking
+        
+        
+        return userListings.size() * 10; 
     }
     
     private int calculateTotalFavorites(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Count favorites on user's listings within the date range
+        
         List<ListingEntity> userListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
             userId, startDate, endDate);
         
-        // If you have a favorites table/repository, use it here
-        // For now, use a heuristic based on completed listings
+        
+        
         long completedListings = userListings.stream()
             .filter(l -> l.getStatus() == ListingStatus.COMPLETED)
             .count();
         
-        return (int) (completedListings * 2); // Estimate: 2 favorites per completed listing
+        return (int) (completedListings * 2); 
     }
     
     private double calculateAverageTimeToSell(List<ListingEntity> listings) {
@@ -487,7 +487,7 @@ public class AnalyticsService {
             return 0.0;
         }
         
-        // Calculate average time between creation and completion
+        
         return listings.stream()
             .filter(listing -> listing.getStatus() == ListingStatus.COMPLETED)
             .mapToLong(listing -> {
@@ -501,18 +501,18 @@ public class AnalyticsService {
     }
     
     private double calculateRatingTrend(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Calculate the trend in user ratings over time
+        
         List<ReviewEntity> reviews = reviewRepository.findByReviewedUserIdAndCreatedAtBetween(
             userId, startDate, endDate);
         
         if (reviews.size() < 2) {
-            return 0.0; // No trend with less than 2 reviews
+            return 0.0; 
         }
         
-        // Sort by creation date
+        
         reviews.sort((r1, r2) -> r1.getCreatedAt().compareTo(r2.getCreatedAt()));
         
-        // Calculate trend using first half vs second half of reviews
+        
         int midPoint = reviews.size() / 2;
         double firstHalfAvg = reviews.subList(0, midPoint).stream()
             .mapToDouble(ReviewEntity::getScore)
@@ -524,11 +524,11 @@ public class AnalyticsService {
             .average()
             .orElse(0.0);
         
-        return secondHalfAvg - firstHalfAvg; // Positive = improving, negative = declining
+        return secondHalfAvg - firstHalfAvg; 
     }
     
     private double calculateRepeatCustomerRate(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Find users who made multiple offers to this user's listings
+        
         List<OfferEntity> offersReceived = offerRepository.findByListingCreatorIdAndCreatedAtBetween(
             userId, startDate, endDate);
         
@@ -536,14 +536,14 @@ public class AnalyticsService {
             return 0.0;
         }
         
-        // Group by offering user
+        
         Map<Long, Long> offersByUser = offersReceived.stream()
             .collect(Collectors.groupingBy(
                 offer -> offer.getUser().getId(),
                 Collectors.counting()
             ));
         
-        // Count users who made more than one offer
+        
         long repeatCustomers = offersByUser.values().stream()
             .filter(count -> count > 1)
             .count();
@@ -552,7 +552,7 @@ public class AnalyticsService {
     }
     
     private double calculateDayEarnings(Long userId, LocalDateTime startDate, LocalDateTime endDate) {
-        // Get completed sell listings for this specific day
+        
         List<ListingEntity> dayListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
             userId, startDate, endDate).stream()
             .filter(listing -> listing.getStatus() == ListingStatus.COMPLETED && 
@@ -574,7 +574,7 @@ public class AnalyticsService {
     }
     
     private double calculateCategoryEarnings(Long userId, String category, LocalDateTime startDate, LocalDateTime endDate) {
-        // Get completed sell listings in specific category
+        
         List<ListingEntity> categoryListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
             userId, startDate, endDate).stream()
             .filter(listing -> {
@@ -583,7 +583,7 @@ public class AnalyticsService {
                     return false;
                 }
                 
-                // Check if listing belongs to the category
+                
                 return listing.getItems().stream()
                     .anyMatch(item -> category.equalsIgnoreCase(item.getCategory()));
             })
@@ -604,7 +604,7 @@ public class AnalyticsService {
     }
     
     private double calculateCategoryAverageRating(Long userId, String category, LocalDateTime startDate, LocalDateTime endDate) {
-        // Get reviews for listings in specific category
+        
         List<ListingEntity> categoryListings = listingRepository.findByCreatorIdAndCreatedAtBetween(
             userId, startDate, endDate).stream()
             .filter(listing -> listing.getItems().stream()
@@ -615,8 +615,8 @@ public class AnalyticsService {
             return 0.0;
         }
         
-        // For each listing, find associated reviews (this would require linking reviews to listings)
-        // For now, use overall user rating as approximation
+        
+        
         List<ReviewEntity> userReviews = reviewRepository.findByReviewedUserIdAndCreatedAtBetween(
             userId, startDate, endDate);
         
@@ -643,12 +643,12 @@ public class AnalyticsService {
     private AnalyticsDTO.PerformanceMetricsDTO calculatePlatformAverages(LocalDateTime startDate, LocalDateTime endDate) {
         AnalyticsDTO.PerformanceMetricsDTO averages = new AnalyticsDTO.PerformanceMetricsDTO();
         
-        // Calculate actual platform averages
+        
         List<ListingEntity> allListings = listingRepository.findByCreatedAtBetween(startDate, endDate);
         List<OfferEntity> allOffers = offerRepository.findByCreatedAtBetween(startDate, endDate);
         List<ReviewEntity> allReviews = reviewRepository.findByCreatedAtBetween(startDate, endDate);
         
-        // Platform listing success rate
+        
         if (!allListings.isEmpty()) {
             long completedListings = allListings.stream()
                 .filter(l -> l.getStatus() == ListingStatus.COMPLETED)
@@ -658,7 +658,7 @@ public class AnalyticsService {
             averages.setListingSuccessRate(0.0);
         }
         
-        // Platform offer acceptance rate
+        
         if (!allOffers.isEmpty()) {
             long acceptedOffers = allOffers.stream()
                 .filter(o -> o.getStatus() == OfferStatus.ACCEPTED || 
@@ -669,7 +669,7 @@ public class AnalyticsService {
             averages.setOfferAcceptanceRate(0.0);
         }
         
-        // Platform average time to sell
+        
         double avgTimeToSell = allListings.stream()
             .filter(listing -> listing.getStatus() == ListingStatus.COMPLETED)
             .mapToLong(listing -> {
@@ -682,18 +682,18 @@ public class AnalyticsService {
             .orElse(0.0);
         averages.setAverageTimeToSell(avgTimeToSell);
         
-        // Platform customer satisfaction rate
+        
         if (!allReviews.isEmpty()) {
             double satisfactionRate = allReviews.stream()
                 .mapToDouble(ReviewEntity::getScore)
-                .filter(score -> score >= 4) // 4+ stars considered satisfied
+                .filter(score -> score >= 4) 
                 .count() * 100.0 / allReviews.size();
             averages.setCustomerSatisfactionRate(satisfactionRate);
         } else {
             averages.setCustomerSatisfactionRate(0.0);
         }
         
-        // Platform repeat customer rate (simplified calculation)
+        
         Map<Long, Set<Long>> userInteractions = new HashMap<>();
         allOffers.forEach(offer -> {
             Long listingCreator = offer.getListing().getCreator().getId();
@@ -707,7 +707,7 @@ public class AnalyticsService {
             .orElse(0.0) * 100;
         averages.setRepeatCustomerRate(repeatRate);
         
-        // Platform rating trend (compare first half vs second half of period)
+        
         if (allReviews.size() >= 2) {
             allReviews.sort((r1, r2) -> r1.getCreatedAt().compareTo(r2.getCreatedAt()));
             int midPoint = allReviews.size() / 2;
@@ -730,14 +730,14 @@ public class AnalyticsService {
         return averages;
     }
     
-    // Export methods (simplified implementations)
+    
     
     private String generateCSVExport(AnalyticsDTO analytics) {
         StringBuilder csv = new StringBuilder();
         csv.append("Analytics Export\n");
         csv.append("Generated: ").append(LocalDateTime.now()).append("\n\n");
         
-        // Add user stats
+        
         AnalyticsDTO.UserStatsDTO userStats = analytics.getUserStats();
         if (userStats != null) {
             csv.append("User Statistics\n");
@@ -752,12 +752,12 @@ public class AnalyticsService {
     }
     
     private String generatePDFExport(AnalyticsDTO analytics) {
-        // Mock implementation - in reality, you'd use a PDF library like iText
-        return "PDF export data for analytics"; // Base64 encoded PDF would go here
+        
+        return "PDF export data for analytics"; 
     }
     
     private String generateExcelExport(AnalyticsDTO analytics) {
-        // Mock implementation - in reality, you'd use Apache POI
-        return "Excel export data for analytics"; // Base64 encoded Excel would go here
+        
+        return "Excel export data for analytics"; 
     }
 }

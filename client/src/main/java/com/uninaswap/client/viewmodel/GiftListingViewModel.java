@@ -33,9 +33,9 @@ public class GiftListingViewModel extends ListingViewModel {
     /**
      * 
      */
-    private final StringProperty pickupLocation = new SimpleStringProperty(); // Added pickup location
+    private final StringProperty pickupLocation = new SimpleStringProperty(); 
 
-    // Constructors
+    
     /**
      * 
      */
@@ -61,7 +61,7 @@ public class GiftListingViewModel extends ListingViewModel {
         setGiftDetails(giftDetails);
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -97,7 +97,7 @@ public class GiftListingViewModel extends ListingViewModel {
         return pickupLocation;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

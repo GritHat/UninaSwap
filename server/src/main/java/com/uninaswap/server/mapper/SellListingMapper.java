@@ -22,10 +22,10 @@ public class SellListingMapper {
 
         SellListingDTO dto = new SellListingDTO();
 
-        // Map common fields using the utility
+        
         commonListingMapper.mapCommonFields(entity, dto);
 
-        // Map sell-specific fields
+        
         dto.setPrice(entity.getPrice());
         dto.setCurrency(entity.getCurrency());
         dto.setPickupLocation(entity.getPickupLocation());

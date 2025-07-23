@@ -25,19 +25,19 @@ public class PickupEntity {
     @JoinColumn(name = "offer_id", nullable = false, unique = true)
     private OfferEntity offer;
 
-    // Available dates (JSON array in database)
+    
     @Convert(converter = LocalDateListConverter.class)
     @Column(name = "available_dates", nullable = false, columnDefinition = "TEXT")
     private List<LocalDate> availableDates = new ArrayList<>();
 
-    // Time range for all dates
+    
     @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
 
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
-    // Selected date and time (when status becomes ACCEPTED)
+    
     @Column(name = "selected_date")
     private LocalDate selectedDate;
 
@@ -68,14 +68,14 @@ public class PickupEntity {
     @JoinColumn(name = "updated_by")
     private UserEntity updatedBy;
 
-    // Default constructor
+    
     public PickupEntity() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.status = PickupStatus.PENDING;
     }
 
-    // Constructor
+    
     public PickupEntity(OfferEntity offer, List<LocalDate> availableDates, LocalTime startTime, LocalTime endTime,
             String location, String details, UserEntity createdBy) {
         this();
@@ -88,7 +88,7 @@ public class PickupEntity {
         this.createdBy = createdBy;
     }
 
-    // Getters and setters
+    
     public Long getId() {
         return id;
     }
@@ -202,7 +202,7 @@ public class PickupEntity {
         this.updatedBy = updatedBy;
     }
 
-    // Utility methods
+    
     public LocalDateTime getSelectedDateTime() {
         if (selectedDate != null && selectedTime != null) {
             return selectedDate.atTime(selectedTime);

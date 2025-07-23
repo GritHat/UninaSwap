@@ -34,14 +34,14 @@ public class FollowerViewModel {
      */
     private final ObjectProperty<LocalDateTime> createdAt = new SimpleObjectProperty<>();
 
-    // Default constructor
+    
     /**
      * 
      */
     public FollowerViewModel() {
     }
 
-    // Constructor with required fields
+    
     /**
      * @param followerId
      * @param followedId
@@ -52,7 +52,7 @@ public class FollowerViewModel {
         setCreatedAt(LocalDateTime.now());
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -95,7 +95,7 @@ public class FollowerViewModel {
         return createdAt;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */
@@ -180,7 +180,7 @@ public class FollowerViewModel {
         this.createdAt.set(createdAt);
     }
 
-    // Utility methods
+    
     /**
      * @return
      */

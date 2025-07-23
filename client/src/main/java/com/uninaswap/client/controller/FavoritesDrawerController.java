@@ -121,15 +121,15 @@ public class FavoritesDrawerController {
         setupFavoritesObservableList();
         loadFollowing();
 
-        // Set initial state - drawer hidden
+        
         drawerContainer.setVisible(false);
         drawerContainer.setManaged(false);
         drawerContainer.getStyleClass().add("drawer-hidden");
         
-        // IMPORTANT: Initially disable mouse events since drawer starts hidden
+        
         externalDrawerContainer.setMouseTransparent(true);
         
-        // Add content animation class
+        
         drawerContainer.getStyleClass().add("drawer-content-animated");
     }
 
@@ -144,7 +144,7 @@ public class FavoritesDrawerController {
                 hideDrawerAnimated();
             }
             
-            // Notify main controller of state change
+            
             if (mainController != null) {
                 mainController.onFavoritesDrawerStateChanged();
             }

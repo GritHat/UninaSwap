@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface TradeListingRepository extends JpaRepository<TradeListingEntity, String> {
-    // Find trades that request items in specific categories
+    
     List<TradeListingEntity> findByDesiredCategoriesContaining(String category);
 
     @Query("SELECT DISTINCT t FROM TradeListingEntity t " +
@@ -19,7 +19,7 @@ public interface TradeListingRepository extends JpaRepository<TradeListingEntity
             "LEFT JOIN FETCH li.item " +
             "LEFT JOIN FETCH t.creator " +
             "LEFT JOIN FETCH t.desiredItems " +
-            "LEFT JOIN FETCH t.desiredCategories " + // Add this if possible
+            "LEFT JOIN FETCH t.desiredCategories " + 
             "WHERE t.status = :status " +
             "ORDER BY t.createdAt DESC")
     List<TradeListingEntity> findByStatusWithAllData(@Param("status") ListingStatus status);

@@ -29,7 +29,7 @@ public class NotificationDTO {
     /**
      * 
      */
-    private String data; // JSON string for additional data
+    private String data; 
     /**
      * 
      */
@@ -43,7 +43,7 @@ public class NotificationDTO {
      */
     private LocalDateTime readAt;
     
-    // Constructors
+    
     /**
      * 
      */
@@ -74,7 +74,7 @@ public class NotificationDTO {
         this.readAt = readAt;
     }
     
-    // Getters and setters
+    
     /**
      * @return
      */

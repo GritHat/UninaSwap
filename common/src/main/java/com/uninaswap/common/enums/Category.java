@@ -113,11 +113,11 @@ public enum Category {
         String trimmedValue = value.trim();
         
         for (Category category : values()) {
-            // First check if it matches the enum name exactly (for server data)
+            
             if (category.name().equalsIgnoreCase(trimmedValue)) {
                 return category;
             }
-            // Then check display names and message keys (for legacy data)
+            
             if (category.getDisplayName().equalsIgnoreCase(trimmedValue) ||
                 category.getMessageKey().equalsIgnoreCase(trimmedValue)) {
                 return category;

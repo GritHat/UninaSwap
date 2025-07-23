@@ -70,7 +70,7 @@ public class AuthMessage extends Message {
         setMessageType("auth");
     }
 
-    // Getters and Setters
+    
     /**
      * @return
      */

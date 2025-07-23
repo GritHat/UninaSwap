@@ -110,6 +110,6 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
     List<Object> findReviewableOffersBetweenUsers(@Param("user1Id") Long user1Id, @Param("user2Id") Long user2Id,
             @Param("reviewerId") Long reviewerId);
 
-    // Add to ReviewRepository
+    
     List<ReviewEntity> findByReviewedUserIdAndCreatedAtBetween(Long reviewedUserId, LocalDateTime start, LocalDateTime end);
 }

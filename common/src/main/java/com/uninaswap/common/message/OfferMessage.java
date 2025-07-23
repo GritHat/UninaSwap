@@ -61,7 +61,7 @@ public class OfferMessage extends Message {
      */
     private String errorMessage;
 
-    // For pagination
+    
     /**
      * 
      */
@@ -79,7 +79,7 @@ public class OfferMessage extends Message {
      */
     private int totalPages;
 
-    // Default constructor
+    
     /**
      * 
      */
@@ -87,7 +87,7 @@ public class OfferMessage extends Message {
         setMessageType("offer");
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

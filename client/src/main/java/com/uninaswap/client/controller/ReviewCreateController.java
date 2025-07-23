@@ -279,7 +279,7 @@ public class ReviewCreateController {
      */
     private void updateSubmitButton() {
         boolean hasValidRating = selectedScore > 0;
-        boolean hasValidComment = commentTextArea.getText().length() <= 1000; // Comment length check only
+        boolean hasValidComment = commentTextArea.getText().length() <= 1000; 
         submitButton.setDisable(!hasValidRating || !hasValidComment);
     }
 

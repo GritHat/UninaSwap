@@ -22,7 +22,7 @@ public class UserDTO implements Serializable {
     /**
      * 
      */
-    private String password; // Store hashed password only
+    private String password; 
     /**
      * 
      */
@@ -93,7 +93,7 @@ public class UserDTO implements Serializable {
         this.password = password;
     }
 
-    // Getters and Setters
+    
     /**
      * @return
      */

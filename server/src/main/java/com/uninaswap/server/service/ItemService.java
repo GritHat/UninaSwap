@@ -60,13 +60,13 @@ public class ItemService {
     public ItemDTO addItem(ItemDTO itemDTO) {
         logger.info("Adding new item for user ID: {}", itemDTO.getOwnerId());
 
-        // Find the owner
+        
         Optional<UserEntity> ownerOpt = userRepository.findById(itemDTO.getOwnerId());
         if (!ownerOpt.isPresent()) {
             throw new IllegalArgumentException("Owner with ID " + itemDTO.getOwnerId() + " not found");
         }
 
-        // Create and save the item
+        
         ItemEntity item = new ItemEntity();
         item.setName(itemDTO.getName());
         item.setDescription(itemDTO.getDescription());
@@ -78,10 +78,10 @@ public class ItemService {
         item.setYearOfProduction(itemDTO.getYearOfProduction());
         item.setOwner(ownerOpt.get());
 
-        // Set stock and available quantities
+        
         Integer stockQuantity = itemDTO.getStockQuantity() != null ? itemDTO.getStockQuantity() : 1;
         item.setStockQuantity(stockQuantity);
-        item.setAvailableQuantity(stockQuantity); // Initially available = stock
+        item.setAvailableQuantity(stockQuantity); 
 
         ItemEntity savedItem = itemRepository.save(item);
         return itemMapper.toDto(savedItem);
@@ -94,7 +94,7 @@ public class ItemService {
     public ItemDTO updateItem(ItemDTO itemDTO) {
         logger.info("Updating item ID: {}", itemDTO.getId());
 
-        // Find the item
+        
         Optional<ItemEntity> itemOpt = itemRepository.findById(itemDTO.getId());
         if (!itemOpt.isPresent()) {
             throw new IllegalArgumentException("Item with ID " + itemDTO.getId() + " not found");
@@ -102,7 +102,7 @@ public class ItemService {
 
         ItemEntity item = itemOpt.get();
 
-        // Update fields
+        
         item.setName(itemDTO.getName());
         item.setDescription(itemDTO.getDescription());
         if (itemDTO.getImagePath() != null && !itemDTO.getImagePath().isEmpty()) {
@@ -114,12 +114,12 @@ public class ItemService {
         item.setModel(itemDTO.getModel());
         item.setYearOfProduction(itemDTO.getYearOfProduction());
 
-        // Update stock quantity (will automatically update available if needed)
+        
         if (itemDTO.getStockQuantity() != null) {
             item.setStockQuantity(itemDTO.getStockQuantity());
         }
 
-        // Update available quantity within constraints
+        
         if (itemDTO.getAvailableQuantity() != null) {
             item.setAvailableQuantity(itemDTO.getAvailableQuantity());
         }
@@ -137,12 +137,12 @@ public class ItemService {
     public void deleteItem(String itemId) {
         logger.info("Deleting item ID: {}", itemId);
 
-        // First check if there are any listing items referencing this item
+        
         if (isItemUsedInActiveListing(itemId)) {
             throw new IllegalStateException("Cannot delete an item that is part of an active listing");
         }
 
-        // Delete the item
+        
         itemRepository.deleteById(itemId);
     }
 
@@ -168,7 +168,7 @@ public class ItemService {
             return false;
         }
 
-        // Check if any of the listings are active
+        
         for (ListingItemEntity listingItem : listingItems) {
             ListingEntity listing = listingItem.getListing();
             if (listing != null && listing.getStatus() != null &&
@@ -279,12 +279,12 @@ public class ItemService {
         Optional<ItemEntity> itemOpt = itemRepository.findById(itemId);
         if (!itemOpt.isPresent()) {
             logger.warn("Attempting to release reservation for non-existent item: {}", itemId);
-            return; // Don't throw exception for missing items during cleanup
+            return; 
         }
 
         ItemEntity item = itemOpt.get();
 
-        // Ensure we don't exceed the total stock quantity
+        
         int newAvailableQuantity = Math.min(
                 item.getAvailableQuantity() + quantity,
                 item.getStockQuantity());
@@ -316,7 +316,7 @@ public class ItemService {
         logger.info("Transferring {} items from user {} to user {}",
                 itemIds.size(), fromUserId, toUserId);
 
-        // Validate users exist
+        
         Optional<UserEntity> fromUserOpt = userRepository.findById(fromUserId);
         Optional<UserEntity> toUserOpt = userRepository.findById(toUserId);
 
@@ -356,22 +356,22 @@ public class ItemService {
 
         ItemEntity originalItem = itemOpt.get();
 
-        // Verify ownership
+        
         if (!originalItem.getOwner().getId().equals(fromUserId)) {
             throw new IllegalArgumentException(
                     String.format("Item %s is not owned by user %d", itemId, fromUserId));
         }
 
-        // Check if we're transferring the entire stock
+        
         if (quantity >= originalItem.getStockQuantity()) {
-            // Transfer entire item
+            
             originalItem.setOwner(toUser);
             originalItem.setUpdatedAt(LocalDateTime.now());
             itemRepository.save(originalItem);
 
             logger.debug("Transferred entire item {} to user {}", originalItem.getName(), toUser.getId());
         } else {
-            // Partial transfer - need to split the item
+            
             splitAndTransferItem(originalItem, quantity, toUser);
         }
     }
@@ -385,13 +385,13 @@ public class ItemService {
      */
     @Transactional
     private void splitAndTransferItem(ItemEntity originalItem, int quantityToTransfer, UserEntity toUser) {
-        // Reduce the original item's quantity
+        
         originalItem.setStockQuantity(originalItem.getStockQuantity() - quantityToTransfer);
         originalItem.setAvailableQuantity(
                 Math.max(0, originalItem.getAvailableQuantity() - quantityToTransfer));
         originalItem.setUpdatedAt(LocalDateTime.now());
 
-        // Create new item for the recipient
+        
         ItemEntity newItem = new ItemEntity();
         newItem.setName(originalItem.getName());
         newItem.setDescription(originalItem.getDescription());
@@ -399,13 +399,13 @@ public class ItemService {
         newItem.setCondition(originalItem.getCondition());
         newItem.setYearOfProduction(originalItem.getYearOfProduction());
         newItem.setStockQuantity(quantityToTransfer);
-        newItem.setAvailableQuantity(quantityToTransfer); // All transferred items are available
+        newItem.setAvailableQuantity(quantityToTransfer); 
         newItem.setImagePath(originalItem.getImagePath());
         newItem.setOwner(toUser);
         newItem.setAvailable(true);
         newItem.setVisible(true);
 
-        // Save both items
+        
         itemRepository.save(originalItem);
         itemRepository.save(newItem);
 
@@ -420,10 +420,10 @@ public class ItemService {
      * @return Total reserved quantity
      */
     public int getTotalReservedQuantity(String itemId) {
-        // This would typically query the OfferItemRepository to get all pending offer
-        // items
-        // For now, we'll calculate it based on the difference between stock and
-        // available
+        
+        
+        
+        
         Optional<ItemEntity> itemOpt = itemRepository.findById(itemId);
         if (!itemOpt.isPresent()) {
             return 0;

@@ -221,7 +221,7 @@ public class ItemService {
      * @return
      */
     public ObservableList<ItemViewModel> getUserItemsListAsViewModel() {
-        // If we need initial load
+        
         if (userItemViewModels.isEmpty() || needsRefresh) {
             loadUserItemsAsViewModels();
         }
@@ -275,7 +275,7 @@ public class ItemService {
                         List<ItemDTO> items = message.getItems() != null ? message.getItems() : new ArrayList<>();
                         System.out.println("ItemService: Received " + items.size() + " items from server");
                         
-                        // Clear and update the lists
+                        
                         userItems.clear();
                         userItemViewModels.clear();
                         
@@ -365,7 +365,7 @@ public class ItemService {
      * Update an item in both collections when server confirms changes
      */
     private void updateItemInCollections(ItemDTO updatedItem) {
-        // Update in userItems list
+        
         for (int i = 0; i < userItems.size(); i++) {
             if (userItems.get(i).getId().equals(updatedItem.getId())) {
                 userItems.set(i, updatedItem);
@@ -374,7 +374,7 @@ public class ItemService {
             }
         }
         
-        // Update in userItemViewModels list
+        
         for (int i = 0; i < userItemViewModels.size(); i++) {
             if (userItemViewModels.get(i).getId().equals(updatedItem.getId())) {
                 ItemViewModel updatedViewModel = ViewModelMapper.getInstance().toViewModel(updatedItem);
@@ -390,7 +390,7 @@ public class ItemService {
      */
     public void saveItem(ItemDTO item) {
         if (item.getId() == null || item.getId().isEmpty()) {
-            // Add new item
+            
             addItem(item)
                     .thenAccept(_ -> {
                         publishItemUpdatedEvent(item);

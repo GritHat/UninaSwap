@@ -60,7 +60,7 @@ public class NotificationMessage extends Message {
     /**
      * 
      */
-    private String notificationType; // Filter by type
+    private String notificationType; 
     
     /**
      * 
@@ -70,7 +70,7 @@ public class NotificationMessage extends Message {
         setMessageType("notification");
     }
     
-    // Getters and setters
+    
     /**
      * @return
      */

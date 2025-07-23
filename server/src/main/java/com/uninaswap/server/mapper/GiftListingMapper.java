@@ -24,10 +24,10 @@ public class GiftListingMapper {
 
         GiftListingDTO dto = new GiftListingDTO();
 
-        // Map common fields using the utility
+        
         commonListingMapper.mapCommonFields(entity, dto);
 
-        // Map gift-specific fields
+        
         dto.setPickupOnly(entity.isPickupOnly());
         dto.setAllowThankYouOffers(entity.isAllowThankYouOffers());
         dto.setRestrictions(entity.getRestrictions());

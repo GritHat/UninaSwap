@@ -32,11 +32,11 @@ public class ProfileWebSocketHandler extends TextWebSocketHandler {
                 ProfileUpdateMessage response = new ProfileUpdateMessage();
                 response.setType(ProfileUpdateMessage.Type.UPDATE_RESPONSE);
                 
-                // Find user by username
+                
                 UserEntity user = userRepository.findByUsername(updateMessage.getUsername()).orElse(null);
                 
                 if (user != null) {
-                    // Update user profile
+                    
                     user.setFirstName(updateMessage.getFirstName());
                     user.setLastName(updateMessage.getLastName());
                     user.setBio(updateMessage.getBio());
@@ -48,7 +48,7 @@ public class ProfileWebSocketHandler extends TextWebSocketHandler {
                     user.setCity(updateMessage.getCity());
                     
 
-                    // Save updated user
+                    
                     userRepository.save(user);
                     
                     response.setSuccess(true);
@@ -58,14 +58,14 @@ public class ProfileWebSocketHandler extends TextWebSocketHandler {
                     response.setMessage("User not found");
                 }
                 
-                // Send response
+                
                 session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
             }
             
         } catch (Exception e) {
             System.err.println("Error handling profile update: " + e.getMessage());
             
-            // Send error response
+            
             ProfileUpdateMessage errorResponse = new ProfileUpdateMessage();
             errorResponse.setType(ProfileUpdateMessage.Type.UPDATE_RESPONSE);
             errorResponse.setSuccess(false);

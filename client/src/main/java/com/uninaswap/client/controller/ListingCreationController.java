@@ -654,25 +654,25 @@ public class ListingCreationController implements Refreshable {
             return;
         }
         
-        // Store original quantities for rollback if needed
+        
         Map<String, Integer> originalAvailableQuantities = new HashMap<>();
         
-        // Apply optimistic updates to item quantities
+        
         for (ListingItemDTO listingItem : selectedItems) {
             String itemId = listingItem.getItemId();
             int reservedQuantity = listingItem.getQuantity();
             
-            // Find the actual item in the service
+            
             ItemDTO item = itemService.getUserItemsList().stream()
                     .filter(i -> i.getId().equals(itemId))
                     .findFirst()
                     .orElse(null);
                     
             if (item != null) {
-                // Store original for potential rollback
+                
                 originalAvailableQuantities.put(itemId, item.getAvailableQuantity());
                 
-                // Apply optimistic update
+                
                 int newAvailable = Math.max(0, item.getAvailableQuantity() - reservedQuantity);
                 item.setAvailableQuantity(newAvailable);
                 
@@ -692,10 +692,10 @@ public class ListingCreationController implements Refreshable {
                                 localeService.getMessage("listing.create.success.content"));
                         clearForm();
                         
-                        // Refresh items to get server-confirmed quantities
+                        
                         refreshItemsTable();
                         
-                        // Publish event to notify other components
+                        
                         EventBusService.getInstance().publishEvent(EventTypes.LISTING_CREATED, createdListing);
                         
                         System.out.println("Listing created successfully, quantities confirmed by server");
@@ -703,7 +703,7 @@ public class ListingCreationController implements Refreshable {
                 })
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
-                        // Rollback optimistic updates on error
+                        
                         for (Map.Entry<String, Integer> entry : originalAvailableQuantities.entrySet()) {
                             String itemId = entry.getKey();
                             int originalQuantity = entry.getValue();
@@ -719,7 +719,7 @@ public class ListingCreationController implements Refreshable {
                             }
                         }
                         
-                        // Clear temp reservations on error
+                        
                         tempReservedQuantities.clear();
                         refreshItemsTable();
                         

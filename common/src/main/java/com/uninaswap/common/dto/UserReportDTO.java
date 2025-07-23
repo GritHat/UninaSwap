@@ -58,14 +58,14 @@ public class UserReportDTO implements Serializable {
      */
     private String adminNotes;
 
-    // Default constructor
+    
     /**
      * 
      */
     public UserReportDTO() {
     }
 
-    // Constructor with required fields
+    
     /**
      * @param reportingUser
      * @param reportedUser
@@ -81,7 +81,7 @@ public class UserReportDTO implements Serializable {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

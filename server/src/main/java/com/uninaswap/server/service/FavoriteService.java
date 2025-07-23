@@ -51,19 +51,19 @@ public class FavoriteService {
     public FavoriteDTO addFavorite(Long userId, String listingId) {
         logger.info("Adding favorite: user {} listing {}", userId, listingId);
 
-        // Check if already favorited
+        
         if (favoriteRepository.existsByUserIdAndListingId(userId, listingId)) {
             throw new IllegalStateException("Listing already in favorites");
         }
 
-        // Get user and listing
+        
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
 
         ListingEntity listing = listingRepository.findById(listingId)
                 .orElseThrow(() -> new IllegalArgumentException("Listing not found: " + listingId));
 
-        // Create favorite
+        
         FavoriteEntity favorite = new FavoriteEntity(user, listing);
         favorite = favoriteRepository.save(favorite);
 

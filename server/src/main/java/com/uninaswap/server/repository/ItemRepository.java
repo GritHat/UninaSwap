@@ -13,21 +13,21 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<ItemEntity, String> {
     
-    // Find items by owner
+    
     List<ItemEntity> findByOwner(UserEntity owner);
     
-    // Find items by owner ID
+    
     List<ItemEntity> findByOwnerId(Long ownerId);
     
-    // Find items by category
+    
     List<ItemEntity> findByCategory(String category);
     
-    // Search items by name or description
+    
     @Query("SELECT i FROM ItemEntity i WHERE " +
           "LOWER(i.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
           "LOWER(i.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<ItemEntity> searchByKeyword(String keyword, Pageable pageable);
     
-    // Find items by brand and model
+    
     List<ItemEntity> findByBrandAndModel(String brand, String model);
 }

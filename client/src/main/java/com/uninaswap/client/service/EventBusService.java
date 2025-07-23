@@ -88,7 +88,7 @@ public class EventBusService {
     public void publishEvent(String eventType, Object data) {
         if (subscribers.containsKey(eventType)) {
             for (Consumer<Object> handler : subscribers.get(eventType)) {
-                // Make sure we run on the JavaFX application thread if handlers update UI
+                
                 if (Platform.isFxApplicationThread()) {
                     handler.accept(data);
                 } else {

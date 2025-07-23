@@ -77,7 +77,7 @@ public interface OfferRepository extends JpaRepository<OfferEntity, String> {
      */
     Page<OfferEntity> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
 
-    // Add to OfferRepository  
+    
     List<OfferEntity> findByUserIdAndCreatedAtBetween(Long userId, LocalDateTime start, LocalDateTime end);
     List<OfferEntity> findByListingCreatorIdAndCreatedAtBetween(Long creatorId, LocalDateTime start, LocalDateTime end);
     long countByUserIdAndCreatedAtBetween(Long userId, LocalDateTime start, LocalDateTime end);

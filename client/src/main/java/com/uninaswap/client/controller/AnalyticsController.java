@@ -1,4 +1,4 @@
-// filepath: /home/hat/Desktop/edu_workspace/UninaSwap/UninaSwap/client/src/main/java/com/uninaswap/client/controller/AnalyticsController.java
+
 package com.uninaswap.client.controller;
 
 import com.uninaswap.client.service.AnalyticsService;
@@ -30,7 +30,7 @@ import java.util.concurrent.CompletableFuture;
  */
 public class AnalyticsController implements Refreshable {
 
-    // Header Controls
+    
     /**
      * 
      */
@@ -60,7 +60,7 @@ public class AnalyticsController implements Refreshable {
      */
     @FXML private ComboBox<String> exportFormatComboBox;
     
-    // Summary Cards
+    
     /**
      * 
      */
@@ -98,7 +98,7 @@ public class AnalyticsController implements Refreshable {
      */
     @FXML private Text totalFavoritesValue;
     
-    // Performance Metrics
+    
     /**
      * 
      */
@@ -132,7 +132,7 @@ public class AnalyticsController implements Refreshable {
      */
     @FXML private Text ratingTrendValue;
     
-    // Charts
+    
     /**
      * 
      */
@@ -150,7 +150,7 @@ public class AnalyticsController implements Refreshable {
      */
     @FXML private AreaChart<String, Number> ratingTrendChart;
     
-    // Tables
+    
     /**
      * 
      */
@@ -193,7 +193,7 @@ public class AnalyticsController implements Refreshable {
      */
     @FXML private TableColumn<AnalyticsViewModel.MonthlyStats, Number> monthlyRatingColumn;
     
-    // Tabs
+    
     /**
      * 
      */

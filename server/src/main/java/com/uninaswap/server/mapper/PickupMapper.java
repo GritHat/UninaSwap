@@ -33,7 +33,7 @@ public class PickupMapper {
         dto.setCreatedAt(entity.getCreatedAt());
         dto.setUpdatedAt(entity.getUpdatedAt());
 
-        // Map relationships if needed
+        
         if (entity.getOffer() != null) {
             dto.setOffer(offerMapper.toDto(entity.getOffer()));
         }

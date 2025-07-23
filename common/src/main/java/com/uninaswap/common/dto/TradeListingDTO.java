@@ -15,7 +15,7 @@ import com.uninaswap.common.enums.Currency;
  */
 public class TradeListingDTO extends ListingDTO {
     
-    // Item trade properties
+    
     /**
      * 
      */
@@ -25,7 +25,7 @@ public class TradeListingDTO extends ListingDTO {
      */
     private List<String> desiredCategories = new ArrayList<>();
     
-    // Money offer properties
+    
     /**
      * 
      */
@@ -39,7 +39,7 @@ public class TradeListingDTO extends ListingDTO {
      */
     private Currency currency;
     
-    // Mixed offer properties
+    
     /**
      * 
      */
@@ -54,7 +54,7 @@ public class TradeListingDTO extends ListingDTO {
      */
     private String pickupLocation;
     
-    // Default constructor
+    
     /**
      * 
      */
@@ -77,7 +77,7 @@ public class TradeListingDTO extends ListingDTO {
     public String getPriceInfo() {
         StringBuilder sb = new StringBuilder();
         
-        // Trade items info
+        
         if (!desiredItems.isEmpty() || !desiredCategories.isEmpty()) {
             sb.append("Trading for: ");
             
@@ -96,7 +96,7 @@ public class TradeListingDTO extends ListingDTO {
             }
         }
         
-        // Money offer info
+        
         if (acceptMoneyOffers) {
             if (sb.length() > 0) {
                 sb.append(" | ");
@@ -111,7 +111,7 @@ public class TradeListingDTO extends ListingDTO {
             }
         }
         
-        // Mixed offer info
+        
         if (acceptMixedOffers) {
             if (sb.length() > 0) {
                 sb.append(" | ");
@@ -119,7 +119,7 @@ public class TradeListingDTO extends ListingDTO {
             sb.append("Mixed offers welcome");
         }
         
-        // Other offers
+        
         if (acceptOtherOffers) {
             sb.append(" (other offers welcome)");
         }
@@ -127,7 +127,7 @@ public class TradeListingDTO extends ListingDTO {
         return sb.toString();
     }
     
-    // Getters and setters
+    
     /**
      * @return
      */

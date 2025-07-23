@@ -78,14 +78,14 @@ public class ItemDTO implements Serializable {
      */
     private Boolean isVisible;
 
-    // Default constructor
+    
     /**
      * 
      */
     public ItemDTO() {
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

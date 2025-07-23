@@ -42,7 +42,7 @@ public class ItemWebSocketHandler extends TextWebSocketHandler {
             ItemMessage response = new ItemMessage();
             
             try {
-                // Check if session is authenticated for operations that require it
+                
                 UserEntity currentUser = null;
                 if (requiresAuthentication(itemMessage.getType())) {
                     currentUser = sessionService.validateSession(session);
@@ -83,7 +83,7 @@ public class ItemWebSocketHandler extends TextWebSocketHandler {
                 logger.error("Error processing item message", e);
             }
             
-            // Send the response back to the client
+            
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
             
         } catch (Exception e) {
@@ -96,7 +96,7 @@ public class ItemWebSocketHandler extends TextWebSocketHandler {
     }
     
     private boolean requiresAuthentication(ItemMessage.Type type) {
-        // All item operations require authentication
+        
         return true;
     }
     
@@ -112,7 +112,7 @@ public class ItemWebSocketHandler extends TextWebSocketHandler {
     private void handleAddItem(ItemMessage request, ItemMessage response, UserEntity currentUser) {
         ItemDTO newItem = request.getItem();
         
-        // Set owner to current user
+        
         newItem.setOwnerId(currentUser.getId());
         
         ItemDTO savedItem = itemService.addItem(newItem);
@@ -127,7 +127,7 @@ public class ItemWebSocketHandler extends TextWebSocketHandler {
     private void handleUpdateItem(ItemMessage request, ItemMessage response, UserEntity currentUser) {
         ItemDTO itemToUpdate = request.getItem();
         
-        // Verify ownership
+        
         if (!itemService.isItemOwnedByUser(itemToUpdate.getId(), currentUser.getId())) {
             response.setSuccess(false);
             response.setErrorMessage("You don't own this item");
@@ -135,7 +135,7 @@ public class ItemWebSocketHandler extends TextWebSocketHandler {
             return;
         }
         
-        // Preserve owner ID
+        
         itemToUpdate.setOwnerId(currentUser.getId());
         
         ItemDTO updatedItem = itemService.updateItem(itemToUpdate);
@@ -150,7 +150,7 @@ public class ItemWebSocketHandler extends TextWebSocketHandler {
     private void handleDeleteItem(ItemMessage request, ItemMessage response, UserEntity currentUser) {
         String itemId = request.getItem().getId();
         
-        // Verify ownership
+        
         if (!itemService.isItemOwnedByUser(itemId, currentUser.getId())) {
             response.setSuccess(false);
             response.setErrorMessage("You don't own this item");
@@ -158,7 +158,7 @@ public class ItemWebSocketHandler extends TextWebSocketHandler {
             return;
         }
         
-        // Check if item is used in any active listings
+        
         if (itemService.isItemUsedInActiveListing(itemId)) {
             response.setSuccess(false);
             response.setErrorMessage("Item cannot be deleted because it's part of an active listing");

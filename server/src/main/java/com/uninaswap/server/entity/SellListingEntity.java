@@ -22,12 +22,12 @@ public class SellListingEntity extends ListingEntity {
 
     private String pickupLocation;
     
-    // Default constructor
+    
     public SellListingEntity() {
         super();
     }
     
-    // Constructor with required fields
+    
     public SellListingEntity(String title, String description, UserEntity creator,
                       BigDecimal price, Currency currency, String pickupLocation) {
         super();
@@ -55,7 +55,7 @@ public class SellListingEntity extends ListingEntity {
      */
     @Transient
     public BigDecimal getTotalValue() {
-        return price;  // For SellListing, the price is the fixed price for all items
+        return price;  
     }
     
     @Override
@@ -68,7 +68,7 @@ public class SellListingEntity extends ListingEntity {
         return price + " " + currency;
     }
     
-    // Getters and Setters
+    
     public BigDecimal getPrice() {
         return price;
     }

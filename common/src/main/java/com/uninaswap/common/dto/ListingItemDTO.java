@@ -31,14 +31,14 @@ public class ListingItemDTO implements Serializable {
      */
     private ItemDTO item;
 
-    // Default constructor
+    
     /**
      * 
      */
     public ListingItemDTO() {
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */
@@ -95,7 +95,7 @@ public class ListingItemDTO implements Serializable {
         this.itemImagePath = itemImagePath;
     }
 
-    // Add getter/setter for category if needed
+    
     /**
      * @return
      */

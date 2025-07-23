@@ -46,27 +46,27 @@ public abstract class ListingEntity {
     @Column(nullable = false)
     private boolean featured = false;
 
-    // Replace the direct many-to-many with a join entity
+    
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ListingItemEntity> listingItems = new ArrayList<>();
 
-    // Type-specific fields that subclasses will use
+    
     @Transient
     public abstract String getListingType();
 
     @Transient
     public abstract String getPriceInfo();
 
-    // Constructor
+    
     public ListingEntity() {
-        // Generate a unique ID for the listing
+        
         this.id = UUID.randomUUID().toString();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.status = ListingStatus.ACTIVE;
     }
 
-    // Getters and Setters
+    
     public String getId() {
         return id;
     }
@@ -143,7 +143,7 @@ public abstract class ListingEntity {
         this.listingItems = listingItems;
     }
 
-    // Add helper methods
+    
     public void addItem(ItemEntity item, int quantity) {
         ListingItemEntity listingItem = new ListingItemEntity(this, item, quantity);
         listingItems.add(listingItem);

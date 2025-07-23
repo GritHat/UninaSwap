@@ -39,7 +39,7 @@ public class SearchWebSocketHandler extends TextWebSocketHandler {
             SearchMessage response = new SearchMessage();
 
             try {
-                // Search operations are public - no authentication required
+                
                 switch (searchMessage.getType()) {
                     case SEARCH_REQUEST:
                         handleSearchRequest(searchMessage, response);
@@ -56,7 +56,7 @@ public class SearchWebSocketHandler extends TextWebSocketHandler {
                 logger.error("Error processing search message", e);
             }
 
-            // Send the response back to the client
+            
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
 
         } catch (Exception e) {
@@ -70,21 +70,21 @@ public class SearchWebSocketHandler extends TextWebSocketHandler {
 
     private void handleSearchRequest(SearchMessage request, SearchMessage response) {
         try {
-            // Validate and sanitize parameters
+            
             int page = Math.max(0, request.getPage());
-            int size = Math.min(100, Math.max(1, request.getSize())); // Limit max size to 100
+            int size = Math.min(100, Math.max(1, request.getSize())); 
             
             String query = request.getQuery();
             String listingType = request.getListingType();
             Category category = request.getCategory();
 
-            // Create pageable
+            
             Pageable pageable = PageRequest.of(page, size);
 
-            // Perform search based on parameters
+            
             Page<ListingDTO> searchResults = performSearch(query, listingType, category, pageable);
 
-            // Set response data
+            
             response.setType(SearchMessage.Type.SEARCH_RESPONSE);
             response.setResults(searchResults.getContent());
             response.setPage(page);
@@ -106,47 +106,47 @@ public class SearchWebSocketHandler extends TextWebSocketHandler {
     }
 
     private Page<ListingDTO> performSearch(String query, String listingType, Category category, Pageable pageable) {
-        // Determine search strategy based on provided parameters
+        
         boolean hasQuery = query != null && !query.trim().isEmpty();
         boolean hasListingType = listingType != null && !listingType.trim().isEmpty() && !listingType.equalsIgnoreCase("all");
         boolean hasCategory = category != null && category != Category.ALL;
 
         if (!hasQuery && !hasListingType && !hasCategory) {
-            // No filters - return all active listings
+            
             return listingService.getActiveListings(pageable);
         }
 
         if (hasQuery && !hasListingType && !hasCategory) {
-            // Text search only
+            
             return listingService.searchListingsByText(query.trim(), pageable);
         }
 
         if (!hasQuery && hasListingType && !hasCategory) {
-            // Filter by listing type only
+            
             return listingService.getListingsByType(listingType, pageable);
         }
 
         if (!hasQuery && !hasListingType && hasCategory) {
-            // Filter by category only
+            
             return listingService.getListingsByCategory(category, pageable);
         }
 
         if (hasQuery && hasListingType && !hasCategory) {
-            // Text search + listing type filter
+            
             return listingService.searchListingsByTextAndType(query.trim(), listingType, pageable);
         }
 
         if (hasQuery && !hasListingType && hasCategory) {
-            // Text search + category filter
+            
             return listingService.searchListingsByTextAndCategory(query.trim(), category, pageable);
         }
 
         if (!hasQuery && hasListingType && hasCategory) {
-            // Listing type + category filter
+            
             return listingService.getListingsByTypeAndCategory(listingType, category, pageable);
         }
 
-        // All filters: text search + listing type + category
+        
         return listingService.searchListingsByTextTypeAndCategory(query.trim(), listingType, category, pageable);
     }
 }

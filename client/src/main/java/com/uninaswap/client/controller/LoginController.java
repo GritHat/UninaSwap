@@ -66,9 +66,9 @@ public class LoginController {
      */
     @FXML
     public void initialize() {
-        // Set max length for login field
+        
         TextUtils.setMaxLength(loginField, 50);
-        // Set max length for password field
+        
         TextUtils.setMaxLength(passwordField, 50);
         registerMessageHandler();
     }

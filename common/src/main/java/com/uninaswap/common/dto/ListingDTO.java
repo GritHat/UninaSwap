@@ -60,13 +60,13 @@ public abstract class ListingDTO implements Serializable {
      */
     private List<ListingItemDTO> items = new ArrayList<>();
     
-    // Default constructor
+    
     /**
      * 
      */
     public ListingDTO() {}
     
-    // Define abstract methods to be implemented by subclasses
+    
     /**
      * @return
      */
@@ -76,7 +76,7 @@ public abstract class ListingDTO implements Serializable {
      */
     public abstract String getPriceInfo();
     
-    // Getters and setters
+    
     /**
      * @return
      */

@@ -37,7 +37,7 @@ public class NotificationMapper {
         
         NotificationEntity entity = new NotificationEntity();
         entity.setId(dto.getId());
-        // Note: recipient should be set by the service using proper entity lookup
+        
         entity.setType(com.uninaswap.common.enums.NotificationType.valueOf(dto.getType()));
         entity.setTitle(dto.getTitle());
         entity.setMessage(dto.getMessage());

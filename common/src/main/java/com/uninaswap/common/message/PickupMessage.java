@@ -16,7 +16,7 @@ public class PickupMessage extends Message {
      * 
      */
     public enum Type {
-        // Requests
+        
         CREATE_PICKUP_REQUEST,
         UPDATE_PICKUP_REQUEST,
         UPDATE_PICKUP_STATUS_REQUEST,
@@ -33,7 +33,7 @@ public class PickupMessage extends Message {
         PROPOSE_PICKUP_TIMES_REQUEST,
         SELECT_PICKUP_TIME_REQUEST,
 
-        // Responses
+        
         CREATE_PICKUP_RESPONSE,
         UPDATE_PICKUP_RESPONSE,
         UPDATE_PICKUP_STATUS_RESPONSE,
@@ -118,7 +118,7 @@ public class PickupMessage extends Message {
      */
     private LocalTime endTime;
 
-    // Default constructor
+    
     /**
      * 
      */
@@ -127,7 +127,7 @@ public class PickupMessage extends Message {
         setMessageType("pickup");
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

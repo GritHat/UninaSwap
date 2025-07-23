@@ -42,14 +42,14 @@ public class ReviewViewModel {
      */
     private final ObjectProperty<LocalDateTime> updatedAt = new SimpleObjectProperty<>();
 
-    // Default constructor
+    
     /**
      * 
      */
     public ReviewViewModel() {
     }
 
-    // Constructor with required fields
+    
     /**
      * @param reviewer
      * @param reviewedUser
@@ -68,7 +68,7 @@ public class ReviewViewModel {
         setUpdatedAt(LocalDateTime.now());
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -125,7 +125,7 @@ public class ReviewViewModel {
         return updatedAt;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */
@@ -238,7 +238,7 @@ public class ReviewViewModel {
         this.updatedAt.set(updatedAt);
     }
 
-    // Utility methods
+    
     /**
      * @return
      */

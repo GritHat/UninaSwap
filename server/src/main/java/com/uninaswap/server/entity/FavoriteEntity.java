@@ -27,19 +27,19 @@ public class FavoriteEntity {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // Default constructor
+    
     public FavoriteEntity() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Constructor
+    
     public FavoriteEntity(UserEntity user, ListingEntity listing) {
         this();
         this.user = user;
         this.listing = listing;
     }
 
-    // Getters and setters
+    
     public Long getId() {
         return id;
     }

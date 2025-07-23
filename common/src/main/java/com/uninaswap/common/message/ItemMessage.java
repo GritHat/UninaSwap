@@ -39,7 +39,7 @@ public class ItemMessage extends Message {
      */
     private String errorMessage;
 
-    // Default constructor
+    
     /**
      * 
      */
@@ -47,7 +47,7 @@ public class ItemMessage extends Message {
         setMessageType("item");
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

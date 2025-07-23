@@ -78,14 +78,14 @@ public class PickupDTO implements Serializable {
      */
     private UserDTO updatedBy;
 
-    // Default constructor
+    
     /**
      * 
      */
     public PickupDTO() {
     }
 
-    // Constructor for creating new pickup
+    
     /**
      * @param offerId
      * @param availableDates
@@ -108,7 +108,7 @@ public class PickupDTO implements Serializable {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */
@@ -319,7 +319,7 @@ public class PickupDTO implements Serializable {
         this.updatedBy = updatedBy;
     }
 
-    // Utility methods
+    
     /**
      * @return
      */

@@ -44,7 +44,7 @@ public class ReportWebSocketHandler extends TextWebSocketHandler {
             ReportMessage response = new ReportMessage();
 
             try {
-                // All report operations require authentication
+                
                 UserEntity currentUser = sessionService.validateSession(session);
                 if (currentUser == null) {
                     throw new UnauthorizedException("Not authenticated");
@@ -98,7 +98,7 @@ public class ReportWebSocketHandler extends TextWebSocketHandler {
                 logger.error("Error processing report message", e);
             }
 
-            // Send the response back to the client
+            
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
 
         } catch (Exception e) {
@@ -182,7 +182,7 @@ public class ReportWebSocketHandler extends TextWebSocketHandler {
 
     private void handleGetAllUserReports(ReportMessage request, ReportMessage response, UserEntity currentUser) {
         try {
-            // TODO: Add admin role check
+            
             List<UserReportDTO> reports = reportService.getUnreviewedUserReports();
 
             response.setType(ReportMessage.Type.GET_ALL_USER_REPORTS_RESPONSE);
@@ -200,7 +200,7 @@ public class ReportWebSocketHandler extends TextWebSocketHandler {
 
     private void handleGetAllListingReports(ReportMessage request, ReportMessage response, UserEntity currentUser) {
         try {
-            // TODO: Add admin role check
+            
             List<ListingReportDTO> reports = reportService.getUnreviewedListingReports();
 
             response.setType(ReportMessage.Type.GET_ALL_LISTING_REPORTS_RESPONSE);
@@ -219,7 +219,7 @@ public class ReportWebSocketHandler extends TextWebSocketHandler {
 
     private void handleReviewUserReport(ReportMessage request, ReportMessage response, UserEntity currentUser) {
         try {
-            // TODO: Add admin role check
+            
             String reportId = request.getReportId();
             String adminNotes = request.getUserReport() != null ? request.getUserReport().getAdminNotes() : "";
 
@@ -240,7 +240,7 @@ public class ReportWebSocketHandler extends TextWebSocketHandler {
 
     private void handleReviewListingReport(ReportMessage request, ReportMessage response, UserEntity currentUser) {
         try {
-            // TODO: Add admin role check
+            
             String reportId = request.getReportId();
             String adminNotes = request.getListingReport() != null ? request.getListingReport().getAdminNotes() : "";
 

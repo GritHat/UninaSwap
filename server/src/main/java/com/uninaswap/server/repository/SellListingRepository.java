@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SellListingRepository extends JpaRepository<SellListingEntity, String> {
-    // Add any sell listing specific query methods here if needed
+    
 }

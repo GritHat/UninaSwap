@@ -31,7 +31,7 @@ public class ReviewDTO implements Serializable {
     /**
      * 
      */
-    private Double score; // 0.0 to 5.0
+    private Double score; 
     /**
      * 
      */
@@ -45,14 +45,14 @@ public class ReviewDTO implements Serializable {
      */
     private LocalDateTime updatedAt;
 
-    // Default constructor
+    
     /**
      * 
      */
     public ReviewDTO() {
     }
 
-    // Constructor with required fields
+    
     /**
      * @param reviewer
      * @param reviewedUser
@@ -68,7 +68,7 @@ public class ReviewDTO implements Serializable {
         this.comment = comment;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

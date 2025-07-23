@@ -13,19 +13,19 @@ public class ReportMessage extends Message {
      * 
      */
     public enum Type {
-        // User Report Operations
+        
         CREATE_USER_REPORT_REQUEST,
         CREATE_USER_REPORT_RESPONSE,
         GET_USER_REPORTS_REQUEST,
         GET_USER_REPORTS_RESPONSE,
 
-        // Listing Report Operations
+        
         CREATE_LISTING_REPORT_REQUEST,
         CREATE_LISTING_REPORT_RESPONSE,
         GET_LISTING_REPORTS_REQUEST,
         GET_LISTING_REPORTS_RESPONSE,
 
-        // Admin Operations
+        
         GET_ALL_USER_REPORTS_REQUEST,
         GET_ALL_USER_REPORTS_RESPONSE,
         GET_ALL_LISTING_REPORTS_REQUEST,
@@ -73,7 +73,7 @@ public class ReportMessage extends Message {
      */
     private String errorMessage;
 
-    // Default constructor
+    
     /**
      * 
      */
@@ -81,7 +81,7 @@ public class ReportMessage extends Message {
         setMessageType("report");
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

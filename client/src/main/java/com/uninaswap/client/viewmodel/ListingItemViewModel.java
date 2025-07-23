@@ -36,7 +36,7 @@ public class ListingItemViewModel {
      */
     private final IntegerProperty quantity = new SimpleIntegerProperty(0);
 
-    // Constructors
+    
     /**
      * 
      */
@@ -61,7 +61,7 @@ public class ListingItemViewModel {
         setQuantity(quantity);
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -104,7 +104,7 @@ public class ListingItemViewModel {
         return quantity;
     }
 
-    // Setters
+    
     /**
      * @param id
      */
@@ -147,7 +147,7 @@ public class ListingItemViewModel {
         this.quantity.set(quantity);
     }
 
-    // Getters
+    
 
     /**
      * @return

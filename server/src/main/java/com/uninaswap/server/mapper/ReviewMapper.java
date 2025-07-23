@@ -38,9 +38,9 @@ public class ReviewMapper {
         entity.setScore(dto.getScore());
         entity.setComment(dto.getComment());
 
-        // Note: reviewer, reviewedUser, and offer relationships should be set by the
-        // service
-        // using proper entity lookups, not through the mapper
+        
+        
+        
 
         return entity;
     }

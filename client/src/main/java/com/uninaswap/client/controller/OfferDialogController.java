@@ -227,7 +227,7 @@ public class OfferDialogController {
                 populateListingInfo();
                 configureOfferSections();
                 
-                // Ensure items are loaded before showing the dialog
+                
                 ensureItemsLoaded(() -> {
                     loadAvailableItems();
                 });
@@ -243,29 +243,29 @@ public class OfferDialogController {
         ObservableList<ItemViewModel> currentItems = itemService.getUserItemsListAsViewModel();
         
         if (currentItems == null || currentItems.isEmpty()) {
-            // Try to get items using the ViewModel method which might trigger loading
+            
             try {
-                // This should trigger the inventory controller's refresh mechanism
+                
                 ObservableList<ItemViewModel> viewModelItems = FXCollections.observableArrayList();
                 
-                // Get fresh items from service
+                
                 itemService.getUserItemsList().forEach(itemDTO -> {
                     viewModelItems.add(viewModelMapper.toViewModel(itemDTO));
                 });
                 
-                // If we got items, proceed
+                
                 if (!viewModelItems.isEmpty()) {
                     callback.run();
                 } else {
-                    // No items available - user has empty inventory
+                    
                     callback.run();
                 }
             } catch (Exception e) {
                 System.err.println("Error ensuring items loaded: " + e.getMessage());
-                callback.run(); // Proceed anyway
+                callback.run(); 
             }
         } else {
-            // Items already loaded
+            
             callback.run();
         }
     }
@@ -351,7 +351,7 @@ public class OfferDialogController {
             }
         });
 
-        // Add button column
+        
         itemActionColumn.setCellFactory(_ -> new TableCell<ItemViewModel, Void>() {
             private final Button addButton = new Button("Aggiungi");
 
@@ -513,7 +513,7 @@ public class OfferDialogController {
                 break;
             
             case "GIFT":
-                // For gift listings, enable both money and item offers for thank-you offers
+                
                 moneyOfferSection.setVisible(true);
                 itemsOfferSection.setVisible(true);
                 includeMoneyCheckBox.setSelected(false);

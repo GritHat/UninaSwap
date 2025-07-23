@@ -32,7 +32,7 @@ public class OfferItemViewModel {
      */
     private final ObjectProperty<ItemViewModel> item = new SimpleObjectProperty<>();
 
-    // Constructors
+    
     /**
      * 
      */
@@ -57,7 +57,7 @@ public class OfferItemViewModel {
         setItem(item);
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -100,7 +100,7 @@ public class OfferItemViewModel {
         return item;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

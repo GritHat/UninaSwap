@@ -40,7 +40,7 @@ public class OfferEntity {
     @Column(nullable = false)
     private OfferStatus status;
 
-    // Money component of the offer
+    
     @Column(precision = 10, scale = 2)
     private BigDecimal amount;
 
@@ -49,13 +49,13 @@ public class OfferEntity {
 
     private DeliveryType deliveryType;
 
-    // Items component of the offer - UPDATED to use OfferItem
+    
     @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OfferItemEntity> offerItems = new ArrayList<>();
 
     private String message;
 
-    // Constructor
+    
     public OfferEntity() {
         this.id = UUID.randomUUID().toString();
         this.createdAt = LocalDateTime.now();
@@ -122,7 +122,7 @@ public class OfferEntity {
                 .sum();
     }
 
-    // Getters and Setters
+    
     public String getId() {
         return id;
     }

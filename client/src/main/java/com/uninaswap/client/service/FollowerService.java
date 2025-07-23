@@ -349,7 +349,7 @@ public class FollowerService {
                         followingIds.remove(message.getFollowedId());
                         followingCount = Math.max(0, followingCount - 1);
 
-                        // Remove from following list
+                        
                         followingUsers.removeIf(user -> user.getId().equals(message.getFollowedId()));
 
                         if (futureToComplete != null) {

@@ -156,7 +156,7 @@ public class UserMenuDropdownController {
             localeService.getMessage("theme.dark", "Dark"),
             localeService.getMessage("theme.system", "System")
         ));
-        themeCombo.setValue(localeService.getMessage("theme.light", "Light")); // Default
+        themeCombo.setValue(localeService.getMessage("theme.light", "Light")); 
         
         themeCombo.setOnAction(_ -> {
             String selectedTheme = themeCombo.getValue();

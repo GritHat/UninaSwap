@@ -44,7 +44,7 @@ public class NotificationViewModel {
      */
     private final ObjectProperty<LocalDateTime> readAt = new SimpleObjectProperty<>();
     
-    // Getters and setters for JavaFX properties
+    
     /**
      * @return
      */

@@ -40,14 +40,14 @@ public class FavoriteDTO implements Serializable {
      */
     private LocalDateTime createdAt;
 
-    // Default constructor
+    
     /**
      * 
      */
     public FavoriteDTO() {
     }
 
-    // Constructor
+    
     /**
      * @param userId
      * @param listingId
@@ -58,7 +58,7 @@ public class FavoriteDTO implements Serializable {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

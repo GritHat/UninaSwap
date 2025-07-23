@@ -25,7 +25,7 @@ public class FavoriteMapper {
         dto.setListingId(entity.getListing().getId());
         dto.setCreatedAt(entity.getCreatedAt());
 
-        // Map user and listing if needed
+        
         if (entity.getUser() != null) {
             dto.setUser(userMapper.toDto(entity.getUser()));
         }

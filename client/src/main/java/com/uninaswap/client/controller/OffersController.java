@@ -334,7 +334,7 @@ public class OffersController {
                 "history",
                 this::showOfferDetails,
                 null,
-                null, null, null, null, null, null // No action handlers for history
+                null, null, null, null, null, null 
             );
         }
     }

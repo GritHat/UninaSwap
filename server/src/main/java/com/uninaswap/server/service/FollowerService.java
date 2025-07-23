@@ -45,24 +45,24 @@ public class FollowerService {
     public FollowerDTO followUser(Long followerId, Long followedId) {
         logger.info("User {} following user {}", followerId, followedId);
 
-        // Validate users are different
+        
         if (followerId.equals(followedId)) {
             throw new IllegalArgumentException("User cannot follow themselves");
         }
 
-        // Check if already following
+        
         if (followerRepository.existsByFollowerIdAndFollowedId(followerId, followedId)) {
             throw new IllegalStateException("Already following this user");
         }
 
-        // Get users
+        
         UserEntity follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new IllegalArgumentException("Follower not found: " + followerId));
 
         UserEntity followed = userRepository.findById(followedId)
                 .orElseThrow(() -> new IllegalArgumentException("User to follow not found: " + followedId));
 
-        // Create follow relationship
+        
         FollowerEntity followerEntity = new FollowerEntity(follower, followed);
         followerEntity = followerRepository.save(followerEntity);
 

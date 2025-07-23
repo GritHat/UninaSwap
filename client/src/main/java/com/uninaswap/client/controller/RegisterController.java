@@ -101,7 +101,7 @@ public class RegisterController {
      */
     @FXML
     public void initialize() {
-        // Set max length for fields
+        
         TextUtils.setMaxLength(firstNameField, 50);
         TextUtils.setMaxLength(lastNameField, 50);
         TextUtils.setMaxLength(usernameField, 50);

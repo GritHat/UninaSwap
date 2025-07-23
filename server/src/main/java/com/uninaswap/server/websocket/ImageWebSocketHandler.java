@@ -43,7 +43,7 @@ public class ImageWebSocketHandler extends TextWebSocketHandler {
             System.err.println("Error handling image message: " + e.getMessage());
 
             ImageMessage errorResponse = new ImageMessage();
-            errorResponse.setType(ImageMessage.Type.FETCH_RESPONSE); // Default to fetch response
+            errorResponse.setType(ImageMessage.Type.FETCH_RESPONSE); 
             errorResponse.setSuccess(false);
             errorResponse.setMessage("Error processing image: " + e.getMessage());
 
@@ -61,7 +61,7 @@ public class ImageWebSocketHandler extends TextWebSocketHandler {
             String imageId = parts[0];
             String format = parts[1];
 
-            // Retrieve the image
+            
             String imageData = imageService.getImage(imageId, format);
 
             response.setType(ImageMessage.Type.FETCH_RESPONSE);

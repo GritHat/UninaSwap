@@ -108,7 +108,7 @@ public class FavoriteWebSocketHandler extends TextWebSocketHandler {
 
             logger.info("Added favorite: user {} listing {}", currentUser.getUsername(), listingId);
         } catch (IllegalStateException e) {
-            // Already favorited
+            
             response.setType(FavoriteMessage.Type.ADD_FAVORITE_RESPONSE);
             response.setSuccess(false);
             response.setErrorMessage("Listing already in favorites");

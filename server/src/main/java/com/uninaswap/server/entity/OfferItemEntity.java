@@ -24,18 +24,18 @@ public class OfferItemEntity {
     @Column(nullable = false)
     private Integer quantity = 1;
     
-    // Default constructor
+    
     public OfferItemEntity() {
     }
     
-    // Constructor
+    
     public OfferItemEntity(OfferEntity offer, ItemEntity item, Integer quantity) {
         this.offer = offer;
         this.item = item;
         this.quantity = quantity;
     }
     
-    // Getters and setters
+    
     public Long getId() {
         return id;
     }

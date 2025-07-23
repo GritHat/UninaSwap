@@ -45,9 +45,9 @@ public class UserReportMapper {
         entity.setReviewedAt(dto.getReviewedAt());
         entity.setAdminNotes(dto.getAdminNotes());
 
-        // Note: reporting user, reported user, and admin relationships should be set by
-        // the service
-        // using proper entity lookups, not through the mapper
+        
+        
+        
 
         return entity;
     }

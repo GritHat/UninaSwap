@@ -17,17 +17,17 @@ import com.uninaswap.common.enums.Currency;
 @DiscriminatorValue("TRADE")
 public class TradeListingEntity extends ListingEntity {
 
-    // Change from LAZY to EAGER loading for serialization
+    
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "trade_desired_items", joinColumns = @JoinColumn(name = "listing_id"), inverseJoinColumns = @JoinColumn(name = "item_id"))
     private List<ItemEntity> desiredItems = new ArrayList<>();
 
-    @ElementCollection(fetch = FetchType.EAGER) // Change to EAGER
+    @ElementCollection(fetch = FetchType.EAGER) 
     @CollectionTable(name = "trade_desired_categories", joinColumns = @JoinColumn(name = "listing_id"))
     @Column(name = "category")
     private List<String> desiredCategories = new ArrayList<>();
 
-    // Money offer properties
+    
     @Column(nullable = false)
     private boolean acceptMoneyOffers = false;
 
@@ -37,7 +37,7 @@ public class TradeListingEntity extends ListingEntity {
     @Enumerated(EnumType.STRING)
     private Currency currency;
 
-    // Mixed offer properties
+    
     @Column(nullable = false)
     private boolean acceptMixedOffers = false;
 
@@ -47,12 +47,12 @@ public class TradeListingEntity extends ListingEntity {
     @Column(nullable = false)
     private String pickupLocation;
 
-    // Default constructor
+    
     public TradeListingEntity() {
         super();
     }
 
-    // Constructor with required fields
+    
     public TradeListingEntity(String title, String description, UserEntity creator,
             List<String> desiredCategories, boolean acceptOtherOffers, String pickupLocation) {
         super();
@@ -106,7 +106,7 @@ public class TradeListingEntity extends ListingEntity {
     public String getPriceInfo() {
         StringBuilder sb = new StringBuilder();
 
-        // Trade items info
+        
         if (!desiredItems.isEmpty() || !desiredCategories.isEmpty()) {
             sb.append("Trading for: ");
 
@@ -125,7 +125,7 @@ public class TradeListingEntity extends ListingEntity {
             }
         }
 
-        // Money offer info
+        
         if (acceptMoneyOffers) {
             if (sb.length() > 0) {
                 sb.append(" | ");
@@ -140,7 +140,7 @@ public class TradeListingEntity extends ListingEntity {
             }
         }
 
-        // Mixed offer info
+        
         if (acceptMixedOffers) {
             if (sb.length() > 0) {
                 sb.append(" | ");
@@ -148,7 +148,7 @@ public class TradeListingEntity extends ListingEntity {
             sb.append("Mixed offers welcome");
         }
 
-        // Other offers
+        
         if (acceptOtherOffers) {
             sb.append(" (other offers welcome)");
         }
@@ -156,7 +156,7 @@ public class TradeListingEntity extends ListingEntity {
         return sb.toString();
     }
 
-    // Getters and Setters for existing fields
+    
     public List<ItemEntity> getDesiredItems() {
         return desiredItems;
     }
@@ -181,7 +181,7 @@ public class TradeListingEntity extends ListingEntity {
         this.acceptOtherOffers = acceptOtherOffers;
     }
 
-    // Getters and setters for new fields
+    
     public boolean isAcceptMoneyOffers() {
         return acceptMoneyOffers;
     }

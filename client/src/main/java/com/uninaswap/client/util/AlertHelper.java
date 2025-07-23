@@ -33,47 +33,47 @@ public class AlertHelper {
      * Configure an alert with UninaSwap styling and proper focus management
      */
     private static void configureAlert(Alert alert, Window owner) {
-        // Set owner to ensure proper layering
+        
         if (owner != null) {
             alert.initOwner(owner);
         }
         
-        // Set modality to ensure the alert stays on top and blocks interaction
+        
         alert.initModality(Modality.APPLICATION_MODAL);
         
-        // Apply custom styling
+        
         alert.getDialogPane().getStylesheets().add(
             AlertHelper.class.getResource("/css/styles.css").toExternalForm()
         );
         
-        // Add custom style classes for consistent theming
+        
         alert.getDialogPane().getStyleClass().addAll("alert-dialog");
         
-        // Force white background
+        
         alert.getDialogPane().setStyle("-fx-background-color: white; -fx-background-radius: 12px;");
         
-        // Ensure the alert is always on top
+        
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.setAlwaysOnTop(true);
         stage.setResizable(false);
         
-        // Apply styling after the dialog is shown to ensure buttons are created
+        
         Platform.runLater(() -> {
-            // Style buttons according to project guidelines
+            
             alert.getDialogPane().lookupAll(".button").forEach(node -> {
                 if (node instanceof javafx.scene.control.Button button) {
-                    // Remove default button styling
+                    
                     button.getStyleClass().removeAll("dialog-button");
                     
-                    // Get button type to determine styling
+                    
                     String buttonText = button.getText().toLowerCase();
                     
-                    // Style based on button text and type
+                    
                     if (buttonText.contains("ok") || buttonText.contains("sì") || 
                         buttonText.contains("conferma") || buttonText.contains("yes") ||
                         buttonText.contains("acquista") || buttonText.contains("invia")) {
                         
-                        // Primary button styling
+                        
                         button.setStyle(
                             "-fx-background-color: -fx-primary; " +
                             "-fx-text-fill: white; " +
@@ -85,7 +85,7 @@ public class AlertHelper {
                             "-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);"
                         );
                         
-                        // Add hover effects
+                        
                         button.setOnMouseEntered(e -> {
                             button.setStyle(
                                 "-fx-background-color: -fx-primary-light; " +
@@ -113,7 +113,7 @@ public class AlertHelper {
                         });
                         
                     } else {
-                        // Secondary button styling
+                        
                         button.setStyle(
                             "-fx-background-color: transparent; " +
                             "-fx-text-fill: -fx-text-mid; " +
@@ -126,7 +126,7 @@ public class AlertHelper {
                             "-fx-cursor: hand;"
                         );
                         
-                        // Add hover effects
+                        
                         button.setOnMouseEntered(e -> {
                             button.setStyle(
                                 "-fx-background-color: -fx-primary-ultralight; " +
@@ -159,14 +159,14 @@ public class AlertHelper {
                 }
             });
             
-            // Style the dialog content area
+            
             alert.getDialogPane().lookup(".content").setStyle(
                 "-fx-background-color: white; " +
                 "-fx-background-radius: 0 0 12px 12px; " +
                 "-fx-padding: 20px;"
             );
             
-            // Style the header area
+            
             if (alert.getDialogPane().lookup(".header-panel") != null) {
                 alert.getDialogPane().lookup(".header-panel").setStyle(
                     "-fx-background-color: -fx-background-light; " +
@@ -177,7 +177,7 @@ public class AlertHelper {
                 );
             }
             
-            // Style the button bar
+            
             if (alert.getDialogPane().lookup(".button-bar") != null) {
                 alert.getDialogPane().lookup(".button-bar").setStyle(
                     "-fx-background-color: white; " +
@@ -187,18 +187,18 @@ public class AlertHelper {
             }
         });
         
-        // Set minimum size for better appearance
+        
         alert.getDialogPane().setMinHeight(200);
         alert.getDialogPane().setPrefWidth(400);
         
-        // Center the alert on screen or owner
+        
         Platform.runLater(() -> {
             if (owner != null) {
                 stage.setX(owner.getX() + (owner.getWidth() - stage.getWidth()) / 2);
                 stage.setY(owner.getY() + (owner.getHeight() - stage.getHeight()) / 2);
             }
             
-            // Ensure focus and bring to front
+            
             stage.toFront();
             stage.requestFocus();
         });
@@ -307,7 +307,7 @@ public class AlertHelper {
             alert.getDialogPane().setExpandableContent(expContent);
             alert.getDialogPane().setExpanded(false);
             
-            // Increase size for exception dialogs
+            
             alert.getDialogPane().setPrefWidth(600);
             alert.getDialogPane().setPrefHeight(400);
 

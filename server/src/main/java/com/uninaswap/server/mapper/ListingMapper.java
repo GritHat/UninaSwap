@@ -29,7 +29,7 @@ public class ListingMapper {
             return null;
         }
 
-        // Route to the appropriate specific mapper based on the entity type
+        
         if (entity instanceof SellListingEntity) {
             return sellListingMapper.toDto((SellListingEntity) entity);
         } else if (entity instanceof TradeListingEntity) {

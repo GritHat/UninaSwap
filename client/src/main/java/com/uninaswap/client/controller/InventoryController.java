@@ -167,7 +167,7 @@ public class InventoryController {
         setupFilters();
         setupTableColumns();
         
-        // Get all items and set up filtering
+        
         ObservableList<ItemViewModel> allItems = itemService.getUserItemsListAsViewModel();
         filteredItems = new FilteredList<>(allItems);
         itemsTable.setItems(filteredItems);
@@ -183,9 +183,9 @@ public class InventoryController {
      * 
      */
     private void setupFilters() {
-        // Setup category filter with actual Category enum
+        
         ObservableList<Category> categories = FXCollections.observableArrayList();
-        categories.add(null); // Add null for "All Categories"
+        categories.add(null); 
         categories.addAll(categoryService.getSelectableCategories());
         categoryFilterComboBox.setItems(categories);
         
@@ -206,11 +206,11 @@ public class InventoryController {
                 return categoryService.getCategoryByDisplayName(string);
             }
         });
-        categoryFilterComboBox.setValue(null); // Set to "All Categories"
+        categoryFilterComboBox.setValue(null); 
         
-        // Setup condition filter with actual ItemCondition enum
+        
         ObservableList<ItemCondition> conditions = FXCollections.observableArrayList();
-        conditions.add(null); // Add null for "All Conditions"
+        conditions.add(null); 
         conditions.addAll(ItemCondition.values());
         conditionFilterComboBox.setItems(conditions);
         
@@ -236,9 +236,9 @@ public class InventoryController {
                 return null;
             }
         });
-        conditionFilterComboBox.setValue(null); // Set to "All Conditions"
+        conditionFilterComboBox.setValue(null); 
         
-        // Setup availability filter with localized strings
+        
         availabilityFilterComboBox.setItems(FXCollections.observableArrayList(
                 localeService.getMessage("inventory.filter.all.availability", "All Items"),
                 localeService.getMessage("inventory.filter.available", "Available"),
@@ -252,7 +252,7 @@ public class InventoryController {
      * 
      */
     private void setupSearchAndFilters() {
-        // Add listeners to all filter controls
+        
         searchField.textProperty().addListener((_, _, _) -> updateFilters());
         categoryFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
         conditionFilterComboBox.valueProperty().addListener((_, _, _) -> updateFilters());
@@ -278,14 +278,14 @@ public class InventoryController {
     private void setupActionButtons() {
         editButton.disableProperty().bind(itemsTable.getSelectionModel().selectedItemProperty().isNull());
         
-        // Disable delete button when no item is selected OR when selected item has reserved quantities
+        
         deleteButton.disableProperty().bind(
             itemsTable.getSelectionModel().selectedItemProperty().isNull()
             .or(
                 javafx.beans.binding.Bindings.createBooleanBinding(() -> {
                     ItemViewModel selectedItem = itemsTable.getSelectionModel().getSelectedItem();
                     if (selectedItem == null) {
-                        return false; // Already handled by isNull() check above
+                        return false; 
                     }
                     int reservedQuantity = selectedItem.getTotalQuantity() - selectedItem.getAvailableQuantity();
                     return reservedQuantity > 0;
@@ -293,7 +293,7 @@ public class InventoryController {
             )
         );
         
-        // Add tooltip to delete button that updates based on selection
+        
         itemsTable.getSelectionModel().selectedItemProperty().addListener((_, _, newSelection) -> {
             if (newSelection == null) {
                 deleteButton.setTooltip(new Tooltip(localeService.getMessage("item.delete.tooltip.no.selection", "Select an item to delete")));
@@ -353,7 +353,7 @@ public class InventoryController {
         if (filteredItems == null) return;
 
         filteredItems.setPredicate(item -> {
-            // Search text filter
+            
             String searchText = searchField.getText();
             if (searchText != null && !searchText.trim().isEmpty()) {
                 String lowerSearchText = searchText.toLowerCase().trim();
@@ -368,7 +368,7 @@ public class InventoryController {
                 }
             }
             
-            // Category filter
+            
             Category selectedCategory = categoryFilterComboBox.getValue();
             if (selectedCategory != null) {
                 String itemCategory = item.getItemCategory();
@@ -377,7 +377,7 @@ public class InventoryController {
                 }
             }
             
-            // Condition filter
+            
             ItemCondition selectedCondition = conditionFilterComboBox.getValue();
             if (selectedCondition != null) {
                 ItemCondition itemCondition = item.getCondition();
@@ -386,7 +386,7 @@ public class InventoryController {
                 }
             }
             
-            // Availability filter
+            
             String availabilityFilter = availabilityFilterComboBox.getValue();
             if (availabilityFilter != null && !localeService.getMessage("inventory.filter.all.availability", "All Items").equals(availabilityFilter)) {
                 if (localeService.getMessage("inventory.filter.available", "Available").equals(availabilityFilter)) {
@@ -449,7 +449,7 @@ public class InventoryController {
     private void handleDeleteItem() {
         ItemViewModel selectedItem = itemsTable.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
-            // Check if item has reserved quantities
+            
             int reservedQuantity = selectedItem.getTotalQuantity() - selectedItem.getAvailableQuantity();
             if (reservedQuantity > 0) {
                 AlertHelper.showWarningAlert(
@@ -509,23 +509,23 @@ public class InventoryController {
         System.out.println("InventoryController: refreshItems() called");
         
         try {
-            // Get fresh data from the service
+            
             ObservableList<ItemViewModel> newItems = itemService.getUserItemsListAsViewModel();
             System.out.println("InventoryController: Got " + newItems.size() + " items from service");
             
-            // Always recreate the FilteredList to avoid synchronization issues
+            
             filteredItems = new FilteredList<>(newItems);
             
-            // Apply current filter settings before setting to table
+            
             updateFilters();
             
-            // Set to table
+            
             itemsTable.setItems(filteredItems);
             
-            // Re-setup listeners
+            
             setupSearchAndFilters();
             
-            // Force refresh
+            
             Platform.runLater(() -> {
                 itemsTable.refresh();
                 System.out.println("InventoryController: Table refresh completed. Filtered items count: " + filteredItems.size());
@@ -588,7 +588,7 @@ public class InventoryController {
             new SimpleIntegerProperty(cellData.getValue().getTotalQuantity() -
                 cellData.getValue().getAvailableQuantity()).asObject());
         
-        // Setup actions column
+        
         setupActionsColumn();
     }
     
@@ -632,7 +632,7 @@ public class InventoryController {
                 } else {
                     setGraphic(actionBox);
                     
-                    // Update delete button state based on item's reserved quantity
+                    
                     ItemViewModel currentItem = getTableView().getItems().get(getIndex());
                     if (currentItem != null) {
                         int reservedQuantity = currentItem.getTotalQuantity() - currentItem.getAvailableQuantity();
@@ -658,7 +658,7 @@ public class InventoryController {
      * @param item
      */
     private void handleDeleteItem(ItemViewModel item) {
-        // Check if item has reserved quantities
+        
         int reservedQuantity = item.getTotalQuantity() - item.getAvailableQuantity();
         if (reservedQuantity > 0) {
             AlertHelper.showWarningAlert(

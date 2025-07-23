@@ -120,7 +120,7 @@ public class PickupSelectionController {
     @FXML
     private Button cancelButton;
 
-    // Counter proposal section (initially hidden)
+    
     /**
      * 
      */
@@ -255,17 +255,17 @@ public class PickupSelectionController {
      * 
      */
     private void setupTimeSpinners() {
-        // Selected time spinners
+        
         selectedHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 12));
         selectedMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15));
 
-        // Counter proposal time spinners
+        
         counterStartHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9));
         counterStartMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15));
         counterEndHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 18));
         counterEndMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15));
 
-        // Make spinners editable
+        
         selectedHourSpinner.setEditable(true);
         selectedMinuteSpinner.setEditable(true);
         counterStartHourSpinner.setEditable(true);
@@ -273,7 +273,7 @@ public class PickupSelectionController {
         counterEndHourSpinner.setEditable(true);
         counterEndMinuteSpinner.setEditable(true);
 
-        // Add validation listeners for counter proposal
+        
         counterStartHourSpinner.valueProperty().addListener((_, _, _) -> validateCounterTimeRange());
         counterStartMinuteSpinner.valueProperty().addListener((_, _, _) -> validateCounterTimeRange());
         counterEndHourSpinner.valueProperty().addListener((_, _, _) -> validateCounterTimeRange());
@@ -601,7 +601,7 @@ public class PickupSelectionController {
             return;
         }
 
-        // Add all dates in the range
+        
         List<LocalDate> datesToAdd = new ArrayList<>();
         LocalDate current = startDate;
         while (!current.isAfter(endDate)) {

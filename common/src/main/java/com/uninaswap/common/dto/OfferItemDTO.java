@@ -55,7 +55,7 @@ public class OfferItemDTO {
         this.item = item;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

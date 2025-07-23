@@ -24,18 +24,18 @@ public class ListingItemEntity {
     @Column(nullable = false)
     private Integer quantity = 1;
     
-    // Default constructor
+    
     public ListingItemEntity() {
     }
     
-    // Constructor
+    
     public ListingItemEntity(ListingEntity listing, ItemEntity item, Integer quantity) {
         this.listing = listing;
         this.item = item;
         this.quantity = quantity;
     }
     
-    // Getters and setters
+    
     public Long getId() {
         return id;
     }

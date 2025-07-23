@@ -38,7 +38,7 @@ public class OfferMapper {
         dto.setDeliveryType(entity.getDeliveryType());
         dto.setListing(listingMapper.toDto(entity.getListing()));
 
-        // Map offer items
+        
         if (entity.getOfferItems() != null && !entity.getOfferItems().isEmpty()) {
             List<OfferItemDTO> offerItemDTOs = entity.getOfferItems().stream()
                     .map(this::toOfferItemDto)

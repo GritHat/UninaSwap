@@ -49,21 +49,21 @@ public class ReportService {
         logger.info("Creating user report by user {} against user {}",
                 reportingUserId, reportDTO.getReportedUser().getId());
 
-        // Validate reporting user
+        
         UserEntity reportingUser = userRepository.findById(reportingUserId)
                 .orElseThrow(() -> new IllegalArgumentException("Reporting user not found: " + reportingUserId));
 
-        // Validate reported user
+        
         UserEntity reportedUser = userRepository.findById(reportDTO.getReportedUser().getId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Reported user not found: " + reportDTO.getReportedUser().getId()));
 
-        // Check if user is trying to report themselves
+        
         if (reportingUserId.equals(reportedUser.getId())) {
             throw new IllegalArgumentException("Cannot report yourself");
         }
 
-        // Check if user has already reported this user
+        
         Optional<UserReportEntity> existingReport = userReportRepository
                 .findByReportingUserIdAndReportedUserId(reportingUserId, reportedUser.getId());
 
@@ -71,7 +71,7 @@ public class ReportService {
             throw new IllegalArgumentException("You have already reported this user");
         }
 
-        // Create the report
+        
         UserReportEntity report = new UserReportEntity(reportingUser, reportedUser,
                 reportDTO.getReason(), reportDTO.getDescription());
 
@@ -89,21 +89,21 @@ public class ReportService {
         logger.info("Creating listing report by user {} against listing {}",
                 reportingUserId, reportDTO.getReportedListing().getId());
 
-        // Validate reporting user
+        
         UserEntity reportingUser = userRepository.findById(reportingUserId)
                 .orElseThrow(() -> new IllegalArgumentException("Reporting user not found: " + reportingUserId));
 
-        // Validate reported listing
+        
         ListingEntity reportedListing = listingRepository.findById(reportDTO.getReportedListing().getId())
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Reported listing not found: " + reportDTO.getReportedListing().getId()));
 
-        // Check if user is trying to report their own listing
+        
         if (reportingUserId.equals(reportedListing.getCreator().getId())) {
             throw new IllegalArgumentException("Cannot report your own listing");
         }
 
-        // Check if user has already reported this listing
+        
         Optional<ListingReportEntity> existingReport = listingReportRepository
                 .findByReportingUserIdAndReportedListingId(reportingUserId, reportedListing.getId());
 
@@ -111,7 +111,7 @@ public class ReportService {
             throw new IllegalArgumentException("You have already reported this listing");
         }
 
-        // Create the report
+        
         ListingReportEntity report = new ListingReportEntity(reportingUser, reportedListing,
                 reportDTO.getReason(), reportDTO.getDescription());
 

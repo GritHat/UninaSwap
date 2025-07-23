@@ -63,7 +63,7 @@ public class CommonListingMapper {
         dto.setItemId(entity.getItem().getId());
         dto.setItemName(entity.getItem().getName());
         dto.setItemImagePath(entity.getItem().getImagePath());
-        dto.setItemCategory(entity.getItem().getCategory()); // Add this line
+        dto.setItemCategory(entity.getItem().getCategory()); 
         dto.setQuantity(entity.getQuantity());
         dto.setItem(itemMapper.toDto(entity.getItem()));
         return dto;

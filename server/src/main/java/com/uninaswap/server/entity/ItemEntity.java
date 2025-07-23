@@ -37,7 +37,7 @@ public class ItemEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    // Optional metadata fields
+    
     private String category;
     private String brand;
     private String model;
@@ -47,15 +47,15 @@ public class ItemEntity {
     private Integer stockQuantity = 1;
 
     @Column(nullable = false)
-    private Integer availableQuantity; // How many are currently available (not in pending transactions)
+    private Integer availableQuantity; 
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    private Boolean isAvailable = true; // Whether the item can be offered or traded
+    private Boolean isAvailable = true; 
 
     @Column(nullable = false, columnDefinition = "boolean default true")
-    private Boolean isVisible = true; // Whether the item is visible to others
+    private Boolean isVisible = true; 
 
-    // Constructor
+    
     public ItemEntity() {
         this.id = UUID.randomUUID().toString();
         this.createdAt = LocalDateTime.now();
@@ -64,7 +64,7 @@ public class ItemEntity {
         this.availableQuantity = 1;
     }
 
-    // Getters and Setters
+    
     public String getId() {
         return id;
     }
@@ -160,7 +160,7 @@ public class ItemEntity {
     public void setStockQuantity(Integer stockQuantity) {
         this.stockQuantity = stockQuantity;
 
-        // Update available quantity accordingly, but don't exceed stock
+        
         if (this.availableQuantity > stockQuantity) {
             this.availableQuantity = stockQuantity;
         }
@@ -171,7 +171,7 @@ public class ItemEntity {
     }
 
     public void setAvailableQuantity(Integer availableQuantity) {
-        // Available can't exceed stock
+        
         if (availableQuantity > this.stockQuantity) {
             this.availableQuantity = this.stockQuantity;
         } else {
@@ -235,7 +235,7 @@ public class ItemEntity {
     public boolean completeTransaction(int quantity) {
         if (stockQuantity >= quantity) {
             stockQuantity -= quantity;
-            // Available quantity was already reduced during reservation
+            
             return true;
         }
         return false;

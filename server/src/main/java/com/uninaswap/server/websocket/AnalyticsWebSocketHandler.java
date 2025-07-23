@@ -43,7 +43,7 @@ public class AnalyticsWebSocketHandler extends TextWebSocketHandler {
             response.setMessageId(analyticsMessage.getMessageId());
             
             try {
-                // All analytics operations require authentication
+                
                 UserEntity currentUser = sessionService.validateSession(session);
                 if (currentUser == null) {
                     throw new UnauthorizedException("Not authenticated");
@@ -86,7 +86,7 @@ public class AnalyticsWebSocketHandler extends TextWebSocketHandler {
                 logger.error("Error processing analytics message: {}", analyticsMessage.getType(), e);
             }
             
-            // Send the response back to the client
+            
             logger.debug("Sending analytics response: {}", response.getType());
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
             
@@ -111,12 +111,12 @@ public class AnalyticsWebSocketHandler extends TextWebSocketHandler {
             AnalyticsDTO analytics;
             
             if (request.getStartDate() != null && request.getEndDate() != null) {
-                // Custom date range
+                
                 analytics = analyticsService.getUserAnalytics(currentUser.getId(), 
                                                             request.getStartDate(), 
                                                             request.getEndDate());
             } else {
-                // Period-based analytics
+                
                 String period = request.getPeriod() != null ? request.getPeriod() : "month";
                 analytics = analyticsService.getUserAnalyticsByPeriod(currentUser.getId(), period);
             }

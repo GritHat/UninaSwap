@@ -22,7 +22,7 @@ public class FollowerMapper {
         dto.setFollowedId(entity.getFollowed().getId());
         dto.setCreatedAt(entity.getCreatedAt());
 
-        // Map users if needed
+        
         if (entity.getFollower() != null) {
             dto.setFollower(userMapper.toDto(entity.getFollower()));
         }

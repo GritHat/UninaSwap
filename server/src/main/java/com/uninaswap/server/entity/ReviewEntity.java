@@ -30,7 +30,7 @@ public class ReviewEntity {
     private OfferEntity offer;
 
     @Column(nullable = false)
-    private Double score; // 0.0 to 5.0
+    private Double score; 
 
     @Column(length = 1000)
     private String comment;
@@ -41,14 +41,14 @@ public class ReviewEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    // Default constructor
+    
     public ReviewEntity() {
         this.id = UUID.randomUUID().toString();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Constructor with required fields
+    
     public ReviewEntity(UserEntity reviewer, UserEntity reviewedUser, OfferEntity offer, Double score, String comment) {
         this();
         this.reviewer = reviewer;
@@ -58,7 +58,7 @@ public class ReviewEntity {
         this.comment = comment;
     }
 
-    // Getters and setters
+    
     public String getId() {
         return id;
     }

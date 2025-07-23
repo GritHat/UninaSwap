@@ -8,9 +8,9 @@ import java.util.List;
 
 @Repository
 public interface GiftListingRepository extends JpaRepository<GiftListingEntity, String> {
-    // Find gifts that can be picked up locally
+    
     List<GiftListingEntity> findByPickupOnlyTrue();
     
-    // Find gifts that allow thank-you offers
+    
     List<GiftListingEntity> findByAllowThankYouOffersTrue();
 }

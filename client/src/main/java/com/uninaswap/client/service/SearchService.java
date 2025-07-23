@@ -102,7 +102,7 @@ public class SearchService {
      * @return
      */
     public CompletableFuture<SearchResult> search(String query, String listingType, Category category) {
-        return search(query, listingType, category, 0, 50); // Default pagination
+        return search(query, listingType, category, 0, 50); 
     }
     
     /**

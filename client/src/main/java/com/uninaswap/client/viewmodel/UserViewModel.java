@@ -81,7 +81,7 @@ public class UserViewModel {
      */
     private final StringProperty zipPostalCode = new SimpleStringProperty();
 
-    // Constructors
+    
     /**
      * 
      */
@@ -99,7 +99,7 @@ public class UserViewModel {
         setEmail(email);
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -226,7 +226,7 @@ public class UserViewModel {
         return zipPostalCode;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */
@@ -479,7 +479,7 @@ public class UserViewModel {
         this.zipPostalCode.set(zipPostalCode);
     }
 
-    // Utility methods
+    
     /**
      * @return
      */

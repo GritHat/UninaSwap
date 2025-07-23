@@ -46,7 +46,7 @@ public class ListingWebSocketHandler extends TextWebSocketHandler {
             ListingMessage response = new ListingMessage();
 
             try {
-                // Check if session is authenticated for operations that require it
+                
                 UserEntity currentUser = null;
                 if (requiresAuthentication(listingMessage.getType())) {
                     currentUser = sessionService.validateSession(session);
@@ -99,7 +99,7 @@ public class ListingWebSocketHandler extends TextWebSocketHandler {
                 logger.error("Error processing listing message", e);
             }
 
-            // Send the response back to the client
+            
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
 
         } catch (Exception e) {
@@ -112,7 +112,7 @@ public class ListingWebSocketHandler extends TextWebSocketHandler {
     }
 
     private boolean requiresAuthentication(ListingMessage.Type type) {
-        // Public endpoints don't require authentication
+        
         return type != ListingMessage.Type.GET_LISTINGS_REQUEST &&
                 type != ListingMessage.Type.GET_LISTING_DETAIL_REQUEST;
     }
@@ -138,7 +138,7 @@ public class ListingWebSocketHandler extends TextWebSocketHandler {
 
         } catch (Exception e) {
             logger.error("Error retrieving listings", e);
-            response.setType(ListingMessage.Type.GET_LISTINGS_RESPONSE); // IMPORTANT: Set type even on error
+            response.setType(ListingMessage.Type.GET_LISTINGS_RESPONSE); 
             response.setSuccess(false);
             response.setErrorMessage("Error retrieving listings: " + e.getMessage());
         }
@@ -158,13 +158,13 @@ public class ListingWebSocketHandler extends TextWebSocketHandler {
         ListingDTO newListing = request.getListing();
         String listingTypeValue = request.getListingTypeValue();
 
-        // Set creator to current user
+        
         if (newListing.getCreator() == null ||
                 !newListing.getCreator().getId().equals(currentUser.getId())) {
             newListing.getCreator().setId(currentUser.getId());
         }
 
-        // Create listing based on type
+        
         ListingDTO createdListing = listingService.createListing(newListing, listingTypeValue);
 
         response.setType(ListingMessage.Type.CREATE_LISTING_RESPONSE);
@@ -179,7 +179,7 @@ public class ListingWebSocketHandler extends TextWebSocketHandler {
         ListingDTO listingToUpdate = request.getListing();
         String listingTypeValue = request.getListingTypeValue();
 
-        // Verify ownership
+        
         if (!listingService.isListingOwnedByUser(listingToUpdate.getId(), currentUser.getId())) {
             response.setSuccess(false);
             response.setErrorMessage("You don't own this listing");
@@ -187,7 +187,7 @@ public class ListingWebSocketHandler extends TextWebSocketHandler {
             return;
         }
 
-        // Update listing
+        
         ListingDTO updatedListing = listingService.updateListing(listingToUpdate, listingTypeValue);
 
         response.setType(ListingMessage.Type.UPDATE_LISTING_RESPONSE);
@@ -201,7 +201,7 @@ public class ListingWebSocketHandler extends TextWebSocketHandler {
     private void handleDeleteListing(ListingMessage request, ListingMessage response, UserEntity currentUser) {
         String listingId = request.getListingId();
 
-        // Verify ownership
+        
         if (!listingService.isListingOwnedByUser(listingId, currentUser.getId())) {
             response.setSuccess(false);
             response.setErrorMessage("You don't own this listing");

@@ -52,7 +52,7 @@ public class OfferDTO implements Serializable {
      */
     private DeliveryType deliveryType;
 
-    // Money component
+    
     /**
      * 
      */
@@ -62,26 +62,26 @@ public class OfferDTO implements Serializable {
      */
     private Currency currency;
 
-    // Items component
+    
     /**
      * 
      */
     private List<OfferItemDTO> offerItems = new ArrayList<>();
 
-    // Message
+    
     /**
      * 
      */
     private String message;
 
-    // Default constructor
+    
     /**
      * 
      */
     public OfferDTO() {
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

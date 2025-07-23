@@ -57,7 +57,7 @@ public abstract class ListingViewModel {
      */
     private final ObservableList<ListingItemViewModel> items = FXCollections.observableArrayList();
 
-    // Constructors
+    
     /**
      * 
      */
@@ -84,7 +84,7 @@ public abstract class ListingViewModel {
         setFeatured(featured);
     }
 
-    // Property getters
+    
     /**
      * @return
      */

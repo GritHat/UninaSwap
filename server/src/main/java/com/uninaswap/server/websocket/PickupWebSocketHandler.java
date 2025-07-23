@@ -46,7 +46,7 @@ public class PickupWebSocketHandler extends TextWebSocketHandler {
             PickupMessage response = new PickupMessage();
 
             try {
-                // All pickup operations require authentication
+                
                 UserEntity currentUser = sessionService.validateSession(session);
                 if (currentUser == null) {
                     throw new UnauthorizedException("Not authenticated");
@@ -124,7 +124,7 @@ public class PickupWebSocketHandler extends TextWebSocketHandler {
                 logger.error("Error processing pickup message", e);
             }
 
-            // Send the response back to the client
+            
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
 
         } catch (Exception e) {
@@ -364,10 +364,10 @@ public class PickupWebSocketHandler extends TextWebSocketHandler {
             Long pickupId = message.getPickupId();
             Long userIdLong = Long.parseLong(currentUser.getId().toString());
             
-            // Cancel the pickup arrangement
+            
             pickupService.cancelPickupArrangement(pickupId, userIdLong);
             
-            // Send success response
+            
             response.setType(PickupMessage.Type.CANCEL_PICKUP_ARRANGEMENT_RESPONSE);
             response.setPickupId(pickupId);
             response.setSuccess(true);
@@ -384,7 +384,7 @@ public class PickupWebSocketHandler extends TextWebSocketHandler {
     private void handleGetPickupByOffer(PickupMessage message, PickupMessage response, UserEntity currentUser) {
         try {
             String offerId = message.getOfferId();
-            // Get the pickup for the specific offer
+            
             PickupDTO pickup = pickupService.getPickupByOfferId(offerId, currentUser.getId());
             response.setType(PickupMessage.Type.GET_PICKUP_BY_OFFER_RESPONSE);
             response.setOfferId(offerId);

@@ -274,7 +274,7 @@ public class NotificationService {
                 if (future != null) {
                     if (message.isSuccess()) {
                         Platform.runLater(() -> {
-                            // Update observable list
+                            
                             allNotifications.clear();
                             allNotifications.addAll(message.getNotifications().stream()
                                 .map(viewModelMapper::toViewModel)

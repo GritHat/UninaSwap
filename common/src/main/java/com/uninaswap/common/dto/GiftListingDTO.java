@@ -25,7 +25,7 @@ public class GiftListingDTO extends ListingDTO {
      */
     private String pickupLocation;
 
-    // Default constructor
+    
     /**
      * 
      */
@@ -59,7 +59,7 @@ public class GiftListingDTO extends ListingDTO {
         return sb.toString();
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

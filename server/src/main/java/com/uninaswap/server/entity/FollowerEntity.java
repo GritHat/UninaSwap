@@ -27,19 +27,19 @@ public class FollowerEntity {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    // Default constructor
+    
     public FollowerEntity() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // Constructor
+    
     public FollowerEntity(UserEntity follower, UserEntity followed) {
         this();
         this.follower = follower;
         this.followed = followed;
     }
 
-    // Getters and setters
+    
     public Long getId() {
         return id;
     }

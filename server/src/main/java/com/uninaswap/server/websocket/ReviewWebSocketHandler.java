@@ -45,7 +45,7 @@ public class ReviewWebSocketHandler extends TextWebSocketHandler {
             ReviewMessage response = new ReviewMessage();
 
             try {
-                // All review operations require authentication
+                
                 UserEntity currentUser = sessionService.validateSession(session);
                 if (currentUser == null) {
                     throw new UnauthorizedException("Not authenticated");
@@ -99,7 +99,7 @@ public class ReviewWebSocketHandler extends TextWebSocketHandler {
                 logger.error("Error processing review message", e);
             }
 
-            // Send the response back to the client
+            
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(response)));
 
         } catch (Exception e) {
@@ -173,7 +173,7 @@ public class ReviewWebSocketHandler extends TextWebSocketHandler {
             Long userId = request.getUserId() != null ? request.getUserId() : currentUser.getId();
 
             if (request.getSize() > 0) {
-                // Paginated request
+                
                 Page<ReviewDTO> reviewPage = reviewService.getReceivedReviews(userId, request.getPage(),
                         request.getSize());
                 response.setReviews(reviewPage.getContent());
@@ -182,7 +182,7 @@ public class ReviewWebSocketHandler extends TextWebSocketHandler {
                 response.setPage(request.getPage());
                 response.setSize(request.getSize());
             } else {
-                // Get all reviews
+                
                 List<ReviewDTO> reviews = reviewService.getReceivedReviews(userId);
                 response.setReviews(reviews);
             }
@@ -205,7 +205,7 @@ public class ReviewWebSocketHandler extends TextWebSocketHandler {
             Long userId = request.getUserId() != null ? request.getUserId() : currentUser.getId();
 
             if (request.getSize() > 0) {
-                // Paginated request
+                
                 Page<ReviewDTO> reviewPage = reviewService.getGivenReviews(userId, request.getPage(),
                         request.getSize());
                 response.setReviews(reviewPage.getContent());
@@ -214,7 +214,7 @@ public class ReviewWebSocketHandler extends TextWebSocketHandler {
                 response.setPage(request.getPage());
                 response.setSize(request.getSize());
             } else {
-                // Get all reviews
+                
                 List<ReviewDTO> reviews = reviewService.getGivenReviews(userId);
                 response.setReviews(reviews);
             }

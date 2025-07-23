@@ -75,7 +75,7 @@ public class AnalyticsService {
      * @return
      */
     public CompletableFuture<AnalyticsViewModel> getAnalytics(String period) {
-        // Check cache first
+        
         if (isCacheValid() && cachedAnalytics != null) {
             return CompletableFuture.completedFuture(cachedAnalytics);
         }

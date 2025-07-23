@@ -33,7 +33,7 @@ public class AuctionListingDTO extends ListingDTO {
     /**
      * 
      */
-    private LocalDateTime startTime; // Added missing startTime field
+    private LocalDateTime startTime; 
     /**
      * 
      */
@@ -53,17 +53,17 @@ public class AuctionListingDTO extends ListingDTO {
     /**
      * 
      */
-    private int durationInDays; // Added missing durationInDays field
+    private int durationInDays; 
     /**
      * 
      */
-    private boolean anyBids = false; // Indicates if there are any bids
+    private boolean anyBids = false; 
     /**
      * 
      */
-    private String pickupLocation; // Added pickup location field
+    private String pickupLocation; 
     
-    // Default constructor
+    
     /**
      * 
      */
@@ -126,7 +126,7 @@ public class AuctionListingDTO extends ListingDTO {
         }
     }
     
-    // Getters and setters
+    
     /**
      * @return
      */

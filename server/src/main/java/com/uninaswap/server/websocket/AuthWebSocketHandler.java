@@ -66,7 +66,7 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
             e.printStackTrace();
 
             AuthMessage errorResponse = new AuthMessage();
-            errorResponse.setType(AuthMessage.Type.LOGIN_RESPONSE); // Use LOGIN_RESPONSE as fallback
+            errorResponse.setType(AuthMessage.Type.LOGIN_RESPONSE); 
             errorResponse.setSuccess(false);
             errorResponse.setMessage("Server error: " + e.getMessage());
 
@@ -95,7 +95,7 @@ public class AuthWebSocketHandler extends TextWebSocketHandler {
         if (userOpt.isPresent()) {
             UserEntity user = userOpt.get();
             sessionService.InvalidateTokenAndSessionForUser(user);
-            // Create authenticated session and get token
+            
             String token = sessionService.createAuthenticatedSession(session, user);
 
             response.setType(AuthMessage.Type.LOGIN_RESPONSE);

@@ -1225,18 +1225,18 @@ public class ListingDetailsController {
      */
     private void createBuyNowOffer(SellListingViewModel sellListing) {
         try {
-            // Create an offer with the full listing price
+            
             OfferViewModel offer = new OfferViewModel();
             offer.setListingId(sellListing.getId());
             offer.setAmount(sellListing.getPrice());
             offer.setCurrency(sellListing.getCurrency());
             offer.setMessage("Buy Now - Full Price Purchase");
             
-            // Set delivery type based on listing and user selection
+            
             offer.setDeliveryType(sellListing.getDeliveryType(
                     deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
             
-            // Create the offer using the existing service
+            
             OfferService.getInstance().createOffer(offer)
                     .thenAccept(model -> Platform.runLater(() -> {
                         if (model != null) {
@@ -1256,7 +1256,7 @@ public class ListingDetailsController {
                                     localeService.getMessage("buy.success.header", "Il tuo acquisto è stato registrato"),
                                     successMessage);
                                     
-                            // Navigate to offers view to show the created offer
+                            
                             try {
                                 navigationService.navigateToOffersView();
                             } catch (Exception e) {
@@ -1463,10 +1463,10 @@ public class ListingDetailsController {
         boolean offerThankYou = offerThankYouCheckBox.isSelected();
 
         if (offerThankYou && giftListing.isAllowThankYouOffers()) {
-            // Show offer dialog to create thank-you offer
+            
             openThankYouOfferDialog(giftListing);
         } else {
-            // Go straight to confirmation and create empty gift request
+            
             showGiftRequestConfirmation(giftListing, null);
         }
     }
@@ -1509,7 +1509,7 @@ public class ListingDetailsController {
             Optional<ButtonType> result = dialog.showAndWait();
 
             if (result.isPresent() && result.get() == confirmButtonType) {
-                // Create the thank-you offer data
+                
                 OfferViewModel thankYouOffer = createThankYouOfferFromDialog(controller, giftListing);
                 showGiftRequestConfirmation(giftListing, thankYouOffer);
             }
@@ -1536,11 +1536,11 @@ public class ListingDetailsController {
         offer.setListingId(giftListing.getId());
         offer.setMessage("Gift Request - Thank You Offer");
         
-        // Set delivery type based on gift listing
+        
         offer.setDeliveryType(giftListing.getDeliveryType(
                 deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
         
-        // Add money component if selected
+        
         if (controller.getIncludeMoneyCheckBox().isSelected() && 
             !controller.getMoneyAmountField().getText().trim().isEmpty()) {
             try {
@@ -1548,12 +1548,12 @@ public class ListingDetailsController {
                 offer.setAmount(amount);
                 offer.setCurrency(controller.getCurrencyComboBoxValue());
             } catch (NumberFormatException e) {
-                // Handle error - could log or set default
+                
                 System.err.println("Error parsing money amount: " + e.getMessage());
             }
         }
         
-        // Add items if selected
+        
         if (!controller.getSelectedItems().isEmpty()) {
             offer.getOfferItems().setAll(controller.getSelectedItems());
         }
@@ -1599,10 +1599,10 @@ public class ListingDetailsController {
             OfferViewModel giftRequest;
             
             if (thankYouOffer != null) {
-                // Use the thank-you offer data
+                
                 giftRequest = thankYouOffer;
             } else {
-                // Create empty gift request
+                
                 giftRequest = new OfferViewModel();
                 giftRequest.setListingId(giftListing.getId());
                 giftRequest.setMessage("Gift Request - No Thank You Offer");
@@ -1610,7 +1610,7 @@ public class ListingDetailsController {
                         deliveryMethodComboBox != null ? deliveryMethodComboBox.getValue() : null));
             }
             
-            // Send the gift request to server
+            
             OfferService.getInstance().createOffer(giftRequest)
                     .thenAccept(createdOffer -> Platform.runLater(() -> {
                         if (createdOffer != null) {
@@ -1628,7 +1628,7 @@ public class ListingDetailsController {
                                     localeService.getMessage("gift.success.header", "La tua richiesta è stata inviata"),
                                     successMessage);
                                     
-                            // Navigate to offers view
+                            
                             try {
                                 navigationService.navigateToOffersView();
                             } catch (Exception e) {

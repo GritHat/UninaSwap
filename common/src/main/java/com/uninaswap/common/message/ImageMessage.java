@@ -28,11 +28,11 @@ public class ImageMessage extends Message {
     /**
      * 
      */
-    private String imageData; // Base64 encoded image
+    private String imageData; 
     /**
      * 
      */
-    private String format; // e.g., "png", "jpg"
+    private String format; 
     /**
      * 
      */
@@ -46,7 +46,7 @@ public class ImageMessage extends Message {
         setMessageType("image");
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

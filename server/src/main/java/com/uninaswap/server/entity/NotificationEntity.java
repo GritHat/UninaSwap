@@ -30,7 +30,7 @@ public class NotificationEntity {
     private String message;
     
     @Column(name = "data", columnDefinition = "TEXT")
-    private String data; // JSON string for additional data
+    private String data; 
     
     @Column(name = "is_read", nullable = false)
     private boolean read = false;
@@ -51,7 +51,7 @@ public class NotificationEntity {
         }
     }
     
-    // Constructors
+    
     public NotificationEntity() {}
     
     public NotificationEntity(UserEntity recipient, NotificationType type, String title, String message) {
@@ -67,13 +67,13 @@ public class NotificationEntity {
         this.data = data;
     }
     
-    // Mark as read
+    
     public void markAsRead() {
         this.read = true;
         this.readAt = LocalDateTime.now();
     }
     
-    // Getters and setters
+    
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     

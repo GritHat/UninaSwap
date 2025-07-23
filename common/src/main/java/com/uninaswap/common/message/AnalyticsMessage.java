@@ -33,7 +33,7 @@ public class AnalyticsMessage extends Message {
     /**
      * 
      */
-    private String period; // "week", "month", "quarter", "year", "all"
+    private String period; 
     /**
      * 
      */
@@ -49,7 +49,7 @@ public class AnalyticsMessage extends Message {
     /**
      * 
      */
-    private String exportFormat; // "pdf", "csv", "excel"
+    private String exportFormat; 
     /**
      * 
      */
@@ -63,7 +63,7 @@ public class AnalyticsMessage extends Message {
         setMessageType("analytics");
     }
     
-    // Getters and setters
+    
     /**
      * @return
      */

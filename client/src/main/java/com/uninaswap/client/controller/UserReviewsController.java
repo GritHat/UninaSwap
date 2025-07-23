@@ -360,12 +360,12 @@ public class UserReviewsController {
         if (currentUser == null)
             return;
 
-        // Load received reviews
+        
         reviewService.getReceivedReviews(currentUser.getId())
                 .thenAccept(reviews -> Platform.runLater(() -> {
                         receivedReviews.clear();
                         reviews.forEach(reviewDTO -> {
-                            //receivedReviews.add(viewModelMapper.toViewModel(reviewDTO));
+                            
                         });
                 }))
                 .exceptionally(ex -> {
@@ -376,13 +376,13 @@ public class UserReviewsController {
                     return null;
                 });
 
-        // Load given reviews
+        
         reviewService.getGivenReviews(currentUser.getId())
                 .thenAccept(reviews -> Platform.runLater(() -> {
                     givenReviews.clear();
                     reviews.forEach(reviewDTO -> {
-                        // Convert DTO to ViewModel if needed
-                        // givenReviews.add(viewModelMapper.toViewModel(reviewDTO));
+                        
+                        
                     });
                 }))
                 .exceptionally(ex -> {

@@ -35,7 +35,7 @@ public class ListingMessage extends Message {
     /**
      * 
      */
-    private String listingTypeValue; // "SELL", "TRADE", "GIFT", "AUCTION"
+    private String listingTypeValue; 
     /**
      * 
      */
@@ -57,7 +57,7 @@ public class ListingMessage extends Message {
      */
     private Long userId;
 
-    // For pagination
+    
     /**
      * 
      */
@@ -75,7 +75,7 @@ public class ListingMessage extends Message {
      */
     private int totalPages;
 
-    // Default constructor
+    
     /**
      * 
      */
@@ -83,7 +83,7 @@ public class ListingMessage extends Message {
         setMessageType("listing");
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

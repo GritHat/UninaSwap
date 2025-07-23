@@ -38,7 +38,7 @@ public class UserReportEntity {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    // For admin tracking
+    
     @Column(nullable = false)
     private boolean reviewed = false;
 
@@ -52,14 +52,14 @@ public class UserReportEntity {
     @Column(length = 500)
     private String adminNotes;
 
-    // Default constructor
+    
     public UserReportEntity() {
         this.id = UUID.randomUUID().toString();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Constructor with required fields
+    
     public UserReportEntity(UserEntity reportingUser, UserEntity reportedUser, UserReportReason reason,
             String description) {
         this();
@@ -69,7 +69,7 @@ public class UserReportEntity {
         this.description = description;
     }
 
-    // Getters and setters
+    
     public String getId() {
         return id;
     }

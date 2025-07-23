@@ -28,10 +28,10 @@ public class TradeListingMapper {
 
         TradeListingDTO dto = new TradeListingDTO();
 
-        // Map common fields using the utility
+        
         commonListingMapper.mapCommonFields(entity, dto);
 
-        // Map trade-specific fields
+        
         dto.setDesiredCategories(entity.getDesiredCategories());
         dto.setAcceptMoneyOffers(entity.isAcceptMoneyOffers());
         dto.setAcceptMixedOffers(entity.isAcceptMixedOffers());
@@ -43,7 +43,7 @@ public class TradeListingMapper {
             dto.setCurrency(entity.getCurrency());
         }
 
-        // Map desired items
+        
         if (entity.getDesiredItems() != null && !entity.getDesiredItems().isEmpty()) {
             List<ItemDTO> desiredItemDtos = entity.getDesiredItems().stream()
                     .map(itemMapper::toDto)

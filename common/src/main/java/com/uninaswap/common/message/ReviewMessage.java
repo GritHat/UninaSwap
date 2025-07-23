@@ -13,7 +13,7 @@ public class ReviewMessage extends Message {
      * 
      */
     public enum Type {
-        // Requests
+        
         CREATE_REVIEW_REQUEST,
         UPDATE_REVIEW_REQUEST,
         GET_REVIEW_REQUEST,
@@ -24,7 +24,7 @@ public class ReviewMessage extends Message {
         DELETE_REVIEW_REQUEST,
         GET_OFFER_REVIEW_REQUEST,
 
-        // Responses
+        
         CREATE_REVIEW_RESPONSE,
         UPDATE_REVIEW_RESPONSE,
         GET_REVIEW_RESPONSE,
@@ -69,7 +69,7 @@ public class ReviewMessage extends Message {
      */
     private Integer totalReviews;
 
-    // For pagination
+    
     /**
      * 
      */
@@ -87,7 +87,7 @@ public class ReviewMessage extends Message {
      */
     private int totalPages = 0;
 
-    // Default constructor
+    
     /**
      * 
      */
@@ -96,7 +96,7 @@ public class ReviewMessage extends Message {
         setMessageType("review");
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

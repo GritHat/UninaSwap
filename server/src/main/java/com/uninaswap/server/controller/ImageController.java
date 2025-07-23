@@ -22,20 +22,20 @@ public class ImageController {
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
-            // Generate a unique ID for the image
+            
             String imageId = UUID.randomUUID().toString();
             
-            // Get file extension
+            
             String originalFilename = file.getOriginalFilename();
             if (originalFilename == null || !originalFilename.contains(".")) {
                 return ResponseEntity.badRequest().body("Invalid file name");
             }
             String extension = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
             
-            // Save the file
+            
             imageService.saveImageFile(imageId, extension, file.getBytes());
             
-            // Update the user's profile image path
+            
             /*UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
             

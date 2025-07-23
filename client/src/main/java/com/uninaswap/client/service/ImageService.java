@@ -45,7 +45,7 @@ public class ImageService {
      */
     private final Map<String, CompletableFuture<Image>> pendingRequests = new ConcurrentHashMap<>();
     
-    // Singleton pattern
+    
     /**
      * @return
      */

@@ -18,7 +18,7 @@ public class GiftListingEntity extends ListingEntity {
 
     private String restrictions;
 
-    // Thank-you offer settings
+    
     @Column(nullable = false)
     private boolean allowThankYouOffers;
 
@@ -27,12 +27,12 @@ public class GiftListingEntity extends ListingEntity {
 
     private String pickupLocation;
 
-    // Default constructor
+    
     public GiftListingEntity() {
         super();
     }
 
-    // Constructor with required fields
+    
     public GiftListingEntity(String title, String description, UserEntity creator, String ImagePath,
             boolean pickupOnly, String restrictions, boolean allowThankYouOffers) {
         super();
@@ -122,7 +122,7 @@ public class GiftListingEntity extends ListingEntity {
         return sb.toString();
     }
 
-    // Getters and Setters
+    
     public boolean isPickupOnly() {
         return pickupOnly;
     }

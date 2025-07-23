@@ -58,14 +58,14 @@ public class ListingReportDTO implements Serializable {
      */
     private String adminNotes;
 
-    // Default constructor
+    
     /**
      * 
      */
     public ListingReportDTO() {
     }
 
-    // Constructor with required fields
+    
     /**
      * @param reportingUser
      * @param reportedListing
@@ -82,7 +82,7 @@ public class ListingReportDTO implements Serializable {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

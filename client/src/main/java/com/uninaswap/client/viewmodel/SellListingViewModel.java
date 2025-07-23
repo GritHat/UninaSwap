@@ -25,9 +25,9 @@ public class SellListingViewModel extends ListingViewModel {
     /**
      * 
      */
-    private final ObjectProperty<String> pickupLocation = new SimpleObjectProperty<>(); // Added pickup location
+    private final ObjectProperty<String> pickupLocation = new SimpleObjectProperty<>(); 
 
-    // Constructors
+    
     /**
      * 
      */
@@ -53,7 +53,7 @@ public class SellListingViewModel extends ListingViewModel {
         setCurrency(currency);
     }
 
-    // Property getters
+    
     /**
      * @return
      */
@@ -75,7 +75,7 @@ public class SellListingViewModel extends ListingViewModel {
         return pickupLocation;
     }
 
-    // Getters and setters
+    
     /**
      * @return
      */

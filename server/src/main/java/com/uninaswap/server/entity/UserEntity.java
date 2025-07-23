@@ -55,7 +55,7 @@ public class UserEntity {
     private String stateProvince;
 
 
-    // Original getters and setters
+    
     public Long getId() {
         return id;
     }
@@ -88,7 +88,7 @@ public class UserEntity {
         this.password = password;
     }
 
-    // New getters and setters
+    
     public String getFirstName() {
         return firstName;
     }

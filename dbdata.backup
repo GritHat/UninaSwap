@@ -1,0 +1,390 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 17.5 (Ubuntu 17.5-0ubuntu0.25.04.1)
+-- Dumped by pg_dump version 17.5 (Ubuntu 17.5-0ubuntu0.25.04.1)
+
+-- Started on 2025-07-23 07:58:26 CEST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 3630 (class 0 OID 16993)
+-- Dependencies: 217
+-- Data for Name: auction_listings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auction_listings (currency, current_highest_bid, end_time, has_bids, minimum_bid_increment, reserve_price, start_time, starting_price, id, highest_bidder_id, pickup_location) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3632 (class 0 OID 17002)
+-- Dependencies: 219
+-- Data for Name: favorites; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.favorites (id, created_at, listing_id, user_id) FROM stdin;
+22	2025-07-22 21:03:27.818106	c5ad0c9b-a399-40b2-b475-0216f34405d1	2
+23	2025-07-22 21:03:29.913861	601d20ab-c73d-48ff-a886-5bdc9b5d99e1	2
+36	2025-07-22 21:10:27.835029	97615079-812f-4b4a-8f2f-55a871d30ad9	1
+41	2025-07-23 00:25:29.049072	469eaab6-55dd-481d-aa34-8a709f3dd23c	1
+\.
+
+
+--
+-- TOC entry 3634 (class 0 OID 17008)
+-- Dependencies: 221
+-- Data for Name: followers; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.followers (id, created_at, followed_id, follower_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3635 (class 0 OID 17013)
+-- Dependencies: 222
+-- Data for Name: gift_listings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.gift_listings (allow_thank_you_offers, pickup_only, restrictions, id, pickup_location) FROM stdin;
+t	t		52f9cb6f-3404-4758-976e-b8d806b5df93	\N
+t	t	Solo matricole	d9fd730f-25d0-4502-9f14-5be7f437a48e	Federico II
+\.
+
+
+--
+-- TOC entry 3636 (class 0 OID 17020)
+-- Dependencies: 223
+-- Data for Name: items; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.items (id, available_quantity, brand, category, condition, created_at, description, image_path, is_available, is_visible, model, name, stock_quantity, updated_at, year_of_production, owner_id) FROM stdin;
+deb31e1b-d356-474d-825c-1d262d88ee79	7	.	HOME_GARDEN	NEW	2025-07-18 17:31:18.358238	Segnapiante fatti a mano 	e42d9a84-3bcb-42fd-95e9-34c0111d8f7b.jpg	t	t	.	Sassi segna piante	10	2025-07-23 02:19:10.185442	1900	1
+76c490d4-5d86-4fda-8bd1-0086862695a5	0		HOME_GARDEN	LIKE_NEW	2025-07-18 17:24:14.822388	Vendo tappeto 50 x 70 \ncome nuovo	532c9c5d-e17a-482b-ac66-e92214623039.jpg	t	t		Tappeto Peter Griffin 	1	2025-07-18 17:50:58.779942	2024	1
+3bc125a7-31c0-4d8e-ba3a-a1abea322b2f	7		HOME_GARDEN	NEW	2025-07-18 17:32:19.567507	Segnapiante fatti a mano 	af0098d0-4ff6-428e-bd38-0e0fb7b918c3.jpg	t	t		Segnapiante	10	2025-07-23 02:36:20.873053	1900	1
+e59c5d5d-ae6a-46c2-9618-7b0d4c38b0d8	1	BODYGUARD	SERVICES	NEW	2025-07-18 17:35:07.805033	Hai paura che ti possano rubare i reni di notte? fai un party esclusivo? CHIAMA ME! 	0b80641d-669d-40ea-9c61-b0478448feea.jpg	t	t	RONALDO	Bodyguard	2	2025-07-18 17:53:02.923226	1990	1
+cd4f252b-d539-4f29-a79b-7ba57304129b	0		BOOKS	ACCEPTABLE	2025-07-18 17:36:06.091362	Collana di libri di programmazione	e374673b-d879-454d-9500-6f90b5722968.jpg	t	t		Libri Programmazione	1	2025-07-18 17:55:06.163197	1900	1
+afba32e1-0b03-4394-8c33-8b846e3dcce1	0		ELECTRONICS	VERY_GOOD	2025-07-18 17:26:37.624103	 Collezione Burbasaur Gameboy Advance Verde, con gioco e gadget	ac164780-c133-4487-b6ce-f7532b78d10b.jpg	t	t		Gameboy Bulbasaur	1	2025-07-18 17:59:52.711989	2001	1
+c6e3d365-cbc2-4b06-a59b-2d31953cf025	0	Ikea	HOME_GARDEN	LIKE_NEW	2025-07-20 15:07:59.272936	Puff quasi nuovo mai usato	93d99839-5e7d-4a15-ac33-259b88c00b0e.jpg	t	t	Strudderdung	Puff Pallone da Basket	9	2025-07-23 06:58:37.621746	1900	2
+db3cf53c-0c1b-4e62-a007-866746bb9502	0		OTHER	NEW	2025-07-18 17:38:08.20428		469a9a9b-7fb7-4b2f-ab42-33b6af9f5d34.jpg	t	t		Completo Uomo	1	2025-07-18 18:23:20.237535	1900	1
+a3f97499-0d37-47ab-862f-a446266305f1	0	yamaha	MUSIC_INSTRUMENTS	LIKE_NEW	2025-07-18 17:33:35.520315	tenuta bene, molto bella	711d03f7-2756-4003-953e-f1633067a1ed.jpg	t	t		Chitarra Acustica	1	2025-07-18 18:24:43.819113	1980	1
+4829e094-959f-4caf-baeb-940ff0036810	0		SERVICES	NEW	2025-07-18 17:29:16.89929	Ripetizioni Algebra per studenti di primo anno 	e334a80d-a1be-46a5-9169-dc22326af859.jpg	t	t		Ripetizioni Algebra	1	2025-07-18 18:26:02.753355	1900	1
+d858af44-d209-4abf-adc6-46f48258539d	0	Spalding	SPORTS	LIKE_NEW	2025-07-18 18:27:00.334051	Bel pallone da basket spalding.	cf5081fe-0ecf-494b-9cd0-3fb03d9a6bf4.jpg	t	t		Pallone da Basket	1	2025-07-18 18:27:26.767484	2024	1
+b3172b39-e3e6-48ab-9310-cee9f0393f75	1		TOYS_GAMES	NEW	2025-07-18 17:37:36.721146	disponibili ancora pochi pezzi	7c0a89b8-4970-4a7d-b46c-b769dcba9bf3.png	t	t		StarWars gadget	3	2025-07-20 10:50:38.953143	1900	1
+59881cf1-671a-4c12-83ce-75e237dd38bf	10		HOME_GARDEN	NEW	2025-07-18 17:30:34.274987	Segnapiante fatti a mano 	96e6989a-527f-4f16-82f1-7ddf68817ec0.jpg	t	t		Sassolini segna posto	15	2025-07-21 20:05:16.629483	1900	1
+1286907e-6c85-48ca-88c7-705222e68671	0		BOOKS	ACCEPTABLE	2025-07-23 00:05:25.29681	Libro vecchiotto ma raro	65d7f1cb-0719-4839-afc4-3c60579cf7dc.jpg	t	t		Mathematical Methods of Physics	1	2025-07-23 00:08:09.906483	\N	1
+\.
+
+
+--
+-- TOC entry 3638 (class 0 OID 17031)
+-- Dependencies: 225
+-- Data for Name: listing_items; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.listing_items (id, quantity, item_id, listing_id) FROM stdin;
+1	1	76c490d4-5d86-4fda-8bd1-0086862695a5	b73607b6-612e-4ed8-8a0d-b89f3b6d956f
+2	1	afba32e1-0b03-4394-8c33-8b846e3dcce1	85f676b0-eed6-44f0-a62e-1d7711256a02
+3	1	e59c5d5d-ae6a-46c2-9618-7b0d4c38b0d8	92be4f93-7dc0-4946-90e4-3008399dcc6d
+4	1	cd4f252b-d539-4f29-a79b-7ba57304129b	52f9cb6f-3404-4758-976e-b8d806b5df93
+5	1	b3172b39-e3e6-48ab-9310-cee9f0393f75	c8dc6b21-f970-46f3-83dd-b520eb26038e
+6	1	deb31e1b-d356-474d-825c-1d262d88ee79	601d20ab-c73d-48ff-a886-5bdc9b5d99e1
+7	1	db3cf53c-0c1b-4e62-a007-866746bb9502	39afc630-9885-437f-be13-468b82958486
+8	1	a3f97499-0d37-47ab-862f-a446266305f1	849362f6-7313-4401-9256-c972068407fc
+9	1	4829e094-959f-4caf-baeb-940ff0036810	34d6aad7-fbcd-4c39-9252-bc6a4e7d1366
+10	1	d858af44-d209-4abf-adc6-46f48258539d	97615079-812f-4b4a-8f2f-55a871d30ad9
+11	1	3bc125a7-31c0-4d8e-ba3a-a1abea322b2f	c5ad0c9b-a399-40b2-b475-0216f34405d1
+12	1	b3172b39-e3e6-48ab-9310-cee9f0393f75	c5ad0c9b-a399-40b2-b475-0216f34405d1
+13	1	c6e3d365-cbc2-4b06-a59b-2d31953cf025	4a720421-1874-4b85-b308-4b0b93073515
+14	4	59881cf1-671a-4c12-83ce-75e237dd38bf	ae2a634d-dd4d-4e0d-a452-4841af6a0afa
+15	1	59881cf1-671a-4c12-83ce-75e237dd38bf	d9fd730f-25d0-4502-9f14-5be7f437a48e
+16	1	c6e3d365-cbc2-4b06-a59b-2d31953cf025	8f488fee-de77-4b51-955b-7fb06245b5a1
+17	1	c6e3d365-cbc2-4b06-a59b-2d31953cf025	9ef6320f-5ec4-4ad4-8593-17e406a12105
+18	1	1286907e-6c85-48ca-88c7-705222e68671	469eaab6-55dd-481d-aa34-8a709f3dd23c
+20	2	deb31e1b-d356-474d-825c-1d262d88ee79	916ba868-b2c1-45b8-87c3-a9d5e10b5295
+21	2	3bc125a7-31c0-4d8e-ba3a-a1abea322b2f	51f29893-fa44-4be9-a017-9c55e794d2e0
+\.
+
+
+--
+-- TOC entry 3639 (class 0 OID 17038)
+-- Dependencies: 226
+-- Data for Name: listing_reports; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.listing_reports (id, admin_notes, created_at, description, reason, reviewed, reviewed_at, updated_at, reported_listing_id, reporting_user_id, reviewed_by_admin_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3640 (class 0 OID 17046)
+-- Dependencies: 227
+-- Data for Name: listings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.listings (listing_type, id, created_at, description, featured, image_path, status, title, updated_at, creator_id) FROM stdin;
+SELL	b73607b6-612e-4ed8-8a0d-b89f3b6d956f	2025-07-18 17:50:58.737748	Vendo tappeto 50x70 di peter	f	532c9c5d-e17a-482b-ac66-e92214623039.jpg	ACTIVE	Tappeto Peter Griffin	2025-07-18 17:50:58.737751	1
+SELL	85f676b0-eed6-44f0-a62e-1d7711256a02	2025-07-18 17:51:51.953992	Vendo collezione Vintage di pokemon con Gamboy Advance e gadget di Bulbasaur	f	d01dab70-dbdf-42ef-8a6d-bf19113bf3e5.jpg	ACTIVE	Gamboy Bulbasaur	2025-07-18 17:51:51.953994	1
+SELL	92be4f93-7dc0-4946-90e4-3008399dcc6d	2025-07-18 17:53:02.918124	Hai paura che ti picchino? hai un evento importante da proteggere? CHIAMA ME! Tariffa oraria	f	0b80641d-669d-40ea-9c61-b0478448feea.jpg	ACTIVE	BOODYGUARD	2025-07-18 17:53:02.918126	1
+GIFT	52f9cb6f-3404-4758-976e-b8d806b5df93	2025-07-18 17:55:06.152521	Regalo collana di libri di programmazione	f	e374673b-d879-454d-9500-6f90b5722968.jpg	ACTIVE	Libri di Programmazione	2025-07-18 17:55:06.152524	1
+SELL	601d20ab-c73d-48ff-a886-5bdc9b5d99e1	2025-07-18 17:58:23.920323	Vendo sassi segna piante fatti a mano set da 6 sassi Melanzane, zucchine, pomodori, carote ecc come sulla foto	f	e42d9a84-3bcb-42fd-95e9-34c0111d8f7b.jpg	ACTIVE	Sassi segna piante	2025-07-18 17:58:23.920324	1
+SELL	39afc630-9885-437f-be13-468b82958486	2025-07-18 18:23:20.203579	Vendo bel completo da uomo	f	469a9a9b-7fb7-4b2f-ab42-33b6af9f5d34.jpg	ACTIVE	Completo Uomo	2025-07-18 18:23:20.20358	1
+SELL	34d6aad7-fbcd-4c39-9252-bc6a4e7d1366	2025-07-18 18:26:02.749648	Faccio ripetizioni di algebra, tariffa oraria	f	e334a80d-a1be-46a5-9169-dc22326af859.jpg	ACTIVE	Ripetizioni Algebra	2025-07-18 18:26:02.749649	1
+SELL	97615079-812f-4b4a-8f2f-55a871d30ad9	2025-07-18 18:27:26.763521	Vendo bel pallone da basket spalding	f	cf5081fe-0ecf-494b-9cd0-3fb03d9a6bf4.jpg	ACTIVE	Pallone da Basket Spalding	2025-07-18 18:27:26.763521	1
+SELL	c5ad0c9b-a399-40b2-b475-0216f34405d1	2025-07-20 10:50:38.879837	Segnapiante + StarWars Gadget, OFFERTA INCREDIBILE!	f	af0098d0-4ff6-428e-bd38-0e0fb7b918c3.jpg	ACTIVE	Bundle Oggetti	2025-07-20 10:50:38.879838	1
+TRADE	c8dc6b21-f970-46f3-83dd-b520eb26038e	2025-07-18 17:56:48.754909	Scambio questi portachiavi vorrei un portachiavi di StarTreck	f	7d772d22-12e3-4502-9af6-9db9f710e92f.png	COMPLETED	Portachiavi di Starwars	2025-07-21 08:09:12.954504	1
+TRADE	ae2a634d-dd4d-4e0d-a452-4841af6a0afa	2025-07-21 19:58:37.124482	Bundle superscontato offro a buon prezzo di rif.	f	default-listing-image.jpg	ACTIVE	Bundle 4x Sassolini	2025-07-21 19:58:37.124483	1
+TRADE	849362f6-7313-4401-9256-c972068407fc	2025-07-18 18:24:43.811385	Scambio o vendo chitarra acustica	f	711d03f7-2756-4003-953e-f1633067a1ed.jpg	COMPLETED	Chitarra acustica	2025-07-21 20:56:47.771698	1
+SELL	8f488fee-de77-4b51-955b-7fb06245b5a1	2025-07-22 21:00:42.229882	Molto grande	f	default-listing-image.jpg	PENDING	Pallone Puff	2025-07-22 21:10:14.707698	2
+SELL	9ef6320f-5ec4-4ad4-8593-17e406a12105	2025-07-22 21:39:03.16178	Molto grande	f	default-listing-image.jpg	PENDING	Puff Pallone	2025-07-22 22:00:43.854944	2
+SELL	4a720421-1874-4b85-b308-4b0b93073515	2025-07-21 17:29:25.2367	Gigante, ci si dorme facile	f	93d99839-5e7d-4a15-ac33-259b88c00b0e.jpg	COMPLETED	Puff Pallone	2025-07-22 22:01:12.252452	2
+SELL	469eaab6-55dd-481d-aa34-8a709f3dd23c	2025-07-23 00:08:09.887989	Per collezionisti	f	default-listing-image.jpg	ACTIVE	Libro raro di fisica matematica	2025-07-23 00:08:09.88799	1
+SELL	916ba868-b2c1-45b8-87c3-a9d5e10b5295	2025-07-23 02:19:10.167041	Belli dai insomma	f	default-listing-image.jpg	ACTIVE	Sassi segnapianta fatti a mano	2025-07-23 02:19:10.167041	1
+SELL	51f29893-fa44-4be9-a017-9c55e794d2e0	2025-07-23 02:36:20.858006	tanti segnapiante per tutti	f	default-listing-image.jpg	ACTIVE	Segnapiante per tutti	2025-07-23 02:36:20.858006	1
+GIFT	d9fd730f-25d0-4502-9f14-5be7f437a48e	2025-07-21 20:05:16.600405	In regalo!	f	default-listing-image.jpg	PENDING	Regalo sassolini segna posto	2025-07-23 06:58:37.621464	1
+\.
+
+
+--
+-- TOC entry 3652 (class 0 OID 17307)
+-- Dependencies: 239
+-- Data for Name: notifications; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.notifications (id, created_at, data, message, is_read, read_at, title, type, recipient_id) FROM stdin;
+70121320-78f5-4748-9183-e1639e1b09b6	2025-07-19 23:13:39.926538	cdb659cb-7694-41cc-a6dc-49b100bb4782	You have received a new offer on your listing: Gamboy Bulbasaur	t	2025-07-19 23:15:14.151201	New Offer Received	OFFER_RECEIVED	1
+c78c6b13-84d8-4311-84f0-957832f9b010	2025-07-19 23:14:09.273022	d5d818c6-d1c3-4310-88e7-8d1ec37b7e15	You have received a new offer on your listing: Gamboy Bulbasaur	t	2025-07-19 23:15:20.669747	New Offer Received	OFFER_RECEIVED	1
+bdd35c24-0bc3-452e-8c15-f6fb54380c6c	2025-07-19 22:36:07.499067	5ab8bbf6-e518-4a8f-b1ae-4b9816513627	You have received a new offer on your listing: BOODYGUARD	t	2025-07-19 23:15:35.782096	New Offer Received	OFFER_RECEIVED	1
+cefc152a-e9c4-4821-a842-47505a6fd22c	2025-07-19 22:42:35.827463	4b8f2c1e-c36b-4ae5-a5d5-2c73a962839b	You have received a new offer on your listing: Ripetizioni Algebra	t	2025-07-19 23:15:38.115983	New Offer Received	OFFER_RECEIVED	1
+e7e75971-9175-4248-8ede-1a22f8d3ed6e	2025-07-19 22:47:24.425571	a7d12850-c44d-47d8-88db-c904a784869b	You have received a new offer on your listing: Tappeto Peter Griffin	t	2025-07-19 23:15:42.655092	New Offer Received	OFFER_RECEIVED	1
+7aeeee8b-42d0-48db-943c-881040022493	2025-07-19 22:44:34.42528	a91c4bcb-3deb-47d4-b285-ff68ab33e089	You have received a new offer on your listing: Sassi segna piante	t	2025-07-19 23:15:46.46195	New Offer Received	OFFER_RECEIVED	1
+897e3c64-3157-4563-9e76-0a4c243b4138	2025-07-19 22:35:39.988704	3db6237f-1bbb-4964-be39-feccbfc5aa34	You have received a new offer on your listing: Completo Uomo	t	2025-07-20 00:03:29.007849	New Offer Received	OFFER_RECEIVED	1
+5a0f5609-941b-49a5-9998-89923bb8bbea	2025-07-19 21:47:22.37375	a841b3fc-6503-4c14-aa8d-0d3fa55bf41e	You have received a new offer on your listing: Pallone da Basket Spalding	t	2025-07-20 00:11:16.367323	New Offer Received	OFFER_RECEIVED	1
+57ba7419-43e9-421a-8922-3670c5f5d7cd	2025-07-20 01:41:30.883794	a4927457-9868-4481-8dbe-64a8c1320f8a	You have received a new offer on your listing: Ripetizioni Algebra	t	2025-07-20 01:42:16.202875	New Offer Received	OFFER_RECEIVED	1
+bddf8b04-09ea-47cb-a366-996b27b8bbd1	2025-07-20 08:03:46.31922	3d7dbea5-d09e-4b77-a782-ccfbf2c2990c	You have received a new offer on your listing: Pallone da Basket Spalding	f	\N	New Offer Received	OFFER_RECEIVED	1
+a276cd2f-2255-46ff-a5f3-a64ea4c67786	2025-07-20 08:07:17.344194	cabbd71e-1629-4ca9-91ae-d610138204b8	You have received a new offer on your listing: Gamboy Bulbasaur	f	\N	New Offer Received	OFFER_RECEIVED	1
+94528ac2-5d48-495c-b167-88ef2dd16bd8	2025-07-20 08:07:40.12239	65571430-f98e-42de-b1b7-e91555832d13	You have received a new offer on your listing: Gamboy Bulbasaur	f	\N	New Offer Received	OFFER_RECEIVED	1
+0261938f-f559-4e6a-af50-8bd762247fe4	2025-07-20 08:08:29.387005	a9807088-6bd3-41ff-891d-b3e0a42831e9	You have received a new offer on your listing: Pallone da Basket Spalding	f	\N	New Offer Received	OFFER_RECEIVED	1
+9865f5e3-3ee7-4ff9-8b7a-ff763e5ee242	2025-07-20 08:09:08.826231	758647b0-057a-42ba-98c7-8aeb52fe4da6	You have received a new offer on your listing: Ripetizioni Algebra	t	2025-07-20 10:35:56.092696	New Offer Received	OFFER_RECEIVED	1
+f0b72e4a-705e-45c8-80a5-52f546ebc849	2025-07-20 15:09:07.291758	dfcefb88-5658-44e6-ba2c-917c221f71fc	You have received a new offer on your listing: Chitarra acustica	f	\N	New Offer Received	OFFER_RECEIVED	1
+a87126f1-167e-460e-93bf-4c5f01d197d5	2025-07-20 22:06:33.14674	2c93e426-572e-4238-9e1c-267702b8cfc5	You have received a new offer on your listing: Bundle Oggetti	f	\N	New Offer Received	OFFER_RECEIVED	1
+0c7f7273-578f-4472-bc84-f0b2a626dad3	2025-07-20 22:11:17.518626	cfe28ddc-f141-4381-9bb9-4e968fdb6680	You have received a new offer on your listing: Bundle Oggetti	f	\N	New Offer Received	OFFER_RECEIVED	1
+1a55f088-3ae8-4362-906d-8db182c4be83	2025-07-20 22:20:20.205983	042fb536-931c-465c-8002-7c400f67ceb9	You have received a new offer on your listing: Bundle Oggetti	f	\N	New Offer Received	OFFER_RECEIVED	1
+caa1de67-bf94-4877-83bd-cf482cdac053	2025-07-21 06:04:03.59454	93c5c05e-3a83-4139-ad54-a10d6b4c07cf	You have received a new offer on your listing: Portachiavi di Starwars	f	\N	New Offer Received	OFFER_RECEIVED	1
+41675013-f7af-4ae9-960f-70929d13f697	2025-07-21 10:23:46.562601	6b48d883-146f-450a-b1de-9a80277fc985	You have received a new offer on your listing: Chitarra acustica	f	\N	New Offer Received	OFFER_RECEIVED	1
+7e453acc-f722-41fa-b8f5-55d790489ca7	2025-07-21 10:26:05.306993	95235cd3-82d5-41c1-b137-449e31b130db	You have received a new offer on your listing: Chitarra acustica	f	\N	New Offer Received	OFFER_RECEIVED	1
+39bc76d0-cfc0-4fff-b931-25a2eed1f03d	2025-07-21 10:31:28.595085	c97da73f-8fef-453e-9f1a-f4eeeacfc68b	You have received a new offer on your listing: Chitarra acustica	f	\N	New Offer Received	OFFER_RECEIVED	1
+ae98ebe3-7534-477b-81ab-dc8fa7c92b0b	2025-07-21 10:34:12.895219	6f795ca3-531a-45e5-a9ce-e0ff42e295f8	You have received a new offer on your listing: Chitarra acustica	f	\N	New Offer Received	OFFER_RECEIVED	1
+0c64d01b-05fd-4c97-ad72-35355bac0ad3	2025-07-22 18:22:01.328909	5d11ee46-36ad-4644-aa8f-0903a85baf0e	You have received a new offer on your listing: Puff Pallone	t	2025-07-22 22:32:30.230508	New Offer Received	OFFER_RECEIVED	2
+d91b2161-3ace-4291-af5d-9bda28974266	2025-07-22 18:20:34.625931	73a8a0e5-4ffc-4c07-9733-f7e7b7a59cdb	You have received a new offer on your listing: Puff Pallone	t	2025-07-22 22:32:30.230508	New Offer Received	OFFER_RECEIVED	2
+cd372883-e6df-4ac3-8aef-c566f929820c	2025-07-22 18:19:32.226816	019cc27b-d455-4fe5-b779-17940c384d01	You have received a new offer on your listing: Puff Pallone	t	2025-07-22 22:32:30.230508	New Offer Received	OFFER_RECEIVED	2
+e7ab5893-607d-4449-afb0-d204c15b1d3f	2025-07-22 18:16:31.157627	2e4c8cf1-eb15-44bd-9901-20597da3c290	You have received a new offer on your listing: Puff Pallone	t	2025-07-22 22:32:30.230508	New Offer Received	OFFER_RECEIVED	2
+742cbc6c-9517-4e60-bd89-19bf09e2ce12	2025-07-22 18:14:21.281203	a57ffbd6-9bce-418b-a0e9-c66f8899a03f	You have received a new offer on your listing: Puff Pallone	t	2025-07-22 22:32:30.230508	New Offer Received	OFFER_RECEIVED	2
+81b64248-0a36-43f2-a448-f36d7bb5a6ec	2025-07-22 18:06:25.73744	e6684963-2671-4829-8b07-d1f9893f4c85	You have received a new offer on your listing: Puff Pallone	t	2025-07-22 22:32:30.230508	New Offer Received	OFFER_RECEIVED	2
+d894080a-dbd8-444d-aacb-3a5e8085aeb0	2025-07-22 18:03:26.898764	599ea3ab-14f2-4f6f-a85d-97d2fa2726ba	You have received a new offer on your listing: Puff Pallone	t	2025-07-22 22:32:30.230508	New Offer Received	OFFER_RECEIVED	2
+\.
+
+
+--
+-- TOC entry 3642 (class 0 OID 17055)
+-- Dependencies: 229
+-- Data for Name: offer_items; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.offer_items (id, quantity, item_id, offer_id) FROM stdin;
+7	1	c6e3d365-cbc2-4b06-a59b-2d31953cf025	ce9799a5-81ed-4765-8d54-61193b731b47
+\.
+
+
+--
+-- TOC entry 3643 (class 0 OID 17062)
+-- Dependencies: 230
+-- Data for Name: offers; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.offers (id, amount, created_at, currency, message, status, updated_at, listing_id, user_id, delivery_type) FROM stdin;
+8c9469c1-3ca8-4d21-ba8d-49b64acea051	40.00	2025-07-22 21:10:14.703032	EUR	Buy Now - Full Price Purchase	ACCEPTED	2025-07-22 21:10:14.707783	8f488fee-de77-4b51-955b-7fb06245b5a1	1	0
+3ce4b0f5-2271-4ecb-90f9-b0d297c36ce8	34.00	2025-07-22 22:00:43.849459	EUR	Buy Now - Full Price Purchase	ACCEPTED	2025-07-22 22:00:43.855036	9ef6320f-5ec4-4ad4-8593-17e406a12105	1	0
+9be431a2-73f4-4e50-8fa4-7441980c52f7	139.00	2025-07-22 20:33:38.102152	EUR	Buy Now - Full Price Purchase	COMPLETED	2025-07-22 22:01:12.252532	4a720421-1874-4b85-b308-4b0b93073515	1	1
+ce9799a5-81ed-4765-8d54-61193b731b47	32.00	2025-07-23 06:58:37.606438	EUR	Gift Request - Thank You Offer	CONFIRMED	2025-07-23 06:58:37.621698	d9fd730f-25d0-4502-9f14-5be7f437a48e	2	1
+93c5c05e-3a83-4139-ad54-a10d6b4c07cf	\N	2025-07-21 06:04:03.564082	\N		REVIEWED	2025-07-21 09:14:30.347426	c8dc6b21-f970-46f3-83dd-b520eb26038e	2	0
+95235cd3-82d5-41c1-b137-449e31b130db	\N	2025-07-21 10:26:05.298972	\N		REVIEWED	2025-07-21 21:05:20.941581	849362f6-7313-4401-9256-c972068407fc	2	0
+\.
+
+
+--
+-- TOC entry 3654 (class 0 OID 17351)
+-- Dependencies: 241
+-- Data for Name: pickups; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.pickups (id, available_dates, created_at, details, end_time, location, selected_date, selected_time, start_time, status, updated_at, created_by, offer_id, updated_by) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3644 (class 0 OID 17080)
+-- Dependencies: 231
+-- Data for Name: reviews; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.reviews (id, comment, created_at, score, updated_at, offer_id, reviewed_user_id, reviewer_id) FROM stdin;
+71ce4e30-6341-4a46-a712-5cb609780814	good	2025-07-21 09:14:30.338846	4	2025-07-21 09:14:30.33885	93c5c05e-3a83-4139-ad54-a10d6b4c07cf	1	2
+5b01f10e-05a2-409f-87d7-baff77f1364d	\N	2025-07-21 21:05:20.937943	5	2025-07-21 21:05:20.937947	95235cd3-82d5-41c1-b137-449e31b130db	1	2
+\.
+
+
+--
+-- TOC entry 3645 (class 0 OID 17087)
+-- Dependencies: 232
+-- Data for Name: sell_listings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.sell_listings (currency, price, id, pickup_location) FROM stdin;
+EUR	55.00	34d6aad7-fbcd-4c39-9252-bc6a4e7d1366	\N
+EUR	200.00	39afc630-9885-437f-be13-468b82958486	\N
+EUR	139.00	4a720421-1874-4b85-b308-4b0b93073515	\N
+EUR	25.00	601d20ab-c73d-48ff-a886-5bdc9b5d99e1	\N
+EUR	45.00	85f676b0-eed6-44f0-a62e-1d7711256a02	\N
+EUR	90.00	92be4f93-7dc0-4946-90e4-3008399dcc6d	\N
+EUR	70.00	97615079-812f-4b4a-8f2f-55a871d30ad9	\N
+EUR	40.00	b73607b6-612e-4ed8-8a0d-b89f3b6d956f	\N
+EUR	15.00	c5ad0c9b-a399-40b2-b475-0216f34405d1	\N
+EUR	40.00	8f488fee-de77-4b51-955b-7fb06245b5a1	Federico II
+EUR	34.00	9ef6320f-5ec4-4ad4-8593-17e406a12105	Federico II
+EUR	190.00	469eaab6-55dd-481d-aa34-8a709f3dd23c	Federico II
+EUR	32.00	916ba868-b2c1-45b8-87c3-a9d5e10b5295	Federico II
+EUR	32.00	51f29893-fa44-4be9-a017-9c55e794d2e0	Federico II
+\.
+
+
+--
+-- TOC entry 3646 (class 0 OID 17095)
+-- Dependencies: 233
+-- Data for Name: trade_desired_categories; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.trade_desired_categories (listing_id, category) FROM stdin;
+ae2a634d-dd4d-4e0d-a452-4841af6a0afa	Electronics
+ae2a634d-dd4d-4e0d-a452-4841af6a0afa	Beauty & Health
+\.
+
+
+--
+-- TOC entry 3647 (class 0 OID 17100)
+-- Dependencies: 234
+-- Data for Name: trade_desired_items; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.trade_desired_items (listing_id, item_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3648 (class 0 OID 17105)
+-- Dependencies: 235
+-- Data for Name: trade_listings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.trade_listings (accept_mixed_offers, accept_money_offers, accept_other_offers, currency, reference_price, id, pickup_location) FROM stdin;
+t	t	t	EUR	400.00	849362f6-7313-4401-9256-c972068407fc	Federico II - Monte Sant'Angelo
+f	f	t	\N	\N	c8dc6b21-f970-46f3-83dd-b520eb26038e	Federico II - Monte Sant'Angelo
+t	t	t	EUR	80.00	ae2a634d-dd4d-4e0d-a452-4841af6a0afa	Federico II
+\.
+
+
+--
+-- TOC entry 3649 (class 0 OID 17113)
+-- Dependencies: 236
+-- Data for Name: user_reports; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_reports (id, admin_notes, created_at, description, reason, reviewed, reviewed_at, updated_at, reported_user_id, reporting_user_id, reviewed_by_admin_id) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3651 (class 0 OID 17122)
+-- Dependencies: 238
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (id, address, bio, city, country, created_at, email, first_name, is_active, last_login_at, last_name, password, phone_number, profile_image_path, username, state_province, zip_postal_code) FROM stdin;
+1	Via dei brutti ceffi 42	Sono il migliore a fare la guardiaccia.	Napoli	Italia	2025-07-18 16:48:14.354946	test@test.te	Ronaldo	f	2025-07-18 16:48:14.354946	Boodyguard	$2a$10$VqBayUXIbt8KxUzTmk4c6ehmbQW75KigS6hnq0lnPVoHzLr6G70.S	\N	07c4bdd0-c356-4b8e-945f-ea387f4ab89b.png	test	Campania	80013
+2	\N	\N	\N	\N	2025-07-19 21:34:06.878244	test2@test2.te	\N	f	2025-07-19 21:34:06.878244	\N	$2a$10$N0jOyxxfJYHVjJhkNbNEJ.fCna/iGCmdBrKGxU5piIdPeWBY5D4U.	\N	8b06fbcd-eed0-4884-80b0-6d137ac02bbd.png	test2	\N	\N
+\.
+
+
+--
+-- TOC entry 3661 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: favorites_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.favorites_id_seq', 41, true);
+
+
+--
+-- TOC entry 3662 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: followers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.followers_id_seq', 1, false);
+
+
+--
+-- TOC entry 3663 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: listing_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.listing_items_id_seq', 21, true);
+
+
+--
+-- TOC entry 3664 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: offer_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.offer_items_id_seq', 7, true);
+
+
+--
+-- TOC entry 3665 (class 0 OID 0)
+-- Dependencies: 240
+-- Name: pickups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.pickups_id_seq', 14, true);
+
+
+--
+-- TOC entry 3666 (class 0 OID 0)
+-- Dependencies: 237
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 2, true);
+
+
+-- Completed on 2025-07-23 07:58:26 CEST
+
+--
+-- PostgreSQL database dump complete
+--
+
